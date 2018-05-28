@@ -275,8 +275,12 @@ residuals.MixMod <- function (object, type = c("mean_subject", "subject_specific
     y - fits
 }
 
-marginal_coefs <- function (object, std_errors = FALSE, link_fun = NULL, M = 3000, K = 100,
-                            seed = 1, cores = max(parallel::detectCores() - 1, 1)) {
+marginal_coefs <- function (object, ...) UseMethod("marginal_coefs")
+
+marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL, 
+                                   M = 3000, K = 100,
+                                   seed = 1, cores = max(parallel::detectCores() - 1, 1), 
+                                   ...) {
     X <- model.matrix(object$Terms$termsX, object$model_frames$mfX)
     Z <- model.matrix(object$Terms$termsZ, object$model_frames$mfZ)
     betas <- fixef(object)

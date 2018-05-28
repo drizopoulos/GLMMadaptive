@@ -12,7 +12,7 @@
 \usage{
 marginal_coefs(object, std_errors = FALSE, link_fun = NULL, 
    M = 3000, K = 100, seed = 1, 
-   cores = max(parallel::detectCores() - 1, 1))
+   cores = max(parallel::detectCores() - 1, 1), \dots)
 }
 
 \arguments{
@@ -23,6 +23,7 @@ marginal_coefs(object, std_errors = FALSE, link_fun = NULL,
 \item{K}{.}
 \item{seed}{.}
 \item{cores}{.}
+\item{\dots}{.}
 }
 
 \details{
