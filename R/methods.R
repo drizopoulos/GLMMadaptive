@@ -65,7 +65,7 @@ ranef.MixMod <- function(object, ...) {
     object$post_modes
 }
 
-summary.MixMod <- function (object) {
+summary.MixMod <- function (object, ...) {
     betas <- fixef(object)
     n_betas <- length(betas)
     V <- vcov(object)

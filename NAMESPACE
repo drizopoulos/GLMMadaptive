@@ -1,1 +1,31 @@
-exportPattern("^[[:alpha:]]+")
+export(mixed_model, marginal_coefs)
+
+importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
+             "dbinom", "dnorm", "dpois", "fitted", "glm.fit", "logLik",
+             "make.link", "model.frame", "model.matrix", "model.offset",
+             "model.response", "na.exclude", "optim", "pchisq", "pnorm",
+             "terms", "var", "vcov")
+importFrom("utils", "as.relistable", "relist")
+importFrom("MASS", "mvrnorm")
+importFrom("parallel", "makeCluster", "stopCluster", "detectCores", "parLapply")
+
+S3method(print, MixMod)
+S3method(logLik, MixMod)
+S3method(vcov, MixMod)
+S3method(fixef, MixMod)
+S3method(ranef, MixMod)
+S3method(fixef, MixMod)
+S3method(summary, MixMod)
+S3method(print, summary.MixMod)
+S3method(coef, summary.MixMod)
+S3method(anova, MixMod)
+S3method(print, aov.MixMod)
+S3method(fitted, MixMod)
+S3method(residuals, MixMod)
+S3method(marginal_coefs, MixMod)
+S3method(print, m_coefs)
+
+
+
+
+

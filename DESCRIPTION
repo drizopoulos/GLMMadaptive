@@ -1,11 +1,14 @@
 Package: GLMMadaptive
-Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: Generalized Linear Mixed Models with Adaptive Gaussian Quadrature
+Version: 0.1-0
+Author: Dimitris Rizopoulos <d.rizopoulos@erasmusmc.nl>
+Maintainer: Dimitris Rizopoulos <d.rizopoulos@erasmusmc.nl>
+Description: Fits generalized linear mixed models for a single grouping factor under
+    maximum likelihood approximating the intergrals over the random effects with an 
+    adaptive Gaussian quadrature rule.
+Imports: MASS, parallel
 Encoding: UTF-8
-LazyData: true
+LazyLoad: yes
+LazyData: yes
+License: GPL (>= 2)
+URL: https://github.com/drizopoulos/GLMMadaptive

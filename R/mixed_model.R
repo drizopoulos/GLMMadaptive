@@ -99,10 +99,10 @@ mixed_model <- function (fixed, random, data, family = NULL, na.action = na.excl
         stop("'linkinv' component of the 'family' argument must be a function.\n")
     }
     if (!is.null(family$score_eta_fun) && is.function(family$score_eta_fun)) {
-        Funs$score_eta_fun <- score_eta_fun
+        Funs$score_eta_fun <- family$score_eta_fun
     }
     if (!is.null(family$score_phis_fun) && is.function(family$score_phis_fun)) {
-        Funs$score_phis_fun <- score_phis_fun
+        Funs$score_phis_fun <- family$score_phis_fun
     }
     has_phis <- inherits(try(Funs$log_dens(y, 0, Funs$mu_fun, phis = NULL), TRUE),
                          "try-error")

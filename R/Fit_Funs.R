@@ -282,16 +282,12 @@ negative.binomial <- function (theta = stop("'theta' must be specified"), link =
         n <- rep(1, nobs)
         mustart <- y + (y == 0)/6
     })
-    simfun <- function(object, nsim) {
-        ftd <- fitted(object)
-        rnegbin(nsim * length(ftd), ftd, .Theta)
-    }
     environment(variance) <- environment(validmu) <- environment(dev.resids) <- environment(aic) <- environment(simfun) <- env
     famname <- "negative binomial"
     structure(list(family = famname, link = linktemp, linkfun = stats$linkfun,
                    linkinv = stats$linkinv, variance = variance, dev.resids = dev.resids,
                    aic = aic, mu.eta = stats$mu.eta, initialize = initialize,
-                   validmu = validmu, valideta = stats$valideta, simulate = simfun),
+                   validmu = validmu, valideta = stats$valideta),
               class = "family")
 }
 
