@@ -53,6 +53,16 @@ logLik.MixMod <- function (object, ...) {
     out
 }
 
+coef.MixMod <- function (object, ...) {
+    betas <- fixef(object)
+    b <- ranef(object)
+    out <- matrix(betas, nrow = nrow(b), ncol = length(betas), byrow = TRUE)
+    colnames(out) <- names(betas)
+    rownames(out) <- rownames(b)
+    out[, colnames(b)] <- out[, colnames(b)] + b
+    out
+}
+
 fixef <- function (object, ...) UseMethod("fixef")
 
 fixef.MixMod <- function(object, ...) {
@@ -363,4 +373,69 @@ print.m_coefs <- function (x, digits = max(4, getOption("digits") - 4), ...) {
     }
     invisible(x)
 }
+
+effectPlotData <- function (object, newdata, level, ...) UseMethod("effectPlotData")
+
+effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FALSE, ...) {
+    if (marginal) {
+        mcoefs <- marginal_coefs(object, std_errors = TRUE, ...)
+        betas <- mcoefs$betas
+        var_betas <- mcoefs$var_betas
+    } else {
+        betas <- fixef(object)
+        n_betas <- length(betas)
+        V <- vcov(object)
+        var_betas <- V[seq_len(n_betas), seq_len(n_betas)]
+    }
+    termsX <- delete.response(object$Terms$termsX)
+    mfX <- model.frame(termsX, newdata, 
+                       xlev = .getXlevels(termsX, object$model_frames$mfX))
+    X <- model.matrix(termsX, mfX)
+    pred <- c(X %*% betas)
+    ses <- sqrt(diag(X %*% var_betas %*% t(X)))
+    newdata$pred <- pred
+    newdata$low <- pred + qnorm((1 - level) / 2) * ses
+    newdata$upp <- pred + qnorm((1 + level) / 2) * ses
+    newdata
+}
+
+predict.MixMod <- function (object, newdata, type = c("link", "response"),
+                            level = c("mean_subject", "subject_specific", "marginal"),
+                            se.fit = FALSE, ...) {
+    type <- match.arg(type)
+    level <- match.arg(level)
+    termsX <- delete.response(object$Terms$termsX)
+    mfX <- model.frame(termsX, newdata, 
+                       xlev = .getXlevels(termsX, object$model_frames$mfX))
+    X <- model.matrix(termsX, mfX)
+    if (level %in% c("mean_subject", "marginal")) {
+        if (level == "mean_subject") {
+            betas <- fixef(object)
+            n_betas <- length(betas)
+            V <- vcov(object)
+            var_betas <- V[seq_len(n_betas), seq_len(n_betas)]
+            pred <- if (type == "link") c(X %*% betas) else object$family$linkinv(c(X %*% betas))
+            se.fit <- if (se.fit) sqrt(diag(X %*% var_betas %*% t(X)))
+        } else {
+            mcoefs <- marginal_coefs(object, std_errors = TRUE, ...)
+            betas <- mcoefs$betas
+            var_betas <- mcoefs$var_betas
+            pred <- if (type == "link") c(X %*% betas) else object$family$linkinv(c(X %*% betas))
+            se.fit <- if (se.fit) sqrt(diag(X %*% var_betas %*% t(X)))
+        }
+    } else {
+        termsZ <- delete.response(object$Terms$termsZ)
+        mfZ <- model.frame(termsZ, newdata, 
+                           xlev = .getXlevels(termsX, object$model_frames$mfZ))
+        Z <- model.matrix(termsZ, mfZ)
+        
+    }
+    if (se.fit) {
+        list(pred = pred, se.fit = se.fit)
+    } else {
+        pred
+    }
+}
+
+
 

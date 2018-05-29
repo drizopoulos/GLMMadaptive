@@ -1,5 +1,6 @@
 \name{marginal_coefs}
 \alias{marginal_coefs}
+\alias{marginal_coefs.MixMod}
 
 \title{
 ...
@@ -10,8 +11,11 @@
 }
 
 \usage{
-marginal_coefs(object, std_errors = FALSE, link_fun = NULL, 
-   M = 3000, K = 100, seed = 1, 
+
+marginal_coefs(object, \dots)
+
+\method{marginal_coefs}{MixMod}(object, std_errors = FALSE, 
+   link_fun = NULL, M = 3000, K = 100, seed = 1, 
    cores = max(parallel::detectCores() - 1, 1), \dots)
 }
 
