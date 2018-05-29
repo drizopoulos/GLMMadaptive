@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1527538086441.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "470CEB91",
+    "lastKnownWriteTime" : 1527539812,
+    "last_content_update" : 1527539823804,
+    "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/R/Fit_Funs.R",
+    "project_path" : "R/Fit_Funs.R",
+    "properties" : {
+        "cursorPosition" : "5,21",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

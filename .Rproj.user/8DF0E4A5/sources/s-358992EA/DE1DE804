@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1527538081713.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "DE1DE804",
+    "lastKnownWriteTime" : 1527539733,
+    "last_content_update" : 1527539733208,
+    "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/R/mixed_model.R",
+    "project_path" : "R/mixed_model.R",
+    "properties" : {
+        "cursorPosition" : "38,34",
+        "scrollLine" : "23"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

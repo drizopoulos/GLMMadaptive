@@ -1,0 +1,69 @@
+library("MASS")
+library("splines")
+library("parallel")
+
+source("./R/Functions.R")
+source("./R/Fit_Funs.R")
+source("./R/mixed_fit.R")
+source("./R/mixed_model.R")
+source("./R/methods.R")
+
+#source("./R/hello.R")
+
+library("GLMMadaptive")
+
+##########################################################################################
+
+##############
+# Fit models #
+##############
+
+fm1 <- mixed_model(fixed = y ~ year + group, random = ~ 1 | id, data = DF,
+                   family = binomial())
+
+fixef(fm1)
+summary(fm1)
+marginal_coefs(fm1)
+
+fm2 <- mixed_model(fixed = y ~ year + group, random = ~ year | id, data = DF,
+                   family = binomial(), verbose = TRUE)
+
+fixef(fm2)
+summary(fm2)
+marginal_coefs(fm2)
+
+marginal_coefs(fm2, std_errors = TRUE)
+
+ranef(fm2)
+
+logLik(fm2)
+vcov(fm2)
+
+fitted(fm2, type = "mean_subject")
+fitted(fm2, type = "subject_specific")
+fitted(fm2, type = "marginal")
+
+anova(fm1, fm2)
+
+anova(fm2, L = rbind(c(0, 1, 0), c(0, 0, 1)))
+
+nDF <- with(DF, expand.grid(year = seq(min(year), max(year), length = 15),
+                            group = levels(group)))
+
+plot_data <- effectPlotData(fm2, nDF)
+plot_data_m <- effectPlotData(fm2, nDF, marginal = TRUE)
+
+
+
+library("lattice")
+xyplot(pred + low + upp ~ year | group, data = plot_data,
+       type = "l", lty = c(1, 2, 2), col = c(2, 1, 1), lwd = 2)
+
+expit <- function (x) exp(x) / (1 + exp(x))
+xyplot(expit(pred) + expit(low) + expit(upp) ~ year | group, data = plot_data,
+       type = "l", lty = c(1, 2, 2), col = c(2, 1, 1), lwd = 2)
+
+xyplot(expit(pred) + expit(low) + expit(upp) ~ year | group, data = plot_data_m,
+       type = "l", lty = c(1, 2, 2), col = c(2, 1, 1), lwd = 2)
+
+
