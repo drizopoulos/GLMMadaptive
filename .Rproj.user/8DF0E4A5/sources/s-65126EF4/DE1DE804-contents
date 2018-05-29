@@ -37,6 +37,7 @@ mixed_model <- function (fixed, random, data, family = NULL, na.action = na.excl
         mfZ <- mfZ[-na_exclude, ]
     termsZ <- terms(mfZ)
     Z <- model.matrix(termsZ, mfZ)
+    id_nam <- all.vars(getID_Formula(random))
     id_orig <- model.frame(terms(getID_Formula(random)), data)[[1L]]
     id <- match(id_orig, unique(id_orig))
     ###########################
@@ -119,6 +120,7 @@ mixed_model <- function (fixed, random, data, family = NULL, na.action = na.excl
     names(out$coefficients) <- colnames(X)
     dimnames(out$D) <- list(colnames(Z), colnames(Z))
     out$id <- id_orig
+    out$id_name <- id_nam 
     dimnames(out$post_modes) <- list(unique(id_orig), colnames(Z))
     out$Terms <- list(termsX = termsX, termsZ = termsZ)
     out$model_frames <- list(mfX = mfX, mfZ = mfZ)

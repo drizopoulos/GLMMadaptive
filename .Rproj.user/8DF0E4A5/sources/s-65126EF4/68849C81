@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1527619077455.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "500583434",
+    "id" : "68849C81",
+    "lastKnownWriteTime" : 1527619620,
+    "last_content_update" : 1527619620781,
+    "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/man/effectPlotData.Rd",
+    "project_path" : "man/effectPlotData.Rd",
+    "properties" : {
+        "cursorPosition" : "74,11",
+        "scrollLine" : "66"
+    },
+    "relative_order" : 12,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_doc"
+}

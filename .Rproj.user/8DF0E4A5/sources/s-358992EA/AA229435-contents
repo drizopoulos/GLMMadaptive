@@ -1,9 +1,0 @@
-*.Rproj
-.Rhistory
-.RData
-*.history
-.gz
-src/*.o
-src/*.so
-src/*.dll
-

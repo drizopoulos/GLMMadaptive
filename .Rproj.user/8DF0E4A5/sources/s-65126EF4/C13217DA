@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1527587463217.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "C13217DA",
+    "lastKnownWriteTime" : 1527594459,
+    "last_content_update" : 1527594459909,
+    "path" : "C:/Users/drizo/Desktop/DR-simulate.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "59,15",
+        "scrollLine" : "43"
+    },
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

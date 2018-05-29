@@ -1,6 +1,5 @@
 library("MASS")
-library("splines")
-library("parallel")
+library("GLMMadaptive")
 
 source("./R/Functions.R")
 source("./R/Fit_Funs.R")

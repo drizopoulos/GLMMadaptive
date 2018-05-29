@@ -424,11 +424,52 @@ predict.MixMod <- function (object, newdata, type = c("link", "response"),
             se.fit <- if (se.fit) sqrt(diag(X %*% var_betas %*% t(X)))
         }
     } else {
+        y <- model.response(model.frame(object$Terms$termsX, newdata))
+        if (is.factor(y)) {
+            if (family$family == "binomial")
+                y <- as.numeric(y != levels(y)[1L])
+            else
+                stop("the response variable should not be a factor.\n")
+        }
+        offset <- model.offset(mfX)
         termsZ <- delete.response(object$Terms$termsZ)
         mfZ <- model.frame(termsZ, newdata, 
-                           xlev = .getXlevels(termsX, object$model_frames$mfZ))
+                           xlev = .getXlevels(termsZ, object$model_frames$mfZ))
         Z <- model.matrix(termsZ, mfZ)
-        
+        id_nam <- object$id_name
+        id <- newdata[[id_nam]]
+        id <- match(id, unique(id))
+        id_unq <- unique(id)
+        y_lis <- if (is.matrix(y)) lapply(id_unq, function (i) y[id == i, ]) else split(y, id)
+        X_lis <- lapply(id_unq, function (i) X[id == i, , drop = FALSE])
+        Z_lis <- lapply(id_unq, function (i) Z[id == i, , drop = FALSE])
+        offset_lis <- if (!is.null(offset)) split(offset, id)
+        Zty_lis <- lapply(mapply(crossprod, Z_lis, y_lis, SIMPLIFY = FALSE), drop)
+        Xty <- drop(crossprod(X, y))
+        log_dens <- object$Funs$log_dens
+        mu_fun <- object$Funs$mu_fun
+        var_fun <- object$Funs$var_fun
+        mu.eta_fun <- object$Funs$mu.eta_fun
+        score_eta_fun <- object$Funs$score_eta_fun
+        score_phis_fun <- object$Funs$score_phis_fun
+        family <- object$family
+        canonical <- !is.null(family$family) &&
+            ((family$family == "binomial" && family$link == "logit") ||
+                 (family$family == "poisson" && family$link == "log"))
+        known_families <- c("binomial", "poisson", "negative binomial")
+        user_defined <- !family$family %in% known_families
+        numer_deriv <- if (object$control$numeric_deriv == "fd") fd else cd
+        numer_deriv_vec <- if (object$control$numeric_deriv == "fd") fd_vec else cd_vec
+        start <- matrix(0.0, length(y_lis), ncol(Z))
+        betas <- fixef(object)
+        invD <- solve(object$D)
+        phis <- object$phis
+        post_modes <- find_modes(start, y_lis, X_lis, Z_lis, offset_lis, 
+                                 betas, invD, phis, canonical, user_defined, Zty_lis, 
+                                 log_dens, mu_fun, var_fun, mu.eta_fun,
+                                 score_eta_fun, score_phis_fun)$post_modes
+        eta <- c(X %*% betas) + rowSums(Z * post_modes[id, , drop = FALSE])
+        pred <- if (type == "link") eta else object$family$linkinv(eta)
     }
     if (se.fit) {
         list(pred = pred, se.fit = se.fit)

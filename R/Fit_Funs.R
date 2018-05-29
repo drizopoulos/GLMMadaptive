@@ -282,7 +282,7 @@ negative.binomial <- function (theta = stop("'theta' must be specified"), link =
         n <- rep(1, nobs)
         mustart <- y + (y == 0)/6
     })
-    environment(variance) <- environment(validmu) <- environment(dev.resids) <- environment(aic) <- environment(simfun) <- env
+    environment(variance) <- environment(validmu) <- environment(dev.resids) <- environment(aic) <- env
     famname <- "negative binomial"
     structure(list(family = famname, link = linktemp, linkfun = stats$linkfun,
                    linkinv = stats$linkinv, variance = variance, dev.resids = dev.resids,
