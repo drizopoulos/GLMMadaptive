@@ -164,6 +164,16 @@ coef.summary.MixMod <- function (object, ...) {
     object$coef_table
 }
 
+confint.MixMod <- function (object, parm, level = 0.95, ...) {
+    betas <- fixef(object)
+    n_betas <- length(betas)
+    V <- vcov(object)
+    ses_betas <- sqrt(diag(V[seq_len(n_betas), seq_len(n_betas)]))
+    out <- cbind(betas + qnorm((1 - level) / 2) * ses_betas,
+                 betas + qnorm((1 + level) / 2) * ses_betas)
+    colnames(out) <- paste(round(100 * c((1 - level) / 2, (1 + level) / 2), 1), "%")
+    out
+}
 
 anova.MixMod <- function (object, object2, test = TRUE, L = NULL, ...) {
     if (missing(object2) && is.null(L))
