@@ -7,13 +7,13 @@
     "folds" : "",
     "hash" : "0",
     "id" : "DE1DE804",
-    "lastKnownWriteTime" : 1527587152,
-    "last_content_update" : 1527587152386,
+    "lastKnownWriteTime" : 1527671354,
+    "last_content_update" : 1527671354745,
     "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/R/mixed_model.R",
     "project_path" : "R/mixed_model.R",
     "properties" : {
-        "cursorPosition" : "129,12",
-        "scrollLine" : "111"
+        "cursorPosition" : "109,19",
+        "scrollLine" : "0"
     },
     "relative_order" : 2,
     "source_on_save" : false,

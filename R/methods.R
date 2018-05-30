@@ -306,10 +306,13 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
         Xbetas <- c(X %*% betas)
         nRE <- ncol(Z)
         n <- nrow(X)
+        eS <- eigen(D, symmetric = TRUE)
+        ev <- eS$values
+        V <- eS$vectors %*% diag(sqrt(pmax(ev, 0)), nRE)
         marg_inv_mu <- numeric(n)
         for (i in seq_len(n)) {
             set.seed(seed + i)
-            b <- MASS::mvrnorm(M, rep(0.0, nRE), D)
+            b <- t(V %*% t(matrix(rnorm(M * nRE), M, nRE)))
             Zb <- c(Z[i, , drop = FALSE] %*% t(b))
             mu <- mu_fun(Xbetas[i] + Zb)
             marg_inv_mu[i] <- link_fun(mean(mu))

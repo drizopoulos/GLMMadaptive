@@ -85,7 +85,7 @@ mixed_model <- function (fixed, random, data, family = NULL, na.action = na.excl
                'binomial' = binomial_log_dens,
                'poisson' = poisson_log_dens,
                'negative binomial' = negative.binomial_log_dens)
-    } else if (!family$family %in% known_families && !is.null(family$log_den)) {
+    } else if (!family$family %in% known_families && !is.null(family$log_dens)) {
         Funs$log_dens <- family$log_dens
     } else {
         stop("'log_dens' component of the 'family' argument is NULL with no default.\n")
@@ -108,7 +108,9 @@ mixed_model <- function (fixed, random, data, family = NULL, na.action = na.excl
     has_phis <- inherits(try(Funs$log_dens(y, 0, Funs$mu_fun, phis = NULL), TRUE),
                          "try-error")
     if (has_phis) {
-        if (is.null(n_phis)) {
+        if (family$family == "negative binomial") {
+            n_phis <- 1
+        } else if (is.null(n_phis)) {
             stop("argument 'n_phis' needs to be specified.\n")
         }
         inits$phis <- rep(0.0, n_phis)

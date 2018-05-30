@@ -1,4 +1,4 @@
-library("MASS")
+#library("MASS")
 library("tweeDEseq")
 
 n = 50
@@ -15,7 +15,7 @@ gender = rep(rbinom(n,1,0.5), each = t)
 time = rep(1:t, n)
 X = cbind(1, time, gender, gender*time)
 Z = as.matrix(X[,1])
-ranef.matr = mvrnorm(n, 0, Sigma)
+ranef.matr = as.matrix(rnorm(n, 0, Sigma))
 rand.int = rep(ranef.matr[,1], each = t)
 log.mu.ij = c(X %*% beta) + rand.int
 N = n*t
@@ -44,7 +44,7 @@ fm <- mixed_model(fixed = y ~ time * gender, random = ~ 1 | id, data = data.long
 summary(fm)
 
 gm <- mixed_model(fixed = y ~ time * gender, random = ~ 1 | id, data = data.long,
-                  family = GLMMadaptive:::negative.binomial(1), n_phis = 1, nAGQ = 15)
+                  family = negative.binomial(1), nAGQ = 15)
 
 summary(gm)
 
@@ -90,7 +90,8 @@ poisson.tweedie <- function (link = "log") {
         } else {
             dPT2(x = y, mu = mu_y, p = c(1 + exp(phis[1L]), 1 - exp(phis[2L])))
         }
-        #out[out < 1e-20] = 1e-20
+        out[is.na(out)] <- 0
+        out[out == -Inf] <- -1e05
         attr(out, "mu_y") <- mu_y
         out
     }
@@ -104,6 +105,8 @@ data = data.long
 control = list()
 family = poisson.tweedie()
 n_phis = 2
+#family = negative.binomial(1)
+#n_phis = 1
 initial_values = list(betas = gm$coefficients, D = gm$D)
 na.action = na.exclude
 

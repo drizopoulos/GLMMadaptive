@@ -14,7 +14,7 @@ logLik_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
     eta_y <- as.vector(X %*% betas) + Ztb
     if (!is.null(offset))
         eta_y <- eta_y + offset
-    log_p_yb <- rowsum(log_dens(y, eta_y, mu_fun, phis), id)
+    log_p_yb <- rowsum(log_dens(y, eta_y, mu_fun, phis), id, reorder = FALSE)
     log_p_b <- matrix(dmvnorm(b, rep(0, ncol(Z)), D, TRUE),
                       nrow(log_p_yb), ncol(log_p_yb), byrow = TRUE)
     p_yb <- exp(log_p_yb + log_p_b)
@@ -42,7 +42,7 @@ score_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
     if (!is.null(offset))
         eta_y <- eta_y + offset
     log_Lik <- log_dens(y, eta_y, mu_fun, phis)
-    log_p_yb <- rowsum(log_Lik, id)
+    log_p_yb <- rowsum(log_Lik, id, reorder = FALSE)
     log_p_b <- matrix(dmvnorm(b, rep(0, ncol(Z)), D, TRUE), nrow(log_p_yb),
                       ncol(log_p_yb), byrow = TRUE)
     p_yb <- exp(log_p_yb + log_p_b)
@@ -105,20 +105,25 @@ score_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
     }
     ###
     score.phis <- if (all(!is.na(phis))) {
-        n_phis <- length(phis)
-        sc <- numeric(n_phis)
-        for (i in seq_len(n_phis)) {
-            phis1 <- phis2 <- phis
-            phis1[i] <- phis1[i] + 1e-04
-            phis2[i] <- phis2[i] - 1e-04
-            l1 <- log_dens(y, eta_y, mu_fun, phis1)
-            l2 <- log_dens(y, eta_y, mu_fun, phis2)
-            z <- (l1 - l2) / (2 * 1e-04)
-            sc[i] <- sum(c((rowsum(z, id) * p_by) %*% wGH), na.rm = TRUE)
+        if (is.null(score_phis_fun)) {
+            n_phis <- length(phis)
+            sc <- numeric(n_phis)
+            for (i in seq_len(n_phis)) {
+                phis1 <- phis2 <- phis
+                phis1[i] <- phis[i] + 1e-03
+                phis2[i] <- phis[i] - 1e-03
+                l1 <- log_dens(y, eta_y, mu_fun, phis1)
+                l2 <- log_dens(y, eta_y, mu_fun, phis2)
+                z <- (l1 - l2) / (phis1[i] - phis2[i])
+                sc[i] <- sum(c((rowsum(z, id, reorder = FALSE) * p_by) %*% wGH), na.rm = TRUE)
+            }
+            - sc
+        } else {
+            z <- score_phis_fun(phis, mu_y, y)
+            -sum(c((rowsum(z, id, reorder = FALSE) * p_by) %*% wGH), na.rm = TRUE)
         }
-        - sc
     }
-    ###
+   ###
     svD <- solve(D)
     dD <- deriv_D(D)
     ndD <- length(dD)
@@ -199,22 +204,28 @@ score_betas <- function (betas, y, X, id, offset, phis, Ztb, p_by, wGH, canonica
 }
 
 score_phis <- function (phis, y, X, betas, Ztb, offset, id, p_by,
-                        log_dens, mu_fun, wGH) {
+                        log_dens, mu_fun, wGH, score_phis_fun) {
     eta_y <- as.vector(X %*% betas) + Ztb
     if (!is.null(offset))
         eta_y <- eta_y + offset
-    n_phis <- length(phis)
-    sc <- numeric(n_phis)
-    for (i in seq_len(n_phis)) {
-        phis1 <- phis2 <- phis
-        phis1[i] <- phis1[i] + 1e-04
-        phis2[i] <- phis2[i] - 1e-04
-        l1 <- log_dens(y, eta_y, mu_fun, phis1)
-        l2 <- log_dens(y, eta_y, mu_fun, phis2)
-        z <- (l1 - l2) / (2 * 1e-04)
-        sc[i] <- sum(c((rowsum(z, id) * p_by) %*% wGH), na.rm = TRUE)
+    if (is.null(score_phis_fun)) {
+        n_phis <- length(phis)
+        sc <- numeric(n_phis)
+        for (i in seq_len(n_phis)) {
+            phis1 <- phis2 <- phis
+            phis1[i] <- phis1[i] + 1e-03
+            phis2[i] <- phis2[i] - 1e-03
+            l1 <- log_dens(y, eta_y, mu_fun, phis1)
+            l2 <- log_dens(y, eta_y, mu_fun, phis2)
+            z <- (l1 - l2) / (phis1[i] - phis2[i])
+            sc[i] <- sum(c((rowsum(z, id, reorder = FALSE) * p_by) %*% wGH), na.rm = TRUE)
+        }
+        - sc
+    } else {
+        mu_y <- mu_fun(eta_y)
+        z <- score_phis_fun(phis, mu_y, y)
+        -sum(c((rowsum(z, id, reorder = FALSE) * p_by) %*% wGH), na.rm = TRUE)
     }
-    - sc
 }
 
 binomial_log_dens = function (y, eta, mu_fun, phis) {
@@ -261,33 +272,44 @@ negative.binomial <- function (theta = stop("'theta' must be specified"), link =
             stats <- link
             if (!is.null(stats$name))
                 linktemp <- stats$name
-        } else stop(gettextf("\"%s\" link not available for negative binomial family; available links are \"identity\", \"log\" and \"sqrt\"",
+        } else {
+            stop(gettextf("\"%s\" link not available for negative binomial family; available links are \"identity\", \"log\" and \"sqrt\"",
                            linktemp))
+        }
     }
     .Theta <- theta
     env <- new.env(parent = .GlobalEnv)
     assign(".Theta", theta, envir = env)
-    variance <- function(mu) mu + mu^2/.Theta
-    validmu <- function(mu) all(mu > 0)
-    dev.resids <- function(y, mu, wt) 2 * wt * (y * log(pmax(1, y)/mu) - (y + .Theta) *
-                                                    log((y + .Theta)/(mu + .Theta)))
+    variance <- function (mu) mu + mu^2/.Theta
+    validmu <- function (mu) all(mu > 0)
+    dev.resids <- function (y, mu, wt) {
+        2 * wt * (y * log(pmax(1, y)/mu) - (y + .Theta) * log((y + .Theta)/ (mu + .Theta)))
+    }
     aic <- function(y, n, mu, wt, dev) {
         term <- (y + .Theta) * log(mu + .Theta) - y * log(mu) +
-            lgamma(y + 1) - .Theta * log(.Theta) + lgamma(.Theta) -
-            lgamma(.Theta + y)
+            lgamma(y + 1) - .Theta * log(.Theta) + lgamma(.Theta) - lgamma(.Theta+y)
         2 * sum(term * wt)
     }
     initialize <- expression({
-        if (any(y < 0)) stop("negative values not allowed for the negative binomial family")
+        if (any(y < 0))
+            stop("negative values not allowed for the negative binomial family")
         n <- rep(1, nobs)
         mustart <- y + (y == 0)/6
     })
     environment(variance) <- environment(validmu) <- environment(dev.resids) <- environment(aic) <- env
+    score_phis_fun <- function (phis, mu, y) {
+        phis <- exp(phis)
+        mu_phis <- mu + phis
+        comp1 <- digamma(y + phis) - digamma(phis)
+        comp2 <- log(phis) + 1 - log(mu_phis) - phis / (mu_phis)
+        comp3 <- - y / (mu_phis)
+        comp1 + comp2 + comp3
+    }
     famname <- "negative binomial"
     structure(list(family = famname, link = linktemp, linkfun = stats$linkfun,
-                   linkinv = stats$linkinv, variance = variance, dev.resids = dev.resids,
-                   aic = aic, mu.eta = stats$mu.eta, initialize = initialize,
-                   validmu = validmu, valideta = stats$valideta),
+                   linkinv = stats$linkinv, variance = variance, mu.eta = stats$mu.eta,
+                   dev.resids = dev.resids, initialize = initialize, validmu = validmu,
+                   aic = aic, valideta = stats$valideta, score_phis_fun = score_phis_fun),
               class = "family")
 }
 

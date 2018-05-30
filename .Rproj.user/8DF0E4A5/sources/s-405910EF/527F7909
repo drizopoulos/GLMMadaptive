@@ -7,13 +7,13 @@
     "folds" : "",
     "hash" : "0",
     "id" : "527F7909",
-    "lastKnownWriteTime" : 1527537083,
-    "last_content_update" : 1527537083,
+    "lastKnownWriteTime" : 1527674249,
+    "last_content_update" : 1527674249324,
     "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/R/mixed_fit.R",
     "project_path" : "R/mixed_fit.R",
     "properties" : {
-        "cursorPosition" : "196,30",
-        "scrollLine" : "176"
+        "cursorPosition" : "130,51",
+        "scrollLine" : "0"
     },
     "relative_order" : 3,
     "source_on_save" : false,

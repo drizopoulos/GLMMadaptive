@@ -69,7 +69,8 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
             Params[it, ] <- c(betas, D[lower.tri(D, TRUE)], phis)
             ##
             # calculate posterior distribution of the random effects
-            log_p_yb <- rowsum(log_dens(y, as.vector(X %*% betas) + Ztb, mu_fun, phis), id)
+            log_p_yb <- rowsum(log_dens(y, as.vector(X %*% betas) + Ztb, mu_fun, phis), 
+                               id, reorder = FALSE)
             log_p_b <- matrix(dmvnorm(b, rep(0, ncz), D, TRUE), n, nAGQ^ncz, byrow = TRUE)
             p_yb <- exp(log_p_yb + log_p_b)
             if (any(zero_ind <- p_yb == 0.0)) {
@@ -116,10 +117,11 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
             if (has_phis) {
                 Hphis <- numer_deriv_vec(phis, score_phis, y = y, X = X, betas = betas,
                                          Ztb = Ztb, offset = offset, id = id, p_by = p_by,
-                                         log_dens = log_dens, mu_fun = mu_fun, wGH = wGH)
+                                         log_dens = log_dens, mu_fun = mu_fun, wGH = wGH,
+                                         score_phis_fun = score_phis_fun)
                 Hphis <- nearPD(Hphis)
                 scphis <- score_phis(phis, y, X, betas, Ztb, offset, id, p_by, log_dens,
-                                     mu_fun, wGH)
+                                     mu_fun, wGH, score_phis_fun)
                 phis <- phis - drop(solve(Hphis, scphis))
             }
             Hbetas <- numer_deriv_vec(betas, score_betas, y = y, X = X, id = id,

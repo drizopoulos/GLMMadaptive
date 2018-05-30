@@ -20,7 +20,7 @@ effectPlotData(object, newdata, level, \dots)
 }
 
 \arguments{
-\item{object}{an object inheriting from class \code{MixMod}.}
+\item{object}{an object inheriting from class \code{"MixMod"}.}
 \item{newdata}{a data frame base on which predictions will be calculated.}
 \item{level}{a numeric scalar denoting the level of the confidence interval.}
 \item{marginal}{logical; if \code{FALSE} predicted values are calculated for the "mean"
@@ -80,7 +80,7 @@ fm1 <- mixed_model(fixed = y ~ year * group, random = ~ year | id, data = DF,
 nDF <- with(DF, expand.grid(year = seq(min(year), max(year), length.out = 15),
     group = levels(group)))
     
-plot_data <- effectPlotData(fm2, nDF)
+plot_data <- effectPlotData(fm1, nDF)
 
 require("lattice")
 xyplot(pred + low + upp ~ year | group, data = plot_data,
@@ -93,7 +93,7 @@ xyplot(expit(pred) + expit(low) + expit(upp) ~ year | group, data = plot_data,
        xlab = "Follow-up time", ylab = "Probabilities")
 
 # An effects plots for the marginal probabilities
-plot_data_m <- effectPlotData(fm2, nDF, marginal = TRUE)
+plot_data_m <- effectPlotData(fm1, nDF, marginal = TRUE)
 
 expit <- function (x) exp(x) / (1 + exp(x))
 xyplot(expit(pred) + expit(low) + expit(upp) ~ year | group, data = plot_data_m,

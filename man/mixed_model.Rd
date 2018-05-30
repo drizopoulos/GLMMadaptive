@@ -22,7 +22,7 @@ mixed_model(fixed, random, data, family = NULL, na.action = na.exclude,
     and \code{id} the grouping factor.}
 \item{data}{a data.frame containing the variables required in \code{fixed} and 
     \code{random}.}
-\item{family}{a family object specifying the type of the repeatedly measured response 
+\item{family}{a \code{\link{family}} object specifying the type of the repeatedly measured response 
     variable, e.g., \code{binomial()} or \code{poisson()}. The function also allows for 
     user-defined family objects, but with specific extra components; see \bold{Details}.}
 \item{na.action}{what to do with missing values in \code{data}.}
@@ -45,19 +45,19 @@ mixed_model(fixed, random, data, family = NULL, na.action = na.exclude,
             quasi-Newton; default is 10.}
         \item{iter_qN_incr}{numeric scalar denoting the increment in \code{iter_qN} for
             each outer iteration; default is 10.}
-        \item{optim_method}{character string denoting the type of \code{optim()} 
+        \item{optim_method}{character string denoting the type of \code{\link{optim}} 
             algorithm to be used; default s "BFGS".}
-        \item{parscale_betas}{the control argument \code{parscale} of \code{optim()} for
+        \item{parscale_betas}{the control argument \code{parscale} of \code{\link{optim}} for
             the fixed-effects; default is 0.1.}
-        \item{parscale_betas}{the control argument \code{parscale} of \code{optim()} for
+        \item{parscale_betas}{the control argument \code{parscale} of \code{\link{optim}} for
             the unique element of the covariance matrix of the random effects; default is 
             0.01.}
-        \item{parscale_phis}{the control argument \code{parscale} of \code{optim()} for
+        \item{parscale_phis}{the control argument \code{parscale} of \code{\link{optim}} for
             the extra (dispersion/shape) parameters; default is 0.01.}
         \item{tol1, tol2, tol3}{numeric scalars controlling tolerances for declaring 
             convergence; \code{tol1} and \code{tol2} are for checking convergence in 
             successive parameter values; \code{tol3} is similar to \code{reltop} of 
-            \code{optim()}; default values are \code{1e-03}, \code{1e-04}, and 
+            \code{\link{optim}}; default values are \code{1e-03}, \code{1e-04}, and 
             \code{1e-07}, respectively.}
         \item{numeric_deriv}{character string denoting the type of numerical derivatives
             to be used. Options are \code{"fd"} for forward differences, and \code{cd}
@@ -82,8 +82,7 @@ mixed_model(fixed, random, data, family = NULL, na.action = na.exclude,
 }
 
 \value{
-An object of class \code{MixMod} with components:
-
+An object of class \code{"MixMod"} with components:
 \item{coefficients}{a numeric vector with the estimated fixed effects.}
 \item{phis}{a numeric vector with the estimated extra parameters.}
 \item{D}{a numeric matrix denoting the estimated covariance matrix of the random effects.}

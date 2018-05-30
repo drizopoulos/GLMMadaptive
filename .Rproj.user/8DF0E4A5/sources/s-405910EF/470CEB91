@@ -7,13 +7,13 @@
     "folds" : "",
     "hash" : "0",
     "id" : "470CEB91",
-    "lastKnownWriteTime" : 1527591407,
-    "last_content_update" : 1527591407667,
+    "lastKnownWriteTime" : 1527683733,
+    "last_content_update" : 1527683733054,
     "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/R/Fit_Funs.R",
     "project_path" : "R/Fit_Funs.R",
     "properties" : {
-        "cursorPosition" : "284,96",
-        "scrollLine" : "0"
+        "cursorPosition" : "220,0",
+        "scrollLine" : "203"
     },
     "relative_order" : 4,
     "source_on_save" : false,
