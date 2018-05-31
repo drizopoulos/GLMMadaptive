@@ -31,9 +31,13 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
     # initial values
     betas <- unname(initial_values[["betas"]])
     D <- unname(initial_values[["D"]])
+    diag_D <- !is.matrix(D)
+    if (diag_D) {
+        D <- diag(D, ncz)
+    }
     phis <- unname(initial_values[["phis"]])
     has_phis <- !is.null(phis)
-    nparams <- length(betas) + length(D[lower.tri(D, TRUE)]) + length(phis)
+    nparams <- length(betas) + length(if (diag_D) diag(D) else D[lower.tri(D, TRUE)]) + length(phis)
     post_modes <- matrix(0.0, n, ncz)
     # set up EM algorithm
     iter_EM <- control$iter_EM
@@ -66,7 +70,7 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
                 post_modes <- GH$post_modes
             }
             # save parameters
-            Params[it, ] <- c(betas, D[lower.tri(D, TRUE)], phis)
+            Params[it, ] <- c(betas, if (diag_D) diag(D) else D[lower.tri(D, TRUE)], phis)
             ##
             # calculate posterior distribution of the random effects
             log_p_yb <- rowsum(log_dens(y, as.vector(X %*% betas) + Ztb, mu_fun, phis), 
@@ -108,12 +112,15 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
                 cat("betas:", round(betas, 4), "\n")
                 if (has_phis)
                     cat("phis:", round(phis, 4), "\n")
-                cat("D:", round(D[lower.tri(D, TRUE)], 4), "\n")
+                cat("D:", round(if (diag_D) diag(D) else D[lower.tri(D, TRUE)], 4), "\n")
             }
             ############################
             # update parameters
             Dn <- matrix(colMeans(post_b2, na.rm = TRUE), ncol(Z), ncol(Z))
             D <- 0.5 * (Dn + t(Dn))
+            if (diag_D) {
+                D <- diag(diag(D), ncz)
+            }
             if (has_phis) {
                 Hphis <- numer_deriv_vec(phis, score_phis, y = y, X = X, betas = betas,
                                          Ztb = Ztb, offset = offset, id = id, p_by = p_by,
@@ -139,7 +146,7 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
             betas <- betas - drop(solve(Hbetas, scbetas))
         }
     }
-    list_thetas <- list(betas = betas, D = chol_transf(D),
+    list_thetas <- list(betas = betas, D = if (diag_D) log(diag(D)) else chol_transf(D),
                         phis = if (is.null(phis)) NA else phis)
     tht <- unlist(as.relistable(list_thetas))
     tht <- tht[!is.na(tht)]
@@ -164,11 +171,11 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
                          user_defined = user_defined, Xty = Xty, log_dens = log_dens,
                          mu_fun = mu_fun, var_fun = var_fun, mu.eta_fun = mu.eta_fun,
                          score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun,
-                         list_thetas = list_thetas)
+                         list_thetas = list_thetas, diag_D = diag_D)
             new_pars <- relist(opt$par, skeleton = list_thetas)
             betas <- new_pars$betas
             phis <- new_pars$phis
-            D <- chol_transf(new_pars$D)
+            D <- if (diag_D) diag(exp(new_pars$D), length(new_pars$D)) else chol_transf(new_pars$D)
             post_modes <- GH$post_modes
             if (opt$convergence == 0) {
                 converged <- TRUE
@@ -178,7 +185,7 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
             if (control$verbose) cat("\n")
         }
     }
-    list_thetas <- list(betas = betas, D = chol_transf(D),
+    list_thetas <- list(betas = betas, D = if (diag_D) log(diag(D)) else chol_transf(D),
                         phis = if (is.null(phis)) NA else phis)
     tht <- unlist(as.relistable(list_thetas))
     tht <- tht[!is.na(tht)]
@@ -187,13 +194,13 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
                 mu.eta_fun, score_eta_fun, score_phis_fun)
     logLik <- - logLik_mixed(tht, id, y, X, Z, offset, phis, Ztb, GH, canonical,
                              user_defined, Xty, log_dens, mu_fun, var_fun, mu.eta_fun,
-                             score_eta_fun, score_phis_fun, list_thetas)
+                             score_eta_fun, score_phis_fun, list_thetas, diag_D)
     Hessian <- cd_vec(tht, score_mixed, id = id, y = y, X = X, Z = Z, offset = offset,
                       phis = phis, Ztb = Ztb, GH = GH, list_thetas = list_thetas,
                       canonical = canonical, user_defined = user_defined, Xty = Xty,
                       log_dens = log_dens, mu_fun = mu_fun, var_fun = var_fun,
                       mu.eta_fun = mu.eta_fun, score_eta_fun = score_eta_fun,
-                      score_phis_fun = score_phis_fun)
+                      score_phis_fun = score_phis_fun, diag_D = diag_D)
     list(coefficients = betas, phis = if (has_phis) phis, D = D,
          post_modes = GH$post_modes, logLik = logLik, Hessian = Hessian,
          converged = converged)

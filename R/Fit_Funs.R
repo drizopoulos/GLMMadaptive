@@ -1,10 +1,10 @@
 logLik_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
                           user_defined, Xty, log_dens, mu_fun, var_fun, mu.eta_fun,
-                          score_eta_fun, score_phis_fun, list_thetas) {
+                          score_eta_fun, score_phis_fun, list_thetas, diag_D) {
     thetas <- relist(thetas, skeleton = list_thetas)
     betas <- thetas$betas
     phis <- thetas$phis
-    D <- chol_transf(thetas$D)
+    D <- if (diag_D) diag(exp(thetas$D), length(thetas$D)) else chol_transf(thetas$D)
     ##
     b <- GH$b
     Ztb <- GH$Ztb
@@ -27,11 +27,11 @@ logLik_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
 
 score_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
                          user_defined, Xty, log_dens, mu_fun, var_fun, mu.eta_fun,
-                         score_eta_fun, score_phis_fun, list_thetas) {
+                         score_eta_fun, score_phis_fun, list_thetas, diag_D) {
     thetas <- relist(thetas, skeleton = list_thetas)
     betas <- thetas$betas
     phis <- thetas$phis
-    D <- chol_transf(thetas$D)
+    D <- if (diag_D) diag(exp(thetas$D), length(thetas$D)) else chol_transf(thetas$D)
     ##
     b <- GH$b
     b2 <- GH$b2
@@ -39,11 +39,12 @@ score_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
     wGH <- GH$wGH
     ##
     eta_y <- as.vector(X %*% betas) + Ztb
+    ncz <- ncol(Z)
     if (!is.null(offset))
         eta_y <- eta_y + offset
     log_Lik <- log_dens(y, eta_y, mu_fun, phis)
     log_p_yb <- rowsum(log_Lik, id, reorder = FALSE)
-    log_p_b <- matrix(dmvnorm(b, rep(0, ncol(Z)), D, TRUE), nrow(log_p_yb),
+    log_p_b <- matrix(dmvnorm(b, rep(0, ncz), D, TRUE), nrow(log_p_yb),
                       ncol(log_p_yb), byrow = TRUE)
     p_yb <- exp(log_p_yb + log_p_b)
     if (any(zero_ind <- p_yb == 0.0)) {
@@ -55,7 +56,7 @@ score_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
     n <- length(p_y)
     post_b <- apply(b, 2, function (b_k) colSums(t_p_by * matrix(b_k, ncol(Ztb), n) * wGH))
     post_b2 <- apply(b2, 2, function (b_k) colSums(t_p_by * matrix(b_k, ncol(Ztb), n) * wGH))
-    post_vb <- post_b2 - if (ncol(Z) > 1) t(apply(post_b, 1, function (x) x %o% x)) else
+    post_vb <- post_b2 - if (ncz > 1) t(apply(post_b, 1, function (x) x %o% x)) else
         as.matrix(apply(post_b, 1, function (x) x %o% x))
     ###
     mu_y <- if (!is.null(attr(log_Lik, "mu_y"))) attr(log_Lik, "mu_y") else mu_fun(eta_y)
@@ -123,22 +124,32 @@ score_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
             -sum(c((rowsum(z, id, reorder = FALSE) * p_by) %*% wGH), na.rm = TRUE)
         }
     }
-   ###
-    svD <- solve(D)
-    dD <- deriv_D(D)
-    ndD <- length(dD)
-    D1 <- sapply(dD, function (x) sum(svD * x))
-    D2 <- t(sapply(dD, function (x) c(svD %*% x %*% svD)))
-    cS.postVB <- colSums(as.matrix(post_vb), na.rm = TRUE)
-    out <- numeric(ndD)
-    for (i in seq_along(dD)) {
-        D.mat <- D2[i, ]
-        dim(D.mat) <- c(ncol(Z), ncol(Z))
-        out[i] <- sum(D2[i, ] * cS.postVB, na.rm = TRUE) +
-            sum((post_b %*% D.mat) * post_b, na.rm = TRUE)
+    ###
+    score.D <- if (diag_D) {
+        D <- diag(D)
+        svD <- 1/D
+        svD2 <- svD^2
+        cS.postVB <- colSums(as.matrix(post_vb), na.rm = TRUE)
+        dim(cS.postVB) <- c(ncz, ncz)
+        D * 0.5 * (n * svD - diag(cS.postVB) * svD2 - 
+                       colSums(as.matrix(post_b^2), na.rm = TRUE) * svD2)
+    } else {
+        svD <- solve(D)
+        dD <- deriv_D(D)
+        ndD <- length(dD)
+        D1 <- sapply(dD, function (x) sum(svD * x))
+        D2 <- t(sapply(dD, function (x) c(svD %*% x %*% svD)))
+        cS.postVB <- colSums(as.matrix(post_vb), na.rm = TRUE)
+        out <- numeric(ndD)
+        for (i in seq_along(dD)) {
+            D.mat <- D2[i, ]
+            dim(D.mat) <- c(ncz, ncz)
+            out[i] <- sum(D2[i, ] * cS.postVB, na.rm = TRUE) +
+                sum((post_b %*% D.mat) * post_b, na.rm = TRUE)
+        }
+        J <- jacobian2(attr(D, "L"), ncz)
+        drop(0.5 * (n * D1 - out) %*% J)
     }
-    J <- jacobian2(attr(D, "L"), ncol(Z))
-    score.D <- drop(0.5 * (n * D1 - out) %*% J)
     ###
     c(score.betas, score.D, score.phis)
 }

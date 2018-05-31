@@ -341,7 +341,7 @@ getRE_Formula <- function (form) {
         stop("formula(object) must return a formula")
     }
     form <- form[[length(form)]]
-    if (length(form) == 3 && form[[1]] == as.name("|")) {
+    if (length(form) == 3 && (form[[1]] == as.name("|") || form[[1]] == as.name("||"))) {
         form <- form[[2]]
     }
     eval(substitute(~form))

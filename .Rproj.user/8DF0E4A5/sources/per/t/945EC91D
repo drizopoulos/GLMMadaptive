@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "0",
+    "hash" : "3573482833",
     "id" : "945EC91D",
-    "lastKnownWriteTime" : 1527535679,
-    "last_content_update" : 1527535679,
+    "lastKnownWriteTime" : 1527752737,
+    "last_content_update" : 1527752737819,
     "path" : "C:/Users/dimitris/Documents/PackagesGitHub/TestFiles/GLMMadaptive/development.R",
     "project_path" : null,
     "properties" : {
-        "cursorPosition" : "65,0",
-        "scrollLine" : "0"
+        "cursorPosition" : "68,0",
+        "scrollLine" : "52"
     },
     "relative_order" : 9,
     "source_on_save" : false,

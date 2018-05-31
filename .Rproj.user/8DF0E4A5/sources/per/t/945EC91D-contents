@@ -57,7 +57,7 @@ anova(fm2, fm3)
 
 
 fixed = y ~ year + group
-random = ~ year | id
+random = ~ year || id
 data = DF
 control = list()
 family = binomial()

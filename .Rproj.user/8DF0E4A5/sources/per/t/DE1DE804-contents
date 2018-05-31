@@ -53,18 +53,20 @@ mixed_model <- function (fixed, random, data, family = NULL, na.action = na.excl
         warning("unknown names in control: ", paste(noNms, collapse = ", "))
     ###########################
     # initial values
-    inits <- if (family$family %in% known_families || inherits(initial_values, 'family')) {
+    diag_D <- (random[[length(random)]])[[1]] == as.name("||")
+    inits <- if (family$family %in% known_families || (is.list(initial_values) &&
+                 inherits(initial_values$betas, 'family'))) {
         betas <- if (family$family %in% known_families) {
             glm.fit(X, y, family = family)$coefficients
         } else {
-            glm.fit(X, y, family = initial_values)$coefficients
+            glm.fit(X, y, family = initial_values$betas)$coefficients
         }
-        list(betas = betas * sqrt(1.346), D = diag(ncol(Z)))
+        list(betas = betas * sqrt(1.346), D = if (diag_D) rep(1, ncol(Z)) else diag(ncol(Z)))
     } else {
-        list(betas = rep(0, ncol(X)), D = diag(ncol(Z)))
+        list(betas = rep(0, ncol(X)), D = if (diag_D) rep(1, ncol(Z)) else diag(ncol(Z)))
     }
     if (!is.null(initial_values) && is.list(initial_values) &&
-        !inherits(initial_values, 'family')) {
+        !inherits(initial_values$betas, 'family')) {
         lngths <- lapply(inits[(nams.initial_values <- names(initial_values))], length)
         if (!isTRUE(all.equal(lngths, lapply(initial_values, length)))) {
             warning("'initial_values' is not a list with elements of appropriate ",

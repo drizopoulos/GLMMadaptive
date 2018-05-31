@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "0",
+    "hash" : "3665296313",
     "id" : "AFC221DD",
-    "lastKnownWriteTime" : 1527593905,
-    "last_content_update" : 1527593905829,
+    "lastKnownWriteTime" : 1527750267,
+    "last_content_update" : 1527750267993,
     "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/R/Functions.R",
     "project_path" : "R/Functions.R",
     "properties" : {
-        "cursorPosition" : "42,0",
-        "scrollLine" : "0"
+        "cursorPosition" : "347,1",
+        "scrollLine" : "327"
     },
     "relative_order" : 5,
     "source_on_save" : false,

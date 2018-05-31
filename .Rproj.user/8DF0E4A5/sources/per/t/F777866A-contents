@@ -7,12 +7,11 @@ print.MixMod <- function (x, digits = max(4, getOption("digits") - 4), ...) {
     cat("\nRandom effects covariance matrix:\n")
     D <- x$D
     ncz <- nrow(D)
-    diag.D <- ncz != ncol(D)
-    sds <- if (diag.D) sqrt(D) else sqrt(diag(D))
+    diag.D <- all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
+    sds <- sqrt(diag(D))
     if (ncz > 1) {
         if (diag.D) {
-            dat <- round(c(D), digits)
-            names(dat) <- rownames(D)
+            dat <- data.frame("StdDev" = round(sds, digits), row.names = rownames(D))
         } else {
             corrs <- cov2cor(D)
             corrs[upper.tri(corrs, TRUE)] <- 0
@@ -117,12 +116,11 @@ print.summary.MixMod <- function (x, digits = max(4, getOption("digits") - 4), .
     cat("\nRandom effects covariance matrix:\n")
     D <- x$D
     ncz <- nrow(D)
-    diag.D <- ncz != ncol(D)
-    sds <- if (diag.D) sqrt(D) else sqrt(diag(D))
+    diag.D <- all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
+    sds <- sqrt(diag(D))
     if (ncz > 1) {
         if (diag.D) {
-            dat <- round(c(D), digits)
-            names(dat) <- rownames(D)
+            dat <- data.frame("StdDev" = round(sds, digits), row.names = rownames(D))
         } else {
             corrs <- cov2cor(D)
             corrs[upper.tri(corrs, TRUE)] <- 0

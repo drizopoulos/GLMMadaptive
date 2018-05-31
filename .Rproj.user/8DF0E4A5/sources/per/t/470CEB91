@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "0",
+    "hash" : "4182619613",
     "id" : "470CEB91",
-    "lastKnownWriteTime" : 1527683733,
-    "last_content_update" : 1527683733054,
+    "lastKnownWriteTime" : 1527753116,
+    "last_content_update" : 1527753116885,
     "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/R/Fit_Funs.R",
     "project_path" : "R/Fit_Funs.R",
     "properties" : {
-        "cursorPosition" : "220,0",
-        "scrollLine" : "203"
+        "cursorPosition" : "13,41",
+        "scrollLine" : "0"
     },
     "relative_order" : 4,
     "source_on_save" : false,
