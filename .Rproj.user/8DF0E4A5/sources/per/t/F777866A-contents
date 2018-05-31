@@ -188,8 +188,18 @@ anova.MixMod <- function (object, object2, test = TRUE, L = NULL, ...) {
         nb0 <- attr(L0, "df")
         nb1 <- attr(L1, "df")
         df <- nb1 - nb0
-        if (test && df < 0)
+        if (test && df < 0) {
             stop("'object' should be nested in 'object2'.\n")
+        }
+        if (test && df == 0) {
+            test <- FALSE
+            warning("the two objects represent models with the same number of parameters;",
+                    " argument 'test' is set to FALSE.")
+        }
+        if (test && object$family$family != object2$family$family) {
+            warning("it seems that the two objects represent model with different families;",
+                    " are the models nested? If not, you should set 'test' to FALSE.")
+        }
         out <- list(nam0 = deparse(substitute(object)), L0 = L0,
                     aic0 = AIC(object), bic0 = BIC(object),
                     nam1 = deparse(substitute(object2)), L1 = L1, aic1 = AIC(object2),

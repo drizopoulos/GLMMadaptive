@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1527768276117.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "13982860",
+    "id" : "1E18CF25",
+    "lastKnownWriteTime" : 1527769644,
+    "last_content_update" : 1527769644335,
+    "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/man/negative_binomial.Rd",
+    "project_path" : "man/negative_binomial.Rd",
+    "properties" : {
+        "cursorPosition" : "43,33",
+        "scrollLine" : "33"
+    },
+    "relative_order" : 13,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_doc"
+}
