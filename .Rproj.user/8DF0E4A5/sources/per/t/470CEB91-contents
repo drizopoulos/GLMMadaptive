@@ -120,7 +120,7 @@ score_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
             }
             - sc
         } else {
-            z <- score_phis_fun(phis, mu_y, y)
+            z <- score_phis_fun(y, mu_y, phis)
             -sum(c((rowsum(z, id, reorder = FALSE) * p_by) %*% wGH), na.rm = TRUE)
         }
     }
@@ -234,7 +234,7 @@ score_phis <- function (phis, y, X, betas, Ztb, offset, id, p_by,
         - sc
     } else {
         mu_y <- mu_fun(eta_y)
-        z <- score_phis_fun(phis, mu_y, y)
+        z <- score_phis_fun(y, mu_y, phis)
         -sum(c((rowsum(z, id, reorder = FALSE) * p_by) %*% wGH), na.rm = TRUE)
     }
 }
@@ -308,7 +308,7 @@ negative.binomial <- function (theta = stop("'theta' must be specified"), link =
         mustart <- y + (y == 0)/6
     })
     environment(variance) <- environment(validmu) <- environment(dev.resids) <- environment(aic) <- env
-    score_phis_fun <- function (phis, mu, y) {
+    score_phis_fun <- function (y, mu, phis) {
         phis <- exp(phis)
         mu_phis <- mu + phis
         comp1 <- digamma(y + phis) - digamma(phis)

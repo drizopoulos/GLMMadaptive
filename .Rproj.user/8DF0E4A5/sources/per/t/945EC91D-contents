@@ -71,8 +71,9 @@ fixed = y ~ f1 * f2
 random = ~ 1 | g
 data = dd
 control = list()
-family = negative.binomial(theta = 0.53)
-initial_values = NULL
+family = my_negBinom()
+initial_values = list("betas" = poisson())
 na.action = na.exclude
+n_phis = 1
 
 
