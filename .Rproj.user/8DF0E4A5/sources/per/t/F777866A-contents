@@ -62,13 +62,13 @@ coef.MixMod <- function (object, ...) {
     out
 }
 
-fixef <- function (object, ...) UseMethod("fixef")
+#fixef <- function (object, ...) UseMethod("fixef")
 
 fixef.MixMod <- function(object, ...) {
     object$coefficients
 }
 
-ranef <- function (object, ...) UseMethod("ranef")
+#ranef <- function (object, ...) UseMethod("ranef")
 
 ranef.MixMod <- function(object, ...) {
     object$post_modes

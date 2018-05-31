@@ -1,0 +1,47 @@
+library("lme4")
+library("GLMMadaptive")
+
+load("data.RData")
+
+####################################################################
+######## if I do not use complete case data (mixed_model) ##########
+######################## It does not work ##########################
+####################################################################
+fm1 <- mixed_model(fixed = Hoest ~ Inhalatiesnelheid + FEV1pred, 
+                   random = ~ 1 | Patientnummer, data = data, na.action = na.exclude,
+                   family = binomial(), nAGQ = 21)
+
+summary(fm1)
+
+load("C:/Users/drizo/Desktop/data.RData")
+fixed = Hoest ~ Inhalatiesnelheid + FEV1pred
+random = ~ 1 | Patientnummer
+data = data
+na.action = na.exclude
+family = binomial()
+initial_values = NULL
+na.action = na.exclude
+control = list()
+
+####################################################################
+############ if I use complete case data (mixed_model) #############
+############################ It works ##############################
+####################################################################
+dataCC <- data[complete.cases(data$Patientnummer, data$FEV1pred, data$Videonummer, data$Capsulenummer, data$Inhalatiesnelheid, data$Hoest), ]
+
+fm1 <- mixed_model(fixed = Hoest ~ Inhalatiesnelheid + FEV1pred, random = ~ 1 | Patientnummer, data = dataCC, 
+                   family = binomial())
+
+####################################################################
+########## if I do not use complete case data (glmer) ##############
+############################ It works ##############################
+####################################################################
+
+library("lme4")
+fm2 <- glmer(Hoest ~ Inhalatiesnelheid + FEV1pred + (1 | Patientnummer), data = data, 
+             na.action = na.exclude, family = binomial(), nAGQ = 11)
+
+summary(fm2)
+
+
+

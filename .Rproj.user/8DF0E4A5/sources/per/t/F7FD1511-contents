@@ -10,4 +10,4 @@ This package fits mixed effects models for grouped (e.g., longitudinal) data und
 maximum likelihood approach in which the integrals over the random effects are approximated
 with an adaptive Gaussian quadrature rule.
 
-The package contains a sinle model-fitting function names `mixed_model()`.
+The package contains a sinle model-fitting function named `mixed_model()`.

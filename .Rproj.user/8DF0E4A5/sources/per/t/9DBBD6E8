@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1527791994955.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4181985016",
+    "id" : "9DBBD6E8",
+    "lastKnownWriteTime" : 1527792926,
+    "last_content_update" : 1527792926053,
+    "path" : "C:/Users/drizo/Desktop/testGLMMadaptive.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "10,47",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 11,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

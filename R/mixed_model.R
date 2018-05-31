@@ -16,6 +16,11 @@ mixed_model <- function (fixed, random, data, family = NULL, na.action = na.excl
         if (family$family == "gaussian")
             stop("use function lme() from package 'nlme' or function lmer() from ",
                  "package 'lme4'.\n")
+        if (length(grep("Negative Binomial", family$family))) {
+            stop("Because the namespace of the MASS package seems also to be loaded\n",
+                 "  use 'family = GLMMadaptive::negative.binomial(xx)' with 'xx' ", 
+                 "denoting a value for the\n  'theta' parameter of the family.")
+        }
     }
     known_families <- c("binomial", "poisson", "negative binomial")
     # extract response vector, design matrices, offset
@@ -39,6 +44,8 @@ mixed_model <- function (fixed, random, data, family = NULL, na.action = na.excl
     Z <- model.matrix(termsZ, mfZ)
     id_nam <- all.vars(getID_Formula(random))
     id_orig <- model.frame(terms(getID_Formula(random)), data)[[1L]]
+    if (!is.null(na_exclude))
+        id_orig <- id_orig[-na_exclude]
     id <- match(id_orig, unique(id_orig))
     ###########################
     # control settings

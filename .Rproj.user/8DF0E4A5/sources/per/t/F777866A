@@ -5,14 +5,14 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "1738089301",
+    "hash" : "1629799475",
     "id" : "F777866A",
-    "lastKnownWriteTime" : 1527767488,
-    "last_content_update" : 1527767488190,
+    "lastKnownWriteTime" : 1527793266,
+    "last_content_update" : 1527793266445,
     "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/R/methods.R",
     "project_path" : "R/methods.R",
     "properties" : {
-        "cursorPosition" : "198,20",
+        "cursorPosition" : "70,1",
         "scrollLine" : "0"
     },
     "relative_order" : 6,
