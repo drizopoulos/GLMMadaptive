@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "1437030248",
+    "hash" : "0",
     "id" : "DE1DE804",
     "lastKnownWriteTime" : 1527795127,
     "last_content_update" : 1527795127734,
     "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/R/mixed_model.R",
     "project_path" : "R/mixed_model.R",
     "properties" : {
-        "cursorPosition" : "26,16",
-        "scrollLine" : "9"
+        "cursorPosition" : "127,19",
+        "scrollLine" : "122"
     },
     "relative_order" : 2,
     "source_on_save" : false,

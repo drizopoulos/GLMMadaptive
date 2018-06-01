@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "4181985016",
+    "hash" : "0",
     "id" : "9DBBD6E8",
     "lastKnownWriteTime" : 1527792926,
     "last_content_update" : 1527792926053,
     "path" : "C:/Users/drizo/Desktop/testGLMMadaptive.R",
     "project_path" : null,
     "properties" : {
-        "cursorPosition" : "10,47",
-        "scrollLine" : "0"
+        "cursorPosition" : "40,66",
+        "scrollLine" : "25"
     },
     "relative_order" : 11,
     "source_on_save" : false,

@@ -24,7 +24,7 @@ fixef(fm1)
 summary(fm1)
 marginal_coefs(fm1)
 
-fm2 <- mixed_model(fixed = y ~ year + group, random = ~ year || id, data = DF,
+fm2 <- mixed_model(fixed = y ~ year + group, random = ~ year | id, data = DF,
                    family = binomial(), verbose = TRUE)
 
 fixef(fm2)
@@ -32,6 +32,9 @@ summary(fm2)
 marginal_coefs(fm2)
 
 marginal_coefs(fm2, std_errors = TRUE)
+
+
+confint(fm2)
 
 ranef(fm2)
 

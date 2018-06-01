@@ -2,18 +2,18 @@
     "collab_server" : "",
     "contents" : "",
     "created" : 1527587036986.000,
-    "dirty" : false,
+    "dirty" : true,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "388212596",
+    "hash" : "0",
     "id" : "945EC91D",
     "lastKnownWriteTime" : 1527762186,
-    "last_content_update" : 1527762186098,
+    "last_content_update" : 1527852304942,
     "path" : "C:/Users/dimitris/Documents/PackagesGitHub/TestFiles/GLMMadaptive/development.R",
     "project_path" : null,
     "properties" : {
-        "cursorPosition" : "61,0",
-        "scrollLine" : "0"
+        "cursorPosition" : "68,0",
+        "scrollLine" : "49"
     },
     "relative_order" : 9,
     "source_on_save" : false,

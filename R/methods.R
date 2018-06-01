@@ -62,13 +62,9 @@ coef.MixMod <- function (object, ...) {
     out
 }
 
-#fixef <- function (object, ...) UseMethod("fixef")
-
 fixef.MixMod <- function(object, ...) {
     object$coefficients
 }
-
-#ranef <- function (object, ...) UseMethod("ranef")
 
 ranef.MixMod <- function(object, ...) {
     object$post_modes
@@ -162,13 +158,61 @@ coef.summary.MixMod <- function (object, ...) {
     object$coef_table
 }
 
-confint.MixMod <- function (object, parm, level = 0.95, ...) {
-    betas <- fixef(object)
-    n_betas <- length(betas)
-    V <- vcov(object)
-    ses_betas <- sqrt(diag(V[seq_len(n_betas), seq_len(n_betas)]))
-    out <- cbind(betas + qnorm((1 - level) / 2) * ses_betas,
-                 betas + qnorm((1 + level) / 2) * ses_betas)
+confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra"), 
+                            level = 0.95, ...) {
+    parm <- match.arg(parm)
+    if (parm == "fixed-effects") {
+        betas <- fixef(object)
+        n_betas <- length(betas)
+        V <- vcov(object)
+        ses_betas <- sqrt(diag(V[seq_len(n_betas), seq_len(n_betas)]))
+        out <- cbind(betas + qnorm((1 - level) / 2) * ses_betas,
+                     betas + qnorm((1 + level) / 2) * ses_betas)
+    } else if (parm == "var-cov") {
+        D <- object$D
+        diag_D <- ncol(D) > 1 && all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
+        V <- vcov(object)
+        if (diag_D) {
+            unconstr_D <- log(diag(D))
+            n_betas <- length(object$coefficients)
+            include <- seq(n_betas + 1, n_betas + length(unconstr_D))
+            ses_unconstr_D <- sqrt(diag(V[include, include, drop = FALSE]))
+            out <- cbind(unconstr_D + qnorm((1 - level) / 2) * ses_unconstr_D,
+                         unconstr_D + qnorm((1 + level) / 2) * ses_unconstr_D)
+            out <- exp(out)
+            rownames(out) <- paste0("var.", rownames(D))
+        } else {
+            unconstr_D <- chol_transf(D)
+            n_betas <- length(object$coefficients)
+            include <- seq(n_betas + 1, n_betas + length(unconstr_D))
+            ses_unconstr_D <- sqrt(diag(V[include, include, drop = FALSE]))
+            out <- cbind(unconstr_D + qnorm((1 - level) / 2) * ses_unconstr_D,
+                         unconstr_D + qnorm((1 + level) / 2) * ses_unconstr_D)
+            ind <- lower.tri(D, TRUE)
+            out[, 1] <- chol_transf(out[, 1])[ind]
+            out[, 2] <- chol_transf(out[, 2])[ind]
+            nams <- rownames(D)
+            rownames(out) <- apply(which(ind, arr.ind = TRUE), 1, function (k) {
+                if (k[1L] == k[2L]) paste0("var.", nams[k[1]]) else {
+                    paste0("cov.", abbreviate(nams[k[2]], 5), "_", abbreviate(nams[k[1]], 5)) 
+                }
+            })
+        }
+    } else {
+        if (is.null(object$phis)) {
+            stop("the model behind 'object' contains no extra (phis) parameters.\n")
+        } else {
+            phis <- object$phis
+            D <- object$D
+            diag_D <- all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
+            exclude <- seq_len(length(object$coefficients) + if (diag_D) length(diag(D)) 
+                               else length(D[lower.tri(D, TRUE)]))
+            V <- vcov(object)
+            ses_phis <- sqrt(diag(V[-exclude, -exclude]))
+            out <- cbind(phis + qnorm((1 - level) / 2) * ses_phis,
+                         phis + qnorm((1 + level) / 2) * ses_phis)
+        }
+    }
     colnames(out) <- paste(round(100 * c((1 - level) / 2, (1 + level) / 2), 1), "%")
     out
 }
