@@ -1,7 +1,7 @@
-find_modes <- function (b, y_lis, X_lis, Z_lis, offset_lis, betas, invD, phis, canonical,
-                        user_defined, Zty_lis, log_dens, mu_fun, var_fun, mu.eta_fun,
-                        score_eta_fun, score_phis_fun) {
-    log_post_b <- function (b_i, y_i, X_i, Z_i, offset_i, betas, invD, phis, canonical,
+find_modes <- function (b, y_lis, N_lis, X_lis, Z_lis, offset_lis, betas, invD, phis, 
+                        canonical, user_defined, Zty_lis, log_dens, mu_fun, var_fun, 
+                        mu.eta_fun, score_eta_fun, score_phis_fun) {
+    log_post_b <- function (b_i, y_i, N_i, X_i, Z_i, offset_i, betas, invD, phis, canonical,
                             user_defined, Zty_i, log_dens, mu_fun, var_fun, mu.eta_fun,
                             score_eta_fun, score_phis_fun) {
         eta_y <- as.vector(X_i %*% betas + Z_i %*% b_i)
@@ -10,7 +10,7 @@ find_modes <- function (b, y_lis, X_lis, Z_lis, offset_lis, betas, invD, phis, c
         - sum(log_dens(y_i, eta_y, mu_fun, phis), na.rm = TRUE) +
                 c(0.5 * crossprod(b_i, invD) %*% b_i)
     }
-    score_log_post_b <- function (b_i, y_i, X_i, Z_i, offset_i, betas, invD, phis,
+    score_log_post_b <- function (b_i, y_i, N_i, X_i, Z_i, offset_i, betas, invD, phis,
                                   canonical, user_defined, Zty_i, log_dens, mu_fun,
                                   var_fun, mu.eta_fun, score_eta_fun, score_phis_fun) {
         eta_y <- c(X_i %*% betas + Z_i %*% b_i)
@@ -28,10 +28,12 @@ find_modes <- function (b, y_lis, X_lis, Z_lis, offset_lis, betas, invD, phis, c
             }
         } else {
             if (canonical) {
-                - Zty_i + crossprod(Z_i, mu_y)
+                if (!is.null(N_i))- Zty_i + crossprod(Z_i, N_i * mu_y) else 
+                    - Zty_i + crossprod(Z_i, mu_y)
             } else {
                 var <- var_fun(mu_y)
                 deriv <- mu.eta_fun(eta_y)
+                if (!is.null(N_i)) - crossprod(Z_i, (y_i[, 1] - N_i * mu_y) * deriv / var) else
                 - crossprod(Z_i, (y_i - mu_y) * deriv / var)
             }
         }
@@ -42,22 +44,24 @@ find_modes <- function (b, y_lis, X_lis, Z_lis, offset_lis, betas, invD, phis, c
     post_hessians <- vector("list", n)
     for (i in seq_len(n)) {
         y_i <- y_lis[[i]]
+        N_i <- if (!is.null(N_lis)) N_lis[[i]]
         X_i <- X_lis[[i]]
         Z_i <- Z_lis[[i]]
         offset_i <- if (!is.null(offset_lis)) offset_lis[[i]]
-        Zty_i <- c(crossprod(Z_i, y_i))
+        Zty_i <- Zty_lis[[i]]
         b_i <- b[i, , drop = FALSE]
         opt_i <- optim(par = b_i, fn = log_post_b, gr = score_log_post_b, method = "BFGS",
-                       y_i = y_i, X_i = X_i, Z_i = Z_i, offset_i = offset_i,
+                       y_i = y_i, N_i = N_i, X_i = X_i, Z_i = Z_i, offset_i = offset_i,
                        betas = betas, invD = invD, phis = phis, canonical = canonical,
                        user_defined = user_defined, Zty_i = Zty_i, log_dens = log_dens,
                        mu_fun = mu_fun, var_fun = var_fun, mu.eta_fun = mu.eta_fun,
                        score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun)
         post_modes[i, ] <- opt_i$par
         post_hessians[[i]] <- cd_vec(post_modes[i, ], score_log_post_b,
-                                     y_i = y_i, X_i = X_i, Z_i = Z_i, offset_i = offset_i,
-                                     betas = betas, invD = invD, phis = phis,
-                                     canonical = canonical, user_defined = user_defined,
+                                     y_i = y_i, N_i = N_i, X_i = X_i, Z_i = Z_i, 
+                                     offset_i = offset_i, betas = betas, invD = invD, 
+                                     phis = phis, canonical = canonical, 
+                                     user_defined = user_defined,
                                      Zty_i = Zty_i, log_dens = log_dens, mu_fun = mu_fun,
                                      var_fun = var_fun, mu.eta_fun = mu.eta_fun,
                                      score_eta_fun = score_eta_fun,
@@ -66,13 +70,13 @@ find_modes <- function (b, y_lis, X_lis, Z_lis, offset_lis, betas, invD, phis, c
     list(post_modes = post_modes, post_hessians = post_hessians)
 }
 
-GHfun <- function (b, y_lis, X_lis, Z_lis, offset_lis, betas, inv_D, phis, k, q,
+GHfun <- function (b, y_lis, N_lis, X_lis, Z_lis, offset_lis, betas, inv_D, phis, k, q,
                    canonical, user_defined, Zty_lis, log_dens, mu_fun, var_fun, mu.eta_fun,
                    score_eta_fun, score_phis_fun) {
     GH <- gauher(k)
-    aGH <- find_modes(b, y_lis, X_lis, Z_lis, offset_lis, betas, inv_D, phis, canonical,
-                      user_defined, Zty_lis, log_dens, mu_fun, var_fun, mu.eta_fun,
-                      score_eta_fun, score_phis_fun)
+    aGH <- find_modes(b, y_lis, N_lis, X_lis, Z_lis, offset_lis, betas, inv_D, phis, 
+                      canonical, user_defined, Zty_lis, log_dens, mu_fun, var_fun, 
+                      mu.eta_fun, score_eta_fun, score_phis_fun)
     modes <- aGH$post_modes
     chol_hessians <- lapply(aGH$post_hessian, chol)
     b <- as.matrix(expand.grid(lapply(seq_len(q), function (k, u) u$x, u = GH)))

@@ -11,7 +11,7 @@ Gaussian quadrature.
 }
 
 \usage{
-mixed_model(fixed, random, data, family = NULL, na.action = na.exclude,
+mixed_model(fixed, random, data, family, na.action = na.exclude,
   n_phis = NULL, initial_values = NULL, control = list(), \dots)
 }
 

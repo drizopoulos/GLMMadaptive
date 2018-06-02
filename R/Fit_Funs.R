@@ -1,4 +1,4 @@
-logLik_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
+logLik_mixed <- function (thetas, id, y, N, X, Z, offset, phis, Ztb, GH, canonical,
                           user_defined, Xty, log_dens, mu_fun, var_fun, mu.eta_fun,
                           score_eta_fun, score_phis_fun, list_thetas, diag_D) {
     thetas <- relist(thetas, skeleton = list_thetas)
@@ -25,7 +25,7 @@ logLik_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
     - sum(log(p_y), na.rm = TRUE)
 }
 
-score_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
+score_mixed <- function (thetas, id, y, N, X, Z, offset, phis, Ztb, GH, canonical,
                          user_defined, Xty, log_dens, mu_fun, var_fun, mu.eta_fun,
                          score_eta_fun, score_phis_fun, list_thetas, diag_D) {
     thetas <- relist(thetas, skeleton = list_thetas)
@@ -84,6 +84,8 @@ score_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
         }
     } else {
         if (canonical) {
+            if (!is.null(N))
+                mu_y <- mu_y * N
             ncx <- ncol(X)
             sc <- numeric(ncx)
             for (l in seq_len(ncx)) {
@@ -94,7 +96,7 @@ score_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
         } else {
             var <- var_fun(mu_y)
             deriv <- mu.eta_fun(eta_y)
-            z <- (y - mu_y) * deriv / var
+            z <- if (!is.null(N)) (y[, 1] - N * mu_y) * deriv / var else (y - mu_y) * deriv / var
             ncx <- ncol(X)
             sc <- numeric(ncx)
             for (l in seq_len(ncx)) {
@@ -154,19 +156,7 @@ score_mixed <- function (thetas, id, y, X, Z, offset, phis, Ztb, GH, canonical,
     c(score.betas, score.D, score.phis)
 }
 
-score_betas <- function (betas) {
-    mu_y <- plogis(as.vector(X %*% betas) + Ztb)
-    sc1 <- c(crossprod(X, y))
-    ncx <- ncol(X)
-    sc2 <- numeric(ncx)
-    for (l in seq_len(ncx)) {
-        cc1 <- rowsum(X[, l] * mu_y, id, reorder = FALSE)
-        sc2[l] <- sum(c((cc1 * p_by) %*% wGH))
-    }
-    - sc1 + sc2
-}
-
-score_betas <- function (betas, y, X, id, offset, phis, Ztb, p_by, wGH, canonical,
+score_betas <- function (betas, y, N, X, id, offset, phis, Ztb, p_by, wGH, canonical,
                          user_defined, Xty, log_dens, mu_fun, var_fun, mu.eta_fun,
                          score_eta_fun, score_phis_fun) {
     eta_y <- as.vector(X %*% betas) + Ztb
@@ -195,6 +185,8 @@ score_betas <- function (betas, y, X, id, offset, phis, Ztb, p_by, wGH, canonica
         }
     } else {
         if (canonical) {
+            if (!is.null(N))
+                mu_y <- N * mu_y
             sc <- numeric(ncx)
             for (l in seq_len(ncx)) {
                 cc <- rowsum(X[, l] * mu_y, id, reorder = FALSE)
@@ -204,7 +196,7 @@ score_betas <- function (betas, y, X, id, offset, phis, Ztb, p_by, wGH, canonica
         } else {
             var <- var_fun(mu_y)
             deriv <- mu.eta_fun(eta_y)
-            z <- (y - mu_y) * deriv / var
+            z <- if (!is.null(N)) (y[, 1] - N * mu_y) * deriv / var else (y - mu_y) * deriv / var
             for (l in seq_len(ncx)) {
                 cc <- rowsum(X[, l] * z, id, reorder = FALSE)
                 sc[l] <- sum(c((cc * p_by) %*% wGH), na.rm = TRUE)
@@ -241,7 +233,7 @@ score_phis <- function (phis, y, X, betas, Ztb, offset, id, p_by,
 
 binomial_log_dens = function (y, eta, mu_fun, phis) {
     mu_y <- mu_fun(eta)
-    out <- if (is.matrix(y)) {
+    out <- if (NCOL(y) == 2) {
         dbinom(y[, 1], y[, 1] + y[, 2], mu_y, TRUE)
     } else {
         dbinom(y, 1, mu_y, TRUE)

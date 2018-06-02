@@ -25,7 +25,7 @@ summary(fm1)
 marginal_coefs(fm1)
 
 fm2 <- mixed_model(fixed = y ~ year + group, random = ~ year | id, data = DF,
-                   family = binomial(), verbose = TRUE)
+                   family = binomial(), verbose = TRUE, nAGQ = 15)
 
 fixef(fm2)
 summary(fm2)
@@ -136,5 +136,32 @@ fm <-  mixed_model(fixed = y ~ f1 * f2, random = ~ 1 | g, data = dd,
 
 
 summary(fm)
+
+
+##########################################################################################
+
+data("cbpp", package = "lme4")
+library("lme4")
+system.time(fm1 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd),
+             data = cbpp, family = binomial, nAGQ = 21))
+
+system.time(gm1 <- mixed_model(cbind(incidence, size - incidence) ~ period, random = ~ 1 | herd,
+                   data = cbpp, family = binomial(), nAGQ = 21))
+
+
+summary(fm1)
+summary(gm1)
+
+
+fixed = cbind(incidence, size - incidence) ~ period
+random = ~ 1 | herd
+data = cbpp
+control = list()
+family = binomial(link = "probit")
+initial_values = NULL
+na.action = na.exclude
+
+
+
 
 

@@ -8,6 +8,8 @@
 \alias{ranef.MixMod}
 \alias{confint}
 \alias{confint.MixMod}
+\alias{anova}
+\alias{anova.MixMod}
 \alias{fitted}
 \alias{fitted.MixMod}
 \alias{residuals}
@@ -41,6 +43,10 @@ confint(object, parm, level = 0.95, \dots)
   parm = c("fixed-effects", "var-cov","extra"), 
   level = 0.95, \dots)
 
+anova(object, \dots)
+
+\method{anova}{MixMod}(object, object2, test = TRUE, L = NULL, \dots)
+
 fitted(object, \dots)
 
 \method{fitted}{MixMod}(object, 
@@ -55,13 +61,19 @@ residuals(object, \dots)
 }
 
 \arguments{
-\item{object}{an object inheriting from class \code{"MixMod"}.}
+\item{object, object2}{objects inheriting from class \code{"MixMod"}. When \code{object2}
+  is also provided, then the model behind \code{object} must be nested within the model 
+  behind \code{object2}.}
 \item{parm}{character string; for which type of parameters to calculate confidence 
   intervals. Option \code{"var-cov"} corresponds to the variance-covariance matrix of the 
   random effects. Option \code{extra} corresponds to extra (shape/dispersion) 
   parameters in the distribution of the outcome (e.g., the \eqn{\theta} parameter in
   the negative binomial family).}
 \item{level}{numeric scalar between 0 and 1 denoting the level of the confidence interval.}
+\item{test}{logical; should a p-value be calculated.}
+\item{L}{a numeric matrix representing a contrasts matrix. This is only used when in 
+  \code{anova()} only \code{object} is provided, and it can only be specified for the fixed 
+  effects. When \code{L} is used, a Wald test is performed.}
 \item{type}{character string indicating the type of fitted values / residuals to calculate.
     Option \code{"mean_subject"} corresponds to only using the fixed-effects part; option
     \code{"subject_specific"} corresponds to using both the fixed- and random-effects 
@@ -121,9 +133,18 @@ head(ranef(fm1))
 
 
 confint(fm1)
-confint(fm1, "var")
+confint(fm1, "var-cov")
 
 head(fitted(fm1, "subject_specific"))
 head(residuals(fm1, "marginal"))
+
+fm2 <- mixed_model(fixed = y ~ year * group, random = ~ year | id, data = DF,
+                   family = binomial())
+
+# likelihood ratio test between fm1 and fm2
+anova(fm1, fm2)
+
+# the same but with a Wald test
+anova(fm2, L = rbind(c(0, 0, 0, 1)))
 }
 }

@@ -5,14 +5,14 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "320337014",
+    "hash" : "2107379451",
     "id" : "527F7909",
-    "lastKnownWriteTime" : 1527752924,
-    "last_content_update" : 1527752924063,
+    "lastKnownWriteTime" : 1527964725,
+    "last_content_update" : 1527964725553,
     "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/R/mixed_fit.R",
     "project_path" : "R/mixed_fit.R",
     "properties" : {
-        "cursorPosition" : "33,10",
+        "cursorPosition" : "157,0",
         "scrollLine" : "0"
     },
     "relative_order" : 3,

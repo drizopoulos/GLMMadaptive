@@ -366,6 +366,9 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
             stop("you must specify the 'link_fun' argument.\n")
         }
         Xbetas <- c(X %*% betas)
+        if (!is.null(object$offset)) {
+            Xbetas <- Xbetas + object$offset
+        }
         nRE <- ncol(Z)
         n <- nrow(X)
         eS <- eigen(D, symmetric = TRUE)

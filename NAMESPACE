@@ -1,4 +1,4 @@
-export(mixed_model, marginal_coefs, coef, fixef, ranef, confint, fitted, residuals, 
+export(mixed_model, marginal_coefs, coef, fixef, ranef, confint, anova, fitted, residuals, 
        effectPlotData, negative.binomial)
 
 importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
@@ -6,7 +6,7 @@ importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
              "make.link", "model.frame", "model.matrix", "model.offset",
              "model.response", "na.exclude", "optim", "pchisq", "pnorm",
              "terms", "var", "vcov", ".getXlevels", "delete.response", "qnorm", "rnorm",
-           "confint", "residuals", "coef")
+           "confint", "residuals", "coef", "anova")
 importFrom("utils", "as.relistable", "relist")
 importFrom("MASS", "mvrnorm")
 importFrom("parallel", "makeCluster", "stopCluster", "detectCores", "parLapply")

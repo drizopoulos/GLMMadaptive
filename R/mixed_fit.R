@@ -2,12 +2,17 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
     # Create lists of y, X, and Z per id
     y <- unattr(y); X <- unattr(X); Z <- unattr(Z); offset <- unattr(offset)
     id_unq <- unique(id)
-    y_lis <- if (is.matrix(y)) lapply(id_unq, function (i) y[id == i, ]) else split(y, id)
+    y_lis <- if (NCOL(y) == 2) lapply(id_unq, function (i) y[id == i, , drop = FALSE]) else split(y, id)
+    N <- if (NCOL(y) == 2) y[, 1] + y[, 2]
+    N_lis <- if (NCOL(y) == 2) split(N, id)
     X_lis <- lapply(id_unq, function (i) X[id == i, , drop = FALSE])
     Z_lis <- lapply(id_unq, function (i) Z[id == i, , drop = FALSE])
     offset_lis <- if (!is.null(offset)) split(offset, id)
-    Zty_lis <- lapply(mapply(crossprod, Z_lis, y_lis, SIMPLIFY = FALSE), drop)
-    Xty <- drop(crossprod(X, y))
+    Zty_fun <- function (z, y) {
+        if (NCOL(y) == 2) crossprod(z, y[, 1]) else crossprod(z, y)
+    }
+    Zty_lis <- lapply(mapply(Zty_fun, Z_lis, y_lis, SIMPLIFY = FALSE), drop)
+    Xty <- drop(if (NCOL(y) == 2) crossprod(X, y[, 1]) else crossprod(X, y))
     # Functions
     log_dens <- Funs$log_dens
     mu_fun <- Funs$mu_fun
@@ -46,7 +51,7 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
     converged <- FALSE
     if (iter_EM > 0) {
         Params <- matrix(0.0, iter_EM, nparams)
-        GH <- GHfun(post_modes, y_lis, X_lis, Z_lis, offset_lis, betas, solve(D), phis,
+        GH <- GHfun(post_modes, y_lis, N_lis, X_lis, Z_lis, offset_lis, betas, solve(D), phis,
                     nAGQ, ncz, canonical, user_defined, Zty_lis, log_dens, mu_fun, var_fun,
                     mu.eta_fun, score_eta_fun, score_phis_fun)
         b <- GH$b
@@ -59,7 +64,7 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
         for (it in seq_len(iter_EM)) {
             if (it %in% update_GH) {
                 # calculate adaptive GH points and weights
-                GH <- GHfun(post_modes, y_lis, X_lis, Z_lis, offset_lis, betas, solve(D), phis,
+                GH <- GHfun(post_modes, y_lis, N_lis, X_lis, Z_lis, offset_lis, betas, solve(D), phis,
                             nAGQ, ncz, canonical, user_defined, Zty_lis, log_dens, mu_fun,
                             var_fun, mu.eta_fun, score_eta_fun, score_phis_fun)
                 b <- GH$b
@@ -131,7 +136,7 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
                                      mu_fun, wGH, score_phis_fun)
                 phis <- phis - drop(solve(Hphis, scphis))
             }
-            Hbetas <- numer_deriv_vec(betas, score_betas, y = y, X = X, id = id,
+            Hbetas <- numer_deriv_vec(betas, score_betas, y = y, N = N, X = X, id = id,
                                       offset = offset, phis = phis, Ztb = Ztb,
                                       p_by = p_by, wGH = wGH, canonical = canonical,
                                       user_defined = user_defined, Xty = Xty,
@@ -140,7 +145,7 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
                                       score_eta_fun = score_eta_fun,
                                       score_phis_fun = score_phis_fun)
             Hbetas <- nearPD(Hbetas)
-            scbetas <- score_betas(betas, y, X, id, offset, phis, Ztb, p_by, wGH,
+            scbetas <- score_betas(betas, y, N, X, id, offset, phis, Ztb, p_by, wGH,
                                    canonical, user_defined, Xty, log_dens, mu_fun, var_fun,
                                    mu.eta_fun, score_eta_fun, score_phis_fun)
             betas <- betas - drop(solve(Hbetas, scbetas))
@@ -162,11 +167,11 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
                                       control$parscale_phis),
                                     sapply(list_thetas, length_notNA)))
         for (it in seq_len(control$iter_qN_outer)) {
-            GH <- GHfun(post_modes, y_lis, X_lis, Z_lis, offset_lis, betas, solve(D), phis,
+            GH <- GHfun(post_modes, y_lis, N_lis, X_lis, Z_lis, offset_lis, betas, solve(D), phis,
                         nAGQ, ncz, canonical, user_defined, Zty_lis, log_dens, mu_fun,
                         var_fun, mu.eta_fun, score_eta_fun, score_phis_fun)
             opt <- optim(tht, logLik_mixed, score_mixed, method = control$optim_method,
-                         control = ctrl, id = id, y = y, X = X, Z = Z, offset = offset,
+                         control = ctrl, id = id, y = y, N = N, X = X, Z = Z, offset = offset,
                          phis = phis, Ztb = Ztb, GH = GH, canonical = canonical,
                          user_defined = user_defined, Xty = Xty, log_dens = log_dens,
                          mu_fun = mu_fun, var_fun = var_fun, mu.eta_fun = mu.eta_fun,
@@ -189,13 +194,13 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
                         phis = if (is.null(phis)) NA else phis)
     tht <- unlist(as.relistable(list_thetas))
     tht <- tht[!is.na(tht)]
-    GH <- GHfun(post_modes, y_lis, X_lis, Z_lis, offset_lis, betas, solve(D), phis,
+    GH <- GHfun(post_modes, y_lis, N_lis, X_lis, Z_lis, offset_lis, betas, solve(D), phis,
                 nAGQ, ncz, canonical, user_defined, Zty_lis, log_dens, mu_fun, var_fun,
                 mu.eta_fun, score_eta_fun, score_phis_fun)
-    logLik <- - logLik_mixed(tht, id, y, X, Z, offset, phis, Ztb, GH, canonical,
+    logLik <- - logLik_mixed(tht, id, y, N, X, Z, offset, phis, Ztb, GH, canonical,
                              user_defined, Xty, log_dens, mu_fun, var_fun, mu.eta_fun,
                              score_eta_fun, score_phis_fun, list_thetas, diag_D)
-    Hessian <- cd_vec(tht, score_mixed, id = id, y = y, X = X, Z = Z, offset = offset,
+    Hessian <- cd_vec(tht, score_mixed, id = id, y = y, N = N, X = X, Z = Z, offset = offset,
                       phis = phis, Ztb = Ztb, GH = GH, list_thetas = list_thetas,
                       canonical = canonical, user_defined = user_defined, Xty = Xty,
                       log_dens = log_dens, mu_fun = mu_fun, var_fun = var_fun,
@@ -205,3 +210,4 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
          post_modes = GH$post_modes, logLik = logLik, Hessian = Hessian,
          converged = converged)
 }
+

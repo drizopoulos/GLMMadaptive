@@ -1,26 +1,22 @@
-mixed_model <- function (fixed, random, data, family = NULL, na.action = na.exclude,
+mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
                          n_phis = NULL, initial_values = NULL, control = list(), ...) {
     call <- match.call()
     # set family
-    if (is.null(family)) {
-        stop("argument 'family' needs to be specified; check the online help file.\n")
-    } else {
-        if (is.character(family))
-            family <- get(family, mode = "function", envir = parent.frame())
-        if (is.function(family))
-            family <- family()
-        if (is.null(family$family)) {
-            print(family)
-            stop("'family' not recognized.\n")
-        }
-        if (family$family == "gaussian")
-            stop("use function lme() from package 'nlme' or function lmer() from ",
-                 "package 'lme4'.\n")
-        if (length(grep("Negative Binomial", family$family))) {
-            stop("Because the namespace of the MASS package seems also to be loaded\n",
-                 "  use 'family = GLMMadaptive::negative.binomial(xx)' with 'xx' ", 
-                 "denoting a value for the\n  'theta' parameter of the family.")
-        }
+    if (is.character(family))
+        family <- get(family, mode = "function", envir = parent.frame())
+    if (is.function(family))
+        family <- family()
+    if (is.null(family$family)) {
+        print(family)
+        stop("'family' not recognized.\n")
+    }
+    if (family$family == "gaussian")
+        stop("use function lme() from package 'nlme' or function lmer() from ",
+             "package 'lme4'.\n")
+    if (length(grep("Negative Binomial", family$family))) {
+        stop("Because the namespace of the MASS package seems also to be loaded\n",
+             "  use 'family = GLMMadaptive::negative.binomial(xx)' with 'xx' ", 
+             "denoting a value for the\n  'theta' parameter of the family.")
     }
     known_families <- c("binomial", "poisson", "negative binomial")
     # extract response vector, design matrices, offset
@@ -132,6 +128,7 @@ mixed_model <- function (fixed, random, data, family = NULL, na.action = na.excl
     dimnames(out$D) <- list(colnames(Z), colnames(Z))
     out$id <- id_orig
     out$id_name <- id_nam 
+    out$offset <- offset
     dimnames(out$post_modes) <- list(unique(id_orig), colnames(Z))
     out$Terms <- list(termsX = termsX, termsZ = termsZ)
     out$model_frames <- list(mfX = mfX, mfZ = mfZ)
