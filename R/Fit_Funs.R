@@ -1,6 +1,7 @@
 logLik_mixed <- function (thetas, id, y, N, X, Z, offset, phis, Ztb, GH, canonical,
                           user_defined, Xty, log_dens, mu_fun, var_fun, mu.eta_fun,
-                          score_eta_fun, score_phis_fun, list_thetas, diag_D) {
+                          score_eta_fun, score_phis_fun, list_thetas, diag_D,
+                          penalized, pen_mu, pen_invSigma, pen_df) {
     thetas <- relist(thetas, skeleton = list_thetas)
     betas <- thetas$betas
     phis <- thetas$phis
@@ -17,17 +18,22 @@ logLik_mixed <- function (thetas, id, y, N, X, Z, offset, phis, Ztb, GH, canonic
     log_p_yb <- rowsum(log_dens(y, eta_y, mu_fun, phis), id, reorder = FALSE)
     log_p_b <- matrix(dmvnorm(b, rep(0, ncol(Z)), D, TRUE),
                       nrow(log_p_yb), ncol(log_p_yb), byrow = TRUE)
+    # log penalty include here dmvt(betas, pen_mean, invSigma = pen_invsds, df = pen_df)
     p_yb <- exp(log_p_yb + log_p_b)
     if (any(zero_ind <- p_yb == 0.0)) {
         p_yb[zero_ind] <- 1e-30
     }
     p_y <- c(p_yb %*% wGH) * dets
-    - sum(log(p_y), na.rm = TRUE)
+    out <- - sum(log(p_y), na.rm = TRUE)
+    if (penalized)
+        out <- out - dmvt(betas[-1L], mu = pen_mu, invSigma = pen_invSigma, df = pen_df)
+    out
 }
 
 score_mixed <- function (thetas, id, y, N, X, Z, offset, phis, Ztb, GH, canonical,
                          user_defined, Xty, log_dens, mu_fun, var_fun, mu.eta_fun,
-                         score_eta_fun, score_phis_fun, list_thetas, diag_D) {
+                         score_eta_fun, score_phis_fun, list_thetas, diag_D,
+                         penalized, pen_mu, pen_invSigma, pen_df) {
     thetas <- relist(thetas, skeleton = list_thetas)
     betas <- thetas$betas
     phis <- thetas$phis
@@ -106,6 +112,11 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, phis, Ztb, GH, canonica
             - sc
         }
     }
+    if (penalized) {
+        pen_invSigma_betas <- betas[-1L] * diag(pen_invSigma) / pen_df
+        fact <- (pen_df + ncx) / c(1 + crossprod(betas[-1L], pen_invSigma_betas))
+        score.betas <- score.betas + c(0, pen_invSigma_betas * fact)
+    }
     ###
     score.phis <- if (all(!is.na(phis))) {
         if (is.null(score_phis_fun)) {
@@ -158,14 +169,15 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, phis, Ztb, GH, canonica
 
 score_betas <- function (betas, y, N, X, id, offset, phis, Ztb, p_by, wGH, canonical,
                          user_defined, Xty, log_dens, mu_fun, var_fun, mu.eta_fun,
-                         score_eta_fun, score_phis_fun) {
+                         score_eta_fun, score_phis_fun, penalized, pen_mu, pen_invSigma, 
+                         pen_df) {
     eta_y <- as.vector(X %*% betas) + Ztb
     if (!is.null(offset))
         eta_y <- eta_y + offset
     mu_y <- mu_fun(eta_y)
     ncx <- ncol(X)
     sc <- numeric(ncx)
-    if (user_defined) {
+    out <- if (user_defined) {
         if (!is.null(score_eta_fun)) {
             z <- score_eta_fun(y, mu_y, phis)
             for (l in seq_len(ncx)) {
@@ -204,6 +216,12 @@ score_betas <- function (betas, y, N, X, id, offset, phis, Ztb, p_by, wGH, canon
             - sc
         }
     }
+    if (penalized) {
+        pen_invSigma_betas <- betas[-1L] * diag(pen_invSigma) / pen_df
+        fact <- (pen_df + ncx) / c(1 + crossprod(betas[-1L], pen_invSigma_betas))
+        out <- out + c(0, pen_invSigma_betas * fact)
+    }
+    out
 }
 
 score_phis <- function (phis, y, X, betas, Ztb, offset, id, p_by,

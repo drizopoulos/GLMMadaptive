@@ -1,5 +1,6 @@
 mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
-                         n_phis = NULL, initial_values = NULL, control = list(), ...) {
+                         penalized = FALSE, n_phis = NULL, initial_values = NULL, 
+                         control = list(), ...) {
     call <- match.call()
     # set family
     if (is.character(family))
@@ -79,6 +80,20 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
         }
     }
     ##########################
+    # penalized
+    penalized <- if (is.logical(penalized) && !penalized) {
+        list(penalized = penalized)
+    } else if (is.logical(penalized) && penalized) {
+        list(penalized = penalized, pen_mu = 0, pen_sigma = 1, pen_df = 3)
+    } else if (is.list(penalized)) {
+        if (!names(penalized) %in% c("pen_mu", "pen_sigma", "pen_df"))
+            stop("when argument 'penalized' is a list it needs to have the components ",
+                 "'pen_mu', 'pen_sigma' and 'pen_df'.\n")
+        c(list(penalized = TRUE), penalized)
+    } else {
+        stop("argument 'penalized' must be a logical or a list.\n")
+    }
+    ##########################
     # Functions
     Funs <- list(
         mu_fun = family$linkinv,
@@ -122,7 +137,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     }
     ###############
     # Fit the model
-    out <- mixed_fit(y, X, Z, id, offset, family, inits, Funs, con)
+    out <- mixed_fit(y, X, Z, id, offset, family, inits, Funs, con, penalized)
     # fix names
     names(out$coefficients) <- colnames(X)
     dimnames(out$D) <- list(colnames(Z), colnames(Z))

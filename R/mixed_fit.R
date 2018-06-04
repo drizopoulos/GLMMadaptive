@@ -1,4 +1,5 @@
-mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, control) {
+mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, control,
+                       penalized) {
     # Create lists of y, X, and Z per id
     y <- unattr(y); X <- unattr(X); Z <- unattr(Z); offset <- unattr(offset)
     id_unq <- unique(id)
@@ -44,6 +45,12 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
     has_phis <- !is.null(phis)
     nparams <- length(betas) + length(if (diag_D) diag(D) else D[lower.tri(D, TRUE)]) + length(phis)
     post_modes <- matrix(0.0, n, ncz)
+    # penalized components
+    pen_mu <- if (penalized$penalized) rep(penalized$pen_mu, ncx - 1)
+    pen_invSigma <- if (penalized$penalized) diag(rep(1 / penalized$pen_sigma^2, ncx - 1), 
+                                                  ncx - 1)
+    pen_df <- if (penalized$penalized) penalized$pen_df
+    penalized <- penalized$penalized
     # set up EM algorithm
     iter_EM <- control$iter_EM
     update_GH <- seq(0, iter_EM, control$update_GH_every)
@@ -97,6 +104,10 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
             # calculate log-likelihood
             log_p_y <- log(p_y * dets)
             lgLik[it] <- sum(log_p_y[is.finite(log_p_y)], na.rm = TRUE)
+            if (penalized) {
+                lgLik[it] <- lgLik[it] + dmvt(betas[-1L], mu = pen_mu, invSigma = pen_invSigma,
+                                              df = pen_df)
+            }
             # check convergence
             if (it > 4 && lgLik[it] > lgLik[it - 1]) {
                 thets1 <- Params[it - 1, ]
@@ -143,11 +154,14 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
                                       log_dens = log_dens, mu_fun = mu_fun, var_fun = var_fun,
                                       mu.eta_fun = mu.eta_fun,
                                       score_eta_fun = score_eta_fun,
-                                      score_phis_fun = score_phis_fun)
+                                      score_phis_fun = score_phis_fun, 
+                                      penalized = penalized, pen_mu = pen_mu, 
+                                      pen_invSigma = pen_invSigma, pen_df = pen_df)
             Hbetas <- nearPD(Hbetas)
             scbetas <- score_betas(betas, y, N, X, id, offset, phis, Ztb, p_by, wGH,
                                    canonical, user_defined, Xty, log_dens, mu_fun, var_fun,
-                                   mu.eta_fun, score_eta_fun, score_phis_fun)
+                                   mu.eta_fun, score_eta_fun, score_phis_fun,
+                                   penalized, pen_mu, pen_invSigma, pen_df)
             betas <- betas - drop(solve(Hbetas, scbetas))
         }
     }
@@ -170,13 +184,16 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
             GH <- GHfun(post_modes, y_lis, N_lis, X_lis, Z_lis, offset_lis, betas, solve(D), phis,
                         nAGQ, ncz, canonical, user_defined, Zty_lis, log_dens, mu_fun,
                         var_fun, mu.eta_fun, score_eta_fun, score_phis_fun)
+            # penalty include here
             opt <- optim(tht, logLik_mixed, score_mixed, method = control$optim_method,
                          control = ctrl, id = id, y = y, N = N, X = X, Z = Z, offset = offset,
                          phis = phis, Ztb = Ztb, GH = GH, canonical = canonical,
                          user_defined = user_defined, Xty = Xty, log_dens = log_dens,
                          mu_fun = mu_fun, var_fun = var_fun, mu.eta_fun = mu.eta_fun,
                          score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun,
-                         list_thetas = list_thetas, diag_D = diag_D)
+                         list_thetas = list_thetas, diag_D = diag_D, 
+                         penalized = penalized, pen_mu = pen_mu, 
+                         pen_invSigma = pen_invSigma, pen_df = pen_df)
             new_pars <- relist(opt$par, skeleton = list_thetas)
             betas <- new_pars$betas
             phis <- new_pars$phis
@@ -199,13 +216,16 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
                 mu.eta_fun, score_eta_fun, score_phis_fun)
     logLik <- - logLik_mixed(tht, id, y, N, X, Z, offset, phis, Ztb, GH, canonical,
                              user_defined, Xty, log_dens, mu_fun, var_fun, mu.eta_fun,
-                             score_eta_fun, score_phis_fun, list_thetas, diag_D)
+                             score_eta_fun, score_phis_fun, list_thetas, diag_D,
+                             penalized, pen_mu, pen_invSigma, pen_df)
     Hessian <- cd_vec(tht, score_mixed, id = id, y = y, N = N, X = X, Z = Z, offset = offset,
                       phis = phis, Ztb = Ztb, GH = GH, list_thetas = list_thetas,
                       canonical = canonical, user_defined = user_defined, Xty = Xty,
                       log_dens = log_dens, mu_fun = mu_fun, var_fun = var_fun,
                       mu.eta_fun = mu.eta_fun, score_eta_fun = score_eta_fun,
-                      score_phis_fun = score_phis_fun, diag_D = diag_D)
+                      score_phis_fun = score_phis_fun, diag_D = diag_D,
+                      penalized = penalized, pen_mu = pen_mu, 
+                      pen_invSigma = pen_invSigma, pen_df = pen_df)
     list(coefficients = betas, phis = if (has_phis) phis, D = D,
          post_modes = GH$post_modes, logLik = logLik, Hessian = Hessian,
          converged = converged)

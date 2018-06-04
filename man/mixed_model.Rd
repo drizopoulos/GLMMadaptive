@@ -12,20 +12,36 @@ Gaussian quadrature.
 
 \usage{
 mixed_model(fixed, random, data, family, na.action = na.exclude,
-  n_phis = NULL, initial_values = NULL, control = list(), \dots)
+  penalized = FALSE, n_phis = NULL, initial_values = NULL, 
+  control = list(), \dots)
 }
 
 \arguments{
 \item{fixed}{a formula for the fixed-effects part of the model, including the outcome.}
 \item{random}{a formula for the random-effects part of the model. This should only contain
     the right-hand side part, e.g., \code{~ time | id}, where is \code{time} is a variable
-    and \code{id} the grouping factor.}
+    and \code{id} the grouping factor. When a \code{||} is used in the definition of this
+    argument (instead of \code{|}), then the covariance matrix of the random effects is 
+    assumed to be diagonal.}
 \item{data}{a data.frame containing the variables required in \code{fixed} and 
     \code{random}.}
 \item{family}{a \code{\link{family}} object specifying the type of the repeatedly measured response 
     variable, e.g., \code{binomial()} or \code{poisson()}. The function also allows for 
-    user-defined family objects, but with specific extra components; see \bold{Details}.}
+    user-defined family objects, but with specific extra components; see the example
+    is \code{\link{negative.binomial}} for more details. Contrary to the standard 
+    practice in model fitting R functions with a \code{family} argument 
+    (e.g., \code{\link{glm}}) in which the default
+    family is \code{gaussian()}, in \code{mixed_model()} no default is provided. If the
+    users wish to fit a mixed model for a Gaussian outcome, this could be done with 
+    function \code{lme()} from the \bold{nlme} package or function \code{lmer()} from the
+    \bold{lme4} package. }
 \item{na.action}{what to do with missing values in \code{data}.}
+\item{penalized}{logical or a list. If logical and equal to \code{FALSE}, then no penalty
+    is used. If logical and equal to \code{TRUE}, for the fixed effects a Student's-t 
+    penalty/prior with mean 0, scale equal to 1 and 3 degrees of freedom is used. If a
+    list, then it is expected to have the components \code{pen_mu}, \code{pen_sigma} and
+    \code{pen_df}, denoting the mean, scale and degrees of freedom of the Student's-t 
+    penalty/prior for the fixed effects.}
 \item{n_phis}{a numeric scalar; in case the family corresponds to a distribution that has extra 
     (dispersion/shape) parameters, you need to specify how many extra parameters are needed.}
 \item{initial_values}{a list of initial values. This can have up to three components, 
@@ -74,11 +90,22 @@ mixed_model(fixed, random, data, family, na.action = na.exclude,
 }
 
 \details{
-\bold{General:} xxx
+\bold{General:} The \code{mixed_model()} function fits mixed effects models in which the
+integrals over the random effects in the definition of the marginal log-likelihood cannot
+be solved analytically and need to be approximated. The function works under the 
+assumption of normally distributed random effects with mean zero and variance-covariance
+matrix \eqn{D}. These integrals are approximated numerically using an adaptive 
+Gauss-Hermite quadrature rule. Using the control argument \code{nAGQ}, the user can 
+specify the number of quadrature points used in the approximation.
 
-\bold{User-defined family:} xxx
+\bold{User-defined family:} The user can define its own family object; for an example, 
+see the help page of \code{\link{negative.binomial}}.
 
-\bold{Optimization:} xxx
+\bold{Optimization:} A hybrid approach is used, starting with \code{iter_EM} iterations
+and unless convergence was achieved it continuous with a direct optimization of the 
+log-likelihood using function \code{\link{optim}} and the algorithm specified by 
+\code{optim_method}. For stability and speed, the derivative of the log-likelihood with 
+respect to the parameters are internally programmed.
 }
 
 \value{
@@ -160,7 +187,7 @@ head(fitted(fm1, type = "mean_subject"))
 head(fitted(fm1, type = "subject_specific"))
 
 ##############
-
+\dontrun{
 fm2 <- mixed_model(fixed = y ~ year, random = ~ 1 | id, data = DF,
                    family = binomial())
 
@@ -172,7 +199,6 @@ anova(fm1, L = rbind(c(0, 0, 1, 0), c(0, 0, 0, 1)))
 
 ##############
 
-\dontrun{
 # An effects plot for the mean subject (i.e., with random effects equal to 0)
 nDF <- with(DF, expand.grid(year = seq(min(year), max(year), length.out = 15),
     group = levels(group)))
@@ -196,11 +222,9 @@ expit <- function (x) exp(x) / (1 + exp(x))
 xyplot(expit(pred) + expit(low) + expit(upp) ~ year | group, data = plot_data_m,
        type = "l", lty = c(1, 2, 2), col = c(2, 1, 1), lwd = 2,
        xlab = "Follow-up time", ylab = "Probabilities")
-}
 
 ##############
 
-\dontrun{
 # include random slopes
 fm1_slp <- update(fm1, random = ~ year | id)
 
