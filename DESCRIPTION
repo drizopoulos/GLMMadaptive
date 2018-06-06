@@ -1,13 +1,15 @@
 Package: GLMMadaptive
 Title: Generalized Linear Mixed Models using Adaptive Gaussian Quadrature
 Version: 0.1-3
-Date: 2018-06-05
+Date: 2018-06-06
 Author: Dimitris Rizopoulos <d.rizopoulos@erasmusmc.nl>
 Maintainer: Dimitris Rizopoulos <d.rizopoulos@erasmusmc.nl>
 Description: Fits generalized linear mixed models for a single grouping factor under
     maximum likelihood approximating the integrals over the random effects with an 
-    adaptive Gaussian quadrature rule.
+    adaptive Gaussian quadrature rule; Jose C. Pinheiro and Douglas M. Bates (1995) 
+    <doi:10.1080/10618600.1995.10474663>.  
 Imports: MASS, nlme, parallel
+Suggests: lattice
 Encoding: UTF-8
 LazyLoad: yes
 LazyData: yes

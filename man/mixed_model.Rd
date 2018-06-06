@@ -187,7 +187,7 @@ head(fitted(fm1, type = "mean_subject"))
 head(fitted(fm1, type = "subject_specific"))
 
 ##############
-\dontrun{
+\donttest{
 fm2 <- mixed_model(fixed = y ~ year, random = ~ 1 | id, data = DF,
                    family = binomial())
 

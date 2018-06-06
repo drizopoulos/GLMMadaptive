@@ -47,7 +47,7 @@ Dimitris Rizopoulos \email{d.rizopoulos@erasmusmc.nl}
 
 
 \examples{
-\dontrun{
+\donttest{
 # simulate some data
 set.seed(123L)
 n <- 500
