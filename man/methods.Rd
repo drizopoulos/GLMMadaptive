@@ -35,7 +35,7 @@ fixef(object, \dots)
 
 ranef(object, \dots)
 
-\method{ranef}{MixMod}(object, \dots)
+\method{ranef}{MixMod}(object, post_vars = FALSE, \dots)
 
 confint(object, parm, level = 0.95, \dots)
 
@@ -64,6 +64,8 @@ residuals(object, \dots)
 \item{object, object2}{objects inheriting from class \code{"MixMod"}. When \code{object2}
   is also provided, then the model behind \code{object} must be nested within the model 
   behind \code{object2}.}
+\item{post_vars}{logical; if \code{TRUE} the posterior variances of the random effects
+  are returned as an extra attribute of the numeric matrix produced by \code{ranef()}.}
 \item{parm}{character string; for which type of parameters to calculate confidence 
   intervals. Option \code{"var-cov"} corresponds to the variance-covariance matrix of the 
   random effects. Option \code{extra} corresponds to extra (shape/dispersion) 

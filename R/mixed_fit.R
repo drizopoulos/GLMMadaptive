@@ -227,7 +227,8 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
                       penalized = penalized, pen_mu = pen_mu, 
                       pen_invSigma = pen_invSigma, pen_df = pen_df)
     list(coefficients = betas, phis = if (has_phis) phis, D = D,
-         post_modes = GH$post_modes, logLik = logLik, Hessian = Hessian,
+         post_modes = GH$post_modes, post_vars = GH$post_vars,
+         logLik = logLik, Hessian = Hessian,
          converged = converged)
 }
 

@@ -114,6 +114,7 @@ An object of class \code{"MixMod"} with components:
 \item{phis}{a numeric vector with the estimated extra parameters.}
 \item{D}{a numeric matrix denoting the estimated covariance matrix of the random effects.}
 \item{post_modes}{a numeric matrix with the empirical Bayes estimates of the random effects.}
+\item{post_vars}{a list of numeric matrices with the posterior variances of the random effects.}
 \item{logLik}{a numeric scalar denoting the log-likelihood value at the end of the 
     optimization procedure.}
 \item{Hessian}{a numeric matrix denoting the Hessian matrix at the end of the optimization 

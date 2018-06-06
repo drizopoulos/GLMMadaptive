@@ -66,8 +66,11 @@ fixef.MixMod <- function(object, ...) {
     object$coefficients
 }
 
-ranef.MixMod <- function(object, ...) {
-    object$post_modes
+ranef.MixMod <- function(object, post_vars = FALSE, ...) {
+    out <- object$post_modes
+    if (post_vars)
+        attr(out, "post_vars") <- object$post_vars
+    out
 }
 
 summary.MixMod <- function (object, ...) {

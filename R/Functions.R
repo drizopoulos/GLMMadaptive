@@ -93,7 +93,8 @@ GHfun <- function (b, y_lis, N_lis, X_lis, Z_lis, offset_lis, betas, inv_D, phis
         t(apply(b, 1, function (x) x %o% x)))
     Ztb <- do.call('rbind', mapply(function (z, b) z %*% t(b), Z_lis, b_new, SIMPLIFY = FALSE))
     list(b = do.call('rbind', b_new), b2 = do.call('rbind', b2), Ztb = Ztb,
-               wGH = wGH, dets = dets, post_modes = modes)
+               wGH = wGH, dets = dets, post_modes = modes, 
+         post_vars = lapply(aGH$post_hessian, solve))
 }
 
 chol_transf <- function (x) {
