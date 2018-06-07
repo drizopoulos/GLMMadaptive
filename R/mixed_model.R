@@ -49,7 +49,8 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     con <- list(iter_EM = 30, iter_qN_outer = 15, iter_qN = 10, iter_qN_incr = 10,
                 optim_method = "BFGS", parscale_betas = 0.1, parscale_D = 0.01,
                 parscale_phis = 0.01, tol1 = 1e-03, tol2 = 1e-04, tol3 = 1e-07,
-                numeric_deriv = "fd", nAGQ = 11, update_GH_every = 10, verbose = FALSE)
+                numeric_deriv = "fd", nAGQ = if (ncol(Z) < 3) 11 else 7, 
+                update_GH_every = 10, verbose = FALSE)
     control <- c(control, list(...))
     namC <- names(con)
     con[(namc <- names(control))] <- control

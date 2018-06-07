@@ -56,7 +56,8 @@ mixed_model(fixed, random, data, family, na.action = na.exclude,
     \describe{
         \item{iter_EM}{numeric scalar denoting the number of EM iterations; default is 30.}
         \item{iter_qN_outer}{numeric scalar denoting the number of outer iterations during 
-            the quasi-Newton phase; default is 15.}
+            the quasi-Newton phase; default is 15. In each outer iteration the locations 
+            of the quadrature points are updated.}
         \item{iter_qN}{numeric scalar denoting the starting number of iterations for the 
             quasi-Newton; default is 10.}
         \item{iter_qN_incr}{numeric scalar denoting the increment in \code{iter_qN} for
@@ -79,7 +80,7 @@ mixed_model(fixed, random, data, family, na.action = na.exclude,
             to be used. Options are \code{"fd"} for forward differences, and \code{cd}
             for central difference; default is \code{"fd"}.}
         \item{nAGQ}{numeric scalar denoting the number of quadrature points; default is 
-            11.}
+            11 when the number of random effects is one or two, and 7 otherwise.}
         \item{update_GH_every}{numeric scalar denoting every how many iterations to 
             update the quadrature points during the EM-phase; default is 10.}
         \item{verbose}{logical; print information during the optimization phase; default 
