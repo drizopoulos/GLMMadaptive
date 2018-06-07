@@ -1,0 +1,232 @@
+---
+title: "Methods for MixMod Objects"
+author: "Dimitris Rizopoulos"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Methods for MixMod Objects}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# MixMod Objects
+In this vignette we illustrate the use of a number of basic generic functions for models 
+fitted by the `mixed_model()` function of package **GLMMadaptive**. 
+
+We start by simulating some data for a binary longitudinal outcome:
+```{r}
+set.seed(1234)
+n <- 100 # number of subjects
+K <- 8 # number of measurements per subject
+t_max <- 15 # maximum follow-up time
+
+# we constuct a data frame with the design: 
+# everyone has a baseline measurment, and then measurements at random follow-up times
+DF <- data.frame(id = rep(seq_len(n), each = K),
+                 time = c(replicate(n, c(0, sort(runif(K - 1, 0, t_max))))),
+                 sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
+
+# design matrices for the fixed and random effects
+X <- model.matrix(~ sex * time, data = DF)
+Z <- model.matrix(~ time, data = DF)
+
+betas <- c(-2.13, -0.25, 0.24, -0.05) # fixed effects coefficients
+D11 <- 0.48 # variance of random intercepts
+D22 <- 0.1 # variance of random slopes
+
+# we simulate random effects
+b <- cbind(rnorm(n, sd = sqrt(D11)), rnorm(n, sd = sqrt(D22)))
+# linear predictor
+eta_y <- as.vector(X %*% betas + rowSums(Z * b[DF$id, ]))
+# we simulate binary longitudinal data
+DF$y <- rbinom(n * K, 1, plogis(eta_y))
+```
+
+We continue by fitting the mixed effects logistic regression for `y` assuming random
+intercepts and random slopes for the random-effects part.
+```{r}
+library("GLMMadaptive")
+fm <- mixed_model(fixed = y ~ sex * time, random = ~ time | id, data = DF,
+                  family = binomial())
+```
+
+## Detailed Output, Confidence Intervals and Covariance Matrix of the MLEs
+As in the majority of model-fitting functions in R, the `print()` and `summary()` methods
+display a short and a detailed output of the fitted model, respectively. For `'MixMod'` 
+objects we obtain
+
+```{r}
+fm
+```
+
+and
+
+```{r}
+summary(fm)
+```
+
+The output is rather self-explanatory. However, just note that the fixed-effects 
+coefficients are on the linear predictor scale, and hence are the corresponding log-odds
+for the intercept and log-odds ratios for the rest of the parameters. The `summary()` only
+shows the estimated coefficients, standard errors and p-values, but no confidence 
+intervals. These can be separately obtained using the `confint()` method, i.e.,
+```{r}
+exp(confint(fm))
+```
+
+By default the confidence intervals are produced for the fixed effects. Hence, taking the
+exp we obtain the confidence intervals for the corresponding odds-ratios. In addition, by
+default, the level of the confidence intervals is 95%. The following piece of code 
+produces 90% confidence intervals for the variances of the random intercepts and slopes, 
+and for their covariance:
+```{r}
+confint(fm, parm = "var-cov", level = 0.90)
+```
+
+The estimated variance-covariance matrix of the maximum likelihood estimates of all 
+parameters is returned using the `vcov()` method, e.g.,
+```{r}
+vcov(fm)
+```
+
+The elements of this covariance matrix that correspond to the elements of the covariance 
+matrix of the random effects (i.e., the elements `D_xx`) are on the log-Cholesky scale.
+
+## Fixed and Random Effects Estimates
+To extract the estimated fixed effects coefficients from a fitted mixed model, we can use
+the `fixef()` method. Similarly, the empirical Bayes estimates of the random effects are
+extracted using the `ranef()` method, and finally the `coef()` method returns the 
+subject-specific coefficients, i.e., the sum of the fixed and random effects coefficients:
+
+```{r}
+fixef(fm)
+```
+
+```{r}
+head(ranef(fm))
+```
+
+```{r}
+head(coef(fm))
+```
+
+## Marginalized Coefficients
+The fixed effects estimates in mixed models with nonlinear link functions have an 
+interpretation conditional on the random effects. However, often we wish to
+obtain parameters with a marginal / population averaged interpretation, which leads many 
+researchers to use generalized estimating equations, and dealing with potential issues
+with missing data. Nonetheless, recently [Hedeker et al.](https://dx.doi.org/10.1111/biom.12707) 
+have proposed a nice solution to this problem. Their approach is implemented in function
+`marginal_coefs()`. For example, for model `fm` we obtain the marginalized coefficients
+using:
+```{r}
+marginal_coefs(fm)
+```
+
+The function calculates the marginal probabilities in our case (because we have a binary
+outcome) using a Monte Carlo procedure with number of samples determined by the `M` 
+argument.
+
+Standard errors for the marginalized coefficients are obtained by setting 
+`std_errors = TRUE` in the call to `marginal_coefs()`, and require a double Monte Carlo
+procedure for which argument `K` comes also into play. To speed up computations, the 
+outer Monte Carlo procedure is performed in parallel using package **parallel** and 
+number of cores specified in the `cores` argument (due to the required computing time, 
+these standard errors are not displayed): 
+```{r, eval = FALSE}
+marginal_coefs(fm, std_errors = TRUE)
+```
+
+
+## Fitted Values and Residuals
+The `fitted()` method extracts fitted values from the fitted mixed model. These are always
+on the scale of the response variable. The `type` argument of `fitted()` specifies the 
+type of fitted values computed. The default is `type = "mean_subject"` which corresponds 
+to the fitted values calculated using only the fixed-effects part of the linear predictor;
+hence, for the subject who has random effects values equal to 0, i.e., the "mean subject":
+```{r}
+head(fitted(fm))
+```
+
+Setting `type = "subject_specific"` will calculate the fitted values using both the fixed
+and random effects parts, where for the latter the empirical Bayes estimates of the random
+effects are used:
+```{r}
+head(fitted(fm, type = "subject_specific"))
+```
+
+Finally, setting `type = "marginal"` will calculate the fitted values based on 
+the multiplication of the fixed-effects design matrix with the marginalized coefficients 
+described above (due to the required computing time, these fitted values are not displayed):
+```{r, eval = FALSE}
+head(fitted(fm, type = "marginal"))
+```
+
+The `residuals()` method simply calculates the residuals by subtracting the fitted values
+from the observed repeated measurements outcome. Hence, this method also has a `type` 
+argument with exactly the same options as the `fitted()` method.
+
+## Effect Plots
+To display the estimated longitudinal evolutions of the binary outcome we can use an 
+effect plot. This is simply predictions from the models with the corresponding 95% 
+pointwise confidence intervals. 
+
+As a first step we create a data frame the provides the setting based on which the plot
+is to be produced; function `expand.grid()` is helpful in this regard:
+```{r}
+nDF <- with(DF, expand.grid(time = seq(min(time), max(time), length.out = 15),
+                            sex = levels(sex)))
+```
+
+Next we use the `effectPlotData()` function that does the heavy lifting, i.e., calculates
+the predictions and confidence intervals from a fitted mixed model for the data frame 
+provided above, i.e.,
+```{r}
+plot_data <- effectPlotData(fm, nDF)
+```
+
+Then we can produce the plot using for example the `xyplot()` function from package 
+**lattice**, e.g.,
+```{r, fig.show="hold"}
+library("lattice")
+xyplot(pred + low + upp ~ time | sex, data = plot_data,
+       type = "l", lty = c(1, 2, 2), col = c(2, 1, 1), lwd = 2,
+       xlab = "Follow-up time", ylab = "log odds")
+
+expit <- function (x) exp(x) / (1 + exp(x))
+xyplot(expit(pred) + expit(low) + expit(upp) ~ time | sex, data = plot_data,
+       type = "l", lty = c(1, 2, 2), col = c(2, 1, 1), lwd = 2,
+       xlab = "Follow-up time", ylab = "Subject-Specific Probabilities")
+```
+
+The `effectPlotData()` function also allows to compute marginal predictions using the
+marginalized coefficients described above. This is achieved by setting `marginal = TRUE`
+in  the respective call (due to the require computing time, plot not shown):
+```{r, eval = FALSE}
+plot_data_m <- effectPlotData(fm, nDF, marginal = TRUE)
+
+xyplot(expit(pred) + expit(low) + expit(upp) ~ time | sex, data = plot_data_m,
+       type = "l", lty = c(1, 2, 2), col = c(2, 1, 1), lwd = 2,
+       xlab = "Follow-up time", ylab = "Marginal Probabilities")
+```
+
+## Comparing Two Models
+The `anova()` method can be used to compare two fitted mixed models using a likelihood 
+ratio test. For example, we test if we can test the null hypothesis that the covariance
+between the random intercepts and slopes is equal to zero using
+```{r}
+gm <- mixed_model(fixed = y ~ sex * time, random = ~ time || id, data = DF,
+                  family = binomial())
+
+anova(gm, fm)
+```
+

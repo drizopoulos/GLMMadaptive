@@ -1,8 +1,8 @@
 {
-    "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/man",
+    "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/vignettes",
     "sortOrder" : [
         {
-            "ascending" : true,
+            "ascending" : false,
             "columnIndex" : 2
         }
     ]
