@@ -47,7 +47,11 @@ mixed_model(fixed, random, data, family, na.action = na.exclude,
 \item{initial_values}{a list of initial values. This can have up to three components, 
     namely,
     \describe{
-        \item{betas}{a numeric vector of fixed effects.}
+        \item{betas}{a numeric vector of fixed effects. This can also be 
+        \code{\link{family}} object. In this case initial values for the fixed effects 
+        will be calculated by using \code{\link{glm}} to the data ignoring the 
+        correlations in the repeated measurements. For example, for a negative binomial
+        response outcome, we could set \code{betas = poisson()}.}
         \item{D}{a numeric matrix denoting the covariance matrix of the random effects.}
         \item{phis}{a numeric vector for the extra (dispersion/shape) parameters.}
     }
