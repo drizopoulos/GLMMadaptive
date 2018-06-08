@@ -38,3 +38,17 @@ function `marginal_coefs()`.
 
 - Predictions with confidence interval for constructing effects plots are provided by 
 function `effectPlotData()`.
+
+Installation
+------------
+
+The development version of the package can be installed from GitHub using the **devtools**
+package:
+```
+devtools::install_github("drizopoulos/GLMMadaptive")
+```
+
+and with vignettes
+```
+devtools::install_github("drizopoulos/GLMMadaptive", build_vignettes = TRUE)
+```

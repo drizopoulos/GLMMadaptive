@@ -32,7 +32,7 @@ print.MixMod <- function (x, digits = max(4, getOption("digits") - 4), ...) {
     cat("\nFixed effects:\n")
     print(x$coefficients)
     if (!is.null(x$phis)) {
-        cat("\nphi parameters:\n", x$phis)
+        cat("\nphi parameters:\n", x$phis, "\n")
     }
     cat("\nlog-Lik:", x$logLik)
     cat("\n\n")

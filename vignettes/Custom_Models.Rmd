@@ -1,0 +1,251 @@
+---
+title: "Custom Models"
+author: "Dimitris Rizopoulos"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Custom Models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library("GLMMadaptive")
+```
+
+# User-Defined Family Objects
+In addition to the standard family objects in R, function `mixed_model()` also allows for 
+user-specified family objects to be given in its `family` argument. The minimum 
+requirements are that user-specified family object is of class `"family"` and is a list 
+with the following components:
+
+- `family`: a character string giving the name of the family.
+
+- `link`: a character string giving the name of the link function.
+
+- `linkfun`: a function that transforms the mean of the distribution of the outcome to the 
+linear predictor scale.
+
+- `linkinv`: a function that is the inverse of the `linkfun` defined above.
+
+- `log_dens`: a function that returns the log of the probability density function or the 
+log of the probability mass function of the distribution of the outcome given the random 
+effects. This function should have exactly four arguments named, `y` the repeated measurements 
+outcome, `eta` denoting the linear predictor (fixed + random effects), `mu_fun` the 
+function to calculate the mean from the linear predictor (i.e., the `linkinv` function),
+and `phis` a vector of possible extra dispersion/scale parameters. **Even if `phis` may not be required, it should always appear as an argument of `log_dens`**. Moreover, when the extra parameters are 
+required, they should be appropriately transformed in order for the optimization of the 
+log-likelihood to be unconstrained. Finally, `log_dens` should be fully 
+vectorized with respect to `eta`. That is, for a numeric vector `y` and a numeric 
+matrix `eta`, it should return a matrix with the log density evaluated at each column of 
+`eta`.
+
+For the internal calculations the derivative of `log_dens` with respect to the linear 
+predictor `eta` and extra parameters `phis` (when present) is also required. If it is not
+given, then it is approximated numerically using a central difference approximation. 
+However, it greatly facilitates stability and speed if the user also specifies these 
+functions. If the user specifies these function, they should have the
+names `score_eta_fun` and `score_phis_fun`, respectively, and both of them have three 
+arguments named `y` the numeric vector of the repeated measurements outcome, `mu` the
+numeric vector or matrix of the mean of the outcome and `phis` a numeric vector of the 
+extra parameters.
+
+## Negative Binomial Mixed Model
+We first illustrate the use of a custom-made family object in the case of a negative 
+binomial repeated measurements outcome. We start by simulating some data:
+```{r}
+set.seed(101)
+dd <- expand.grid(f1 = factor(1:3), f2 = LETTERS[1:2], g = 1:30, rep = 1:15,
+                  KEEP.OUT.ATTRS = FALSE)
+mu <- 5*(-4 + with(dd, as.integer(f1) + 4 * as.numeric(f2)))
+dd$y <- rnbinom(nrow(dd), mu = mu, size = 0.5)
+```
+
+Next we define a new family object for negative binomial data
+```{r}
+my_negBinom <- function (link = "log") {
+    stats <- make.link(link)
+    log_dens <- function (y, eta, mu_fun, phis) {
+        # the log density function
+        phis <- exp(phis) # unconstrained optimization of 'phis'
+        mu <- mu_fun(eta)
+        log_mu_phis <- log(mu + phis)
+        comp1 <- lgamma(y + phis) - lgamma(phis) - lgamma(y + 1)
+        comp2 <- phis * log(phis) - phis * log_mu_phis
+        comp3 <- y * log(mu) - y * log_mu_phis
+        out <- comp1 + comp2 + comp3
+        attr(out, "mu_y") <- mu
+        out
+    }
+    structure(list(family = "user Neg Binom", link = stats$name, linkfun = stats$linkfun,
+                   linkinv = stats$linkinv, log_dens = log_dens),
+              class = "family")
+}
+```
+
+And we fit the model
+```{r}
+system.time(
+    fm1 <-  mixed_model(fixed = y ~ f1 * f2, random = ~ 1 | g, data = dd, 
+                        family = my_negBinom(), n_phis = 1, 
+                        initial_values = list("betas" = poisson()))
+)
+
+fm1
+```
+
+In the call to `mixed_model()` we specify the argument `n_phis` which lets the function
+know how many extra parameters does the distribution of the outcome have. In addition, we 
+also specify that better quality initial values for the fixed effects `betas` can be 
+obtained by fitting a Poisson regression model to the repeated measurements outcome 
+(ignoring the correlations) with the same design matrix as the fixed-effects design 
+matrix. For the unique elements of the random effects covariance matrix and for the extra 
+parameters `phis` the default initial values are used.
+
+In the output, the report phi parameters is on the log scale, because in the definition of
+`log_dens` we specified that `phis <- exp(phis)`.
+
+As mentioned above, the internal computations are facilitated if the user also specifies 
+the derivatives of the log density with respect to the linear predictor `eta` and the
+extra parameters `phis`. Hence, in the following we define a new negative binomial 
+family object with these functions also defined:
+```{r}
+my_negBinom2 <- function (link = "log") {
+    stats <- make.link(link)
+    log_dens <- function (y, eta, mu_fun, phis) {
+        # the log density function
+        phis <- exp(phis)
+        mu <- mu_fun(eta)
+        log_mu_phis <- log(mu + phis)
+        comp1 <- lgamma(y + phis) - lgamma(phis) - lgamma(y + 1)
+        comp2 <- phis * log(phis) - phis * log_mu_phis
+        comp3 <- y * log(mu) - y * log_mu_phis
+        out <- comp1 + comp2 + comp3
+        attr(out, "mu_y") <- mu
+        out
+    }
+    score_eta_fun <- function (y, mu, phis) {
+        # the derivative of the log density w.r.t. mu
+        phis <- exp(phis)
+        mu_phis <- mu + phis
+        comp2 <- - phis / mu_phis
+        comp3 <- y / mu - y / mu_phis
+        # the derivative of mu w.r.t. eta (this depends on the chosen link function)
+        mu.eta <- mu
+        (comp2 + comp3) * mu.eta
+    }
+    score_phis_fun <- function (y, mu, phis) {
+        # the derivative of the log density w.r.t. phis
+        phis <- exp(phis)
+        mu_phis <- mu + phis
+        comp1 <- digamma(y + phis) - digamma(phis)
+        comp2 <- log(phis) + 1 - log(mu_phis) - phis / mu_phis
+        comp3 <- - y / mu_phis
+        comp1 + comp2 + comp3
+    }
+    structure(list(family = "user Neg Binom", link = stats$name, linkfun = stats$linkfun,
+                   linkinv = stats$linkinv, log_dens = log_dens,
+                   score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun),
+              class = "family")
+}
+```
+
+And we fit the model
+```{r}
+system.time(
+    fm2 <-  mixed_model(fixed = y ~ f1 * f2, random = ~ 1 | g, data = dd, 
+                        family = my_negBinom2(), n_phis = 1, 
+                        initial_values = list("betas" = poisson()))
+)
+
+fm2
+```
+
+We obtain almost identical results, but in half of the computing time in this example.
+Depending on the size of the data set, the gain in computing time when the derivatives 
+for `eta` and `phis` are provided can be much more substantial.
+
+## Student's t Mixed Model
+We further illustrate the use of custom-made family objects by fitting a linear mixed 
+model but with Student's t distributed error terms. We start by simulating some data
+```{r}
+set.seed(1234)
+n <- 100 # number of subjects
+K <- 8 # number of measurements per subject
+t_max <- 15 # maximum follow-up time
+
+# we constuct a data frame with the design: 
+# everyone has a baseline measurment, and then measurements at random follow-up times
+DF <- data.frame(id = rep(seq_len(n), each = K),
+                 time = c(replicate(n, c(0, sort(runif(K - 1, 0, t_max))))),
+                 sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
+
+# design matrices for the fixed and random effects
+X <- model.matrix(~ sex * time, data = DF)
+Z <- model.matrix(~ time, data = DF)
+
+betas <- c(20.1, -0.5, 0.24, -0.05) # fixed effects coefficients
+sigma <- 1.2 # scale parameter for the Student's t errors
+D11 <- 1.5 # variance of random intercepts
+D22 <- 1.2 # variance of random slopes
+
+# we simulate random effects
+b <- cbind(rnorm(n, sd = sqrt(D11)), rnorm(n, sd = sqrt(D22)))
+# linear predictor
+eta_y <- as.vector(X %*% betas + rowSums(Z * b[DF$id, ]))
+# we simulate binary longitudinal data
+DF$y <- eta_y + sigma * rt(n * K, df = 4)
+```
+
+Following we define the custom-made family object for the Student's t distribution:
+```{r}
+students.t <- function (df = stop("'df' must be specified"), link = "identity") {
+    .df <- df
+    env <- new.env(parent = .GlobalEnv)
+    assign(".df", df, envir = env)
+    stats <- make.link(link)
+    log_dens <- function (y, eta, mu_fun, phis) {
+        # the log density function
+        sigma <- exp(phis)
+        out <- dt(x = (y - eta) / sigma, df = .df, log = TRUE) - log(sigma)
+        attr(out, "mu_y") <- eta
+        out
+    }
+    score_eta_fun <- function (y, mu, phis) {
+        # the derivative of the log density w.r.t. mu
+        sigma2 <- exp(phis)^2
+        y_mu <- y - mu
+        (y_mu * (.df + 1) / (.df * sigma2)) / (1 + y_mu^2 / (.df * sigma2))
+    }
+    score_phis_fun <- function (y, mu, phis) {
+        sigma <- exp(phis)
+        y_mu2_df <- (y - mu)^2 / .df
+        (.df + 1) * y_mu2_df * sigma^{-2} / (1 + y_mu2_df / sigma^2) - 1
+    }
+    environment(log_dens) <- environment(score_eta_fun) <- environment(score_phis_fun) <- env
+    structure(list(family = "Student's-t", link = stats$name, linkfun = stats$linkfun,
+                   linkinv = stats$linkinv, log_dens = log_dens, 
+                   score_eta_fun = score_eta_fun),
+              class = "family")
+}
+```
+
+And we fit the model
+```{r}
+fm <-  mixed_model(y ~ sex * time, random = ~ time | id, data = DF, 
+                   family = students.t(4), n_phis = 1, 
+                   initial_values = list("betas" = gaussian()))
+
+fm
+```
+
+As was the case also for the negative binomial model, the extra `phis` parameter has been
+appropriately transformed to have an unconstrained optimization of the likelihood. Hence,
+the estimated `sigma` parameter is `exp(fm$phis) =` `r unname(round(exp(fm$phis), 3))`. 
+
