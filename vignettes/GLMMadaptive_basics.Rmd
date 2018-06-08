@@ -125,7 +125,7 @@ anova(fm2, fm3)
 The results now suggest that indeed the covariance between the two random effects terms 
 is not statistically different than zero.
 
-## Mixed Effects Poisson Regression
+## Penalized Mixed Effects Poisson Regression
 We start by simulating some data for a Poisson longitudinal outcome:
 ```{r}
 set.seed(1234)
@@ -156,11 +156,22 @@ DF$y <- rpois(n * K, exp(eta_y))
 We continue by fitting the mixed effects logistic regression for `y` assuming random
 intercepts for the random-effects part.
 ```{r}
-gm <- mixed_model(fixed = y ~ sex * time, random = ~ 1 | id, data = DF,
-                  family = poisson())
+gm1 <- mixed_model(fixed = y ~ sex * time, random = ~ 1 | id, data = DF,
+                   family = poisson())
 ```
 
 The summary method gives a detailed output of the model:
 ```{r}
-summary(gm)
+summary(gm1)
+```
+
+```{r}
+gm2 <- mixed_model(fixed = y ~ sex * time, random = ~ 1 | id, data = DF,
+                   family = poisson(), 
+                   penalized = list(pen_mu = 0, pen_sigma = c(0.1, 0.1, 0.1), 
+                                    pen_df = 300))
+```
+
+```{r}
+cbind(fixef(gm1), fixef(gm2))
 ```

@@ -87,7 +87,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     } else if (is.logical(penalized) && penalized) {
         list(penalized = penalized, pen_mu = 0, pen_sigma = 1, pen_df = 3)
     } else if (is.list(penalized)) {
-        if (!names(penalized) %in% c("pen_mu", "pen_sigma", "pen_df"))
+        if (!all(names(penalized) %in% c("pen_mu", "pen_sigma", "pen_df")))
             stop("when argument 'penalized' is a list it needs to have the components ",
                  "'pen_mu', 'pen_sigma' and 'pen_df'.\n")
         c(list(penalized = TRUE), penalized)

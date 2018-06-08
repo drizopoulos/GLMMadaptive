@@ -46,9 +46,9 @@ mixed_fit <- function (y, X, Z, id, offset, family, initial_values, Funs, contro
     nparams <- length(betas) + length(if (diag_D) diag(D) else D[lower.tri(D, TRUE)]) + length(phis)
     post_modes <- matrix(0.0, n, ncz)
     # penalized components
-    pen_mu <- if (penalized$penalized) rep(penalized$pen_mu, ncx - 1)
-    pen_invSigma <- if (penalized$penalized) diag(rep(1 / penalized$pen_sigma^2, ncx - 1), 
-                                                  ncx - 1)
+    pen_mu <- if (penalized$penalized) rep(penalized$pen_mu, length.out = ncx - 1)
+    pen_invSigma <- if (penalized$penalized) 
+        diag(rep(1 / penalized$pen_sigma^2, length.out = ncx - 1), ncx - 1)
     pen_df <- if (penalized$penalized) penalized$pen_df
     penalized <- penalized$penalized
     # set up EM algorithm
