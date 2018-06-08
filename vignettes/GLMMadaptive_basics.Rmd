@@ -1,0 +1,166 @@
+---
+title: "GLMMadaptive Basics"
+author: "Dimitris Rizopoulos"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{GLMMadaptive Basics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library("GLMMadaptive")
+```
+
+
+# Generalized Linear Mixed Models - Theory
+## Model Specification
+
+## Estimation
+
+# Generalized Linear Mixed Models - Practice
+## Mixed Effects Logistic Regression
+We start by simulating some data for a binary longitudinal outcome:
+```{r}
+set.seed(1234)
+n <- 100 # number of subjects
+K <- 8 # number of measurements per subject
+t_max <- 15 # maximum follow-up time
+
+# we constuct a data frame with the design: 
+# everyone has a baseline measurment, and then measurements at random follow-up times
+DF <- data.frame(id = rep(seq_len(n), each = K),
+                 time = c(replicate(n, c(0, sort(runif(K - 1, 0, t_max))))),
+                 sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
+
+# design matrices for the fixed and random effects
+X <- model.matrix(~ sex * time, data = DF)
+Z <- model.matrix(~ time, data = DF)
+
+betas <- c(-2.13, -0.25, 0.24, -0.05) # fixed effects coefficients
+D11 <- 0.48 # variance of random intercepts
+D22 <- 0.1 # variance of random slopes
+
+# we simulate random effects
+b <- cbind(rnorm(n, sd = sqrt(D11)), rnorm(n, sd = sqrt(D22)))
+# linear predictor
+eta_y <- drop(X %*% betas + rowSums(Z * b[DF$id, ]))
+# we simulate binary longitudinal data
+DF$y <- rbinom(n * K, 1, plogis(eta_y))
+```
+
+We continue by fitting the mixed effects logistic regression for `y` assuming random
+intercepts for the random-effects part.
+```{r}
+fm1 <- mixed_model(fixed = y ~ sex * time, random = ~ 1 | id, data = DF,
+                   family = binomial())
+```
+
+The summary method gives a detailed output of the model:
+```{r}
+summary(fm1)
+```
+
+We continue by checking the impact of the chosen number of quadrature points to the
+parameters estimates and the log-likelihood value at convergence. First, we refit the 
+model with an increasing number of quadrature points. The default when the number of 
+random effects is smaller or equal to two is 11 points. We fit then with 15, and 21 points:
+```{r}
+fm1_q11 <- fm1
+fm1_q15 <- update(fm1_q11, nAGQ = 15)
+fm1_q21 <- update(fm1_q11, nAGQ = 21)
+
+models <- list("nAGQ=11" = fm1_q11, "nAGQ=15" = fm1_q15, "nAGQ=21" = fm1_q21)
+```
+
+We now extract from the model the estimated parameter for the fixed effects (using 
+function `fixef()`), for the random effects, and the log-likelihood (using function 
+`logLik()`):
+```{r}
+extract <- function (obj) {
+    c(fixef(obj), "var_(Intercept)" = obj$D[1, 1], "logLik" = logLik(obj))
+}
+
+sapply(models, extract)
+```
+
+We observe rather stable model with virtually no differences between the different choices
+of quadrature points.
+
+We extend model `fm1` by also including a random slopes term; however, we assume that the 
+covariance between the random intercepts and random slopes is zero. This is achieved by
+using the `||` in the specification of the `random` argument, i.e.,
+```{r}
+fm2 <- mixed_model(fixed = y ~ sex * time, random = ~ time || id, data = DF,
+                   family = binomial())
+```
+
+The likelihood ratio test between the two models is computed with function `anova()`. When
+two `"MixMod"` objects the function assumes that the first object represents the model
+under the null hypothesis, and the second object the model under the alternative, i.e.,
+```{r}
+anova(fm1, fm2)
+```
+
+The results suggest that we need the random slopes term. We continue by testing whether 
+the covariance between the random effects terms is zero. The model under the alternative
+hypothesis is:
+```{r}
+fm3 <- mixed_model(fixed = y ~ sex * time, random = ~ time | id, data = DF,
+                   family = binomial())
+```
+
+And again the likelihood ratio test is performed by a call to `anova()`:
+```{r}
+anova(fm2, fm3)
+```
+
+The results now suggest that indeed the covariance between the two random effects terms 
+is not statistically different than zero.
+
+## Mixed Effects Poisson Regression
+We start by simulating some data for a Poisson longitudinal outcome:
+```{r}
+set.seed(1234)
+n <- 100 # number of subjects
+K <- 8 # number of measurements per subject
+t_max <- 15 # maximum follow-up time
+
+# we constuct a data frame with the design: 
+# everyone has a baseline measurment, and then measurements at random follow-up times
+DF <- data.frame(id = rep(seq_len(n), each = K),
+                 time = c(replicate(n, c(0, sort(runif(K - 1, 0, t_max))))),
+                 sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
+
+# design matrices for the fixed and random effects
+X <- model.matrix(~ sex * time, data = DF)
+
+betas <- c(2.13, -0.25, 0.24, -0.05) # fixed effects coefficients
+D11 <- 0.48 # variance of random intercepts
+
+# we simulate random effects
+b <- rnorm(n, sd = sqrt(D11))
+# linear predictor
+eta_y <- drop(X %*% betas + b[DF$id])
+# we simulate Poisson longitudinal data
+DF$y <- rpois(n * K, exp(eta_y))
+```
+
+We continue by fitting the mixed effects logistic regression for `y` assuming random
+intercepts for the random-effects part.
+```{r}
+gm <- mixed_model(fixed = y ~ sex * time, random = ~ 1 | id, data = DF,
+                  family = poisson())
+```
+
+The summary method gives a detailed output of the model:
+```{r}
+summary(gm)
+```

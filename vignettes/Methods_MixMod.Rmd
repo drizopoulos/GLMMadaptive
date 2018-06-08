@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+library("GLMMadaptive")
 ```
 
 # MixMod Objects
@@ -54,7 +55,6 @@ DF$y <- rbinom(n * K, 1, plogis(eta_y))
 We continue by fitting the mixed effects logistic regression for `y` assuming random
 intercepts and random slopes for the random-effects part.
 ```{r}
-library("GLMMadaptive")
 fm <- mixed_model(fixed = y ~ sex * time, random = ~ time | id, data = DF,
                   family = binomial())
 ```
