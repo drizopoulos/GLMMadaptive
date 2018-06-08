@@ -19,4 +19,7 @@ r:
 cran: http://cran.rstudio.com
 repos:
   CRAN: http://cran.rstudio.com
- 
+
+r_packages:
+  - knitr
+  - rmarkdown
