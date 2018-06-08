@@ -9,7 +9,6 @@ r_check_args: '--as-cran --ignore-vignettes --no-examples'
 
 os:
   - linux
-  - osx
 
 r:
   - oldrel
