@@ -1,8 +1,8 @@
 {
-    "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive/man",
+    "path" : "C:/Users/dimitris/Documents/PackagesGitHub/GLMMadaptive",
     "sortOrder" : [
         {
-            "ascending" : false,
+            "ascending" : true,
             "columnIndex" : 2
         }
     ]

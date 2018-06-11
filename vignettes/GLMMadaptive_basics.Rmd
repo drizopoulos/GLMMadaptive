@@ -22,15 +22,59 @@ library("GLMMadaptive")
 
 # Generalized Linear Mixed Models - Theory
 ## Model Specification
-
-In particular, the conditional distribution of $y_i$ given a vector of random effects 
-$b_i$ is assumed to be a member of the exponential family, with linear predictor given by
-$$E(y_i \mid b_i) = X_i \beta + Z_i b_i.$$ 
+Package **GLMMadaptive** provides a suit of functions for fitting and post-processing 
+mixed effects models for grouped/clustered outcomes which have a distribution other than a
+normal distribution. In particular, let $y_i$ denote a vector of repeated measurements for
+the $i$-th subject ($i = 1, \ldots, n$). The conditional distribution of $y_i$ given a 
+vector of random effects $b_i$ is assumed to be a member of the extended exponential 
+family, with linear predictor given by $$g\{E(y_i \mid b_i)\} = X_i \beta + Z_i b_i,$$ 
+where $g(\cdot)$ denotes a monotonic link function, $X_i$ a design matrix for the fixed 
+effects coefficients $\beta$, and $Z_i$ a design matrix for the random effects 
+coefficients $b_i$. Typically, matrix $Z_i$ is assumed to be a subset of $X_i$. The random
+effects are assumed to follow a normal distribution with mean 0 and variance-covariance 
+matrix $D$. In addition, that the distribution $[y_i \mid b_i]$ may potentially have 
+extra dispersion/shape parameters $\phi$.
 
 ## Estimation
+In the cases in which the package focuses the distribution $[y_i \mid b_i]$ is not normal
+and/or the link function $g(\cdot)$ is not the identity. In these settings, the estimation
+of the model is complicated by the fact that marginal log-likelihood function of the 
+observed $y_i$ cannot be derived analytically. In particular, the log-likelihood function
+takes the form: 
+$$\begin{eqnarray*}
+\ell(\theta) & = & \sum_{i = 1}^n \log p(y_i; \theta)\\
+& = & \sum_{i = 1}^n \log \int p(y_i \mid b_i; \theta) \, p(b_i; \theta) \, db_i,
+\end{eqnarray*}$$
+where $\theta$ denotes the full parameter vector including the fixed effects, the extra
+potential dispersion/shape parameters $\phi$ and the unique element of the covariance 
+matrix $D$. The integral in the definition of $\ell(\theta)$ does not have a closed-form
+solution, and numerical approximations are required to obtain the maximum likelihood 
+estimates.
+
+In the literature several approaches have been proposed to approximate such integrals, and
+a nice overview is given in 
+[Pinheiro and Chao (2006)](https://doi.org/10.1198/106186006X96962). A typical approach to
+approximate these integrals is the Laplace approximation. However, the general consensus 
+has been that in the standard but difficult cases of binary/dichotomous data and count data
+with small counts and few repeated measurements, the accuracy of this approximation is 
+compromised. Due to this fact, the gold standard numerical approximation methods is the 
+adaptive Gaussian quadrature rule. This is more computationally intensive but also more
+accurate. This package implements provide an efficient implementation of the adaptive 
+Gaussian quadrature rule, allowing for multiple correlated random effects (e.g.,
+random intercepts, linear and quadratic random slopes) but currently a single grouping 
+factor (i.e., no nested or crossed random effects designs).
+
+A hybrid optimization procedure is implemented starting with an EM algorithm, treating the
+random effects as 'missing data', followed by a direct optimization procedure with a 
+quasi-Newton algorithm. Fine control of this procedure is allowed with a series of control
+arguments.
 
 # Generalized Linear Mixed Models - Practice
 ## Mixed Effects Logistic Regression
+We illustrate the use of the package in the standard case of a mixed effects logistic 
+regression. That is, the distribution of $[y_i \mid b_i]$ is binomial, and the distribution
+of $[b_i]$ multivariate normal. 
+
 We start by simulating some data for a binary longitudinal outcome:
 ```{r}
 set.seed(1234)
@@ -61,7 +105,12 @@ DF$y <- rbinom(n * K, 1, plogis(eta_y))
 ```
 
 We continue by fitting the mixed effects logistic regression for `y` assuming random
-intercepts for the random-effects part.
+intercepts for the random-effects part. The basic model-fitting function in 
+**GLMMadaptive** is the `mixed_model()`, and has four required arguments, namely 
+`fixed` a formula for the fixed effects, `random` a formula for the random effects, 
+`family` a family object specifying the type of response variable, and `data` a data frame
+containing the variables in the previously mentioned formulas. Hence, the call to fit the 
+random intercepts logistic regression is:
 ```{r}
 fm1 <- mixed_model(fixed = y ~ sex * time, random = ~ 1 | id, data = DF,
                    family = binomial())
@@ -130,7 +179,8 @@ The results now suggest that indeed the covariance between the two random effect
 is not statistically different than zero.
 
 ## Penalized Mixed Effects Poisson Regression
-We start by simulating some data for a Poisson longitudinal outcome:
+We continue our illustration with a Poisson mixed effects model. We start again by 
+simulating some data for a Poisson longitudinal outcome:
 ```{r}
 set.seed(1234)
 n <- 100 # number of subjects
@@ -157,25 +207,33 @@ eta_y <- drop(X %*% betas + b[DF$id])
 DF$y <- rpois(n * K, exp(eta_y))
 ```
 
-We continue by fitting the mixed effects logistic regression for `y` assuming random
-intercepts for the random-effects part.
+We fit the mixed effects Poisson regression for `y` assuming random intercepts for the 
+random-effects part.
 ```{r}
 gm1 <- mixed_model(fixed = y ~ sex * time, random = ~ 1 | id, data = DF,
                    family = poisson())
 ```
 
-The summary method gives a detailed output of the model:
+As previously, the summary method gives a detailed output of the model:
 ```{r}
 summary(gm1)
 ```
 
+In settings with few subjects, repeated measurements of separation effects, the package 
+also allows to place a penalty in the fixed effects regression coefficients $\beta$. The
+penalty/prior is of the form a Student's t distribution with mean 0, scale parameter 1, 
+and 3 degrees of freedom, and it is placed in all $\beta$ coefficients except from the 
+intercept. The penalized model can be fitted by setting argument `penalized` to `TRUE`, 
+i.e.,
 ```{r}
 gm2 <- mixed_model(fixed = y ~ sex * time, random = ~ 1 | id, data = DF,
-                   family = poisson(), 
-                   penalized = list(pen_mu = 0, pen_sigma = c(0.1, 0.1, 0.1), 
-                                    pen_df = 300))
+                   family = poisson(), penalized = TRUE)
 ```
 
 ```{r}
-cbind(fixef(gm1), fixef(gm2))
+cbind('unpenalized' = fixef(gm1), 'penalized' = fixef(gm2))
 ```
+
+In this example we observe small differences. The users have the option to alter the 
+specification of the Student's t penalty by directly specifying the mean, scale and 
+degrees of freedom arguments of the distribution.

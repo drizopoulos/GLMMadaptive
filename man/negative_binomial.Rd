@@ -34,17 +34,22 @@ Dimitris Rizopoulos \email{d.rizopoulos@erasmusmc.nl}
 
 \examples{
 # simulate some data
-set.seed(101)
+set.seed(102)
 dd <- expand.grid(f1 = factor(1:3), f2 = LETTERS[1:2], g = 1:30, rep = 1:15,
                   KEEP.OUT.ATTRS = FALSE)
 mu <- 5*(-4 + with(dd, as.integer(f1) + 4 * as.numeric(f2)))
 dd$y <- rnbinom(nrow(dd), mu = mu, size = 0.5)
 
-gm <-  mixed_model(fixed = y ~ f1 * f2, random = ~ 1 | g, data = dd, 
-                   family = negative.binomial(0.5))
+gm1 <-  mixed_model(fixed = y ~ f1 * f2, random = ~ 1 | g, data = dd, 
+                    family = negative.binomial(0.5))
 
-summary(gm)
+summary(gm1)
 
+# We do a likelihood ratio test with the Poisson mixed model
+gm0 <- mixed_model(fixed = y ~ f1 * f2, random = ~ 1 | g, data = dd, 
+                    family = poisson())
+                    
+anova(gm0, gm1)
 
 # Define a cutom-made family function to be used with mixed_model()
 # the required components are 'family', 'link', 'linkfun', 'linkinv' and 'log_dens';
