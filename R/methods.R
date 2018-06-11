@@ -243,7 +243,9 @@ anova.MixMod <- function (object, object2, test = TRUE, L = NULL, ...) {
             warning("the two objects represent models with the same number of parameters;",
                     " argument 'test' is set to FALSE.")
         }
-        if (test && object$family$family != object2$family$family) {
+        fam <- object$family$family
+        fam2 <- object2$family$family
+        if (test &&  (fam != fam2 && (fam != "poisson" & fam2 != "negative binomial"))) {
             warning("it seems that the two objects represent model with different families;",
                     " are the models nested? If not, you should set 'test' to FALSE.")
         }

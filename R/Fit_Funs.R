@@ -21,7 +21,7 @@ logLik_mixed <- function (thetas, id, y, N, X, Z, offset, phis, Ztb, GH, canonic
     # log penalty include here dmvt(betas, pen_mean, invSigma = pen_invsds, df = pen_df)
     p_yb <- exp(log_p_yb + log_p_b)
     if (any(zero_ind <- p_yb == 0.0)) {
-        p_yb[zero_ind] <- 1e-30
+        p_yb[zero_ind] <- 1e-300
     }
     p_y <- c(p_yb %*% wGH) * dets
     out <- - sum(log(p_y), na.rm = TRUE)
@@ -54,7 +54,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, phis, Ztb, GH, canonica
                       ncol(log_p_yb), byrow = TRUE)
     p_yb <- exp(log_p_yb + log_p_b)
     if (any(zero_ind <- p_yb == 0.0)) {
-        p_yb[zero_ind] <- 1e-30
+        p_yb[zero_ind] <- 1e-300
     }
     p_y <- c(p_yb %*% wGH)
     p_by <- p_yb / p_y

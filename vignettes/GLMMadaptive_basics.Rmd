@@ -23,6 +23,10 @@ library("GLMMadaptive")
 # Generalized Linear Mixed Models - Theory
 ## Model Specification
 
+In particular, the conditional distribution of $y_i$ given a vector of random effects 
+$b_i$ is assumed to be a member of the exponential family, with linear predictor given by
+$$E(y_i \mid b_i) = X_i \beta + Z_i b_i.$$ 
+
 ## Estimation
 
 # Generalized Linear Mixed Models - Practice

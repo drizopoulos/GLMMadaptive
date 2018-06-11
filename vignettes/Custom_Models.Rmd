@@ -58,7 +58,10 @@ extra parameters.
 
 ## Negative Binomial Mixed Model
 We first illustrate the use of a custom-made family object in the case of a negative 
-binomial repeated measurements outcome. We start by simulating some data:
+binomial repeated measurements outcome. We should note however that a family object
+`negative.binomial()` is already defined in the package and users could invoke this 
+instead - for more info see the relative online help page for `negative.binomial()`.We 
+start by simulating some data:
 ```{r}
 set.seed(101)
 dd <- expand.grid(f1 = factor(1:3), f2 = LETTERS[1:2], g = 1:30, rep = 1:15,
