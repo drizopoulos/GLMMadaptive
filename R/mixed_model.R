@@ -139,6 +139,16 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     ###############
     # Fit the model
     out <- mixed_fit(y, X, Z, id, offset, family, inits, Funs, con, penalized)
+    # check whether Hessian is positive definite at convergence
+    H <- out$Hessian
+    if (any(is.na(H) | !is.finite(H))) {
+        warning("infinite or missing values in Hessian at convergence.\n")
+    } else {
+        ev <- eigen(H, symmetric = TRUE, only.values = TRUE)$values
+        if (!all(ev >= -1e-06 * abs(ev[1]))) 
+            warning("Hessian matrix at convergence is not positive definite; ", 
+                    "unstable solution.\n")
+    }
     # fix names
     names(out$coefficients) <- colnames(X)
     dimnames(out$D) <- list(colnames(Z), colnames(Z))
