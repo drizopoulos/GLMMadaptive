@@ -21,6 +21,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     }
     known_families <- c("binomial", "poisson", "negative binomial")
     # extract response vector, design matrices, offset
+    data <- as.data.frame(data) # in case 'data' is a tibble
     mfX <- model.frame(terms(fixed, data = data), data = data, na.action = na.action)
     na_exclude <- attr(mfX, "na.action")
     termsX <- terms(mfX)
@@ -145,7 +146,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
         warning("infinite or missing values in Hessian at convergence.\n")
     } else {
         ev <- eigen(H, symmetric = TRUE, only.values = TRUE)$values
-        if (!all(ev >= -1e-06 * abs(ev[1]))) 
+        if (!all(ev >= -1e-06 * abs(ev[1L]))) 
             warning("Hessian matrix at convergence is not positive definite; ", 
                     "unstable solution.\n")
     }

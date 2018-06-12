@@ -17,7 +17,7 @@ provided.
 \tabular{ll}{
 Package: \tab GLMMadaptive\cr
 Type: \tab Package\cr
-Version: \tab 0.1-6\cr
+Version: \tab 0.1-61\cr
 Date: \tab 2018-06-12\cr
 License: \tab GPL (>=3)\cr
 }

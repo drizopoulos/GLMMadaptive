@@ -415,7 +415,6 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
             }
             m_betas
         }
-
         cl <- makeCluster(cores)
         res <- parLapply(cl, blocks, cluster_compute_marg_coefs, tht = tht,
                          list_thetas = list_thetas, V = V, XX = X, Z = Z, M = M,
