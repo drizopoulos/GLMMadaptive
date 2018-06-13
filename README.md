@@ -1,8 +1,10 @@
 GLMMadaptive: Generalized Linear Mixed Models using Adaptive Gaussian Quadrature
 ================
-[![Travis-CI Build Status](https://travis-ci.org/drizopoulos/GLMMadaptive.svg?branch=master)](https://travis-ci.org/drizopoulos/GLMMadaptive) [![CRAN status](http://www.r-pkg.org/badges/version/GLMMadaptive)](https://cran.r-project.org/package=GLMMadaptive) [![](https://cranlogs.r-pkg.org/badges/grand-total/GLMMadaptive)](https://CRAN.R-project.org/package=GLMMadaptive) [![Rdoc](http://www.rdocumentation.org/badges/version/GLMMadaptive)](http://www.rdocumentation.org/packages/GLMMadaptive) [![Download counter](http://cranlogs.r-pkg.org/badges/GLMMadaptive)](https://cran.r-project.org/package=GLMMadaptive) [![gitter](https://img.shields.io/badge/GITTER-join%20chat-green.svg)](https://gitter.im/drizopoulos/GLMMadaptive)
 
 <img src="inst/figures/hex_GLMMadaptive.png" height="200" align="right"/>
+
+[![Travis-CI Build Status](https://travis-ci.org/drizopoulos/GLMMadaptive.svg?branch=master)](https://travis-ci.org/drizopoulos/GLMMadaptive) [![CRAN status](http://www.r-pkg.org/badges/version/GLMMadaptive)](https://cran.r-project.org/package=GLMMadaptive) [![](https://cranlogs.r-pkg.org/badges/grand-total/GLMMadaptive)](https://CRAN.R-project.org/package=GLMMadaptive) [![Rdoc](http://www.rdocumentation.org/badges/version/GLMMadaptive)](http://www.rdocumentation.org/packages/GLMMadaptive) [![Download counter](http://cranlogs.r-pkg.org/badges/GLMMadaptive)](https://cran.r-project.org/package=GLMMadaptive) [![gitter](https://img.shields.io/badge/GITTER-join%20chat-green.svg)](https://gitter.im/drizopoulos/GLMMadaptive)
+
 
 Description
 ------------
