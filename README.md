@@ -45,11 +45,11 @@ Installation
 
 The development version of the package can be installed from GitHub using the **devtools**
 package:
-```
+```r
 devtools::install_github("drizopoulos/GLMMadaptive")
 ```
 
 and with vignettes
-```
+```r
 devtools::install_github("drizopoulos/GLMMadaptive", build_vignettes = TRUE)
 ```
