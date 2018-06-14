@@ -71,16 +71,6 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     } else {
         list(betas = rep(0, ncol(X)), D = if (diag_D) rep(1, ncol(Z)) else diag(ncol(Z)))
     }
-    if (!is.null(initial_values) && is.list(initial_values) &&
-        !inherits(initial_values$betas, 'family')) {
-        lngths <- lapply(inits[(nams.initial_values <- names(initial_values))], length)
-        if (!isTRUE(all.equal(lngths, lapply(initial_values, length)))) {
-            warning("'initial_values' is not a list with elements of appropriate ",
-                    "length; default initial_values are used instead.\n")
-        } else {
-            inits[nams.initial_values] <- initial_values
-        }
-    }
     ##########################
     # penalized
     penalized <- if (is.logical(penalized) && !penalized) {
@@ -136,6 +126,16 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
             stop("argument 'n_phis' needs to be specified.\n")
         }
         inits$phis <- rep(0.0, n_phis)
+    }
+    if (!is.null(initial_values) && is.list(initial_values) &&
+        !inherits(initial_values$betas, 'family')) {
+        lngths <- lapply(inits[(nams.initial_values <- names(initial_values))], length)
+        if (!isTRUE(all.equal(lngths, lapply(initial_values, length)))) {
+            warning("'initial_values' is not a list with elements of appropriate ",
+                    "length; default initial_values are used instead.\n")
+        } else {
+            inits[nams.initial_values] <- initial_values
+        }
     }
     ###############
     # Fit the model
