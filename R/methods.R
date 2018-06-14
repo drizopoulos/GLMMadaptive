@@ -516,8 +516,11 @@ predict.MixMod <- function (object, newdata, type = c("link", "response"),
         X_lis <- lapply(id_unq, function (i) X[id == i, , drop = FALSE])
         Z_lis <- lapply(id_unq, function (i) Z[id == i, , drop = FALSE])
         offset_lis <- if (!is.null(offset)) split(offset, id)
-        Zty_lis <- lapply(mapply(crossprod, Z_lis, y_lis, SIMPLIFY = FALSE), drop)
-        Xty <- drop(crossprod(X, y))
+        Zty_fun <- function (z, y) {
+            if (NCOL(y) == 2) crossprod(z, y[, 1]) else crossprod(z, y)
+        }
+        Zty_lis <- lapply(mapply(Zty_fun, Z_lis, y_lis, SIMPLIFY = FALSE), drop)
+        Xty <- drop(if (NCOL(y) == 2) crossprod(X, y[, 1]) else crossprod(X, y))
         log_dens <- object$Funs$log_dens
         mu_fun <- object$Funs$mu_fun
         var_fun <- object$Funs$var_fun
@@ -536,10 +539,10 @@ predict.MixMod <- function (object, newdata, type = c("link", "response"),
         betas <- fixef(object)
         invD <- solve(object$D)
         phis <- object$phis
-        post_modes <- find_modes(start, y_lis, X_lis, Z_lis, offset_lis, 
-                                 betas, invD, phis, canonical, user_defined, Zty_lis, 
-                                 log_dens, mu_fun, var_fun, mu.eta_fun,
-                                 score_eta_fun, score_phis_fun)$post_modes
+        post_modes <- find_modes(start, y_lis, N_lis, X_lis, Z_lis, offset_lis, betas, 
+                                 invD, phis, canonical, user_defined, Zty_lis, log_dens, 
+                                 mu_fun, var_fun, mu.eta_fun, score_eta_fun, 
+                                 score_phis_fun)$post_modes
         eta <- c(X %*% betas) + rowSums(Z * post_modes[id, , drop = FALSE])
         pred <- if (type == "link") eta else object$family$linkinv(eta)
     }
