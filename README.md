@@ -55,3 +55,5 @@ and with vignettes
 ```r
 devtools::install_github("drizopoulos/GLMMadaptive", build_vignettes = TRUE)
 ```
+
+Hex-sticker courtesy of Greg Papageorgiou [@gr_papageorgiou](https://twitter.com/gr_papageorgiou).
