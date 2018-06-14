@@ -471,7 +471,68 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
     newdata
 }
 
-predict.MixMod <- function (object, newdata, type = c("link", "response"),
+calculate_EBs <- function (object, newdata) {
+    if (!inherits(object, "MixMod")) {
+        stop("only works for 'MixMod' objects.")
+    }
+    termsX <- delete.response(object$Terms$termsX)
+    mfX <- model.frame(termsX, newdata, 
+                       xlev = .getXlevels(termsX, object$model_frames$mfX))
+    y <- model.response(model.frame(object$Terms$termsX, newdata))
+    if (is.factor(y)) {
+        if (family$family == "binomial")
+            y <- as.numeric(y != levels(y)[1L])
+        else
+            stop("the response variable should not be a factor.\n")
+    }
+    offset <- model.offset(mfX)
+    X <- model.matrix(termsX, mfX)
+    termsZ <- delete.response(object$Terms$termsZ)
+    mfZ <- model.frame(termsZ, newdata, 
+                       xlev = .getXlevels(termsZ, object$model_frames$mfZ))
+    Z <- model.matrix(termsZ, mfZ)
+    id_nam <- object$id_name
+    id <- newdata[[id_nam]]
+    id <- match(id, unique(id))
+    id_unq <- unique(id)
+    y_lis <- if (is.matrix(y)) lapply(id_unq, function (i) y[id == i, ]) else split(y, id)
+    N <- if (NCOL(y) == 2) y[, 1] + y[, 2]
+    N_lis <- if (NCOL(y) == 2) split(N, id)
+    X_lis <- lapply(id_unq, function (i) X[id == i, , drop = FALSE])
+    Z_lis <- lapply(id_unq, function (i) Z[id == i, , drop = FALSE])
+    offset_lis <- if (!is.null(offset)) split(offset, id)
+    Zty_fun <- function (z, y) {
+        if (NCOL(y) == 2) crossprod(z, y[, 1]) else crossprod(z, y)
+    }
+    Zty_lis <- lapply(mapply(Zty_fun, Z_lis, y_lis, SIMPLIFY = FALSE), drop)
+    Xty <- drop(if (NCOL(y) == 2) crossprod(X, y[, 1]) else crossprod(X, y))
+    log_dens <- object$Funs$log_dens
+    mu_fun <- object$Funs$mu_fun
+    var_fun <- object$Funs$var_fun
+    mu.eta_fun <- object$Funs$mu.eta_fun
+    score_eta_fun <- object$Funs$score_eta_fun
+    score_phis_fun <- object$Funs$score_phis_fun
+    family <- object$family
+    canonical <- !is.null(family$family) &&
+        ((family$family == "binomial" && family$link == "logit") ||
+             (family$family == "poisson" && family$link == "log"))
+    known_families <- c("binomial", "poisson", "negative binomial")
+    user_defined <- !family$family %in% known_families
+    numer_deriv <- if (object$control$numeric_deriv == "fd") fd else cd
+    numer_deriv_vec <- if (object$control$numeric_deriv == "fd") fd_vec else cd_vec
+    start <- matrix(0.0, length(y_lis), ncol(Z))
+    betas <- fixef(object)
+    invD <- solve(object$D)
+    phis <- object$phis
+    post <- find_modes(start, y_lis, N_lis, X_lis, Z_lis, offset_lis, betas, 
+                       invD, phis, canonical, user_defined, Zty_lis, log_dens, 
+                       mu_fun, var_fun, mu.eta_fun, score_eta_fun, 
+                       score_phis_fun)
+    list(post_modes = post$post_modes, post_vars = lapply(post$post_hessian, solve))
+}
+
+predict.MixMod <- function (object, newdata, newdata2 = NULL, 
+                            type = c("link", "response"),
                             level = c("mean_subject", "subject_specific", "marginal"),
                             se.fit = FALSE, ...) {
     type <- match.arg(type)
@@ -487,71 +548,49 @@ predict.MixMod <- function (object, newdata, type = c("link", "response"),
             V <- vcov(object)
             var_betas <- V[seq_len(n_betas), seq_len(n_betas)]
             pred <- if (type == "link") c(X %*% betas) else object$family$linkinv(c(X %*% betas))
-            se.fit <- if (se.fit) sqrt(diag(X %*% var_betas %*% t(X)))
+            se_fit <- if (se.fit) sqrt(diag(X %*% var_betas %*% t(X)))
         } else {
             mcoefs <- marginal_coefs(object, std_errors = TRUE, ...)
             betas <- mcoefs$betas
             var_betas <- mcoefs$var_betas
             pred <- if (type == "link") c(X %*% betas) else object$family$linkinv(c(X %*% betas))
-            se.fit <- if (se.fit) sqrt(diag(X %*% var_betas %*% t(X)))
+            se_fit <- if (se.fit) sqrt(diag(X %*% var_betas %*% t(X)))
         }
     } else {
-        y <- model.response(model.frame(object$Terms$termsX, newdata))
-        if (is.factor(y)) {
-            if (family$family == "binomial")
-                y <- as.numeric(y != levels(y)[1L])
-            else
-                stop("the response variable should not be a factor.\n")
-        }
-        offset <- model.offset(mfX)
+        id_nam <- object$id_name
+        id <- newdata[[id_nam]]
+        id <- match(id, unique(id))
+        betas <- fixef(object)
         termsZ <- delete.response(object$Terms$termsZ)
         mfZ <- model.frame(termsZ, newdata, 
                            xlev = .getXlevels(termsZ, object$model_frames$mfZ))
         Z <- model.matrix(termsZ, mfZ)
-        id_nam <- object$id_name
-        id <- newdata[[id_nam]]
-        id <- match(id, unique(id))
-        id_unq <- unique(id)
-        y_lis <- if (is.matrix(y)) lapply(id_unq, function (i) y[id == i, ]) else split(y, id)
-        X_lis <- lapply(id_unq, function (i) X[id == i, , drop = FALSE])
-        Z_lis <- lapply(id_unq, function (i) Z[id == i, , drop = FALSE])
-        offset_lis <- if (!is.null(offset)) split(offset, id)
-        Zty_fun <- function (z, y) {
-            if (NCOL(y) == 2) crossprod(z, y[, 1]) else crossprod(z, y)
-        }
-        Zty_lis <- lapply(mapply(Zty_fun, Z_lis, y_lis, SIMPLIFY = FALSE), drop)
-        Xty <- drop(if (NCOL(y) == 2) crossprod(X, y[, 1]) else crossprod(X, y))
-        log_dens <- object$Funs$log_dens
-        mu_fun <- object$Funs$mu_fun
-        var_fun <- object$Funs$var_fun
-        mu.eta_fun <- object$Funs$mu.eta_fun
-        score_eta_fun <- object$Funs$score_eta_fun
-        score_phis_fun <- object$Funs$score_phis_fun
-        family <- object$family
-        canonical <- !is.null(family$family) &&
-            ((family$family == "binomial" && family$link == "logit") ||
-                 (family$family == "poisson" && family$link == "log"))
-        known_families <- c("binomial", "poisson", "negative binomial")
-        user_defined <- !family$family %in% known_families
-        numer_deriv <- if (object$control$numeric_deriv == "fd") fd else cd
-        numer_deriv_vec <- if (object$control$numeric_deriv == "fd") fd_vec else cd_vec
-        start <- matrix(0.0, length(y_lis), ncol(Z))
-        betas <- fixef(object)
-        invD <- solve(object$D)
-        phis <- object$phis
-        post_modes <- find_modes(start, y_lis, N_lis, X_lis, Z_lis, offset_lis, betas, 
-                                 invD, phis, canonical, user_defined, Zty_lis, log_dens, 
-                                 mu_fun, var_fun, mu.eta_fun, score_eta_fun, 
-                                 score_phis_fun)$post_modes
-        eta <- c(X %*% betas) + rowSums(Z * post_modes[id, , drop = FALSE])
+        EBs <- calculate_EBs(object, newdata)
+        eta <- c(X %*% betas) + rowSums(Z * EBs$post_modes[id, , drop = FALSE])
         pred <- if (type == "link") eta else object$family$linkinv(eta)
+        if (!is.null(newdata2)) {
+            id2 <- newdata2[[id_nam]]
+            id2 <- match(id2, unique(newdata[[id_nam]]))
+            mfX2 <- model.frame(termsX, newdata2, 
+                                xlev = .getXlevels(termsX, object$model_frames$mfX))
+            X2 <- model.matrix(termsX, mfX2)
+            mfZ2 <- model.frame(termsZ, newdata2, 
+                                xlev = .getXlevels(termsZ, object$model_frames$mfZ))
+            Z2 <- model.matrix(termsZ, mfZ2)
+            eta2 <- c(X2 %*% betas) + rowSums(Z2 * EBs$post_modes[id2, , drop = FALSE])
+            pred2 <- if (type == "link") eta2 else object$family$linkinv(eta2)
+            se_fit2 <- if (se.fit) NA
+        }
     }
     if (se.fit) {
-        list(pred = pred, se.fit = se.fit)
+        if (is.null(newdata2)) {
+            list(pred = pred, se.fit = se_fit)
+        } else {
+            list(pred = pred, pred2 = pred2, se.fit = se_fit, se.fit2 = se_fit2)
+        }
     } else {
-        pred
+        if (is.null(newdata2)) pred else list(pred = pred, pred2 = pred2)
     }
 }
-
 
 
