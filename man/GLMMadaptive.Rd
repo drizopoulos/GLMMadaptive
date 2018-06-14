@@ -4,21 +4,21 @@
 \docType{package}
 
 \title{
-Joint Modeling of Longitudinal and Time-to-Event Data in R under a Bayesian Approach
+Generalized Linear Mixed Models using Adaptive Gaussian Quadrature
 }
 
 \description{
-This package fits shared parameter models for the joint modeling of normal longitudinal responses and event times 
-under a Bayesian approach. Various options for the survival model and the association structure are
-provided.
+This package fits generalized linear mixed models for a single grouping factor under 
+maximum likelihood approximating the integrals over the random effects with an adaptive 
+Gaussian quadrature rule.
 }
 
 \details{
 \tabular{ll}{
 Package: \tab GLMMadaptive\cr
 Type: \tab Package\cr
-Version: \tab 0.1-62\cr
-Date: \tab 2018-06-13\cr
+Version: \tab 0.1-63\cr
+Date: \tab 2018-06-14\cr
 License: \tab GPL (>=3)\cr
 }
 
