@@ -363,6 +363,10 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
     betas <- fixef(object)
     D <- object$D
     compute_marg_coefs <- function (object, X, betas, Z, D, M, link_fun, seed) {
+        if (!exists(".Random.seed", envir = .GlobalEnv)) 
+            runif(1)
+        RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+        on.exit(assign(".Random.seed", RNGstate, envir = .GlobalEnv))
         mu_fun <- object$Funs$mu_fun
         if (is.null(link_fun)) {
             link_fun <- object$family$linkfun
@@ -535,7 +539,8 @@ create_lists <- function (object, newdata) {
 predict.MixMod <- function (object, newdata, newdata2 = NULL, 
                             type = c("link", "response"),
                             level = c("mean_subject", "subject_specific", "marginal"),
-                            se.fit = FALSE, M = 200, df = 10, CI_level = 0.05, ...) {
+                            se.fit = FALSE, M = 200, df = 10, CI_level = 0.05, 
+                            seed = 1, ...) {
     type <- match.arg(type)
     level <- match.arg(level)
     termsX <- delete.response(object$Terms$termsX)
@@ -579,8 +584,8 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                 eta_y <- as.vector(X_i %*% betas + Z_i %*% b_i)
                 if (!is.null(offset_i))
                     eta_y <- eta_y + offset_i
-                - sum(log_dens(y_i, eta_y, mu_fun, phis), na.rm = TRUE) +
-                        c(0.5 * crossprod(b_i, invD) %*% b_i)
+                sum(log_dens(y_i, eta_y, mu_fun, phis), na.rm = TRUE) -
+                    c(0.5 * crossprod(b_i, invD) %*% b_i)
             }
             log_dens <- object$Funs$log_dens
             mu_fun <- object$Funs$mu_fun
@@ -616,23 +621,31 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                 offset_lis <- rep(list(NULL), length(y_lis))
             n <- length(pred)
             Preds <- matrix(0.0, n, M)
+            b <- vector("list", M)
+            success_rate <- matrix(FALSE, M, length(y_lis))
+            if (!exists(".Random.seed", envir = .GlobalEnv)) 
+                runif(1)
+            RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+            on.exit(assign(".Random.seed", RNGstate, envir = .GlobalEnv))
+            set.seed(seed)
             for (m in seq_len(M)) {
                 # Extract simulared new parameter values
                 new_pars <- relist(tht_new[m, ], skeleton = list_thetas)
                 betas <- new_pars$betas
                 phis <- new_pars$phis
                 D <- if (diag_D) diag(exp(new_pars$D), length(new_pars$D)) else chol_transf(new_pars$D)
+                invD <- solve(D)
                 # Simulate new EBs
                 log_post_b_current <- mapply(log_post_b, b_i = b_current, y_i = y_lis, 
                                              X_i = X_lis, Z_i = Z_lis, offset_i = offset_lis, 
-                                             MoreArgs = list(betas = betas, invD = solve(D), 
+                                             MoreArgs = list(betas = betas, invD = invD, 
                                                              phis = phis, log_dens = log_dens, 
                                                              mu_fun = mu_fun),
                                              SIMPLIFY = FALSE)
                 b_new <- lapply(EBs_proposed, function (x, m) x[m, ], m = m)
                 log_post_b_new <- mapply(log_post_b, b_i = b_new, y_i = y_lis, X_i = X_lis, 
                                          Z_i = Z_lis, offset_i = offset_lis, 
-                                         MoreArgs = list(betas = betas, invD = solve(D), 
+                                         MoreArgs = list(betas = betas, invD = invD, 
                                                          phis = phis, log_dens = log_dens, 
                                                          mu_fun = mu_fun),
                                          SIMPLIFY = FALSE)
@@ -643,8 +656,10 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                     b_current[keep_ind] <- b_new[keep_ind]
                     dmvt_current[keep_ind] <- lapply(dmvt_proposed, "[", m)[keep_ind]
                 }
+                success_rate[m, ] <- keep_ind
                 # Calculate Predictions
-                eta <- c(X %*% betas) + rowSums(Z * do.call("rbind", b_new)[id, , drop = FALSE])
+                b[[m]] <- do.call("rbind", b_new)
+                eta <- c(X %*% betas) + rowSums(Z * b[[m]][id, , drop = FALSE])
                 Preds[, m] <- if (type == "link") eta else object$family$linkinv(eta)
             }
             se_fit <- apply(Preds, 1, sd, na.rm = TRUE)
@@ -677,7 +692,8 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
     if (se.fit) {
         if (is.null(newdata2)) {
             if (level == "subject_specific") 
-                list(pred = pred, se.fit = se_fit, low = low, upp = upp)
+                list(pred = pred, se.fit = se_fit, low = low, upp = upp,
+                     success_rate = colMeans(success_rate))
             else 
                 list(pred = pred, se.fit = se_fit)
         } else {
