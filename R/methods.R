@@ -471,7 +471,7 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
     newdata
 }
 
-calculate_EBs <- function (object, newdata) {
+create_lists <- function (object, newdata) {
     if (!inherits(object, "MixMod")) {
         stop("only works for 'MixMod' objects.")
     }
@@ -524,17 +524,18 @@ calculate_EBs <- function (object, newdata) {
     betas <- fixef(object)
     invD <- solve(object$D)
     phis <- object$phis
-    post <- find_modes(start, y_lis, N_lis, X_lis, Z_lis, offset_lis, betas, 
-                       invD, phis, canonical, user_defined, Zty_lis, log_dens, 
-                       mu_fun, var_fun, mu.eta_fun, score_eta_fun, 
-                       score_phis_fun)
-    list(post_modes = post$post_modes, post_vars = lapply(post$post_hessian, solve))
+    list(y_lis = y_lis, N_lis = N_lis, X_lis = X_lis, Z_lis = Z_lis, Z = Z, id = id, 
+         id_nam = id_nam, offset_lis = offset_lis, betas = betas, invD = invD, 
+         phis = phis, start = start, canonical = canonical, user_defined = user_defined, 
+         Zty_lis = Zty_lis, log_dens = log_dens, mu_fun = mu_fun, var_fun = var_fun, 
+         mu.eta_fun = mu.eta_fun, score_eta_fun = score_eta_fun, termsZ = termsZ,
+         score_phis_fun = score_phis_fun)
 }
 
 predict.MixMod <- function (object, newdata, newdata2 = NULL, 
                             type = c("link", "response"),
                             level = c("mean_subject", "subject_specific", "marginal"),
-                            se.fit = FALSE, ...) {
+                            se.fit = FALSE, M = 200, df = 10, CI_level = 0.05, ...) {
     type <- match.arg(type)
     level <- match.arg(level)
     termsX <- delete.response(object$Terms$termsX)
@@ -548,45 +549,143 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             V <- vcov(object)
             var_betas <- V[seq_len(n_betas), seq_len(n_betas)]
             pred <- if (type == "link") c(X %*% betas) else object$family$linkinv(c(X %*% betas))
+            names(pred) <- row.names(newdata)
             se_fit <- if (se.fit) sqrt(diag(X %*% var_betas %*% t(X)))
         } else {
             mcoefs <- marginal_coefs(object, std_errors = TRUE, ...)
             betas <- mcoefs$betas
             var_betas <- mcoefs$var_betas
             pred <- if (type == "link") c(X %*% betas) else object$family$linkinv(c(X %*% betas))
+            names(pred) <- row.names(newdata)
             se_fit <- if (se.fit) sqrt(diag(X %*% var_betas %*% t(X)))
         }
     } else {
-        id_nam <- object$id_name
-        id <- newdata[[id_nam]]
-        id <- match(id, unique(id))
-        betas <- fixef(object)
-        termsZ <- delete.response(object$Terms$termsZ)
-        mfZ <- model.frame(termsZ, newdata, 
-                           xlev = .getXlevels(termsZ, object$model_frames$mfZ))
-        Z <- model.matrix(termsZ, mfZ)
-        EBs <- calculate_EBs(object, newdata)
+        Lists <- create_lists(object, newdata)
+        id <- Lists[["id"]]
+        betas <- Lists[["betas"]]
+        Z <- Lists[["Z"]]
+        EBs <- find_modes(Lists$start, Lists[["y_lis"]], Lists[["N_lis"]], Lists[["X_lis"]],
+                          Lists[["Z_lis"]], Lists[["offset_lis"]], betas, Lists[["invD"]],
+                          Lists[["phis"]], Lists[["canonical"]], Lists[["user_defined"]],
+                          Lists[["Zty_lis"]], Lists[["log_dens"]], Lists[["mu_fun"]], 
+                          Lists[["var_fun"]], Lists[["mu.eta_fun"]], 
+                          Lists[["score_eta_fun"]], Lists[["score_phis_fun"]])
         eta <- c(X %*% betas) + rowSums(Z * EBs$post_modes[id, , drop = FALSE])
         pred <- if (type == "link") eta else object$family$linkinv(eta)
+        names(pred) <- row.names(newdata)
+        se_fit <- if (se.fit) {
+            log_post_b <- function (b_i, y_i, X_i, Z_i, offset_i, betas, invD, phis, 
+                                    log_dens, mu_fun) {
+                eta_y <- as.vector(X_i %*% betas + Z_i %*% b_i)
+                if (!is.null(offset_i))
+                    eta_y <- eta_y + offset_i
+                - sum(log_dens(y_i, eta_y, mu_fun, phis), na.rm = TRUE) +
+                        c(0.5 * crossprod(b_i, invD) %*% b_i)
+            }
+            log_dens <- object$Funs$log_dens
+            mu_fun <- object$Funs$mu_fun
+            calc_alpha <- function (log_post_new, log_post_old, log_prop_new, 
+                                    log_prop_old) {
+                min(exp(log_post_new + log_prop_old - log_post_old - log_prop_new), 1)
+            }
+            phis <- object$phis
+            D <- object$D
+            diag_D <- all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
+            list_thetas <- list(betas = betas, D = if (diag_D) log(diag(D)) else chol_transf(D),
+                                phis = if (is.null(phis)) NA else phis)
+            tht <- unlist(as.relistable(list_thetas))
+            tht <- tht[!is.na(tht)]
+            V <- vcov(object)
+            tht_new <- MASS::mvrnorm(M, tht, V)
+            row_split_ind <- row(EBs$post_modes)
+            mu <- split(EBs$post_modes, row_split_ind)
+            Sigma <- lapply(EBs$post_hessians, solve)
+            EBs_proposed <- mapply(rmvt, mu = mu, Sigma = Sigma, SIMPLIFY = FALSE,
+                                   MoreArgs = list(n = M, df = df))
+            dmvt_proposed <- mapply(dmvt, x = EBs_proposed, mu = mu, Sigma = Sigma,
+                                    MoreArgs = list(df = df, log = TRUE, prop = FALSE),
+                                    SIMPLIFY = FALSE)
+            b_current <- mu
+            dmvt_current <- mapply(dmvt, x = mu, mu = mu, Sigma = Sigma, SIMPLIFY = FALSE,
+                                   MoreArgs = list(df = df, log = TRUE, prop = FALSE))
+            y_lis <- Lists[["y_lis"]]
+            X_lis <- Lists[["X_lis"]]
+            Z_lis <- Lists[["Z_lis"]]
+            offset_lis <- Lists[["offset_lis"]]
+            if (is.null(offset_lis))
+                offset_lis <- rep(list(NULL), length(y_lis))
+            n <- length(pred)
+            Preds <- matrix(0.0, n, M)
+            for (m in seq_len(M)) {
+                # Extract simulared new parameter values
+                new_pars <- relist(tht_new[m, ], skeleton = list_thetas)
+                betas <- new_pars$betas
+                phis <- new_pars$phis
+                D <- if (diag_D) diag(exp(new_pars$D), length(new_pars$D)) else chol_transf(new_pars$D)
+                # Simulate new EBs
+                log_post_b_current <- mapply(log_post_b, b_i = b_current, y_i = y_lis, 
+                                             X_i = X_lis, Z_i = Z_lis, offset_i = offset_lis, 
+                                             MoreArgs = list(betas = betas, invD = solve(D), 
+                                                             phis = phis, log_dens = log_dens, 
+                                                             mu_fun = mu_fun),
+                                             SIMPLIFY = FALSE)
+                b_new <- lapply(EBs_proposed, function (x, m) x[m, ], m = m)
+                log_post_b_new <- mapply(log_post_b, b_i = b_new, y_i = y_lis, X_i = X_lis, 
+                                         Z_i = Z_lis, offset_i = offset_lis, 
+                                         MoreArgs = list(betas = betas, invD = solve(D), 
+                                                         phis = phis, log_dens = log_dens, 
+                                                         mu_fun = mu_fun),
+                                         SIMPLIFY = FALSE)
+                alphas <- mapply(calc_alpha, log_post_b_new, log_post_b_current, dmvt_current, 
+                                 lapply(dmvt_proposed, "[", m))
+                keep_ind <- runif(length(alphas)) <= alphas
+                if (any(keep_ind)) {
+                    b_current[keep_ind] <- b_new[keep_ind]
+                    dmvt_current[keep_ind] <- lapply(dmvt_proposed, "[", m)[keep_ind]
+                }
+                # Calculate Predictions
+                eta <- c(X %*% betas) + rowSums(Z * do.call("rbind", b_new)[id, , drop = FALSE])
+                Preds[, m] <- if (type == "link") eta else object$family$linkinv(eta)
+            }
+            se_fit <- apply(Preds, 1, sd, na.rm = TRUE)
+            Qs <- apply(Preds, 1, quantile, probs = c((1 - CI_level) / 2, (1 + CI_level) / 2))
+            low <- Qs[1, ]
+            upp <- Qs[2, ]
+            names(se_fit) <- names(low) <- names(upp) <- names(pred)
+            se_fit
+        }
         if (!is.null(newdata2)) {
+            id_nam <- Lists[["id_nam"]]
             id2 <- newdata2[[id_nam]]
             id2 <- match(id2, unique(newdata[[id_nam]]))
             mfX2 <- model.frame(termsX, newdata2, 
                                 xlev = .getXlevels(termsX, object$model_frames$mfX))
             X2 <- model.matrix(termsX, mfX2)
+            termsZ <- Lists[["termsZ"]]
             mfZ2 <- model.frame(termsZ, newdata2, 
                                 xlev = .getXlevels(termsZ, object$model_frames$mfZ))
             Z2 <- model.matrix(termsZ, mfZ2)
             eta2 <- c(X2 %*% betas) + rowSums(Z2 * EBs$post_modes[id2, , drop = FALSE])
             pred2 <- if (type == "link") eta2 else object$family$linkinv(eta2)
-            se_fit2 <- if (se.fit) NA
+            names(pred2) <- row.names(newdata2)
+            se_fit2 <- if (se.fit) {
+                low2 <- NA
+                upp2 <- NA
+            }
         }
     }
     if (se.fit) {
         if (is.null(newdata2)) {
-            list(pred = pred, se.fit = se_fit)
+            if (level == "subject_specific") 
+                list(pred = pred, se.fit = se_fit, low = low, upp = upp)
+            else 
+                list(pred = pred, se.fit = se_fit)
         } else {
-            list(pred = pred, pred2 = pred2, se.fit = se_fit, se.fit2 = se_fit2)
+            if (level == "subject_specific")
+                list(pred = pred, pred2 = pred2, se.fit = se_fit, se.fit2 = se_fit2,
+                     low = low, upp = upp, low2 = low2, upp2 = upp2)
+            else
+                list(pred = pred, pred2 = pred2, se.fit = se_fit, se.fit2 = se_fit2)
         }
     } else {
         if (is.null(newdata2)) pred else list(pred = pred, pred2 = pred2)
