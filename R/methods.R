@@ -539,7 +539,7 @@ create_lists <- function (object, newdata) {
 predict.MixMod <- function (object, newdata, newdata2 = NULL, 
                             type = c("link", "response"),
                             level = c("mean_subject", "subject_specific", "marginal"),
-                            se.fit = FALSE, M = 200, df = 10, CI_level = 0.05, 
+                            se.fit = FALSE, M = 200, df = 10, scale = 1.6, CI_level = 0.05, 
                             seed = 1, ...) {
     type <- match.arg(type)
     level <- match.arg(level)
@@ -605,6 +605,8 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             row_split_ind <- row(EBs$post_modes)
             mu <- split(EBs$post_modes, row_split_ind)
             Sigma <- lapply(EBs$post_hessians, solve)
+            scale <- rep(scale, length.out = length(Sigma))
+            Sigma <- mapply("*", scale, Sigma, SIMPLIFY = FALSE)
             EBs_proposed <- mapply(rmvt, mu = mu, Sigma = Sigma, SIMPLIFY = FALSE,
                                    MoreArgs = list(n = M, df = df))
             dmvt_proposed <- mapply(dmvt, x = EBs_proposed, mu = mu, Sigma = Sigma,
@@ -683,9 +685,20 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             eta2 <- c(X2 %*% betas) + rowSums(Z2 * EBs$post_modes[id2, , drop = FALSE])
             pred2 <- if (type == "link") eta2 else object$family$linkinv(eta2)
             names(pred2) <- row.names(newdata2)
-            se_fit2 <- if (se.fit) {
-                low2 <- NA
-                upp2 <- NA
+            if (se.fit) {
+                Preds2 <- matrix(0.0, length(pred2), M)
+                for (m in seq_len(M)) {
+                    new_pars <- relist(tht_new[m, ], skeleton = list_thetas)
+                    betas <- new_pars$betas
+                    b_m <- b[[m]]
+                    eta2 <- c(X2 %*% betas) + rowSums(Z2 * b_m[id2, , drop = FALSE])
+                    Preds2[, m] <- if (type == "link") eta2 else object$family$linkinv(eta2)
+                }
+                se_fit2 <- apply(Preds2, 1, sd, na.rm = TRUE)
+                Qs2 <- apply(Preds2, 1, quantile, probs = c((1 - CI_level) / 2, (1 + CI_level) / 2))
+                low2 <- Qs2[1, ]
+                upp2 <- Qs2[2, ]
+                names(se_fit2) <- names(low2) <- names(upp2) <- names(pred2)
             }
         }
     }
