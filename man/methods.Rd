@@ -14,6 +14,8 @@
 \alias{fitted.MixMod}
 \alias{residuals}
 \alias{residuals.MixMod}
+\alias{predict}
+\alias{predict.MixMod}
 
 \title{
 Various Methods for Standard Generics
@@ -58,6 +60,14 @@ residuals(object, \dots)
 \method{residuals}{MixMod}(object, 
   type = c("mean_subject", "subject_specific", "marginal"), 
   link_fun = NULL, \dots)
+  
+predict(object, \dots)
+
+\method{predict}{MixMod}(object, newdata, newdata2 = NULL, 
+  type = c("link", "response"),
+  level = c("mean_subject", "subject_specific", "marginal"),
+  se.fit = FALSE, M = 200, df = 10, scale = 0.5, CI_level = 0.05, 
+  seed = 1, \dots)
 }
 
 \arguments{
@@ -71,7 +81,7 @@ residuals(object, \dots)
   random effects. Option \code{extra} corresponds to extra (shape/dispersion) 
   parameters in the distribution of the outcome (e.g., the \eqn{\theta} parameter in
   the negative binomial family).}
-\item{level}{numeric scalar between 0 and 1 denoting the level of the confidence interval.}
+\item{level, CI_level}{numeric scalar between 0 and 1 denoting the level of the confidence interval.}
 \item{test}{logical; should a p-value be calculated.}
 \item{L}{a numeric matrix representing a contrasts matrix. This is only used when in 
   \code{anova()} only \code{object} is provided, and it can only be specified for the fixed 
@@ -82,12 +92,28 @@ residuals(object, \dots)
     parts; option \code{"marginal"} is based in multiplying the fixed effects design 
     matrix with the marginal coefficients obtained by \code{\link{marginal_coefs}}.}
 \item{link_fun}{the \code{link_fun} of \code{\link{marginal_coefs}}.}
+\item{newdata, newdata2}{a data frame based on which predictions are to be calculated.
+    \code{newdata2} is only relevant when \code{level = "subject_specific"}; see 
+    \bold{Details} for more information.}
+\item{se.fit}{logical, if \code{TRUE} standard errors of predictions are returned.}
+\item{M}{numeric scalar denoting the number of Monte Carlo samples; see 
+    \bold{Details} for more information.}
+\item{df}{numeric scalar denoting the degrees of freedom for the Student's t proposal
+    distribution; see \bold{Details} for more information.}
+\item{scale}{numeric scalar or vector denoting the scaling applied to the subject-specific
+    covariance matrices of the random effects; see \bold{Details} for more information.}
+\item{seed}{numerical scalar giving the seed to used in the Monte Carlo scheme.}
 \item{\dots}{further arguments; currently none is used.}
 }
 
+\details{
+ ***.
+}
+
+
 \value{
 The estimated fixed and random effects, coefficients (this is similar as in package 
-\bold{nlme}), confidence intervals fitted values (on the scase on the response) and 
+\bold{nlme}), confidence intervals fitted values (on the scale on the response) and 
 residuals.
 }
 

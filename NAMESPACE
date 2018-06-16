@@ -1,5 +1,5 @@
 export(mixed_model, marginal_coefs, coef, fixef, ranef, confint, anova, fitted, residuals, 
-       effectPlotData, negative.binomial)
+       effectPlotData, negative.binomial, predict)
 
 importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
              "dbinom", "dnorm", "dpois", "fitted", "glm.fit", "logLik",
@@ -7,7 +7,7 @@ importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
              "model.response", "na.exclude", "optim", "pchisq", "pnorm",
              "terms", "var", "vcov", ".getXlevels", "delete.response", "qnorm", "rnorm",
            "confint", "residuals", "coef", "anova", "dt", "quantile", "rchisq", "runif", 
-           "sd")
+           "sd", "predict")
 importFrom("utils", "as.relistable", "relist")
 importFrom("MASS", "mvrnorm")
 importFrom("parallel", "makeCluster", "stopCluster", "detectCores", "parLapply")

@@ -539,7 +539,7 @@ create_lists <- function (object, newdata) {
 predict.MixMod <- function (object, newdata, newdata2 = NULL, 
                             type = c("link", "response"),
                             level = c("mean_subject", "subject_specific", "marginal"),
-                            se.fit = FALSE, M = 200, df = 10, scale = 1.6, CI_level = 0.05, 
+                            se.fit = FALSE, M = 200, df = 10, scale = 0.5, CI_level = 0.05, 
                             seed = 1, ...) {
     type <- match.arg(type)
     level <- match.arg(level)
@@ -579,6 +579,9 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
         pred <- if (type == "link") eta else object$family$linkinv(eta)
         names(pred) <- row.names(newdata)
         se_fit <- if (se.fit) {
+            RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+            on.exit(assign(".Random.seed", RNGstate, envir = .GlobalEnv))
+            set.seed(seed)
             log_post_b <- function (b_i, y_i, X_i, Z_i, offset_i, betas, invD, phis, 
                                     log_dens, mu_fun) {
                 eta_y <- as.vector(X_i %*% betas + Z_i %*% b_i)
@@ -627,9 +630,6 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             success_rate <- matrix(FALSE, M, length(y_lis))
             if (!exists(".Random.seed", envir = .GlobalEnv)) 
                 runif(1)
-            RNGstate <- get(".Random.seed", envir = .GlobalEnv)
-            on.exit(assign(".Random.seed", RNGstate, envir = .GlobalEnv))
-            set.seed(seed)
             for (m in seq_len(M)) {
                 # Extract simulared new parameter values
                 new_pars <- relist(tht_new[m, ], skeleton = list_thetas)
