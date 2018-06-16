@@ -50,7 +50,7 @@ For the internal calculations the derivative of `log_dens` with respect to the l
 predictor `eta` and extra parameters `phis` (when present) is also required. If it is not
 given, then it is approximated numerically using a central difference approximation. 
 However, it greatly facilitates stability and speed if the user also specifies these 
-functions. If the user specifies these function, they should have the
+functions. If the user specifies these functions, they should have the
 names `score_eta_fun` and `score_phis_fun`, respectively, and both of them have three 
 arguments named `y` the numeric vector of the repeated measurements outcome, `mu` the
 numeric vector or matrix of the mean of the outcome and `phis` a numeric vector of the 
@@ -111,7 +111,7 @@ obtained by fitting a Poisson regression model to the repeated measurements outc
 matrix. For the unique elements of the random effects covariance matrix and for the extra 
 parameters `phis` the default initial values are used.
 
-In the output, the report phi parameters is on the log scale, because in the definition of
+In the output, the reported phi parameters is on the log scale, because in the definition of
 `log_dens` we specified that `phis <- exp(phis)`.
 
 As mentioned above, the internal computations are facilitated if the user also specifies 
@@ -202,7 +202,7 @@ D22 <- 1.2 # variance of random slopes
 b <- cbind(rnorm(n, sd = sqrt(D11)), rnorm(n, sd = sqrt(D22)))
 # linear predictor
 eta_y <- as.vector(X %*% betas + rowSums(Z * b[DF$id, ]))
-# we simulate binary longitudinal data
+# we simulate Student's t longitudinal data
 DF$y <- eta_y + sigma * rt(n * K, df = 4)
 ```
 
