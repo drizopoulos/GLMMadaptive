@@ -66,7 +66,7 @@ predict(object, \dots)
 \method{predict}{MixMod}(object, newdata, newdata2 = NULL, 
   type = c("link", "response"),
   level = c("mean_subject", "subject_specific", "marginal"),
-  se.fit = FALSE, M = 200, df = 10, scale = 0.5, CI_level = 0.05, 
+  se.fit = FALSE, M = 300, df = 10, scale = 0.3, CI_level = 0.95, 
   seed = 1, \dots)
 }
 

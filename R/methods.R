@@ -539,7 +539,7 @@ create_lists <- function (object, newdata) {
 predict.MixMod <- function (object, newdata, newdata2 = NULL, 
                             type = c("link", "response"),
                             level = c("mean_subject", "subject_specific", "marginal"),
-                            se.fit = FALSE, M = 200, df = 10, scale = 0.5, CI_level = 0.05, 
+                            se.fit = FALSE, M = 300, df = 10, scale = 0.3, CI_level = 0.95, 
                             seed = 1, ...) {
     type <- match.arg(type)
     level <- match.arg(level)
@@ -662,7 +662,8 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             }
             rm(".Random.seed", envir = .GlobalEnv)
             se_fit <- apply(Preds, 1, sd, na.rm = TRUE)
-            Qs <- apply(Preds, 1, quantile, probs = c((1 - CI_level) / 2, (1 + CI_level) / 2))
+            Qs <- apply(Preds, 1, quantile, 
+                        probs = c((1 - CI_level) / 2, (1 + CI_level) / 2))
             low <- Qs[1, ]
             upp <- Qs[2, ]
             names(se_fit) <- names(low) <- names(upp) <- names(pred)
