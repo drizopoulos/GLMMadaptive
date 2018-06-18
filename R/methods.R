@@ -579,10 +579,6 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
         pred <- if (type == "link") eta else object$family$linkinv(eta)
         names(pred) <- row.names(newdata)
         if (se.fit) {
-            if (!exists(".Random.seed", envir = .GlobalEnv)) 
-                runif(1)
-            RNGstate <- get(".Random.seed", envir = .GlobalEnv)
-            on.exit(assign(".Random.seed", RNGstate, envir = .GlobalEnv))
             set.seed(seed)
             log_post_b <- function (b_i, y_i, X_i, Z_i, offset_i, betas, invD, phis, 
                                     log_dens, mu_fun) {
@@ -664,6 +660,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                 eta <- c(X %*% betas) + rowSums(Z * b[[m]][id, , drop = FALSE])
                 Preds[, m] <- if (type == "link") eta else object$family$linkinv(eta)
             }
+            rm(".Random.seed", envir = .GlobalEnv)
             se_fit <- apply(Preds, 1, sd, na.rm = TRUE)
             Qs <- apply(Preds, 1, quantile, probs = c((1 - CI_level) / 2, (1 + CI_level) / 2))
             low <- Qs[1, ]
