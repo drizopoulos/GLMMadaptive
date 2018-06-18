@@ -391,7 +391,6 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
             mu <- mu_fun(Xbetas[i] + Zb)
             marg_inv_mu[i] <- link_fun(mean(mu))
         }
-        rm(list = ".Random.seed", envir = globalenv())
         c(solve(crossprod(X), crossprod(X, marg_inv_mu)))
         res <- c(solve(crossprod(X), crossprod(X, marg_inv_mu)))
         names(res) <- names(betas)
@@ -401,8 +400,9 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
     if (std_errors) {
         blocks <- split(seq_len(K), rep(seq_len(cores), each = ceiling(K / cores),
                                         length.out = K))
-
-        list_thetas <- list(betas = betas, D = chol_transf(D))
+        D <- object$D
+        diag_D <- all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
+        list_thetas <- list(betas = betas, D = if (diag_D) log(diag(D)) else chol_transf(D))
         tht <- unlist(as.relistable(list_thetas))
         V <- vcov(object)
         cluster_compute_marg_coefs <- function (block, tht, list_thetas, V, XX, Z, M,
@@ -419,12 +419,12 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
             }
             m_betas
         }
-        cl <- makeCluster(cores)
-        res <- parLapply(cl, blocks, cluster_compute_marg_coefs, tht = tht,
-                         list_thetas = list_thetas, V = V, XX = X, Z = Z, M = M,
-                         object = object, compute_marg_coefs = compute_marg_coefs,
-                         chol_transf = chol_transf, link_fun = link_fun, seed = seed)
-        stopCluster(cl)
+        cl <- parallel::makeCluster(cores)
+        res <- parallel::parLapply(cl, blocks, cluster_compute_marg_coefs, tht = tht,
+                                   list_thetas = list_thetas, V = V, XX = X, Z = Z, M = M,
+                                   object = object, compute_marg_coefs = compute_marg_coefs,
+                                   chol_transf = chol_transf, link_fun = link_fun, seed = seed)
+        parallel::stopCluster(cl)
         out$var_betas <- var(do.call("rbind", res))
         dimnames(out$var_betas) <- list(names(out$betas), names(out$betas))
         ses <- sqrt(diag(out$var_betas))
@@ -578,7 +578,9 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
         eta <- c(X %*% betas) + rowSums(Z * EBs$post_modes[id, , drop = FALSE])
         pred <- if (type == "link") eta else object$family$linkinv(eta)
         names(pred) <- row.names(newdata)
-        se_fit <- if (se.fit) {
+        if (se.fit) {
+            if (!exists(".Random.seed", envir = .GlobalEnv)) 
+                runif(1)
             RNGstate <- get(".Random.seed", envir = .GlobalEnv)
             on.exit(assign(".Random.seed", RNGstate, envir = .GlobalEnv))
             set.seed(seed)
@@ -628,8 +630,6 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             Preds <- matrix(0.0, n, M)
             b <- vector("list", M)
             success_rate <- matrix(FALSE, M, length(y_lis))
-            if (!exists(".Random.seed", envir = .GlobalEnv)) 
-                runif(1)
             for (m in seq_len(M)) {
                 # Extract simulared new parameter values
                 new_pars <- relist(tht_new[m, ], skeleton = list_thetas)
@@ -660,7 +660,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                 }
                 success_rate[m, ] <- keep_ind
                 # Calculate Predictions
-                b[[m]] <- do.call("rbind", b_new)
+                b[[m]] <- do.call("rbind", b_current)
                 eta <- c(X %*% betas) + rowSums(Z * b[[m]][id, , drop = FALSE])
                 Preds[, m] <- if (type == "link") eta else object$family$linkinv(eta)
             }
@@ -669,7 +669,6 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             low <- Qs[1, ]
             upp <- Qs[2, ]
             names(se_fit) <- names(low) <- names(upp) <- names(pred)
-            se_fit
         }
         if (!is.null(newdata2)) {
             id_nam <- Lists[["id_nam"]]
