@@ -56,7 +56,7 @@ arguments named `y` the numeric vector of the repeated measurements outcome, `mu
 numeric vector or matrix of the mean of the outcome and `phis` a numeric vector of the 
 extra parameters.
 
-## Negative Binomial Mixed Model
+## Negative Binomial Mixed Effects Model
 We first illustrate the use of a custom-made family object in the case of a negative 
 binomial repeated measurements outcome. We should note however that a family object
 `negative.binomial()` is already defined in the package and users could invoke this 
@@ -174,7 +174,7 @@ We obtain almost identical results, but in half of the computing time in this ex
 Depending on the size of the data set, the gain in computing time when the derivatives 
 for `eta` and `phis` are provided can be much more substantial.
 
-## Student's t Mixed Model
+## Student's t Mixed Effects Model
 We further illustrate the use of custom-made family objects by fitting a linear mixed 
 model but with Student's t distributed error terms. We start by simulating some data
 ```{r}
@@ -234,7 +234,7 @@ students.t <- function (df = stop("'df' must be specified"), link = "identity") 
     environment(log_dens) <- environment(score_eta_fun) <- environment(score_phis_fun) <- env
     structure(list(family = "Student's-t", link = stats$name, linkfun = stats$linkfun,
                    linkinv = stats$linkinv, log_dens = log_dens, 
-                   score_eta_fun = score_eta_fun),
+                   score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun),
               class = "family")
 }
 ```
@@ -252,3 +252,110 @@ As was the case also for the negative binomial model, the extra `phis` parameter
 appropriately transformed to have an unconstrained optimization of the likelihood. Hence,
 the estimated `sigma` parameter is `exp(fm$phis) =` `r unname(round(exp(fm$phis), 3))`. 
 
+## Beta Mixed-Effects Model
+As a final illustration we show how a beta mixed effects model can be fitted, i.e.,
+applicable in case of bounded repeated measurements outcomes. We start again by
+simulating some data:
+```{r}
+set.seed(1234)
+n <- 100 # number of subjects
+K <- 8 # number of measurements per subject
+t_max <- 15 # maximum follow-up time
+
+# we constuct a data frame with the design: 
+# everyone has a baseline measurment, and then measurements at random follow-up times
+DF <- data.frame(id = rep(seq_len(n), each = K),
+                 time = c(replicate(n, c(0, sort(runif(K - 1, 0, t_max))))),
+                 sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
+
+# design matrices for the fixed and random effects
+X <- model.matrix(~ sex * time, data = DF)
+Z <- model.matrix(~ time, data = DF)
+
+betas <- c(-2.2, -0.25, 0.24, -0.05) # fixed effects coefficients
+phi <- 5 # precision parameter of the Beta distribution
+D11 <- 0.9 # variance of random intercepts
+D22 <- 0.3 # variance of random slopes
+
+# we simulate random effects
+b <- cbind(rnorm(n, sd = sqrt(D11)), rnorm(n, sd = sqrt(D22)))
+# linear predictor
+eta_y <- as.vector(X %*% betas + rowSums(Z * b[DF$id, ]))
+# mean
+mu <- plogis(eta_y)
+# we simulate beta longitudinal data
+DF$y <- rbeta(n * K, shape1 = mu * phi, shape2 = phi * (1 - mu))
+# we transform to (0, 1)
+DF$y <- (DF$y * (nrow(DF) - 1) + 0.5) / nrow(DF)
+```
+
+Next we define the custom-made family object as in the case of the Student's t 
+distribution:
+```{r}
+beta.fam <- function (link = "logit") {
+    stats <- make.link(link)
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+        # the log density function
+        phi <- exp(phis)
+        mu <- mu_fun(eta)
+        mu_phi <- mu * phi
+        comp1 <- lgamma(phi) - lgamma(mu_phi)
+        comp2 <- (mu_phi - 1) * log(y) - lgamma(phi - mu_phi)
+        comp3 <- (phi - mu_phi - 1) * log(1 - y)
+        out <- comp1 + comp2 + comp3
+        attr(out, "mu_y") <- mu
+        out
+    }
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
+        # the derivative of the log density w.r.t. mu
+        phi <- exp(phis)
+        mu_phi <- mu * phi
+        comp1 <- - digamma(mu_phi) * phi
+        comp2 <- phi * (log(y) + digamma(phi - mu_phi))
+        comp3 <- - phi * log(1 - y)
+        # the derivative of mu w.r.t. eta (this depends on the chosen link function)
+        mu.eta <- mu - mu * mu
+        (comp1 + comp2 + comp3) * mu.eta
+    }
+    score_phis_fun <- function (y, mu, phis, eta_zi) {
+        phi <- exp(phis)
+        mu_phi <- mu * phi
+        mu1 <- 1 - mu
+        comp1 <- digamma(phi) - digamma(mu_phi) * mu
+        comp2 <- mu * log(y) - digamma(phi - mu_phi) * mu1
+        comp3 <- log(1 - y) * mu1
+        (comp1 + comp2 + comp3) * phi
+    }
+    structure(list(family = "beta", link = stats$name, linkfun = stats$linkfun,
+                   linkinv = stats$linkinv, log_dens = log_dens, 
+                   score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun),
+              class = "family")
+}
+```
+
+And we fit the model
+```{r}
+gm <- mixed_model(y ~ sex * time, random = ~ time | id, data = DF,
+                  family = beta.fam(), n_phis = 1)
+
+gm
+```
+
+```{r}
+nDF <- with(DF, expand.grid(time = seq(0, 10, length = 15),
+                            sex = levels(sex)))
+
+plot_data <- effectPlotData(fm, nDF)
+```
+
+```{r, fig.show = "hold"}
+library("lattice")
+xyplot(pred + low + upp ~ time | sex, data = plot_data,
+       type = "l", lty = c(1, 2, 2), col = c(2, 1, 1), lwd = 2,
+       xlab = "Follow-up Time", ylab = "Logit Scale")
+
+expit <- function (x) exp(x) / (1 + exp(x))
+xyplot(expit(pred) + expit(low) + expit(upp) ~ time | sex, data = plot_data,
+       type = "l", lty = c(1, 2, 2), col = c(2, 1, 1), lwd = 2,
+       xlab = "Follow-up Time", ylab = "Original Scale")
+```
