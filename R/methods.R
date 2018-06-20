@@ -118,7 +118,7 @@ summary.MixMod <- function (object, ...) {
     if (!is.null(object$gammas)) {
         gammas <- object$gammas
         ind_gammas <- grep("zi_", colnames(V), fixed = TRUE)
-        ses <- sqrt(diag(V[ind_gammas, ind_gammas]))
+        ses <- sqrt(diag(V[ind_gammas, ind_gammas, drop = FALSE]))
         coef_table_zi <- cbind("Value" = gammas, "Std.Err" = ses, "z-value" = gammas / ses,
                               "p-value" = 2 * pnorm(abs(gammas / ses), lower.tail = FALSE))
     }

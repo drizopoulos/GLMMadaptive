@@ -449,7 +449,7 @@ zi.poisson <- function (link = "log") {
         lambda <- exp(eta_zi)
         lambda0_exp_mu0 <- exp(eta_zi[ind_y0, ] + mu[ind_y0, ])
         lambda0_exp_mu0[lambda0_exp_mu0 == Inf] <- 1e200
-        out <- - lambda / (1 + lambda)
+        out <- matrix(- lambda / (1 + lambda), nrow = nrow(mu), ncol = ncol(mu))
         out[ind_y0, ] <- out[ind_y0, ] + 
             drop(lambda0_exp_mu0 / (lambda0_exp_mu0 + 1))
         out
