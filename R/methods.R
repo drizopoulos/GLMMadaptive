@@ -31,6 +31,10 @@ print.MixMod <- function (x, digits = max(4, getOption("digits") - 4), ...) {
     print(dat)
     cat("\nFixed effects:\n")
     print(x$coefficients)
+    if (!is.null(x$gammas)) {
+        cat("\nZero-inflated part coefficients:\n")
+        print(x$gammas)
+    }
     if (!is.null(x$phis)) {
         cat("\nphi parameters:\n", x$phis, "\n")
     }
@@ -52,18 +56,46 @@ logLik.MixMod <- function (object, ...) {
     out
 }
 
-coef.MixMod <- function (object, ...) {
-    betas <- fixef(object)
+coef.MixMod <- function (object, sub_model = c("main", "zero_inflated"), ...) {
+    sub_model <- match.arg(sub_model)
     b <- ranef(object)
-    out <- matrix(betas, nrow = nrow(b), ncol = length(betas), byrow = TRUE)
-    colnames(out) <- names(betas)
-    rownames(out) <- rownames(b)
-    out[, colnames(b)] <- out[, colnames(b)] + b
-    out
+    RE_zi <- grep("zi_", colnames(b), fixed = TRUE)
+    if (sub_model == "main") {
+        betas <- fixef(object, sub_model = "main")
+        if (length(RE_zi)) 
+            b <- b[, -RE_zi, drop = FALSE]
+        out <- matrix(betas, nrow = nrow(b), ncol = length(betas), byrow = TRUE)
+        colnames(out) <- names(betas)
+        rownames(out) <- rownames(b)
+        out[, colnames(b)] <- out[, colnames(b)] + b
+        out
+    } else {
+        gammas <- fixef(object, sub_model = "zero_inflated")
+        if (length(RE_zi)) {
+            b <- b[, RE_zi, drop = FALSE]
+            colnames(b) <- gsub("zi_", "", colnames(b), fixed = TRUE)
+            out <- matrix(gammas, nrow = nrow(b), ncol = length(gammas), byrow = TRUE)
+            colnames(out) <- names(gammas)
+            rownames(out) <- rownames(b)
+            out[, colnames(b)] <- out[, colnames(b)] + b
+            out
+        } else {
+            gammas
+        }
+        
+    }
 }
 
-fixef.MixMod <- function(object, ...) {
-    object$coefficients
+fixef.MixMod <- function(object, sub_model = c("main", "zero_inflated"), ...) {
+    sub_model <- match.arg(sub_model)
+    if (sub_model == "main") {
+        object$coefficients
+    } else {
+        if (!is.null(object$gammas)) 
+            object$gammas
+        else
+            stop("the fitted model does not have a zero-inflated part.")
+    }
 }
 
 ranef.MixMod <- function(object, post_vars = FALSE, ...) {
@@ -83,12 +115,22 @@ summary.MixMod <- function (object, ...) {
     n_D <- length(D[lower.tri(D, TRUE)])
     coef_table <- cbind("Value" = betas, "Std.Err" = ses, "z-value" = betas / ses,
                         "p-value" = 2 * pnorm(abs(betas / ses), lower.tail = FALSE))
-    out <- list(coef_table = coef_table, D = D, logLik = logLik(object),
+    if (!is.null(object$gammas)) {
+        gammas <- object$gammas
+        ind_gammas <- grep("zi_", colnames(V), fixed = TRUE)
+        ses <- sqrt(diag(V[ind_gammas, ind_gammas]))
+        coef_table_zi <- cbind("Value" = gammas, "Std.Err" = ses, "z-value" = gammas / ses,
+                              "p-value" = 2 * pnorm(abs(gammas / ses), lower.tail = FALSE))
+    }
+    out <- list(coef_table = coef_table, 
+                coef_table_zi = if (!is.null(object$gammas)) coef_table_zi,D = D, 
+                logLik = logLik(object),
                 AIC = AIC(object), BIC = BIC(object), call = object$call,
                 N = length(object$id))
     if (!is.null(object$phis)) {
         phis <- object$phis
-        var_phis <- as.matrix(V[-seq_len(n_betas + n_D), -seq_len(n_betas + n_D)])
+        ind_phis <- grep("phi_", colnames(V), fixed = TRUE)
+        var_phis <- as.matrix(V[ind_phis, ind_phis])
         out$phis_table <- cbind("Value" = phis, "Std.Err" = sqrt(diag(var_phis)))
     }
     out$control <- object$control
@@ -97,7 +139,6 @@ summary.MixMod <- function (object, ...) {
     class(out) <- 'summary.MixMod'
     out
 }
-
 
 print.summary.MixMod <- function (x, digits = max(4, getOption("digits") - 4), ...) {
     cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"),
@@ -138,10 +179,17 @@ print.summary.MixMod <- function (x, digits = max(4, getOption("digits") - 4), .
     }
     print(dat)
     cat("\nFixed effects:\n")
-    coef_table <- as.data.frame(x$coef_table)
+    coef_table <- as.data.frame(x[["coef_table"]])
     coef_table[1:3] <- lapply(coef_table[1:3], round, digits = digits)
     coef_table[["p-value"]] <- format.pval(coef_table[["p-value"]], eps = 1e-04)
     print(coef_table)
+    if (!is.null(x[["coef_table_zi"]])) {
+        cat("\nZero-inflated part coefficients:\n")
+        coef_table <- as.data.frame(x[["coef_table_zi"]])
+        coef_table[1:3] <- lapply(coef_table[1:3], round, digits = digits)
+        coef_table[["p-value"]] <- format.pval(coef_table[["p-value"]], eps = 1e-04)
+        print(coef_table)
+    }
     if (!is.null(x$phis_table)) {
         cat("\nphi parameters:\n")
         phis_table <- as.data.frame(x$phis_table)
@@ -161,26 +209,27 @@ coef.summary.MixMod <- function (object, ...) {
     object$coef_table
 }
 
-confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra"), 
+confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra", 
+                                             "zero_inflated"), 
                             level = 0.95, ...) {
     parm <- match.arg(parm)
+    V <- vcov(object)
     if (parm == "fixed-effects") {
         betas <- fixef(object)
         n_betas <- length(betas)
-        V <- vcov(object)
         ses_betas <- sqrt(diag(V[seq_len(n_betas), seq_len(n_betas)]))
-        out <- cbind(betas + qnorm((1 - level) / 2) * ses_betas,
+        out <- cbind(betas + qnorm((1 - level) / 2) * ses_betas, betas,
                      betas + qnorm((1 + level) / 2) * ses_betas)
     } else if (parm == "var-cov") {
         D <- object$D
         diag_D <- ncol(D) > 1 && all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
-        V <- vcov(object)
         if (diag_D) {
             unconstr_D <- log(diag(D))
             n_betas <- length(object$coefficients)
             include <- seq(n_betas + 1, n_betas + length(unconstr_D))
             ses_unconstr_D <- sqrt(diag(V[include, include, drop = FALSE]))
             out <- cbind(unconstr_D + qnorm((1 - level) / 2) * ses_unconstr_D,
+                         unconstr_D,
                          unconstr_D + qnorm((1 + level) / 2) * ses_unconstr_D)
             out <- exp(out)
             rownames(out) <- paste0("var.", rownames(D))
@@ -190,6 +239,7 @@ confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra")
             include <- seq(n_betas + 1, n_betas + length(unconstr_D))
             ses_unconstr_D <- sqrt(diag(V[include, include, drop = FALSE]))
             out <- cbind(unconstr_D + qnorm((1 - level) / 2) * ses_unconstr_D,
+                         unconstr_D,
                          unconstr_D + qnorm((1 + level) / 2) * ses_unconstr_D)
             ind <- lower.tri(D, TRUE)
             out[, 1] <- chol_transf(out[, 1])[ind]
@@ -201,7 +251,7 @@ confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra")
                 }
             })
         }
-    } else {
+    } else if (parm == "extra") {
         if (is.null(object$phis)) {
             stop("the model behind 'object' contains no extra (phis) parameters.\n")
         } else {
@@ -210,13 +260,23 @@ confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra")
             diag_D <- all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
             exclude <- seq_len(length(object$coefficients) + if (diag_D) length(diag(D)) 
                                else length(D[lower.tri(D, TRUE)]))
-            V <- vcov(object)
             ses_phis <- sqrt(diag(V[-exclude, -exclude]))
-            out <- cbind(phis + qnorm((1 - level) / 2) * ses_phis,
+            out <- cbind(phis + qnorm((1 - level) / 2) * ses_phis, phis,
                          phis + qnorm((1 + level) / 2) * ses_phis)
         }
+    } else {
+        if (is.null(object$gammas)) {
+            stop("the fitted model does not have a zero-inflated part.")
+        } else {
+            gammas <- object$gammas
+            ind_gammas <- grep("zi_", colnames(V), fixed = TRUE)
+            ses_gammas <- sqrt(diag(V[ind_gammas, ind_gammas]))
+            out <- cbind(gammas + qnorm((1 - level) / 2) * ses_gammas, gammas,
+                         gammas + qnorm((1 + level) / 2) * ses_gammas)
+        }
     }
-    colnames(out) <- paste(round(100 * c((1 - level) / 2, (1 + level) / 2), 1), "%")
+    colnames(out) <- c(paste(round(100 * c((1 - level) / 2, 
+                                         (1 + level) / 2), 1), "%"), "Value")[c(1,3,2)]
     out
 }
 
@@ -332,6 +392,9 @@ fitted.MixMod <- function (object, type = c("mean_subject", "subject_specific", 
     } else if (type == "subject_specific") {
         betas <- fixef(object)
         b <- ranef(object)
+        RE_zi <- grep("zi_", colnames(b), fixed = TRUE)
+        if (length(RE_zi))
+            b <- b[, -RE_zi, drop = FALSE]
         Z <- model.matrix(object$Terms$termsZ, object$model_frames$mfZ)
         id <- match(object$id, unique(object$id))
         eta <- c(X %*% betas) + rowSums(Z * b[id, , drop = FALSE])
@@ -339,9 +402,24 @@ fitted.MixMod <- function (object, type = c("mean_subject", "subject_specific", 
         betas <- marginal_coefs(object, link_fun = link_fun)$betas
         eta <- c(X %*% betas)
     }
-    out <- object$Funs$mu_fun(eta)
-    names(out) <- rownames(X)
-    out
+    mu <- object$Funs$mu_fun(eta)
+    if (!is.null(object$gammas)) {
+        X_zi <- model.matrix(object$Terms$termsX_zi, object$model_frames$mfX_zi)
+        gammas <- fixef(object, "zero_inflated")
+        eta_zi <- c(X_zi %*% gammas)
+        if (type == "subject_specific" && !is.null(object$Terms$termsZ_zi)) {
+            b <- ranef(object)
+            RE_zi <- grep("zi_", colnames(b), fixed = TRUE)
+            if (length(RE_zi))
+                b <- b[, RE_zi, drop = FALSE]
+            Z_zi <- model.matrix(object$Terms$termsZ_zi, object$model_frames$mfZ_zi)
+            id <- match(object$id, unique(object$id))
+            eta_zi <- eta_zi + rowSums(Z_zi * b[id, , drop = FALSE])
+        }
+        (1 - plogis(eta_zi)) * mu
+    }
+    names(mu) <- rownames(X)
+    mu
 }
 
 residuals.MixMod <- function (object, type = c("mean_subject", "subject_specific",
@@ -358,6 +436,9 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
                                    M = 3000, K = 100,
                                    seed = 1, cores = max(parallel::detectCores() - 1, 1), 
                                    ...) {
+    if (!is.null(object$gammas)) {
+        stop("marginal_coefs() is not yet implemented for zero-inflated models.")
+    }
     X <- model.matrix(object$Terms$termsX, object$model_frames$mfX)
     Z <- model.matrix(object$Terms$termsZ, object$model_frames$mfZ)
     betas <- fixef(object)
@@ -453,6 +534,9 @@ print.m_coefs <- function (x, digits = max(4, getOption("digits") - 4), ...) {
 effectPlotData <- function (object, newdata, level, ...) UseMethod("effectPlotData")
 
 effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FALSE, ...) {
+    if (!is.null(object$gammas)) {
+        stop("effectPlotData() is not yet implemented for zero-inflated models.")
+    }
     if (marginal) {
         mcoefs <- marginal_coefs(object, std_errors = TRUE, ...)
         betas <- mcoefs$betas
@@ -541,6 +625,9 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                             level = c("mean_subject", "subject_specific", "marginal"),
                             se.fit = FALSE, M = 300, df = 10, scale = 0.3, CI_level = 0.95, 
                             seed = 1, ...) {
+    if (!is.null(object$gammas)) {
+        stop("the predict() method is not yet implemented for zero-inflated models.")
+    }
     type <- match.arg(type)
     level <- match.arg(level)
     termsX <- delete.response(object$Terms$termsX)

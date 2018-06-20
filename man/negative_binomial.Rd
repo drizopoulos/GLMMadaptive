@@ -58,7 +58,7 @@ anova(gm0, gm1)
 # them).
 my_negBinom <- function (link = "log") {
     stats <- make.link(link)
-    log_dens <- function (y, eta, mu_fun, phis) {
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
         # the log density function
         phis <- exp(phis)
         mu <- mu_fun(eta)
@@ -70,7 +70,7 @@ my_negBinom <- function (link = "log") {
         attr(out, "mu_y") <- mu
         out
     }
-    score_eta_fun <- function (y, mu, phis) {
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
         # the derivative of the log density w.r.t. mu
         phis <- exp(phis)
         mu_phis <- mu + phis
@@ -80,7 +80,7 @@ my_negBinom <- function (link = "log") {
         mu.eta <- mu
         (comp2 + comp3) * mu.eta
     }
-    score_phis_fun <- function (y, mu, phis) {
+    score_phis_fun <- function (y, mu, phis, eta_zi) {
         # the derivative of the log density w.r.t. phis
         phis <- exp(phis)
         mu_phis <- mu + phis

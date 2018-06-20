@@ -29,11 +29,12 @@ Methods for object of class \code{"MixMod"} for standard generic functions.
 
 coef(object, \dots)
 
-\method{coef}{MixMod}(object, \dots)
+\method{coef}{MixMod}(object, sub_model = c("main", "zero_inflated"), 
+    \dots)
 
 fixef(object, \dots)
 
-\method{fixef}{MixMod}(object, \dots)
+\method{fixef}{MixMod}(object, sub_model = c("main", "zero_inflated"), \dots)
 
 ranef(object, \dots)
 
@@ -42,7 +43,7 @@ ranef(object, \dots)
 confint(object, parm, level = 0.95, \dots)
 
 \method{confint}{MixMod}(object, 
-  parm = c("fixed-effects", "var-cov","extra"), 
+  parm = c("fixed-effects", "var-cov","extra", "zero_inflated"), 
   level = 0.95, \dots)
 
 anova(object, \dots)
@@ -74,13 +75,16 @@ predict(object, \dots)
 \item{object, object2}{objects inheriting from class \code{"MixMod"}. When \code{object2}
   is also provided, then the model behind \code{object} must be nested within the model 
   behind \code{object2}.}
+\item{sub_model}{character string indicating for which sub-model to extract the estimated
+  coefficients; it is only relevant for zero-inflated models.}
 \item{post_vars}{logical; if \code{TRUE} the posterior variances of the random effects
   are returned as an extra attribute of the numeric matrix produced by \code{ranef()}.}
 \item{parm}{character string; for which type of parameters to calculate confidence 
   intervals. Option \code{"var-cov"} corresponds to the variance-covariance matrix of the 
   random effects. Option \code{extra} corresponds to extra (shape/dispersion) 
   parameters in the distribution of the outcome (e.g., the \eqn{\theta} parameter in
-  the negative binomial family).}
+  the negative binomial family). Option \code{zero_inflated} corresponds to the 
+  coefficients of the zero-inflated sub-model.}
 \item{level, CI_level}{numeric scalar between 0 and 1 denoting the level of the confidence interval.}
 \item{test}{logical; should a p-value be calculated.}
 \item{L}{a numeric matrix representing a contrasts matrix. This is only used when in 

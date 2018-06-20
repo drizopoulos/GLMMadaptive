@@ -12,8 +12,8 @@ Gaussian quadrature.
 
 \usage{
 mixed_model(fixed, random, data, family, na.action = na.exclude,
-  penalized = FALSE, n_phis = NULL, initial_values = NULL, 
-  control = list(), \dots)
+  zi_fixed = NULL, zi_random = NULL, penalized = FALSE, 
+  n_phis = NULL, initial_values = NULL, control = list(), \dots)
 }
 
 \arguments{
@@ -36,6 +36,8 @@ mixed_model(fixed, random, data, family, na.action = na.exclude,
     function \code{lme()} from the \bold{nlme} package or function \code{lmer()} from the
     \bold{lme4} package. }
 \item{na.action}{what to do with missing values in \code{data}.}
+\item{zi_fixed, zi_random}{formulas for the fixed and random effects of the zero inflated 
+    part.}
 \item{penalized}{logical or a list. If logical and equal to \code{FALSE}, then no penalty
     is used. If logical and equal to \code{TRUE}, for the fixed effects a Student's-t 
     penalty/prior with mean 0, scale equal to 1 and 3 degrees of freedom is used. If a
