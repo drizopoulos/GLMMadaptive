@@ -292,8 +292,8 @@ DF$y <- (DF$y * (nrow(DF) - 1) + 0.5) / nrow(DF)
 Next we define the custom-made family object as in the case of the Student's t 
 distribution:
 ```{r}
-beta.fam <- function (link = "logit") {
-    stats <- make.link(link)
+beta.fam <- function () {
+    stats <- make.link("logit")
     log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
         # the log density function
         phi <- exp(phis)
@@ -342,10 +342,10 @@ gm
 ```
 
 ```{r}
-nDF <- with(DF, expand.grid(time = seq(0, 10, length = 15),
+nDF <- with(DF, expand.grid(time = seq(min(time), max(time), length = 25),
                             sex = levels(sex)))
 
-plot_data <- effectPlotData(fm, nDF)
+plot_data <- effectPlotData(gm, nDF)
 ```
 
 ```{r, fig.show = "hold"}
