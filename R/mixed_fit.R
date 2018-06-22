@@ -29,7 +29,7 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
     canonical <- !is.null(family$family) &&
         ((family$family == "binomial" && family$link == "logit") ||
              (family$family == "poisson" && family$link == "log"))
-    known_families <- c("binomial", "poisson", "negative binomial")
+    known_families <- c("binomial", "poisson")
     user_defined <- !family$family %in% known_families
     numer_deriv <- if (control$numeric_deriv == "fd") fd else cd
     numer_deriv_vec <- if (control$numeric_deriv == "fd") fd_vec else cd_vec

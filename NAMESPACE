@@ -1,5 +1,5 @@
 export(mixed_model, marginal_coefs, coef, fixef, ranef, confint, anova, fitted, residuals, 
-       effectPlotData, negative.binomial, predict, zi.poisson)
+       effectPlotData, negative.binomial, predict, zi.poisson, zi.negative.binomial)
 
 importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
              "dbinom", "dnorm", "dpois", "fitted", "glm.fit", "logLik",

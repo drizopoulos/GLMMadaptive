@@ -305,7 +305,8 @@ anova.MixMod <- function (object, object2, test = TRUE, L = NULL, ...) {
         }
         fam <- object$family$family
         fam2 <- object2$family$family
-        if (test &&  (fam != fam2 && (fam != "poisson" & fam2 != "negative binomial"))) {
+        if (test &&  (fam != fam2 && ((fam != "poisson" & fam2 != "negative binomial") &&
+                      (fam != "zero-inflated poisson" & fam2 != "zero-inflated negative binomial")))) {
             warning("it seems that the two objects represent model with different families;",
                     " are the models nested? If not, you should set 'test' to FALSE.")
         }

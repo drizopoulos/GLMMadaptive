@@ -119,8 +119,8 @@ the derivatives of the log density with respect to the linear predictor `eta` an
 extra parameters `phis`. Hence, in the following we define a new negative binomial 
 family object with these functions also defined:
 ```{r}
-my_negBinom2 <- function (link = "log") {
-    stats <- make.link(link)
+my_negBinom2 <- function () {
+    stats <- make.link(link = "log")
     log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
         # the log density function
         phis <- exp(phis)
@@ -341,6 +341,10 @@ gm <- mixed_model(y ~ sex * time, random = ~ time | id, data = DF,
 gm
 ```
 
+To depict the results of the model we create an effects plot, showing the longitudinal 
+evolution of the average/median male and female. We start by constructing the data frame 
+that contains the values we want to depict, and using it in the `effectPlotData()` 
+function:
 ```{r}
 nDF <- with(DF, expand.grid(time = seq(min(time), max(time), length = 25),
                             sex = levels(sex)))
@@ -348,6 +352,8 @@ nDF <- with(DF, expand.grid(time = seq(min(time), max(time), length = 25),
 plot_data <- effectPlotData(gm, nDF)
 ```
 
+The figure is created with a call to `xyplot()` from the 
+[**lattice**](https://cran.r-project.org/package=lattice) package:
 ```{r, fig.show = "hold"}
 library("lattice")
 xyplot(pred + low + upp ~ time | sex, data = plot_data,

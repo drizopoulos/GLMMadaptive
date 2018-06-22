@@ -96,7 +96,10 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     inits <- if (family$family %in% known_families || (is.list(initial_values) &&
                  inherits(initial_values$betas, 'family'))) {
         betas <- if (family$family %in% known_families) {
-            glm.fit(X, y, family = family)$coefficients
+            if (family$family == "negative binomial")
+                glm.fit(X, y, family = poisson())$coefficients
+            else 
+                glm.fit(X, y, family = family)$coefficients
         } else {
             glm.fit(X, y, family = initial_values$betas)$coefficients
         }
@@ -130,11 +133,13 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
         var_fun = family$variance,
         mu.eta_fun = family$mu.eta
     )
-    if (family$family %in% known_families && is.null(family$log_den)) {
+    if (family$family %in% known_families && is.null(family$log_dens)) {
         Funs$log_dens <- switch(family$family,
                'binomial' = binomial_log_dens,
                'poisson' = poisson_log_dens,
                'negative binomial' = negative.binomial_log_dens)
+    } else if (family$family %in% known_families && !is.null(family$log_dens)) {
+        Funs$log_dens <- family$log_dens
     } else if (!family$family %in% known_families && !is.null(family$log_dens)) {
         Funs$log_dens <- family$log_dens
     } else {
@@ -162,7 +167,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
                                            phis = NULL, rep(0, length(y))), TRUE),
                          "try-error")
     if (has_phis) {
-        if (family$family == "negative binomial") {
+        if (family$family %in% c("negative binomial", "zero-inflated negative binomial")) {
             n_phis <- 1
         } else if (is.null(n_phis)) {
             stop("argument 'n_phis' needs to be specified.\n")

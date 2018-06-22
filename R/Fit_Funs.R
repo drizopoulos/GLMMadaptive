@@ -338,80 +338,48 @@ negative.binomial_log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
     out
 }
 
-negative.binomial <- function (theta = stop("'theta' must be specified"), link = "log") {
-    linktemp <- substitute(link)
-    if (!is.character(linktemp))
-        linktemp <- deparse(linktemp)
-    if (linktemp %in% c("log", "identity", "sqrt"))
-        stats <- make.link(linktemp)
-    else if (is.character(link)) {
-        stats <- make.link(link)
-        linktemp <- link
-    } else {
-        if (inherits(link, "link-glm")) {
-            stats <- link
-            if (!is.null(stats$name))
-                linktemp <- stats$name
-        } else {
-            stop(gettextf("\"%s\" link not available for negative binomial family; available links are \"identity\", \"log\" and \"sqrt\"",
-                           linktemp))
-        }
+negative.binomial <- function () {
+    stats <- make.link("log")
+    stats <- make.link(link = "log")
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+        # the log density function
+        phis <- exp(phis)
+        mu <- mu_fun(eta)
+        log_mu_phis <- log(mu + phis)
+        comp1 <- lgamma(y + phis) - lgamma(phis) - lgamma(y + 1)
+        comp2 <- phis * log(phis) - phis * log_mu_phis
+        comp3 <- y * log(mu) - y * log_mu_phis
+        out <- comp1 + comp2 + comp3
+        attr(out, "mu_y") <- mu
+        out
     }
-    .Theta <- theta
-    env <- new.env(parent = .GlobalEnv)
-    assign(".Theta", theta, envir = env)
-    variance <- function (mu) mu + mu^2/.Theta
-    validmu <- function (mu) all(mu > 0)
-    dev.resids <- function (y, mu, wt) {
-        2 * wt * (y * log(pmax(1, y)/mu) - (y + .Theta) * log((y + .Theta)/ (mu + .Theta)))
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
+        # the derivative of the log density w.r.t. mu
+        phis <- exp(phis)
+        mu_phis <- mu + phis
+        comp2 <- - phis / mu_phis
+        comp3 <- y / mu - y / mu_phis
+        # the derivative of mu w.r.t. eta (this depends on the chosen link function)
+        mu.eta <- mu
+        (comp2 + comp3) * mu.eta
     }
-    aic <- function(y, n, mu, wt, dev) {
-        term <- (y + .Theta) * log(mu + .Theta) - y * log(mu) +
-            lgamma(y + 1) - .Theta * log(.Theta) + lgamma(.Theta) - lgamma(.Theta+y)
-        2 * sum(term * wt)
-    }
-    initialize <- expression({
-        if (any(y < 0))
-            stop("negative values not allowed for the negative binomial family")
-        n <- rep(1, nobs)
-        mustart <- y + (y == 0)/6
-    })
-    environment(variance) <- environment(validmu) <- environment(dev.resids) <- environment(aic) <- env
     score_phis_fun <- function (y, mu, phis, eta_zi) {
+        # the derivative of the log density w.r.t. phis
         phis <- exp(phis)
         mu_phis <- mu + phis
         comp1 <- digamma(y + phis) - digamma(phis)
-        comp2 <- log(phis) + 1 - log(mu_phis) - phis / (mu_phis)
-        comp3 <- - y / (mu_phis)
+        comp2 <- log(phis) + 1 - log(mu_phis) - phis / mu_phis
+        comp3 <- - y / mu_phis
         (comp1 + comp2 + comp3) * phis
     }
-    famname <- "negative binomial"
-    structure(list(family = famname, link = linktemp, linkfun = stats$linkfun,
-                   linkinv = stats$linkinv, variance = variance, mu.eta = stats$mu.eta,
-                   dev.resids = dev.resids, initialize = initialize, validmu = validmu,
-                   aic = aic, valideta = stats$valideta, score_phis_fun = score_phis_fun),
+    structure(list(family = "negative binomial", link = stats$name, 
+                   linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,
+                   score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun),
               class = "family")
 }
 
-zi.poisson <- function (link = "log") {
-    linktemp <- substitute(link)
-    if (!is.character(linktemp))
-        linktemp <- deparse(linktemp)
-    if (linktemp %in% c("log"))
-        stats <- make.link(linktemp)
-    else if (is.character(link)) {
-        stats <- make.link(link)
-        linktemp <- link
-    } else {
-        if (inherits(link, "link-glm")) {
-            stats <- link
-            if (!is.null(stats$name))
-                linktemp <- stats$name
-        } else {
-            stop(gettextf("\"%s\" link not available for zero-inflated poisson family; currently the only available is \"log\".",
-                          linktemp))
-        }
-    }
+zi.poisson <- function () {
+    stats <- make.link(link = "log")
     log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
         # the log density function
         ind_y0 <- y == 0
@@ -454,10 +422,88 @@ zi.poisson <- function (link = "log") {
             drop(lambda0_exp_mu0 / (lambda0_exp_mu0 + 1))
         out
     }
-    structure(list(family = "zero-inflated Poisson", link = stats$name, 
+    structure(list(family = "zero-inflated poisson", link = stats$name, 
                    linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,
                    score_eta_fun = score_eta_fun,
                    score_eta_zi_fun = score_eta_zi_fun),
               class = "family")
 }
 
+zi.negative.binomial <- function () {
+    stats <- make.link(link = "log")
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+        # the log density function
+        # NB part
+        phis <- exp(phis)
+        mu <- mu_fun(eta)
+        log_mu_phis <- log(mu + phis)
+        comp1 <- lgamma(y + phis) - lgamma(phis) - lgamma(y + 1)
+        comp2 <- phis * log(phis) - phis * log_mu_phis
+        comp3 <- y * log(mu) - y * log_mu_phis
+        out <- as.matrix(comp1 + comp2 + comp3)
+        # ZI part
+        ind_y0 <- y == 0
+        ind_y1 <- y > 0
+        pis <- as.matrix(plogis(eta_zi))
+        # combined
+        out[ind_y0, ] <- log(pis[ind_y0, ] + (1 - pis[ind_y0, ]) * exp(out[ind_y0, ]))
+        out[ind_y1, ] <- log(1 - pis[ind_y1, ]) + out[ind_y1, ]
+        attr(out, "mu_y") <- mu
+        out
+    }
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
+        # NB part
+        phis <- exp(phis)
+        mu <- as.matrix(mu)
+        mu_phis <- mu + phis
+        comp2 <- - phis / mu_phis
+        comp3 <- y / mu - y / mu_phis
+        mu.eta <- mu
+        out <- (comp2 + comp3) * mu.eta
+        # ZI part
+        ind_y0 <- y == 0
+        lambda <- as.matrix(exp(eta_zi))
+        t <- phis / (phis + mu[ind_y0, ])
+        den <- (lambda[ind_y0, ] + t^phis) * (phis + mu[ind_y0, ])^2
+        out[ind_y0, ] <- - phis^2 * t^(phis - 1) * mu[ind_y0, ] / den
+        out
+    }
+    score_eta_zi_fun <- function (y, mu, phis, eta_zi) {
+        phis <- exp(phis)
+        ind_y0 <- y == 0
+        ind_y1 <- y > 0
+        # NB part
+        mu <- as.matrix(mu)
+        lambda <- as.matrix(exp(eta_zi))
+        out <- mu
+        out[ind_y1, ] <- - lambda[ind_y1, ] / (1 + lambda[ind_y1, ])
+        # ZI part
+        t <- phis / (phis + mu[ind_y0, ])
+        out[ind_y0, ] <- lambda[ind_y0, ] / (lambda[ind_y0, ] + t^phis) - 
+            lambda[ind_y0, ] / (1 + lambda[ind_y0, ])
+        out
+    }
+    score_phis_fun <- function (y, mu, phis, eta_zi) {
+        # NB part
+        phis <- exp(phis)
+        mu <- as.matrix(mu)
+        mu_phis <- mu + phis
+        comp1 <- digamma(y + phis) - digamma(phis)
+        comp2 <- log(phis) + 1 - log(mu_phis) - phis / mu_phis
+        comp3 <- - y / mu_phis
+        out <- (comp1 + comp2 + comp3) * phis
+        # ZI part
+        ind_y0 <- y == 0
+        lambda <- as.matrix(exp(eta_zi))
+        t <- phis / (phis + mu[ind_y0, ])
+        t_phis <- t^phis
+        out[ind_y0, ] <- t_phis * (log(t) + 1 - t) * phis / (lambda[ind_y0, ] + t_phis)
+        out
+    }
+    structure(list(family = "zero-inflated negative binomial", link = stats$name, 
+                   linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,
+                   score_eta_fun = score_eta_fun,
+                   score_eta_zi_fun = score_eta_zi_fun,
+                   score_phis_fun = score_phis_fun),
+              class = "family")
+}

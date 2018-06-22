@@ -1,23 +1,22 @@
-\name{zi.poisson}
+\name{Zero Inflated Family Objects}
 \alias{zi.poisson}
+\alias{zi.negative.binomial}
 
 \title{
-Family function for Negative Binomial GLMs
+Family functions for Zero-Inflated Poisson and Negative Binomial Mixed Models
 }
 
 \description{
-Specifies the information required to fit a Negative Binomial generalized linear model,
-with known \code{theta} parameter, using \code{glm()}.
+Specifies the information required to fit a zero-inflated Poisson and zero-inflated 
+Negative Binomial generalized linear mixed model, using \code{mixed_model()}.
 }
 
 \usage{
-zi.poisson(link = "log")
+zi.poisson()
+zi.negative.binomial()
 }
 
-\arguments{
-\item{link}{The link function, as a character string or name; currently only \code{log} 
-is allowed.}
-}
+\note{Currently only the log-link is implemented.}
 
 \examples{
 # simulate some data from a negative binomial model
@@ -42,5 +41,17 @@ fm2 <- mixed_model(fixed = y ~ f1 * f2, random = ~ 1 | g, data = dd,
 
 # We do a likelihood ratio test between the two models
 anova(fm1, fm2)
+
+#############################################################################
+#############################################################################
+
+# The same as above but with a negative binomial model
+gm1 <- mixed_model(fixed = y ~ f1 * f2, random = ~ 1 | g, data = dd, 
+                  family = zi.negative.binomial(), zi_fixed = ~ 1)
+
+summary(gm1)
+
+# We do a likelihood ratio test between the Poisson and negative binomial models
+anova(fm1, gm1)
 }
 }
