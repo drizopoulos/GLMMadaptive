@@ -209,7 +209,7 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
         list_thetas <- c(list_thetas, list(gammas = gammas))
     }
     tht <- unlist(as.relistable(list_thetas))
-   if (!converged) {
+    if (!converged) {
         # start quasi-Newton iterations
         if (control$verbose) {
             cat("\nStart quasi-Newton iterations...\n\n")

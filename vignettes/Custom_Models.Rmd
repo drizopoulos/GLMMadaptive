@@ -150,7 +150,7 @@ my_negBinom2 <- function (link = "log") {
         comp1 <- digamma(y + phis) - digamma(phis)
         comp2 <- log(phis) + 1 - log(mu_phis) - phis / mu_phis
         comp3 <- - y / mu_phis
-        comp1 + comp2 + comp3
+        (comp1 + comp2 + comp3) * phis
     }
     structure(list(family = "user Neg Binom", link = stats$name, linkfun = stats$linkfun,
                    linkinv = stats$linkinv, log_dens = log_dens,

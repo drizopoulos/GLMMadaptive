@@ -321,7 +321,7 @@ binomial_log_dens = function (y, eta, mu_fun, phis, eta_zi) {
 
 poisson_log_dens = function (y, eta, mu_fun, phis, eta_zi) {
     mu_y <- mu_fun(eta)
-    out <- dpois(y, mu_y, TRUE)
+    out <- y * log(mu_y) - mu_y - lgamma(y + 1)
     attr(out, "mu_y") <- mu_y
     out
 }
@@ -383,7 +383,7 @@ negative.binomial <- function (theta = stop("'theta' must be specified"), link =
         comp1 <- digamma(y + phis) - digamma(phis)
         comp2 <- log(phis) + 1 - log(mu_phis) - phis / (mu_phis)
         comp3 <- - y / (mu_phis)
-        comp1 + comp2 + comp3
+        (comp1 + comp2 + comp3) * phis
     }
     famname <- "negative binomial"
     structure(list(family = famname, link = linktemp, linkfun = stats$linkfun,
