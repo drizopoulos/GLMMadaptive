@@ -67,6 +67,12 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
     update_GH <- seq(0, iter_EM, control$update_GH_every)
     tol1 <- control$tol1; tol2 <- control$tol2; tol3 <- control$tol3
     converged <- FALSE
+    err_mgs <- paste("A large coefficient value has been detected during the optimization.\n",
+                     "Please re-scale you covariates. Alternatively, this may due to a\n",
+                     "divergence of the optimization algorithm, indicating that an overly\n",
+                     "complex model is fitted to the data. For example, this could be\n",
+                     "caused when including random-effects terms (e.g., in the\n", 
+                     "zero-inflated part) that you do not need.\n")
     if (iter_EM > 0) {
         Params <- matrix(0.0, iter_EM, nparams)
         GH <- GHfun(post_modes, y_lis, N_lis, X_lis, Z_lis, offset_lis, X_zi_lis, Z_zi_lis, 
@@ -199,6 +205,10 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                                          phis, mu_fun, p_by, wGH, id)
                 gammas <- gammas - drop(solve(Hgammas, scgammas))
             }
+            if (any(abs(betas[-1L]) > control$max_coef_value) || 
+                (!is.null(gammas) && any(abs(gammas) > control$max_coef_value))) {
+                stop(err_mgs)
+            }
         }
     }
     list_thetas <- list(betas = betas, D = if (diag_D) log(diag(D)) else chol_transf(D))
@@ -243,6 +253,10 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
             gammas <- new_pars$gammas
             D <- if (diag_D) diag(exp(new_pars$D), length(new_pars$D)) else chol_transf(new_pars$D)
             post_modes <- GH$post_modes
+            if (any(abs(betas[-1L]) > control$max_coef_value) || 
+                (!is.null(gammas) && any(abs(gammas) > control$max_coef_value))) {
+                stop(err_mgs)
+            }
             if (opt$convergence == 0) {
                 converged <- TRUE
                 break

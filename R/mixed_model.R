@@ -84,7 +84,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
                 optim_method = "BFGS", parscale_betas = 0.1, parscale_D = 0.01,
                 parscale_phis = 0.01, parscale_gammas = 0.01, tol1 = 1e-03, tol2 = 1e-04, 
                 tol3 = 1e-07, numeric_deriv = "fd", nAGQ = if (nRE < 3) 11 else 7, 
-                update_GH_every = 10, verbose = FALSE)
+                update_GH_every = 10, max_coef_value = 10, verbose = FALSE)
     control <- c(control, list(...))
     namC <- names(con)
     con[(namc <- names(control))] <- control
