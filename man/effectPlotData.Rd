@@ -16,7 +16,8 @@ effects plot.
 effectPlotData(object, newdata, level, \dots)
 
 \method{effectPlotData}{MixMod}(object, newdata, 
-   level = 0.95, marginal = FALSE, \dots)
+   level = 0.95, marginal = FALSE, K = 200, seed = 1, 
+   \dots)
 }
 
 \arguments{
@@ -26,6 +27,9 @@ effectPlotData(object, newdata, level, \dots)
 \item{marginal}{logical; if \code{FALSE} predicted values are calculated for the "mean"
     subject (i.e., the one with random effects values equal to 0). When \code{TRUE} 
     marginal predicted values are calculated using function \code{\link{marginal_coefs}}.}
+\item{K}{numeric scalar denoting the number of Monte Carlo samples from the approximate
+    posterior of the parameters; applicable only for zero-inflated models.}
+\item{seed}{numerical scalar giving the seed to be used in the Monte Carlo scheme..}
 \item{\dots}{additional argument; currently none is used.}
 }
 
@@ -91,6 +95,22 @@ expit <- function (x) exp(x) / (1 + exp(x))
 xyplot(expit(pred) + expit(low) + expit(upp) ~ year | group, data = plot_data,
        type = "l", lty = c(1, 2, 2), col = c(2, 1, 1), lwd = 2,
        xlab = "Follow-up time", ylab = "Probabilities")
+
+# we put the two groups in the same panel
+my.panel.bands <- function(x, y, upper, lower, fill, col, subscripts, ..., font, 
+                           fontface) {
+    upper <- upper[subscripts]
+    lower <- lower[subscripts]
+    panel.polygon(c(x, rev(x)), c(upper, rev(lower)), col = fill, border = FALSE, ...)
+}
+
+xyplot(expit(pred) ~ year, group = group, data = plot_data, upper = expit(plot_data$upp),
+       low = expit(plot_data$low), type = "l", col = c("blue", "red"), 
+       fill = c("#0000FF80", "#FF000080"),
+       panel = function (x, y, ...) {
+           panel.superpose(x, y, panel.groups = 'my.panel.bands', ...)
+           panel.xyplot(x, y, lwd = 2,  ...)
+}, xlab = "Follow-up time", ylab = "Probabilities")
 
 # An effects plots for the marginal probabilities
 plot_data_m <- effectPlotData(fm1, nDF, marginal = TRUE)

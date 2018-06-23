@@ -36,12 +36,14 @@ print.MixMod <- function (x, digits = max(4, getOption("digits") - 4), ...) {
         print(x$gammas)
     }
     if (!is.null(x$phis)) {
-        cat("\nphi parameters:\n", x$phis, "\n")
+        if (x$family$family %in% c("negative binomial", "zero-inflated negative binomial")) 
+            cat("\ndispersion parameter:\n", exp(x$phis), "\n")
+        else
+            cat("\nphi parameters:\n", x$phis, "\n")
     }
     cat("\nlog-Lik:", x$logLik)
     cat("\n\n")
     invisible(x)
-
 }
 
 vcov.MixMod <- function (object, ...) {
@@ -191,7 +193,10 @@ print.summary.MixMod <- function (x, digits = max(4, getOption("digits") - 4), .
         print(coef_table)
     }
     if (!is.null(x$phis_table)) {
-        cat("\nphi parameters:\n")
+        if (x$family$family %in% c("negative binomial", "zero-inflated negative binomial")) 
+            cat("\nlog(dispersion) parameter:\n")
+        else
+            cat("\nphi parameters:\n")
         phis_table <- as.data.frame(x$phis_table)
         phis_table[] <- lapply(phis_table, round, digits = digits)
         print(phis_table)
@@ -260,9 +265,12 @@ confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra",
             diag_D <- all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
             exclude <- seq_len(length(object$coefficients) + if (diag_D) length(diag(D)) 
                                else length(D[lower.tri(D, TRUE)]))
-            ses_phis <- sqrt(diag(V[-exclude, -exclude]))
+            ses_phis <- sqrt(diag(V[-exclude, -exclude, drop = FALSE]))
             out <- cbind(phis + qnorm((1 - level) / 2) * ses_phis, phis,
                          phis + qnorm((1 + level) / 2) * ses_phis)
+            if (object$family$family %in% c("negative binomial", 
+                                            "zero-inflated negative binomial"))
+                out <- exp(out)
         }
     } else {
         if (is.null(object$gammas)) {
@@ -534,29 +542,80 @@ print.m_coefs <- function (x, digits = max(4, getOption("digits") - 4), ...) {
 
 effectPlotData <- function (object, newdata, level, ...) UseMethod("effectPlotData")
 
-effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FALSE, ...) {
-    if (!is.null(object$gammas)) {
-        stop("effectPlotData() is not yet implemented for zero-inflated models.")
-    }
-    if (marginal) {
-        mcoefs <- marginal_coefs(object, std_errors = TRUE, ...)
-        betas <- mcoefs$betas
-        var_betas <- mcoefs$var_betas
-    } else {
-        betas <- fixef(object)
-        n_betas <- length(betas)
-        V <- vcov(object)
-        var_betas <- V[seq_len(n_betas), seq_len(n_betas)]
-    }
+effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FALSE, 
+                                   K = 200, seed = 1, ...) {
     termsX <- delete.response(object$Terms$termsX)
     mfX <- model.frame(termsX, newdata, 
                        xlev = .getXlevels(termsX, object$model_frames$mfX))
     X <- model.matrix(termsX, mfX)
-    pred <- c(X %*% betas)
-    ses <- sqrt(diag(X %*% var_betas %*% t(X)))
-    newdata$pred <- pred
-    newdata$low <- pred + qnorm((1 - level) / 2) * ses
-    newdata$upp <- pred + qnorm((1 + level) / 2) * ses
+    if (is.null(object$gammas)) {
+        if (marginal) {
+            mcoefs <- marginal_coefs(object, std_errors = TRUE, ...)
+            betas <- mcoefs$betas
+            var_betas <- mcoefs$var_betas
+        } else {
+            betas <- fixef(object)
+            n_betas <- length(betas)
+            V <- vcov(object)
+            var_betas <- V[seq_len(n_betas), seq_len(n_betas)]
+        }
+        pred <- c(X %*% betas)
+        ses <- sqrt(diag(X %*% var_betas %*% t(X)))
+        newdata$pred <- pred
+        newdata$low <- pred + qnorm((1 - level) / 2) * ses
+        newdata$upp <- pred + qnorm((1 + level) / 2) * ses
+    } else {
+        if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
+            runif(1)
+        R.seed <- get(".Random.seed", envir = .GlobalEnv)
+        set.seed(seed)
+        RNGstate <- structure(seed, kind = as.list(RNGkind()))
+        on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+        mu_fun <- object$Funs$mu_fun
+        betas <- fixef(object)
+        gammas <- fixef(object, sub_model = "zero_inflated")
+        termsX_zi <- object$Terms$termsX_zi
+        mfX_zi <- model.frame(termsX_zi, newdata, 
+                              xlev = .getXlevels(termsX_zi, object$model_frames$mfX_zi))
+        X_zi <- model.matrix(termsX_zi, mfX_zi)
+        list_thetas <- list(betas = betas, gammas = gammas)
+        tht <- unlist(as.relistable(list_thetas))
+        V <- vcov(object)
+        ind <- c(seq_len(length(betas)), grep("zi_", colnames(V), fixed = TRUE))
+        V <- V[ind, ind]
+        new_tht <- MASS::mvrnorm(K, tht, V)
+        if (marginal) {
+            stop("the 'marginal = TRUE' option of effectPlotData() is not yet ", 
+                 "implemented for zero-inflated models.")
+            termsZ <- delete.response(object$Terms$termsZ)
+            mfZ <- model.frame(termsZ, newdata, 
+                               xlev = .getXlevels(termsZ, object$model_frames$mfZ))
+            Z <- model.matrix(termsZ, mfZ)
+            if (!is.null(object$Terms$termsZ_zi)) {
+                termsZ_zi <- object$Terms$termsZ_zi
+                mfZ_zi <- model.frame(termsZ_zi, newdata, 
+                                      xlev = .getXlevels(termsZ_zi, object$model_frames$mfZ_zi))
+                Z_zi <- model.matrix(termsZ_zi, mfZ_zi)
+            }
+        } else {
+            eta_y <- c(X %*% betas)
+            eta_zi <- c(X_zi %*% gammas)
+            pred <- mu_fun(eta_y) / (1 + exp(eta_zi))
+            Preds <- matrix(0.0, length(pred), K)
+            for (k in seq_len(K)) {
+                thetas_k <- relist(new_tht[k, ], skeleton = list_thetas)
+                betas_k <- thetas_k$betas
+                gammas_k <- thetas_k$gammas
+                eta_y <- c(X %*% betas_k)
+                eta_zi <- c(X_zi %*% gammas_k)
+                Preds[, k] <- mu_fun(eta_y) / (1 + exp(eta_zi))
+            }
+            newdata$pred <- pred
+            Qs <- apply(Preds, 1, quantile, probs = c((1 - level) / 2, (1 + level) / 2))
+            newdata$low <- Qs[1, ]
+            newdata$upp <- Qs[2, ]
+        }
+    }
     newdata
 }
 
@@ -622,33 +681,33 @@ create_lists <- function (object, newdata) {
 }
 
 predict.MixMod <- function (object, newdata, newdata2 = NULL, 
-                            type = c("link", "response"),
-                            level = c("mean_subject", "subject_specific", "marginal"),
-                            se.fit = FALSE, M = 300, df = 10, scale = 0.3, CI_level = 0.95, 
+                            type_pred = c("link", "response"),
+                            type = c("mean_subject", "subject_specific", "marginal"),
+                            se.fit = FALSE, M = 300, df = 10, scale = 0.3, level = 0.95, 
                             seed = 1, ...) {
     if (!is.null(object$gammas)) {
         stop("the predict() method is not yet implemented for zero-inflated models.")
     }
+    type_pred <- match.arg(type_pred)
     type <- match.arg(type)
-    level <- match.arg(level)
     termsX <- delete.response(object$Terms$termsX)
     mfX <- model.frame(termsX, newdata, 
                        xlev = .getXlevels(termsX, object$model_frames$mfX))
     X <- model.matrix(termsX, mfX)
-    if (level %in% c("mean_subject", "marginal")) {
-        if (level == "mean_subject") {
+    if (type %in% c("mean_subject", "marginal")) {
+        if (type == "mean_subject") {
             betas <- fixef(object)
             n_betas <- length(betas)
             V <- vcov(object)
             var_betas <- V[seq_len(n_betas), seq_len(n_betas)]
-            pred <- if (type == "link") c(X %*% betas) else object$family$linkinv(c(X %*% betas))
+            pred <- if (type_pred == "link") c(X %*% betas) else object$family$linkinv(c(X %*% betas))
             names(pred) <- row.names(newdata)
             se_fit <- if (se.fit) sqrt(diag(X %*% var_betas %*% t(X)))
         } else {
             mcoefs <- marginal_coefs(object, std_errors = TRUE, ...)
             betas <- mcoefs$betas
             var_betas <- mcoefs$var_betas
-            pred <- if (type == "link") c(X %*% betas) else object$family$linkinv(c(X %*% betas))
+            pred <- if (type_pred == "link") c(X %*% betas) else object$family$linkinv(c(X %*% betas))
             names(pred) <- row.names(newdata)
             se_fit <- if (se.fit) sqrt(diag(X %*% var_betas %*% t(X)))
         }
@@ -664,10 +723,15 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                           Lists[["var_fun"]], Lists[["mu.eta_fun"]], 
                           Lists[["score_eta_fun"]], Lists[["score_phis_fun"]])
         eta <- c(X %*% betas) + rowSums(Z * EBs$post_modes[id, , drop = FALSE])
-        pred <- if (type == "link") eta else object$family$linkinv(eta)
+        pred <- if (type_pred == "link") eta else object$family$linkinv(eta)
         names(pred) <- row.names(newdata)
         if (se.fit) {
+            if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
+                runif(1)
+            R.seed <- get(".Random.seed", envir = .GlobalEnv)
             set.seed(seed)
+            RNGstate <- structure(seed, kind = as.list(RNGkind()))
+            on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
             log_post_b <- function (b_i, y_i, X_i, Z_i, offset_i, betas, invD, phis, 
                                     log_dens, mu_fun) {
                 eta_y <- as.vector(X_i %*% betas + Z_i %*% b_i)
@@ -746,12 +810,11 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                 # Calculate Predictions
                 b[[m]] <- do.call("rbind", b_current)
                 eta <- c(X %*% betas) + rowSums(Z * b[[m]][id, , drop = FALSE])
-                Preds[, m] <- if (type == "link") eta else object$family$linkinv(eta)
+                Preds[, m] <- if (type_pred == "link") eta else object$family$linkinv(eta)
             }
-            rm(".Random.seed", envir = .GlobalEnv)
             se_fit <- apply(Preds, 1, sd, na.rm = TRUE)
             Qs <- apply(Preds, 1, quantile, 
-                        probs = c((1 - CI_level) / 2, (1 + CI_level) / 2))
+                        probs = c((1 - level) / 2, (1 + level) / 2))
             low <- Qs[1, ]
             upp <- Qs[2, ]
             names(se_fit) <- names(low) <- names(upp) <- names(pred)
@@ -768,7 +831,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                                 xlev = .getXlevels(termsZ, object$model_frames$mfZ))
             Z2 <- model.matrix(termsZ, mfZ2)
             eta2 <- c(X2 %*% betas) + rowSums(Z2 * EBs$post_modes[id2, , drop = FALSE])
-            pred2 <- if (type == "link") eta2 else object$family$linkinv(eta2)
+            pred2 <- if (type_pred == "link") eta2 else object$family$linkinv(eta2)
             names(pred2) <- row.names(newdata2)
             if (se.fit) {
                 Preds2 <- matrix(0.0, length(pred2), M)
@@ -777,10 +840,10 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                     betas <- new_pars$betas
                     b_m <- b[[m]]
                     eta2 <- c(X2 %*% betas) + rowSums(Z2 * b_m[id2, , drop = FALSE])
-                    Preds2[, m] <- if (type == "link") eta2 else object$family$linkinv(eta2)
+                    Preds2[, m] <- if (type_pred == "link") eta2 else object$family$linkinv(eta2)
                 }
                 se_fit2 <- apply(Preds2, 1, sd, na.rm = TRUE)
-                Qs2 <- apply(Preds2, 1, quantile, probs = c((1 - CI_level) / 2, (1 + CI_level) / 2))
+                Qs2 <- apply(Preds2, 1, quantile, probs = c((1 - level) / 2, (1 + level) / 2))
                 low2 <- Qs2[1, ]
                 upp2 <- Qs2[2, ]
                 names(se_fit2) <- names(low2) <- names(upp2) <- names(pred2)
@@ -789,13 +852,13 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
     }
     if (se.fit) {
         if (is.null(newdata2)) {
-            if (level == "subject_specific") 
+            if (type == "subject_specific") 
                 list(pred = pred, se.fit = se_fit, low = low, upp = upp,
                      success_rate = colMeans(success_rate))
             else 
                 list(pred = pred, se.fit = se_fit)
         } else {
-            if (level == "subject_specific")
+            if (type == "subject_specific")
                 list(pred = pred, pred2 = pred2, se.fit = se_fit, se.fit2 = se_fit2,
                      low = low, upp = upp, low2 = low2, upp2 = upp2)
             else
@@ -805,5 +868,3 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
         if (is.null(newdata2)) pred else list(pred = pred, pred2 = pred2)
     }
 }
-
-

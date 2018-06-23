@@ -65,10 +65,10 @@ residuals(object, \dots)
 predict(object, \dots)
 
 \method{predict}{MixMod}(object, newdata, newdata2 = NULL, 
-  type = c("link", "response"),
-  level = c("mean_subject", "subject_specific", "marginal"),
-  se.fit = FALSE, M = 300, df = 10, scale = 0.3, CI_level = 0.95, 
-  seed = 1, \dots)
+    type_pred = c("link", "response"),
+    type = c("mean_subject", "subject_specific", "marginal"),
+    se.fit = FALSE, M = 300, df = 10, scale = 0.3, level = 0.95, 
+    seed = 1, ...)
 }
 
 \arguments{
@@ -85,20 +85,25 @@ predict(object, \dots)
   parameters in the distribution of the outcome (e.g., the \eqn{\theta} parameter in
   the negative binomial family). Option \code{zero_inflated} corresponds to the 
   coefficients of the zero-inflated sub-model.}
-\item{level, CI_level}{numeric scalar between 0 and 1 denoting the level of the confidence interval.}
+\item{level}{numeric scalar between 0 and 1 denoting the level of the confidence interval.}
 \item{test}{logical; should a p-value be calculated.}
 \item{L}{a numeric matrix representing a contrasts matrix. This is only used when in 
   \code{anova()} only \code{object} is provided, and it can only be specified for the fixed 
   effects. When \code{L} is used, a Wald test is performed.}
-\item{type}{character string indicating the type of fitted values / residuals to calculate.
-    Option \code{"mean_subject"} corresponds to only using the fixed-effects part; option
-    \code{"subject_specific"} corresponds to using both the fixed- and random-effects 
-    parts; option \code{"marginal"} is based in multiplying the fixed effects design 
-    matrix with the marginal coefficients obtained by \code{\link{marginal_coefs}}.}
+\item{type}{character string indicating the type of fitted values / residuals / predictions
+    to calculate. Option \code{"mean_subject"} corresponds to only using the fixed-effects
+    part; option \code{"subject_specific"} corresponds to using both the fixed- and 
+    random-effects parts; option \code{"marginal"} is based in multiplying the fixed 
+    effects design matrix with the marginal coefficients obtained by 
+    \code{\link{marginal_coefs}}.}
 \item{link_fun}{the \code{link_fun} of \code{\link{marginal_coefs}}.}
 \item{newdata, newdata2}{a data frame based on which predictions are to be calculated.
     \code{newdata2} is only relevant when \code{level = "subject_specific"}; see 
     \bold{Details} for more information.}
+\item{type_pred}{character string indicating at which scale to calculate predictions. 
+    Options are \code{"link"} indicating to calculate predictions at the link function / 
+    linear predictor scale, and \code{"response"} indicating to calculate predictions at
+    the scale of the response variable.}
 \item{se.fit}{logical, if \code{TRUE} standard errors of predictions are returned.}
 \item{M}{numeric scalar denoting the number of Monte Carlo samples; see 
     \bold{Details} for more information.}
@@ -106,7 +111,7 @@ predict(object, \dots)
     distribution; see \bold{Details} for more information.}
 \item{scale}{numeric scalar or vector denoting the scaling applied to the subject-specific
     covariance matrices of the random effects; see \bold{Details} for more information.}
-\item{seed}{numerical scalar giving the seed to used in the Monte Carlo scheme.}
+\item{seed}{numerical scalar giving the seed to be used in the Monte Carlo scheme.}
 \item{\dots}{further arguments; currently none is used.}
 }
 
