@@ -25,7 +25,7 @@ Dimitris Rizopoulos \email{d.rizopoulos@erasmusmc.nl}
 set.seed(102)
 dd <- expand.grid(f1 = factor(1:3), f2 = LETTERS[1:2], g = 1:30, rep = 1:15,
                   KEEP.OUT.ATTRS = FALSE)
-mu <- 5*(-4 + with(dd, as.integer(f1) + 4 * as.numeric(f2)))
+mu <- 5 * (-4 + with(dd, as.integer(f1) + 4 * as.numeric(f2)))
 dd$y <- rnbinom(nrow(dd), mu = mu, size = 0.5)
 
 gm1 <-  mixed_model(fixed = y ~ f1 * f2, random = ~ 1 | g, data = dd, 

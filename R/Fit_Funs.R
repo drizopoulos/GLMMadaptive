@@ -88,7 +88,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
             ncx <- ncol(X)
             sc <- numeric(ncx)
             for (l in seq_len(ncx)) {
-                cc <- rowsum(X[, l] * z, id, reorder = FALSE)
+                cc <- drop(rowsum(X[, l] * z, id, reorder = FALSE))
                 sc[l] <- sum(c((cc * p_by) %*% wGH), na.rm = TRUE)
             }
             - sc
@@ -99,7 +99,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
             ncx <- ncol(X)
             sc <- numeric(ncx)
             for (l in seq_len(ncx)) {
-                cc <- rowsum(X[, l] * z, id, reorder = FALSE)
+                cc <- drop(rowsum(X[, l] * z, id, reorder = FALSE))
                 sc[l] <- sum(c((cc * p_by) %*% wGH), na.rm = TRUE)
             }
             - sc
@@ -111,7 +111,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
             ncx <- ncol(X)
             sc <- numeric(ncx)
             for (l in seq_len(ncx)) {
-                cc <- rowsum(X[, l] * mu_y, id, reorder = FALSE)
+                cc <- drop(rowsum(X[, l] * mu_y, id, reorder = FALSE))
                 sc[l] <- sum(c((cc * p_by) %*% wGH), na.rm = TRUE)
             }
             - Xty + sc
@@ -122,7 +122,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
             ncx <- ncol(X)
             sc <- numeric(ncx)
             for (l in seq_len(ncx)) {
-                cc <- rowsum(X[, l] * z, id, reorder = FALSE)
+                cc <- drop(rowsum(X[, l] * z, id, reorder = FALSE))
                 sc[l] <- sum(c((cc * p_by) %*% wGH))
             }
             - sc
@@ -164,7 +164,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
         ncx_zi <- ncol(X_zi)
         sc <- numeric(ncx_zi)
         for (l in seq_len(ncx_zi)) {
-            cc <- rowsum(X_zi[, l] * z, id, reorder = FALSE)
+            cc <- drop(rowsum(X_zi[, l] * z, id, reorder = FALSE))
             sc[l] <- sum(c((cc * p_by) %*% wGH), na.rm = TRUE)
         }
         - sc
@@ -213,7 +213,7 @@ score_betas <- function (betas, y, N, X, id, offset, phis, Ztb, eta_zi, p_by, wG
         if (!is.null(score_eta_fun)) {
             z <- score_eta_fun(y, mu_y, phis, eta_zi)
             for (l in seq_len(ncx)) {
-                cc <- rowsum(X[, l] * z, id, reorder = FALSE)
+                cc <- drop(rowsum(X[, l] * z, id, reorder = FALSE))
                 sc[l] <- sum(c((cc * p_by) %*% wGH))
             }
             - sc
@@ -222,7 +222,7 @@ score_betas <- function (betas, y, N, X, id, offset, phis, Ztb, eta_zi, p_by, wG
             l2 <- log_dens(y, eta_y - 1e-05, mu_fun, phis, eta_zi)
             z <- (l1 - l2) / (2 * 1e-05)
             for (l in seq_len(ncx)) {
-                cc <- rowsum(X[, l] * z, id, reorder = FALSE)
+                cc <- drop(rowsum(X[, l] * z, id, reorder = FALSE))
                 sc[l] <- sum(c((cc * p_by) %*% wGH))
             }
             - sc
@@ -302,7 +302,7 @@ score_gammas <- function (gammas, y, X, betas, Ztb, offset, X_zi, Z_zi, Z_zitb, 
     ncx_zi <- ncol(X_zi)
     sc <- numeric(ncx_zi)
     for (l in seq_len(ncx_zi)) {
-        cc <- rowsum(X_zi[, l] * z, id, reorder = FALSE)
+        cc <- drop(rowsum(X_zi[, l] * z, id, reorder = FALSE))
         sc[l] <- sum(c((cc * p_by) %*% wGH), na.rm = TRUE)
     }
     - sc

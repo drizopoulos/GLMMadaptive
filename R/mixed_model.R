@@ -109,8 +109,10 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     }
     if (!is.null(zi_fixed)) {
         inits <- c(inits, 
-                   list(gammas = glm.fit(X_zi, as.numeric(y == 0), family = binomial())$coefficients))
-        inits$betas <- glm.fit(X, y, family = poisson())$coefficients
+                   list(gammas = glm.fit(X_zi, as.numeric(y == 0), 
+                                         family = binomial())$coefficients))
+        if (family$family %in% c("zero-inflated poisson", "zero-inflated negative binomial"))
+            inits$betas <- glm.fit(X, y, family = poisson())$coefficients
     }
     ##########################
     # penalized

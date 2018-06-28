@@ -32,7 +32,7 @@ print.MixMod <- function (x, digits = max(4, getOption("digits") - 4), ...) {
     cat("\nFixed effects:\n")
     print(x$coefficients)
     if (!is.null(x$gammas)) {
-        cat("\nZero-inflated part coefficients:\n")
+        cat("\nZero-inflated / Zero-part coefficients:\n")
         print(x$gammas)
     }
     if (!is.null(x$phis)) {
@@ -58,7 +58,7 @@ logLik.MixMod <- function (object, ...) {
     out
 }
 
-coef.MixMod <- function (object, sub_model = c("main", "zero_inflated"), ...) {
+coef.MixMod <- function (object, sub_model = c("main", "zero_part"), ...) {
     sub_model <- match.arg(sub_model)
     b <- ranef(object)
     RE_zi <- grep("zi_", colnames(b), fixed = TRUE)
@@ -72,7 +72,7 @@ coef.MixMod <- function (object, sub_model = c("main", "zero_inflated"), ...) {
         out[, colnames(b)] <- out[, colnames(b)] + b
         out
     } else {
-        gammas <- fixef(object, sub_model = "zero_inflated")
+        gammas <- fixef(object, sub_model = "zero_part")
         if (length(RE_zi)) {
             b <- b[, RE_zi, drop = FALSE]
             colnames(b) <- gsub("zi_", "", colnames(b), fixed = TRUE)
@@ -88,7 +88,7 @@ coef.MixMod <- function (object, sub_model = c("main", "zero_inflated"), ...) {
     }
 }
 
-fixef.MixMod <- function(object, sub_model = c("main", "zero_inflated"), ...) {
+fixef.MixMod <- function(object, sub_model = c("main", "zero_part"), ...) {
     sub_model <- match.arg(sub_model)
     if (sub_model == "main") {
         object$coefficients
@@ -96,7 +96,7 @@ fixef.MixMod <- function(object, sub_model = c("main", "zero_inflated"), ...) {
         if (!is.null(object$gammas)) 
             object$gammas
         else
-            stop("the fitted model does not have a zero-inflated part.")
+            stop("the fitted model does not have an extra zero-part.")
     }
 }
 
@@ -186,7 +186,7 @@ print.summary.MixMod <- function (x, digits = max(4, getOption("digits") - 4), .
     coef_table[["p-value"]] <- format.pval(coef_table[["p-value"]], eps = 1e-04)
     print(coef_table)
     if (!is.null(x[["coef_table_zi"]])) {
-        cat("\nZero-inflated part coefficients:\n")
+        cat("\nZero-inflated / Zero-part coefficients:\n")
         coef_table <- as.data.frame(x[["coef_table_zi"]])
         coef_table[1:3] <- lapply(coef_table[1:3], round, digits = digits)
         coef_table[["p-value"]] <- format.pval(coef_table[["p-value"]], eps = 1e-04)
@@ -215,7 +215,7 @@ coef.summary.MixMod <- function (object, ...) {
 }
 
 confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra", 
-                                             "zero_inflated"), 
+                                             "zero_part"), 
                             level = 0.95, ...) {
     parm <- match.arg(parm)
     V <- vcov(object)
@@ -274,7 +274,7 @@ confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra",
         }
     } else {
         if (is.null(object$gammas)) {
-            stop("the fitted model does not have a zero-inflated part.")
+            stop("the fitted model does not have an extra zero part.")
         } else {
             gammas <- object$gammas
             ind_gammas <- grep("zi_", colnames(V), fixed = TRUE)
@@ -414,7 +414,7 @@ fitted.MixMod <- function (object, type = c("mean_subject", "subject_specific", 
     mu <- object$Funs$mu_fun(eta)
     if (!is.null(object$gammas)) {
         X_zi <- model.matrix(object$Terms$termsX_zi, object$model_frames$mfX_zi)
-        gammas <- fixef(object, "zero_inflated")
+        gammas <- fixef(object, "zero_part")
         eta_zi <- c(X_zi %*% gammas)
         if (type == "subject_specific" && !is.null(object$Terms$termsZ_zi)) {
             b <- ranef(object)
@@ -446,7 +446,7 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
                                    seed = 1, cores = max(parallel::detectCores() - 1, 1), 
                                    ...) {
     if (!is.null(object$gammas)) {
-        stop("marginal_coefs() is not yet implemented for zero-inflated models.")
+        stop("marginal_coefs() is not yet implemented for models with an extra zero-part.")
     }
     X <- model.matrix(object$Terms$termsX, object$model_frames$mfX)
     Z <- model.matrix(object$Terms$termsZ, object$model_frames$mfZ)
@@ -586,7 +586,7 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
         new_tht <- MASS::mvrnorm(K, tht, V)
         if (marginal) {
             stop("the 'marginal = TRUE' option of effectPlotData() is not yet ", 
-                 "implemented for zero-inflated models.")
+                 "implemented for models with an extra zero-part.")
             termsZ <- delete.response(object$Terms$termsZ)
             mfZ <- model.frame(termsZ, newdata, 
                                xlev = .getXlevels(termsZ, object$model_frames$mfZ))
@@ -686,7 +686,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                             se.fit = FALSE, M = 300, df = 10, scale = 0.3, level = 0.95, 
                             seed = 1, ...) {
     if (!is.null(object$gammas)) {
-        stop("the predict() method is not yet implemented for zero-inflated models.")
+        stop("the predict() method is not yet implemented for models with an extra zero-part.")
     }
     type_pred <- match.arg(type_pred)
     type <- match.arg(type)
