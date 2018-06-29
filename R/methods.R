@@ -32,7 +32,7 @@ print.MixMod <- function (x, digits = max(4, getOption("digits") - 4), ...) {
     cat("\nFixed effects:\n")
     print(x$coefficients)
     if (!is.null(x$gammas)) {
-        cat("\nZero-inflated / Zero-part coefficients:\n")
+        cat("\nZero-part coefficients:\n")
         print(x$gammas)
     }
     if (!is.null(x$phis)) {
@@ -186,18 +186,20 @@ print.summary.MixMod <- function (x, digits = max(4, getOption("digits") - 4), .
     coef_table[["p-value"]] <- format.pval(coef_table[["p-value"]], eps = 1e-04)
     print(coef_table)
     if (!is.null(x[["coef_table_zi"]])) {
-        cat("\nZero-inflated / Zero-part coefficients:\n")
+        cat("\nZero-part coefficients:\n")
         coef_table <- as.data.frame(x[["coef_table_zi"]])
         coef_table[1:3] <- lapply(coef_table[1:3], round, digits = digits)
         coef_table[["p-value"]] <- format.pval(coef_table[["p-value"]], eps = 1e-04)
         print(coef_table)
     }
     if (!is.null(x$phis_table)) {
-        if (x$family$family %in% c("negative binomial", "zero-inflated negative binomial")) 
+        if (NB <- x$family$family %in% c("negative binomial", "zero-inflated negative binomial")) 
             cat("\nlog(dispersion) parameter:\n")
         else
             cat("\nphi parameters:\n")
         phis_table <- as.data.frame(x$phis_table)
+        if (NB) 
+            row.names(phis_table) <- " "
         phis_table[] <- lapply(phis_table, round, digits = digits)
         print(phis_table)
     }
@@ -411,9 +413,12 @@ fitted.MixMod <- function (object, type = c("mean_subject", "subject_specific", 
         betas <- marginal_coefs(object, link_fun = link_fun)$betas
         eta <- c(X %*% betas)
     }
+    if (!is.null(object$offset))
+        eta <- eta + object$offset
     mu <- object$Funs$mu_fun(eta)
     if (!is.null(object$gammas)) {
         X_zi <- model.matrix(object$Terms$termsX_zi, object$model_frames$mfX_zi)
+        offset_zi <- model.offset(object$model_frames$mfX_zi)
         gammas <- fixef(object, "zero_part")
         eta_zi <- c(X_zi %*% gammas)
         if (type == "subject_specific" && !is.null(object$Terms$termsZ_zi)) {
@@ -425,6 +430,8 @@ fitted.MixMod <- function (object, type = c("mean_subject", "subject_specific", 
             id <- match(object$id, unique(object$id))
             eta_zi <- eta_zi + rowSums(Z_zi * b[id, , drop = FALSE])
         }
+        if (!is.null(offset_zi))
+            eta_zi <- eta_zi + offset_zi
         (1 - plogis(eta_zi)) * mu
     }
     names(mu) <- rownames(X)
@@ -432,11 +439,12 @@ fitted.MixMod <- function (object, type = c("mean_subject", "subject_specific", 
 }
 
 residuals.MixMod <- function (object, type = c("mean_subject", "subject_specific",
-                                               "marginal"), link_fun = NULL, ...) {
+                                               "marginal"), link_fun = NULL, 
+                              tasnf_y = function (x) x, ...) {
     type <- match.arg(type)
     fits <- fitted(object, type = type, link_fun = link_fun)
     y <- model.response(object$model_frames$mfX)
-    y - fits
+    tasnf_y(y) - fits
 }
 
 marginal_coefs <- function (object, ...) UseMethod("marginal_coefs")
@@ -867,4 +875,112 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
     } else {
         if (is.null(newdata2)) pred else list(pred = pred, pred2 = pred2)
     }
+}
+
+simulate.MixMod <- function (object, nsim = 1, seed = NULL, acount_MLEs_var = FALSE, 
+                             sim_fun = NULL, ...) {
+    if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
+        runif(1)
+    if (is.null(seed)) 
+        RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+    else {
+        R.seed <- get(".Random.seed", envir = .GlobalEnv)
+        set.seed(seed)
+        RNGstate <- structure(seed, kind = as.list(RNGkind()))
+        on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+    }
+    if (is.null(sim_fun)) {
+        if (object$family$family == "binomial") {
+            N <- if ((y <- NCOL(model.response(object$model_frames$mfX))) == 2) 
+                y[, 1] + y[, 2] else 1
+            .N <- N
+            env <- new.env(parent = .GlobalEnv)
+            assign(".N", N, envir = env)
+            sim_fun <- function (n, mu, phis, eta_zi) {
+                rbinom(n = n, size = .N, prob = mu)
+            }
+            environment(sim_fun) <- env
+        } else if (object$family$family == "poisson") {
+            sim_fun <- function (n, mu, phis, eta_zi) {
+                rpois(n = n, lambda = mu)
+            }
+        } else if (object$family$family == "negative binomial") {
+            sim_fun <- function (n, mu, phis, eta_zi) {
+                rnbinom(n = n, size = exp(phis), mu = mu)
+            }
+        } else if (object$family$family == "zero-inflated poisson") {
+            sim_fun <- function (n, mu, phis, eta_zi) {
+                out <- rpois(n = n, lambda = mu)
+                out[as.logical(rbinom(n, 1, plogis(eta_zi)))] <- 0
+                out
+            }
+        } else if (object$family$family == "zero-inflated negative binomial") {
+            sim_fun <- function (n, mu, phis, eta_zi) {
+                out <- rnbinom(n = n, size = exp(phis), mu = mu)
+                out[as.logical(rbinom(n, 1, plogis(eta_zi)))] <- 0
+                out
+            }
+        } else if (!is.null(object$family$simulate) && is.function(object$family$simulate)) {
+            sim_fun <- object$family$simulate
+        } else {
+            stop("'sim_fun()' needs to be specified; check the help page.")
+        }
+    }
+    id <- object$id
+    id <- match(id, unique(id))
+    n <- length(unique(id))
+    X <- model.matrix(object$Terms$termsX, object$model_frames$mfX)
+    Z <- model.matrix(object$Terms$termsZ, object$model_frames$mfZ)
+    offset <- model.offset(object$model_frames$mfX)
+    if (has_X_Zi <- !is.null(object$Terms$termsX_zi)) {
+        X_zi <- model.matrix(object$Terms$termsX_zi, object$model_frames$mfX_zi)
+        offset_zi <- model.offset(object$model_frames$mfX_zi)
+    }
+    if (has_Z_Zi <- !is.null(object$Terms$termsZ_zi)) {
+        Z_zi <- model.matrix(object$Terms$termsZ_zi, object$model_frames$mfZ_zi)
+    }
+    betas <- fixef(object)
+    D <- object$D
+    gammas <- object$gammas
+    phis <- object$phis
+    diag_D <- all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
+    nRE <- ncol(D)
+    ind <- vector("logical", nRE)
+    ind[grep("zi_", colnames(D), fixed = TRUE, invert = TRUE)] <- TRUE
+    if (acount_MLEs_var) {
+        list_thetas <- list(betas = betas, 
+                            D = if (diag_D) log(diag(D)) else chol_transf(D))
+        if (!is.null(phis)) {
+            list_thetas <- c(list_thetas, list(phis = phis))
+        }
+        if (!is.null(gammas)) {
+            list_thetas <- c(list_thetas, list(gammas = gammas))
+        }
+        tht <- unlist(as.relistable(list_thetas))
+        new_thetas <- MASS::mvrnorm(nsim, tht, vcov(object))
+    }
+    out <- matrix(0.0, nrow(X), nsim)
+    for (i in seq_len(nsim)) {
+        if (acount_MLEs_var) {
+            new_thetas_i <- relist(new_thetas[i, ], skeleton = list_thetas)
+            betas <- new_thetas_i$betas
+            phis <- new_thetas_i$phis
+            gammas <- new_thetas_i$gammas
+            D <- if (diag_D) diag(exp(new_thetas_i$D), length(new_thetas_i$D)) 
+            else chol_transf(new_thetas_i$D)
+        }
+        b_i <- MASS::mvrnorm(n, rep(0, nRE), D)
+        eta_y <- c(X %*% betas) + rowSums(Z * b_i[id, ind, drop = FALSE])
+        if (!is.null(offset))
+            eta_y <- eta_y + offset
+        mu <- object$Funs$mu_fun(eta_y)
+        if (has_X_Zi)
+            eta_zi <- c(X_zi %*% gammas)
+        if (has_Z_Zi)
+            eta_zi <- eta_zi + rowSums(Z_zi * b_i[id, !ind, drop = FALSE])
+        if (has_X_Zi && !is.null(offset_zi))
+            eta_zi <- eta_zi + offset_zi
+        out[, i] <- sim_fun(nrow(X), mu, phis, eta_zi)
+    }
+    out
 }

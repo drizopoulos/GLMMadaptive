@@ -16,6 +16,8 @@
 \alias{residuals.MixMod}
 \alias{predict}
 \alias{predict.MixMod}
+\alias{simulate}
+\alias{simulate.MixMod}
 
 \title{
 Various Methods for Standard Generics
@@ -29,12 +31,12 @@ Methods for object of class \code{"MixMod"} for standard generic functions.
 
 coef(object, \dots)
 
-\method{coef}{MixMod}(object, sub_model = c("main", "zero_inflated"), 
+\method{coef}{MixMod}(object, sub_model = c("main", "zero_part"), 
     \dots)
 
 fixef(object, \dots)
 
-\method{fixef}{MixMod}(object, sub_model = c("main", "zero_inflated"), \dots)
+\method{fixef}{MixMod}(object, sub_model = c("main", "zero_part"), \dots)
 
 ranef(object, \dots)
 
@@ -43,7 +45,7 @@ ranef(object, \dots)
 confint(object, parm, level = 0.95, \dots)
 
 \method{confint}{MixMod}(object, 
-  parm = c("fixed-effects", "var-cov","extra", "zero_inflated"), 
+  parm = c("fixed-effects", "var-cov","extra", "zero_part"), 
   level = 0.95, \dots)
 
 anova(object, \dots)
@@ -60,7 +62,7 @@ residuals(object, \dots)
 
 \method{residuals}{MixMod}(object, 
   type = c("mean_subject", "subject_specific", "marginal"), 
-  link_fun = NULL, \dots)
+  link_fun = NULL, tasnf_y = function (x) x, \dots)
   
 predict(object, \dots)
 
@@ -68,7 +70,12 @@ predict(object, \dots)
     type_pred = c("link", "response"),
     type = c("mean_subject", "subject_specific", "marginal"),
     se.fit = FALSE, M = 300, df = 10, scale = 0.3, level = 0.95, 
-    seed = 1, ...)
+    seed = 1, \dots)
+    
+simulate(object, nsim = 1, seed = NULL, \dots)
+
+\method{simulate}{MixMod}(object, nsim = 1, seed = NULL, 
+    acount_MLEs_var = FALSE, sim_fun = NULL, \dots)
 }
 
 \arguments{
@@ -97,6 +104,9 @@ predict(object, \dots)
     effects design matrix with the marginal coefficients obtained by 
     \code{\link{marginal_coefs}}.}
 \item{link_fun}{the \code{link_fun} of \code{\link{marginal_coefs}}.}
+\item{tasnf_y}{a function to tranform the grouped / repeated measurements outcome before
+    calculating the residuals; for example, relevant in two-part models for semi-continuous
+    data, in which it is assumed that the log outcome follows a normal distribution.}
 \item{newdata, newdata2}{a data frame based on which predictions are to be calculated.
     \code{newdata2} is only relevant when \code{level = "subject_specific"}; see 
     \bold{Details} for more information.}
@@ -112,6 +122,18 @@ predict(object, \dots)
 \item{scale}{numeric scalar or vector denoting the scaling applied to the subject-specific
     covariance matrices of the random effects; see \bold{Details} for more information.}
 \item{seed}{numerical scalar giving the seed to be used in the Monte Carlo scheme.}
+\item{nsim}{numeric scalare giving the number of times to simulate the response variable.}
+\item{acount_MLEs_var}{logical; if \code{TRUE} it accounts for the variability of the 
+    maximum likelihood estimates (MLEs) by simulating a new value for the parameters from 
+    a multivariate normal distribution with mean the MLEs and covariance matrix the 
+    covariance matrix of the MLEs.}
+\item{sim_fun}{a function based on which to simulate the response variable. This is 
+    relevant for non-standard models. The \code{simulate()} function also tries to extract 
+    this function from the \code{family} component of \code{object}. The function should 
+    have the following four arguments: \code{n} a numeric scalar denoting the number of
+    observations to simulate, \code{mu} a numeric vector of means, \code{phis} a numeric
+    vector of extra dispersion/scale parameters, and \code{eta_zi} a numeric vector for 
+    the zero-part of the model, if this is relevant.}
 \item{\dots}{further arguments; currently none is used.}
 }
 
