@@ -8,7 +8,8 @@ importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
              "model.response", "na.exclude", "optim", "pchisq", "pnorm",
              "terms", "var", "vcov", ".getXlevels", "delete.response", "qnorm", "rnorm",
            "confint", "residuals", "coef", "anova", "dt", "quantile", "rchisq", "runif", 
-           "sd", "predict", "binomial", "plogis", "poisson", "simulate")
+           "sd", "predict", "binomial", "plogis", "poisson", "simulate", "rbinom", 
+           "rnbinom", "rpois")
 importFrom("utils", "as.relistable", "relist")
 importFrom("MASS", "mvrnorm")
 importFrom("parallel", "makeCluster", "stopCluster", "detectCores", "parLapply")

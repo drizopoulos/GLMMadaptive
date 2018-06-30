@@ -20,13 +20,133 @@ library("GLMMadaptive")
 ```
 
 # Extended Models
+Function `mixed_model()` of **GLMMadaptive** can also be used to fit zero-inflated and 
+two-part mixed effects models. For both types of models, a suitable `family` object needs 
+to be specified as outlined in the vignette [Custom Models](https://cran.r-project.org/web/packages/GLMMadaptive/vignettes/Custom_Models.html),  
+and also arguments `zi_fixed` and `zi_random` of `mixed_model()` come into play. In these a
+rguments, the user can specify the fixed and random effects `formulas` of the logistic 
+regression for the zero-part of the distribution of the outcome. We should note that the 
+user has the option to leave `zi_random` set to `NULL`, in which case the for the zero-part
+we have a logistic regression with only fixed effect and no random effects.
+
+In addition, in the specification of the `family` object and in order to better facilitate 
+the internal computations, the user may specify the function `score_eta_zi_fun` that 
+calculates the derivative of the log probability density function or the log probability
+mass function with respect to `eta_zi` that denotes the linear predictor of the logistic 
+regression for the zero-part. Here we provide three examples to illustrate how such models
+can be fitted.
 
 ## Zero-Inflated Poisson Mixed Effects Model
+We start our illustrations by showing how we can fit a zero-inflated Poisson mixed effects
+model. The specification of the required `family` object is already available in the 
+package as the object returned by `zi.poisson()`. 
+*Currently, only the log link is allowed.* First, we simulate some data
+```{r}
+set.seed(1234)
+n <- 100 # number of subjects
+K <- 8 # number of measurements per subject
+t_max <- 5 # maximum follow-up time
+
+# we constuct a data frame with the design: 
+# everyone has a baseline measurment, and then measurements at random follow-up times
+DF <- data.frame(id = rep(seq_len(n), each = K),
+                 time = c(replicate(n, c(0, sort(runif(K - 1, 0, t_max))))),
+                 sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
+
+# design matrices for the fixed and random effects non-zero part
+X <- model.matrix(~ sex * time, data = DF)
+Z <- model.matrix(~ 1, data = DF)
+# design matrices for the fixed and random effects zero part
+X_zi <- model.matrix(~ sex, data = DF)
+Z_zi <- model.matrix(~ 1, data = DF)
+
+betas <- c(1.5, 0.05, 0.05, -0.03) # fixed effects coefficients non-zero part
+shape <- 2
+gammas <- c(-1.5, 0.5) # fixed effects coefficients zero part
+D11 <- 0.5 # variance of random intercepts non-zero part
+D22 <- 0.4 # variance of random intercepts zero part
+
+# we simulate random effects
+b <- cbind(rnorm(n, sd = sqrt(D11)), rnorm(n, sd = sqrt(D22)))
+# linear predictor non-zero part
+eta_y <- as.vector(X %*% betas + rowSums(Z * b[DF$id, 1, drop = FALSE]))
+# linear predictor zero part
+eta_zi <- as.vector(X_zi %*% gammas + rowSums(Z_zi * b[DF$id, 2, drop = FALSE]))
+# we simulate negative binomial longitudinal data
+DF$y <- rnbinom(n * K, size = shape, mu = exp(eta_y))
+# we set the extra zeros
+DF$y[as.logical(rbinom(n * K, 1, plogis(eta_zi)))] <- 0
+```
+
+We start by fitting a zero-inflated Poisson mixed model with only fixed effects in the 
+zero part (i.e., we do not specify the `zi_random` argument):
+```{r}
+fm1 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF,
+                   family = zi.poisson(), zi_fixed = ~ sex)
+
+fm1
+```
+
+We extend `fm1` by allowing also for random intercept in the zero-part: 
+```{r}
+fm2 <- update(fm1, zi_random = ~ 1 | id)
+
+fm2
+```
+
+We test if we need the extra random effect using a likelihood ratio test:
+```{r}
+anova(fm1, fm2)
+```
 
 ## Zero-Inflated Negative Binomial Mixed Effects Model
 
+```{r}
+gm1 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF,
+                   family = zi.negative.binomial(), zi_fixed = ~ sex)
+```
+
 ## Two-Part Mixed Effects Model for Semi-Continuous Data
 
+```{r}
+set.seed(1234)
+n <- 100 # number of subjects
+K <- 8 # number of measurements per subject
+t_max <- 5 # maximum follow-up time
+
+# we constuct a data frame with the design: 
+# everyone has a baseline measurment, and then measurements at random follow-up times
+DF <- data.frame(id = rep(seq_len(n), each = K),
+                 time = c(replicate(n, c(0, sort(runif(K - 1, 0, t_max))))),
+                 sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
+
+# design matrices for the fixed and random effects non-zero part
+X <- model.matrix(~ sex * time, data = DF)
+Z <- model.matrix(~ time, data = DF)
+# design matrices for the fixed and random effects zero part
+X_zi <- model.matrix(~ sex, data = DF)
+Z_zi <- model.matrix(~ 1, data = DF)
+
+betas <- c(-2.13, -0.25, 0.24, -0.05) # fixed effects coefficients non-zero part
+sigma <- 0.5 # standard deviation error terms non-zero part
+gammas <- c(-1.5, 0.5) # fixed effects coefficients zero part
+D11 <- 0.5 # variance of random intercepts non-zero part
+D22 <- 0.1 # variance of random slopes non-zero part
+D33 <- 0.4 # variance of random intercepts zero part
+
+# we simulate random effects
+b <- cbind(rnorm(n, sd = sqrt(D11)), rnorm(n, sd = sqrt(D22)), rnorm(n, sd = sqrt(D33)))
+# linear predictor non-zero part
+eta_y <- as.vector(X %*% betas + rowSums(Z * b[DF$id, 1:2, drop = FALSE]))
+# linear predictor zero part
+eta_zi <- as.vector(X_zi %*% gammas + rowSums(Z_zi * b[DF$id, 3, drop = FALSE]))
+# we simulate Poisson longitudinal data
+DF$y <- exp(rnorm(n * K, eta_y, sd = sigma))
+# we set the extra zeros
+DF$y[as.logical(rbinom(n * K, 1, plogis(eta_zi)))] <- 0
+```
+
+We define the `family` object
 ```{r}
 two_part.lognormal <- function () {
     stats <- make.link("identity")
@@ -87,4 +207,29 @@ two_part.lognormal <- function () {
 }
 ```
 
+We fit the models
+```{r}
+km1 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF, 
+                  family = two_part.lognormal(), n_phis = 1,
+                  zi_fixed = ~ sex)
+
+km1
+```
+
+```{r}
+km2 <- update(km1, random = ~ 1 || id, zi_random = ~ 1 | id)
+
+km2
+```
+
+```{r}
+y <- DF$y
+y[y > 0] <- log(y[y > 0])
+x_vals <- seq(min(y), max(y), length.out = 500)
+out <- simulate(km2, nsim = 30, acount_MLEs_var = TRUE)
+rep_y <- apply(out, 2, function (x, x_vals) ecdf(x)(x_vals), x_vals = x_vals)
+matplot(x_vals, rep_y, type = "l", lty = 1, col = "lightgrey", 
+        xlab = "response variable", ylab = "Empirical CDF")
+lines(x_vals, ecdf(y)(x_vals))
+```
 

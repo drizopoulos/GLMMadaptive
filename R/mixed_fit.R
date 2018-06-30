@@ -73,6 +73,9 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                      "complex model is fitted to the data. For example, this could be\n",
                      "caused when including random-effects terms (e.g., in the\n", 
                      "zero-inflated part) that you do not need.\n")
+    large_shape_mgs <- paste("A value greater than 22000 has been detected for the shape/size\n",
+                             "parameter of the negative binomial distribution. This typically\n",
+                             "indicates that the Poisson model would be better.\n")
     if (iter_EM > 0) {
         Params <- matrix(0.0, iter_EM, nparams)
         GH <- GHfun(post_modes, y_lis, N_lis, X_lis, Z_lis, offset_lis, X_zi_lis, Z_zi_lis, 
@@ -166,7 +169,7 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
             Dn <- matrix(colMeans(post_b2, na.rm = TRUE), nRE, nRE)
             D <- 0.5 * (Dn + t(Dn))
             if (diag_D) {
-                D <- diag(diag(D), ncz)
+                D <- diag(diag(D), nRE)
             }
             if (has_phis) {
                 Hphis <- numer_deriv_vec(phis, score_phis, y = y, X = X, betas = betas,
@@ -208,6 +211,10 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
             if (any(abs(betas[-1L]) > control$max_coef_value) || 
                 (!is.null(gammas) && any(abs(gammas) > control$max_coef_value))) {
                 stop(err_mgs)
+            }
+            if (family$family %in% c("zero-inflated negative binomial", "negative binomial") &&
+                exp(phis) > control$max_phi_value) {
+                stop(large_shape_mgs)
             }
         }
     }
@@ -257,6 +264,11 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                 (!is.null(gammas) && any(abs(gammas) > control$max_coef_value))) {
                 stop(err_mgs)
             }
+            if (family$family %in% c("zero-inflated negative binomial", "negative binomial") &&
+                exp(phis) > control$max_phi_value) {
+                stop(large_shape_mgs)
+            }
+            
             if (opt$convergence == 0) {
                 converged <- TRUE
                 break
