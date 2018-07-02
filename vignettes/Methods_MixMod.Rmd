@@ -210,13 +210,26 @@ xyplot(expit(pred) + expit(low) + expit(upp) ~ time | sex, data = plot_data,
 
 The `effectPlotData()` function also allows to compute marginal predictions using the
 marginalized coefficients described above. This is achieved by setting `marginal = TRUE`
-in  the respective call (due to the require computing time, plot not shown):
+in  the respective call (due to the required computing time, plot not shown):
 ```{r, eval = FALSE}
-plot_data_m <- effectPlotData(fm, nDF, marginal = TRUE)
+plot_data_m <- effectPlotData(fm, nDF, marginal = TRUE, cores = 4)
 
-xyplot(expit(pred) + expit(low) + expit(upp) ~ time | sex, data = plot_data_m,
-       type = "l", lty = c(1, 2, 2), col = c(2, 1, 1), lwd = 2,
-       xlab = "Follow-up time", ylab = "Marginal Probabilities")
+# we put the two groups in the same panel
+my.panel.bands <- function(x, y, upper, lower, fill, col, subscripts, ..., font, 
+                           fontface) {
+    upper <- upper[subscripts]
+    lower <- lower[subscripts]
+    panel.polygon(c(x, rev(x)), c(upper, rev(lower)), col = fill, border = FALSE, ...)
+}
+
+xyplot(expit(pred) ~ time, group = sex, data = plot_data_m, 
+       upper = expit(plot_data_m$upp), low = expit(plot_data_m$low), 
+       type = "l", col = c("blue", "red"), 
+       fill = c("#0000FF80", "#FF000080"),
+       panel = function (x, y, ...) {
+           panel.superpose(x, y, panel.groups = 'my.panel.bands', ...)
+           panel.xyplot(x, y, lwd = 2,  ...)
+}, xlab = "Follow-up time", ylab = "Marginal Probabilities")
 ```
 
 ## Comparing Two Models
@@ -230,3 +243,68 @@ gm <- mixed_model(fixed = y ~ sex * time, random = ~ time || id, data = DF,
 anova(gm, fm)
 ```
 
+
+## Predictions
+Using the `predict()` method we can calculate predictions for new subjects. As an example,
+we treat subject 1 from the `DF` dataset as a new patient (in the code below we change his
+`id` variable):
+```{r}
+pred_DF <- DF[DF$id == 1, ][1:4, ]
+pred_DF$id <- paste0("N", as.character(pred_DF$id))
+pred_DF
+```
+
+We start by computing predictions based only on the fixed-effects part of the model; 
+because of the nonlinear link function, these predictions are of subjects with random 
+effects value equal to zero, which is not to the average predictions:
+```{r}
+predict(fm, newdata = pred_DF, type_pred = "response",
+        type = "mean_subject", se.fit = TRUE)
+```
+
+Population averaged predictions can be obtained by first calculating the marginalized 
+coefficients (using `marginal_Coefs()`) and multiplying them with the fixed effects 
+design matrix; this is achieved using the option `type = "marginal"` (due to the required 
+computing time, predictions not shown):
+```{r, eval = FALSE}
+predict(fm, newdata = pred_DF, type_pred = "response",
+        type = "marginal", se.fit = FALSE)
+```
+
+Finally, we calculate subject-specific predictions; the standard errors are calculated 
+with a Monte Carlo scheme (for details check the online help file):
+```{r}
+predict(fm, newdata = pred_DF, type_pred = "response",
+        type = "subject_specific", se.fit = TRUE)
+```
+
+Suppose now that we want predictions at future time points at which no responses `y` have
+been recorded, e.g.,
+```{r}
+future_Times <- pred_DF[1:3, c("id", "time", "sex")]
+future_Times$time <- c(3, 4, 5)
+future_Times
+```
+
+Predictions at these time points can be calculated by provide this data frame in the 
+`newdata2` argument of `predict()`:
+```{r}
+predict(fm, newdata = pred_DF, newdata2 = future_Times, type_pred = "response",
+        type = "subject_specific", se.fit = TRUE)
+```
+
+## Simulate
+The `simulate()` method can be used to simulate response outcome data from a fitted mixed 
+model. For example, we simulate two realization of our dichotomous outcome:
+```{r}
+head(simulate(fm, nsim = 2, seed = 123), 10)
+```
+
+By setting `acount_MLEs_var = TRUE` in the call to `simulate()` we also account for the 
+variability in the maximum likelihood estimates in the simulation of new responses. This
+is achieved by simulating each time a new response vector using a realization for the 
+parameters from a multivariate normal distribution with mean the MLEs and covariance 
+matrix the covariance matrix of the MLEs:
+```{r}
+head(simulate(fm, nsim = 2, seed = 123, acount_MLEs_var = TRUE), 10)
+```

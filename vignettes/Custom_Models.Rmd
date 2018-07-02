@@ -36,15 +36,19 @@ linear predictor scale.
 
 - `log_dens`: a function that returns the log of the probability density function or the 
 log of the probability mass function of the distribution of the outcome given the random 
-effects. This function should have exactly four arguments named, `y` the repeated measurements 
-outcome, `eta` denoting the linear predictor (fixed + random effects), `mu_fun` the 
-function to calculate the mean from the linear predictor (i.e., the `linkinv` function),
-and `phis` a vector of possible extra dispersion/scale parameters. **Even if `phis` may not be required, it should always appear as an argument of `log_dens`**. Moreover, when the extra parameters are 
-required, they should be appropriately transformed in order for the optimization of the 
-log-likelihood to be unconstrained. Finally, `log_dens` should be fully 
-vectorized with respect to `eta`. That is, for a numeric vector `y` and a numeric 
-matrix `eta`, it should return a matrix with the log density evaluated at each column of 
-`eta`.
+effects. This function should have exactly five arguments named, `y` the repeated 
+measurements outcome, `eta` denoting the linear predictor (fixed + random effects), 
+`mu_fun` the function to calculate the mean from the linear predictor (i.e., the `linkinv`
+function), `phis` a vector of possible extra dispersion/scale parameters, and `eta_zi` the
+linear predictor (fixed + random effects) for the logistic regression for the extra zeros; 
+relevant in the cases of zero-inflated and two-part models. 
+**Even if `phis` and `eta_zi` may not be required, it should always appear as an argument of `log_dens`**. 
+Moreover, when the extra parameters `phis` are required, they should be appropriately 
+transformed in order for the optimization of the log-likelihood to be unconstrained with
+regard to these parameters. Finally, `log_dens` should be fully vectorized with respect to
+`eta` and `eta_zi`. That is, for a numeric vector `y` and a numeric matrix `eta`, it 
+should return a matrix with the log density evaluated at each column of  `eta`, and 
+likewise for `eta_zi`.
 
 For the internal calculations the derivative of `log_dens` with respect to the linear 
 predictor `eta` and extra parameters `phis` (when present) is also required. If it is not

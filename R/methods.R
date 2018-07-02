@@ -724,12 +724,19 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
         id <- Lists[["id"]]
         betas <- Lists[["betas"]]
         Z <- Lists[["Z"]]
-        EBs <- find_modes(Lists$start, Lists[["y_lis"]], Lists[["N_lis"]], Lists[["X_lis"]],
-                          Lists[["Z_lis"]], Lists[["offset_lis"]], betas, Lists[["invD"]],
-                          Lists[["phis"]], Lists[["canonical"]], Lists[["user_defined"]],
-                          Lists[["Zty_lis"]], Lists[["log_dens"]], Lists[["mu_fun"]], 
-                          Lists[["var_fun"]], Lists[["mu.eta_fun"]], 
-                          Lists[["score_eta_fun"]], Lists[["score_phis_fun"]])
+        EBs <- find_modes(b = Lists$start, y_lis = Lists[["y_lis"]], 
+                          N_lis = Lists[["N_lis"]], X_lis = Lists[["X_lis"]], 
+                          Z_lis = Lists[["Z_lis"]], offset_lis = Lists[["offset_lis"]], 
+                          X_zi_lis = NULL, Z_zi_lis = NULL, offset_zi_lis = NULL, 
+                          betas = betas, invD = Lists[["invD"]], phis = Lists[["phis"]], 
+                          gammas = NULL, canonical = Lists[["canonical"]], 
+                          user_defined = Lists[["user_defined"]], 
+                          Zty_lis = Lists[["Zty_lis"]], log_dens = Lists[["log_dens"]], 
+                          mu_fun = Lists[["mu_fun"]], var_fun = Lists[["var_fun"]], 
+                          mu.eta_fun = Lists[["mu.eta_fun"]], 
+                          score_eta_fun = Lists[["score_eta_fun"]], 
+                          score_phis_fun = Lists[["score_phis_fun"]], 
+                          score_eta_zi_fun = NULL)
         eta <- c(X %*% betas) + rowSums(Z * EBs$post_modes[id, , drop = FALSE])
         pred <- if (type_pred == "link") eta else object$family$linkinv(eta)
         names(pred) <- row.names(newdata)

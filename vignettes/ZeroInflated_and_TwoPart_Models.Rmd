@@ -40,7 +40,8 @@ can be fitted.
 We start our illustrations by showing how we can fit a zero-inflated Poisson mixed effects
 model. The specification of the required `family` object is already available in the 
 package as the object returned by `zi.poisson()`. 
-*Currently, only the log link is allowed.* First, we simulate some data
+*Currently, only the log link is allowed.* First, we simulate some data from a 
+zero-inflated negative binomial distribution:
 ```{r}
 set.seed(1234)
 n <- 100 # number of subjects
@@ -104,6 +105,12 @@ anova(fm1, fm2)
 ```{r}
 gm1 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF,
                    family = zi.negative.binomial(), zi_fixed = ~ sex)
+
+gm1
+```
+
+```{r}
+anova(gm1, fm2, test = FALSE)
 ```
 
 ## Two-Part Mixed Effects Model for Semi-Continuous Data
@@ -223,13 +230,16 @@ km2
 ```
 
 ```{r}
+par(mar = c(3, 3, 0, 0), mgp = c(1, 0.5, 0), cex.axis = 0.7, cex.lab = 0.8)
 y <- DF$y
 y[y > 0] <- log(y[y > 0])
 x_vals <- seq(min(y), max(y), length.out = 500)
 out <- simulate(km2, nsim = 30, acount_MLEs_var = TRUE)
 rep_y <- apply(out, 2, function (x, x_vals) ecdf(x)(x_vals), x_vals = x_vals)
 matplot(x_vals, rep_y, type = "l", lty = 1, col = "lightgrey", 
-        xlab = "response variable", ylab = "Empirical CDF")
+        xlab = "Response Variable", ylab = "Empirical CDF")
 lines(x_vals, ecdf(y)(x_vals))
+legend("bottomright", c("replicated data", "observed data"), lty = 1, 
+       col = c("lightgrey", "black"), bty = "n", cex = 0.8)
 ```
 
