@@ -213,7 +213,7 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                 stop(err_mgs)
             }
             if (family$family %in% c("zero-inflated negative binomial", "negative binomial") &&
-                exp(phis) > control$max_phi_value) {
+                exp(phis) > control$max_phis_value) {
                 stop(large_shape_mgs)
             }
         }
@@ -265,7 +265,7 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                 stop(err_mgs)
             }
             if (family$family %in% c("zero-inflated negative binomial", "negative binomial") &&
-                exp(phis) > control$max_phi_value) {
+                exp(phis) > control$max_phis_value) {
                 stop(large_shape_mgs)
             }
             

@@ -89,6 +89,11 @@ mixed_model(fixed, random, data, family, na.action = na.exclude,
             11 when the number of random effects is one or two, and 7 otherwise.}
         \item{update_GH_every}{numeric scalar denoting every how many iterations to 
             update the quadrature points during the EM-phase; default is 10.}
+        \item{max_coef_value}{numeric scalar denoting the maximum allowable value for the
+            fixed effects coefficients during the optimization; default is 10.}
+        \item{max_phis_value}{numeric scalar denoting the maximum allowable value for the
+            shape/dispersion parameter of the negative binomial distribution during the 
+            optimization; default is \code{exp(10)}.}
         \item{verbose}{logical; print information during the optimization phase; default 
             is \code{FALSE}.}
     }
