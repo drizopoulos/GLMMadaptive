@@ -19,12 +19,13 @@ knitr::opts_chunk$set(
 library("GLMMadaptive")
 ```
 
-# Extended Models
+# Mixed Models with an Extra Zero Part
 Function `mixed_model()` of **GLMMadaptive** can also be used to fit zero-inflated and 
 two-part mixed effects models. For both types of models, a suitable `family` object needs 
-to be specified as outlined in the vignette [Custom Models](http://www.drizopoulos.com/vignettes/Custom_Models.html),  
-and also arguments `zi_fixed` and `zi_random` of `mixed_model()` come into play. In these a
-rguments, the user can specify the fixed and random effects `formulas` of the logistic 
+to be specified as outlined in the vignette 
+[Custom Models](http://www.drizopoulos.com/vignettes/Custom_Models.html), and also 
+arguments `zi_fixed` and `zi_random` of `mixed_model()` come into play. In these 
+arguments, the user can specify the fixed and random effects `formulas` of the logistic 
 regression for the zero-part of the distribution of the outcome. We should note that the 
 user has the option to leave `zi_random` set to `NULL`, in which case the for the zero-part
 we have a logistic regression with only fixed effect and no random effects.
@@ -39,9 +40,8 @@ can be fitted.
 ## Zero-Inflated Poisson Mixed Effects Model
 We start our illustrations by showing how we can fit a zero-inflated Poisson mixed effects
 model. The specification of the required `family` object is already available in the 
-package as the object returned by `zi.poisson()`. 
-*Currently, only the log link is allowed.* First, we simulate some data from a 
-zero-inflated negative binomial distribution:
+package as the object returned by `zi.poisson()`. *Currently, only the log link is allowed.* 
+First, we simulate longitudinal data from a zero-inflated negative binomial distribution:
 ```{r}
 set.seed(1234)
 n <- 100 # number of subjects
@@ -76,11 +76,11 @@ eta_zi <- as.vector(X_zi %*% gammas + rowSums(Z_zi * b[DF$id, 2, drop = FALSE]))
 # we simulate negative binomial longitudinal data
 DF$y <- rnbinom(n * K, size = shape, mu = exp(eta_y))
 # we set the extra zeros
-DF$y[as.logical(rbinom(n * K, 1, plogis(eta_zi)))] <- 0
+DF$y[as.logical(rbinom(n * K, size = 1, prob = plogis(eta_zi)))] <- 0
 ```
 
-We start by fitting a zero-inflated Poisson mixed model with only fixed effects in the 
-zero part (i.e., we do not specify the `zi_random` argument):
+A zero-inflated Poisson mixed model with only fixed effects in the zero part is fitted 
+with the following call to `mixed_model()`:
 ```{r}
 fm1 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF,
                    family = zi.poisson(), zi_fixed = ~ sex)
@@ -88,7 +88,11 @@ fm1 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF,
 fm1
 ```
 
-We extend `fm1` by allowing also for random intercept in the zero-part: 
+As noted above, only the log link is currently available for the non-zero part and the 
+logit link for the zero-part. Hence, the estimated fixed effects for the two parts are 
+interpreted accordingly. We extend `fm1` by allowing also for random intercept in the 
+zero-part. We should note that by default the random intercept from the non-zero part is 
+correlated with the random intercept from the zero-part:
 ```{r}
 fm2 <- update(fm1, zi_random = ~ 1 | id)
 
@@ -100,8 +104,13 @@ We test if we need the extra random effect using a likelihood ratio test:
 anova(fm1, fm2)
 ```
 
-## Zero-Inflated Negative Binomial Mixed Effects Model
+The results suggest that the extra random effect improves the fit of the model.
 
+## Zero-Inflated Negative Binomial Mixed Effects Model
+We continue with the same data, but we now take into account the potential over-dispersion 
+in the data using a zero-inflated negative binomial model. To fit this mixed model we use 
+almost identical syntax to what just did above - the only difference that now we specify
+as family the `zi.negative.binomial()` object:
 ```{r}
 gm1 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF,
                    family = zi.negative.binomial(), zi_fixed = ~ sex)
@@ -109,12 +118,28 @@ gm1 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF,
 gm1
 ```
 
+Similarly to `fm1` in `gm1` we specified only fixed effects for the logistic regression 
+for the zero part. We now compare this model with the zero-inflated Poisson model that 
+allowed for a random intercept in the zero-part. The comparison can be done with the
+`anova()` method; because the two models are not nested we set `test = FALSE` in the call
+to `anova()`, i.e.:
 ```{r}
 anova(gm1, fm2, test = FALSE)
 ```
 
-## Two-Part Mixed Effects Model for Semi-Continuous Data
+We observe that accounting for the over-dispersion seems to better improve the fit than
+including the random intercepts term in the zero-part.
 
+## Two-Part Mixed Effects Model for Semi-Continuous Data
+To further illustrate the flexibility provided by **GLMMadaptive** in allowing users to
+specify their own family objects with a specific log density function, we consider the 
+setting of multivariate semi-continuous data. That is, continuous data with excess zeros.
+In the literature the class of two-part / hurdle mixed models has been proposed to analyze
+such data. These models specify a logistic regression for the dichotomous indicator that 
+the outcome is zero or not, and a standard linear mixed model for the logarithmic 
+transformation of the non-zero responses.
+
+We start again by simulating some longitudinal data from this model:
 ```{r}
 set.seed(1234)
 n <- 100 # number of subjects
@@ -147,13 +172,22 @@ b <- cbind(rnorm(n, sd = sqrt(D11)), rnorm(n, sd = sqrt(D22)), rnorm(n, sd = sqr
 eta_y <- as.vector(X %*% betas + rowSums(Z * b[DF$id, 1:2, drop = FALSE]))
 # linear predictor zero part
 eta_zi <- as.vector(X_zi %*% gammas + rowSums(Z_zi * b[DF$id, 3, drop = FALSE]))
-# we simulate Poisson longitudinal data
-DF$y <- exp(rnorm(n * K, eta_y, sd = sigma))
-# we set the extra zeros
-DF$y[as.logical(rbinom(n * K, 1, plogis(eta_zi)))] <- 0
+# we simulate log-normal longitudinal data
+DF$y <- exp(rnorm(n * K, mean = eta_y, sd = sigma))
+# we set the zeros from the logistic regression
+DF$y[as.logical(rbinom(n * K, size = 1, prob = plogis(eta_zi)))] <- 0
 ```
 
-We define the `family` object
+We define the `family` object: The minimal requirement is to specify the `log_dens` 
+component and the link function; however, as also explained in the [Custom Models](http://www.drizopoulos.com/vignettes/Custom_Models.html) vignette, the internal
+calculations will be faster and more stable if the user also specifies the score vector 
+for the linear predictor of the non-zero part (function `score_eta_fun()`), the derivative
+of the log density with respect to `phis` (function `score_phis_fun()`), and because we 
+have a model with a zero-part, also the derivative of the log density with respect to the
+linear predictor of the zero part (function `score_eta_zi_fun()`). Finally, for being 
+able to simulate from the model using the `simulate()` method, the function `simulate()`
+within the family object can also be specified. Hence, the family object for the two-part 
+model is defined as:
 ```{r}
 two_part.lognormal <- function () {
     stats <- make.link("identity")
@@ -214,7 +248,9 @@ two_part.lognormal <- function () {
 }
 ```
 
-We fit the models
+Then to fit the model we provide the user-defined family object in the `family` argument 
+of `mixed_model()` specifying also that we have one dispersion parameter in the family 
+(i.e., `n_phis = 1`), and that in the zero-part we only include fixed effects: 
 ```{r}
 km1 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF, 
                   family = two_part.lognormal(), n_phis = 1,
@@ -223,14 +259,24 @@ km1 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF,
 km1
 ```
 
+The estimated standard deviation for the error terms is `exp(phis) = ` `r round(exp(km1$phis), 1)`
+We extend the model by allowing for a random intercept in the zero-part, but using the
+`||` symbol in the `random` argument we specify the covariance matrix of the random 
+effects is diagonal; hence, that the two random intercepts terms are uncorrelated:
 ```{r}
 km2 <- update(km1, random = ~ 1 || id, zi_random = ~ 1 | id)
 
 km2
 ```
 
+Finally, we show how the `simulate()` method can be used to perform a replication / 
+posterior predictive check. In particular, in the following code we compare the empirical
+distribution function estimated in the observed data with estimates of the empirical
+distribution function obtained from simulated/replicated data from the model. In the call
+to `simulate()` below we also specify to account for the variability in the maximum likelihood 
+estimates by setting `acount_MLEs_var = TRUE`:
 ```{r}
-par(mar = c(3, 3, 0, 0), mgp = c(1, 0.5, 0), cex.axis = 0.7, cex.lab = 0.8)
+par(mar = c(2.5, 2.5, 0, 0), mgp = c(1.1, 0.5, 0), cex.axis = 0.7, cex.lab = 0.8)
 y <- DF$y
 y[y > 0] <- log(y[y > 0])
 x_vals <- seq(min(y), max(y), length.out = 500)
