@@ -28,10 +28,13 @@ random effects, `family` a family object specifying the type of response variabl
 
 - Methods for standard generics are provided, i.e., `coef()`, `fixef()`, `ranef()`, 
 `vcov()`, `logLik()`, `summary()`, `anova()`, `confint()`, `fitted()`, `residuals()`, 
-and `predict()`.
+`predict()`, and `simulate()`.
 
 - Negative binomial mixed models can be fitted using the `negative.binomial()` family 
 object.
+
+- Zero-inflated Poisson and negative binomial models using the `zi.poisson()` and 
+`zi.negative.binomial()` family objects.
 
 - Users may also specify their own log-density function for the repeated measurements 
 response variable, and the internal algorithms will take care of the optimization.
