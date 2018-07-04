@@ -17,6 +17,6 @@ Encoding: UTF-8
 LazyLoad: yes
 LazyData: yes
 License: GPL (>= 3)
-URL: https://github.com/drizopoulos/GLMMadaptive
+URL: https://drizopoulos.github.io/GLMMadaptive/, https://github.com/drizopoulos/GLMMadaptive
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
