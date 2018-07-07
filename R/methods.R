@@ -207,8 +207,11 @@ print.summary.MixMod <- function (x, digits = max(4, getOption("digits") - 4), .
     cat("\nmethod: adaptive Gauss-Hermite quadrature rule")
     cat("\nquadrature points:", x$control$nAGQ)
     cat("\n\nOptimization:")
-    cat("\nmethod: hybrid EM and quasi-Newton")
-    cat("\nconverged:", x$converged, "\n")
+    methd <- if (x$control$iter_EM == 0) "quasi-Newton" 
+    else if (isTRUE(attr(x$converged, "during_EM"))) "EM" 
+    else "hybrid EM and quasi-Newton"
+    cat("\nmethod:", methd)
+    cat("\nconverged:", as.logical(x$converged), "\n")
     invisible(x)
 }
 

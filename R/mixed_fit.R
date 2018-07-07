@@ -148,6 +148,7 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                 check2 <- (lgLik[it] - lgLik[it - 1]) < tol3 * (abs(lgLik[it - 1]) + tol3)
                 if (check1 || check2) {
                     converged <- TRUE
+                    attr(converged, "during_EM") <- TRUE
                     if (control$verbose)
                         cat("\n\nconverged!\ncalculating Hessian...\n")
                     break
