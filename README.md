@@ -49,7 +49,7 @@ Basic Use
 ------------
 
 Let `y` denote a grouped/clustered outcome, `g` denote the grouping factor, and `x1` and
-`x2` covariates. A mixed effects model with `y` as outcome, `x1` and `x2` as fixed effect,
+`x2` covariates. A mixed effects model with `y` as outcome, `x1` and `x2` as fixed effects,
 and random intercepts is fitted with the code:
 ```r
 fm <- mixed_model(y ~ x1 + x2, random = ~ 1 | g, data = DF)
