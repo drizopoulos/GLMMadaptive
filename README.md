@@ -45,6 +45,29 @@ function `marginal_coefs()`.
 - Predictions with confidence interval for constructing effects plots are provided by 
 function `effectPlotData()`.
 
+Basic Use
+------------
+
+Let `y` denote a grouped/clustered outcome, `g` denote the grouping factor, and `x1` and
+`x2` covariates. A mixed effects model with `y` as outcome, `x1` and `x2` as fixed effect,
+and random intercepts is fitted with the code:
+```r
+fm <- mixed_model(y ~ x1 + x2, random = ~ 1 | g, data = DF)
+
+summary(fm)
+```
+
+In the `data` argument we provide the data frame `DF`, which contains the aforementioned 
+variables. To include in the random-effects part intercepts and `x1`, we update the call
+to `mixed_model()` as
+```r
+gm <- mixed_model(y ~ x1 + x2, random = ~ x1 | g, data = DF)
+
+summary(gm)
+```
+
+
+ 
 Installation
 ------------
 
