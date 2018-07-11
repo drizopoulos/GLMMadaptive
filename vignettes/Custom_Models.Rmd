@@ -64,7 +64,7 @@ extra parameters.
 We first illustrate the use of a custom-made family object in the case of a negative 
 binomial repeated measurements outcome. We should note however that a family object
 `negative.binomial()` is already defined in the package and users could invoke this 
-instead - for more info see the relative online help page for `negative.binomial()`.We 
+instead - for more info see the relative online help page for `negative.binomial()`. We 
 start by simulating some data:
 ```{r}
 set.seed(101)

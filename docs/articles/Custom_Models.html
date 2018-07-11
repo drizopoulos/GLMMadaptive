@@ -92,7 +92,7 @@
       <h1>Custom Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-07-05</h4>
+            <h4 class="date">2018-07-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Custom_Models.Rmd"><code>vignettes/Custom_Models.Rmd</code></a></small>
       <div class="hidden name"><code>Custom_Models.Rmd</code></div>
@@ -116,7 +116,7 @@
 <div id="negative-binomial-mixed-effects-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#negative-binomial-mixed-effects-model" class="anchor"></a>Negative Binomial Mixed Effects Model</h2>
-<p>We first illustrate the use of a custom-made family object in the case of a negative binomial repeated measurements outcome. We should note however that a family object <code><a href="../reference/negative_binomial.html">negative.binomial()</a></code> is already defined in the package and users could invoke this instead - for more info see the relative online help page for <code><a href="../reference/negative_binomial.html">negative.binomial()</a></code>.We start by simulating some data:</p>
+<p>We first illustrate the use of a custom-made family object in the case of a negative binomial repeated measurements outcome. We should note however that a family object <code><a href="../reference/negative_binomial.html">negative.binomial()</a></code> is already defined in the package and users could invoke this instead - for more info see the relative online help page for <code><a href="../reference/negative_binomial.html">negative.binomial()</a></code>. We start by simulating some data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">101</span>)
 dd &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(<span class="dt">f1 =</span> <span class="kw">factor</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>), <span class="dt">f2 =</span> LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">g =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">30</span>, <span class="dt">rep =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">15</span>,
                   <span class="dt">KEEP.OUT.ATTRS =</span> <span class="ot">FALSE</span>)
@@ -148,7 +148,7 @@ dd<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">rnbi
                         <span class="dt">initial_values =</span> <span class="kw">list</span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw">poisson</span>()))
 )
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;    4.61    0.02    4.64</span>
+<span class="co">#&gt;    3.82    0.01    3.85</span>
 
 fm1
 <span class="co">#&gt; </span>
@@ -221,7 +221,7 @@ fm1
                         <span class="dt">initial_values =</span> <span class="kw">list</span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw">poisson</span>()))
 )
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;    1.36    0.01    1.38</span>
+<span class="co">#&gt;    1.29    0.00    1.30</span>
 
 fm2
 <span class="co">#&gt; </span>
