@@ -27,14 +27,14 @@ to be specified as outlined in the vignette
 arguments `zi_fixed` and `zi_random` of `mixed_model()` come into play. In these 
 arguments, the user can specify the fixed and random effects `formulas` of the logistic 
 regression for the zero-part of the distribution of the outcome. We should note that the 
-user has the option to leave `zi_random` set to `NULL`, in which case the for the zero-part
-we have a logistic regression with only fixed effect and no random effects.
+user has the option to leave `zi_random` set to `NULL`, in which case for the zero-part
+we have a logistic regression with only fixed effects and no random effects.
 
-In addition, in the specification of the `family` object and in order to better facilitate 
+In addition, in the specification of the `family` object, and in order to better facilitate 
 the internal computations, the user may specify the function `score_eta_zi_fun` that 
 calculates the derivative of the log probability density function or the log probability
 mass function with respect to `eta_zi` that denotes the linear predictor of the logistic 
-regression for the zero-part. Here we provide three examples to illustrate how such models
+regression for the zero part. Here we provide three examples to illustrate how such models
 can be fitted.
 
 ## Zero-Inflated Poisson Mixed Effects Model
@@ -89,10 +89,10 @@ fm1
 ```
 
 As noted above, only the log link is currently available for the non-zero part and the 
-logit link for the zero-part. Hence, the estimated fixed effects for the two parts are 
-interpreted accordingly. We extend `fm1` by allowing also for random intercept in the 
-zero-part. We should note that by default the random intercept from the non-zero part is 
-correlated with the random intercept from the zero-part:
+logit link for the zero part. Hence, the estimated fixed effects for the two parts are 
+interpreted accordingly. We extend `fm1` by allowing also for random intercepts in the 
+zero part. We should note that by default the random intercept of the non-zero part is 
+correlated with the random intercept from the zero part:
 ```{r}
 fm2 <- update(fm1, zi_random = ~ 1 | id)
 
@@ -109,8 +109,8 @@ The results suggest that the extra random effect improves the fit of the model.
 ## Zero-Inflated Negative Binomial Mixed Effects Model
 We continue with the same data, but we now take into account the potential over-dispersion 
 in the data using a zero-inflated negative binomial model. To fit this mixed model we use 
-almost identical syntax to what just did above - the only difference that now we specify
-as family the `zi.negative.binomial()` object:
+an almost identical syntax to what we just did above - the only difference is that we now 
+specify as family the `zi.negative.binomial()` object:
 ```{r}
 gm1 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF,
                    family = zi.negative.binomial(), zi_fixed = ~ sex)
@@ -118,17 +118,17 @@ gm1 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF,
 gm1
 ```
 
-Similarly to `fm1` in `gm1` we specified only fixed effects for the logistic regression 
+Similarly to `fm1`, in `gm1` we specified only fixed effects for the logistic regression 
 for the zero part. We now compare this model with the zero-inflated Poisson model that 
-allowed for a random intercept in the zero-part. The comparison can be done with the
-`anova()` method; because the two models are not nested we set `test = FALSE` in the call
+allowed for a random intercept in the zero part. The comparison can be done with the
+`anova()` method; because the two models are not nested, we set `test = FALSE` in the call
 to `anova()`, i.e.:
 ```{r}
 anova(gm1, fm2, test = FALSE)
 ```
 
 We observe that accounting for the over-dispersion seems to better improve the fit than
-including the random intercepts term in the zero-part.
+including the random intercepts term in the zero part.
 
 ## Two-Part Mixed Effects Model for Semi-Continuous Data
 To further illustrate the flexibility provided by **GLMMadaptive** in allowing users to
@@ -183,7 +183,7 @@ component and the link function; however, as also explained in the [Custom Model
 calculations will be faster and more stable if the user also specifies the score vector 
 for the linear predictor of the non-zero part (function `score_eta_fun()`), the derivative
 of the log density with respect to `phis` (function `score_phis_fun()`), and because we 
-have a model with a zero-part, also the derivative of the log density with respect to the
+have a model with a zero part, also the derivative of the log density with respect to the
 linear predictor of the zero part (function `score_eta_zi_fun()`). Finally, for being 
 able to simulate from the model using the `simulate()` method, the function `simulate()`
 within the family object can also be specified. Hence, the family object for the two-part 
@@ -248,9 +248,9 @@ two_part.lognormal <- function () {
 }
 ```
 
-Then to fit the model we provide the user-defined family object in the `family` argument 
-of `mixed_model()` specifying also that we have one dispersion parameter in the family 
-(i.e., `n_phis = 1`), and that in the zero-part we only include fixed effects: 
+Then to fit the model, we provide the user-defined family object in the `family` argument 
+of `mixed_model()`, specifying also that we have one dispersion parameter in the family 
+(i.e., `n_phis = 1`), and that in the zero part we only include fixed effects: 
 ```{r}
 km1 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF, 
                   family = two_part.lognormal(), n_phis = 1,
@@ -273,8 +273,8 @@ Finally, we show how the `simulate()` method can be used to perform a replicatio
 posterior predictive check. In particular, in the following code we compare the empirical
 distribution function estimated in the observed data with estimates of the empirical
 distribution function obtained from simulated/replicated data from the model. In the call
-to `simulate()` below we also specify to account for the variability in the maximum likelihood 
-estimates by setting `acount_MLEs_var = TRUE`:
+to `simulate()` below we also specify to account for the variability in the maximum 
+likelihood estimates by setting `acount_MLEs_var = TRUE`:
 ```{r}
 par(mar = c(2.5, 2.5, 0, 0), mgp = c(1.1, 0.5, 0), cex.axis = 0.7, cex.lab = 0.8)
 y <- DF$y

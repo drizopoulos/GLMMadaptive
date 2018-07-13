@@ -42,7 +42,7 @@ measurements outcome, `eta` denoting the linear predictor (fixed + random effect
 function), `phis` a vector of possible extra dispersion/scale parameters, and `eta_zi` the
 linear predictor (fixed + random effects) for the logistic regression for the extra zeros; 
 relevant in the cases of zero-inflated and two-part models. 
-**Even if `phis` and `eta_zi` may not be required, it should always appear as an argument of `log_dens`**. 
+**Even if `phis` and `eta_zi` may not be required, it should always appear as arguments of `log_dens`**. 
 Moreover, when the extra parameters `phis` are required, they should be appropriately 
 transformed in order for the optimization of the log-likelihood to be unconstrained with
 regard to these parameters. Finally, `log_dens` should be fully vectorized with respect to
