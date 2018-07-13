@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.2</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.3</span>
       </span>
     </div>
 
@@ -92,7 +92,7 @@
       <h1>Zero-Inflated and Two-Part Mixed Effects Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-07-11</h4>
+            <h4 class="date">2018-07-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/ZeroInflated_and_TwoPart_Models.Rmd"><code>vignettes/ZeroInflated_and_TwoPart_Models.Rmd</code></a></small>
       <div class="hidden name"><code>ZeroInflated_and_TwoPart_Models.Rmd</code></div>
@@ -104,8 +104,8 @@
 <div id="mixed-models-with-an-extra-zero-part" class="section level1">
 <h1 class="hasAnchor">
 <a href="#mixed-models-with-an-extra-zero-part" class="anchor"></a>Mixed Models with an Extra Zero Part</h1>
-<p>Function <code><a href="../reference/mixed_model.html">mixed_model()</a></code> of <strong>GLMMadaptive</strong> can also be used to fit zero-inflated and two-part mixed effects models. For both types of models, a suitable <code>family</code> object needs to be specified as outlined in the vignette <a href="http://www.drizopoulos.com/vignettes/Custom_Models.html">Custom Models</a>, and also arguments <code>zi_fixed</code> and <code>zi_random</code> of <code><a href="../reference/mixed_model.html">mixed_model()</a></code> come into play. In these arguments, the user can specify the fixed and random effects <code>formulas</code> of the logistic regression for the zero-part of the distribution of the outcome. We should note that the user has the option to leave <code>zi_random</code> set to <code>NULL</code>, in which case the for the zero-part we have a logistic regression with only fixed effect and no random effects.</p>
-<p>In addition, in the specification of the <code>family</code> object and in order to better facilitate the internal computations, the user may specify the function <code>score_eta_zi_fun</code> that calculates the derivative of the log probability density function or the log probability mass function with respect to <code>eta_zi</code> that denotes the linear predictor of the logistic regression for the zero-part. Here we provide three examples to illustrate how such models can be fitted.</p>
+<p>Function <code><a href="../reference/mixed_model.html">mixed_model()</a></code> of <strong>GLMMadaptive</strong> can also be used to fit zero-inflated and two-part mixed effects models. For both types of models, a suitable <code>family</code> object needs to be specified as outlined in the vignette <a href="http://www.drizopoulos.com/vignettes/Custom_Models.html">Custom Models</a>, and also arguments <code>zi_fixed</code> and <code>zi_random</code> of <code><a href="../reference/mixed_model.html">mixed_model()</a></code> come into play. In these arguments, the user can specify the fixed and random effects <code>formulas</code> of the logistic regression for the zero-part of the distribution of the outcome. We should note that the user has the option to leave <code>zi_random</code> set to <code>NULL</code>, in which case for the zero-part we have a logistic regression with only fixed effects and no random effects.</p>
+<p>In addition, in the specification of the <code>family</code> object, and in order to better facilitate the internal computations, the user may specify the function <code>score_eta_zi_fun</code> that calculates the derivative of the log probability density function or the log probability mass function with respect to <code>eta_zi</code> that denotes the linear predictor of the logistic regression for the zero part. Here we provide three examples to illustrate how such models can be fitted.</p>
 <div id="zero-inflated-poisson-mixed-effects-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#zero-inflated-poisson-mixed-effects-model" class="anchor"></a>Zero-Inflated Poisson Mixed Effects Model</h2>
@@ -172,7 +172,7 @@ fm1
 <span class="co">#&gt;   -1.210597    0.498611 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; log-Lik: -2223.937</span></code></pre></div>
-<p>As noted above, only the log link is currently available for the non-zero part and the logit link for the zero-part. Hence, the estimated fixed effects for the two parts are interpreted accordingly. We extend <code>fm1</code> by allowing also for random intercept in the zero-part. We should note that by default the random intercept from the non-zero part is correlated with the random intercept from the zero-part:</p>
+<p>As noted above, only the log link is currently available for the non-zero part and the logit link for the zero part. Hence, the estimated fixed effects for the two parts are interpreted accordingly. We extend <code>fm1</code> by allowing also for random intercepts in the zero part. We should note that by default the random intercept of the non-zero part is correlated with the random intercept from the zero part:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm2 &lt;-<span class="st"> </span><span class="kw">update</span>(fm1, <span class="dt">zi_random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id)
 
 fm2
@@ -212,7 +212,7 @@ fm2
 <div id="zero-inflated-negative-binomial-mixed-effects-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#zero-inflated-negative-binomial-mixed-effects-model" class="anchor"></a>Zero-Inflated Negative Binomial Mixed Effects Model</h2>
-<p>We continue with the same data, but we now take into account the potential over-dispersion in the data using a zero-inflated negative binomial model. To fit this mixed model we use almost identical syntax to what just did above - the only difference that now we specify as family the <code><a href="../reference/ZI_fams.html">zi.negative.binomial()</a></code> object:</p>
+<p>We continue with the same data, but we now take into account the potential over-dispersion in the data using a zero-inflated negative binomial model. To fit this mixed model we use an almost identical syntax to what we just did above - the only difference is that we now specify as family the <code><a href="../reference/ZI_fams.html">zi.negative.binomial()</a></code> object:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gm1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
                    <span class="dt">family =</span> <span class="kw"><a href="../reference/ZI_fams.html">zi.negative.binomial</a></span>(), <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex)
 
@@ -243,13 +243,13 @@ gm1
 <span class="co">#&gt;  2.227321 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; log-Lik: -1958.746</span></code></pre></div>
-<p>Similarly to <code>fm1</code> in <code>gm1</code> we specified only fixed effects for the logistic regression for the zero part. We now compare this model with the zero-inflated Poisson model that allowed for a random intercept in the zero-part. The comparison can be done with the <code><a href="../reference/methods.html">anova()</a></code> method; because the two models are not nested we set <code>test = FALSE</code> in the call to <code><a href="../reference/methods.html">anova()</a></code>, i.e.:</p>
+<p>Similarly to <code>fm1</code>, in <code>gm1</code> we specified only fixed effects for the logistic regression for the zero part. We now compare this model with the zero-inflated Poisson model that allowed for a random intercept in the zero part. The comparison can be done with the <code><a href="../reference/methods.html">anova()</a></code> method; because the two models are not nested, we set <code>test = FALSE</code> in the call to <code><a href="../reference/methods.html">anova()</a></code>, i.e.:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(gm1, fm2, <span class="dt">test =</span> <span class="ot">FALSE</span>)
 <span class="co">#&gt; </span>
 <span class="co">#&gt;         AIC     BIC  log.Lik df</span>
 <span class="co">#&gt; gm1 3933.49 3954.33 -1958.75   </span>
 <span class="co">#&gt; fm2 4446.61 4446.61 -2214.31  1</span></code></pre></div>
-<p>We observe that accounting for the over-dispersion seems to better improve the fit than including the random intercepts term in the zero-part.</p>
+<p>We observe that accounting for the over-dispersion seems to better improve the fit than including the random intercepts term in the zero part.</p>
 </div>
 <div id="two-part-mixed-effects-model-for-semi-continuous-data" class="section level2">
 <h2 class="hasAnchor">
@@ -291,7 +291,7 @@ eta_zi &lt;-<span class="st"> </span><span class="kw">as.vector</span>(X_zi <spa
 DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">exp</span>(<span class="kw">rnorm</span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">mean =</span> eta_y, <span class="dt">sd =</span> sigma))
 <span class="co"># we set the zeros from the logistic regression</span>
 DF<span class="op">$</span>y[<span class="kw">as.logical</span>(<span class="kw">rbinom</span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> <span class="kw">plogis</span>(eta_zi)))] &lt;-<span class="st"> </span><span class="dv">0</span></code></pre></div>
-<p>We define the <code>family</code> object: The minimal requirement is to specify the <code>log_dens</code> component and the link function; however, as also explained in the <a href="http://www.drizopoulos.com/vignettes/Custom_Models.html">Custom Models</a> vignette, the internal calculations will be faster and more stable if the user also specifies the score vector for the linear predictor of the non-zero part (function <code>score_eta_fun()</code>), the derivative of the log density with respect to <code>phis</code> (function <code>score_phis_fun()</code>), and because we have a model with a zero-part, also the derivative of the log density with respect to the linear predictor of the zero part (function <code>score_eta_zi_fun()</code>). Finally, for being able to simulate from the model using the <code><a href="../reference/methods.html">simulate()</a></code> method, the function <code><a href="../reference/methods.html">simulate()</a></code> within the family object can also be specified. Hence, the family object for the two-part model is defined as:</p>
+<p>We define the <code>family</code> object: The minimal requirement is to specify the <code>log_dens</code> component and the link function; however, as also explained in the <a href="http://www.drizopoulos.com/vignettes/Custom_Models.html">Custom Models</a> vignette, the internal calculations will be faster and more stable if the user also specifies the score vector for the linear predictor of the non-zero part (function <code>score_eta_fun()</code>), the derivative of the log density with respect to <code>phis</code> (function <code>score_phis_fun()</code>), and because we have a model with a zero part, also the derivative of the log density with respect to the linear predictor of the zero part (function <code>score_eta_zi_fun()</code>). Finally, for being able to simulate from the model using the <code><a href="../reference/methods.html">simulate()</a></code> method, the function <code><a href="../reference/methods.html">simulate()</a></code> within the family object can also be specified. Hence, the family object for the two-part model is defined as:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_part.lognormal &lt;-<span class="st"> </span><span class="cf">function</span> () {
     stats &lt;-<span class="st"> </span><span class="kw">make.link</span>(<span class="st">"identity"</span>)
     log_dens &lt;-<span class="st"> </span><span class="cf">function</span> (y, eta, mu_fun, phis, eta_zi) {
@@ -349,7 +349,7 @@ DF<span class="op">$</span>y[<span class="kw">as.logical</span>(<span class="kw"
                    <span class="dt">score_phis_fun =</span> score_phis_fun, <span class="dt">simulate =</span> simulate),
               <span class="dt">class =</span> <span class="st">"family"</span>)
 }</code></pre></div>
-<p>Then to fit the model we provide the user-defined family object in the <code>family</code> argument of <code><a href="../reference/mixed_model.html">mixed_model()</a></code> specifying also that we have one dispersion parameter in the family (i.e., <code>n_phis = 1</code>), and that in the zero-part we only include fixed effects:</p>
+<p>Then to fit the model, we provide the user-defined family object in the <code>family</code> argument of <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, specifying also that we have one dispersion parameter in the family (i.e., <code>n_phis = 1</code>), and that in the zero part we only include fixed effects:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">km1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, 
                   <span class="dt">family =</span> <span class="kw">two_part.lognormal</span>(), <span class="dt">n_phis =</span> <span class="dv">1</span>,
                   <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex)

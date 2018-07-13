@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.2</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.3</span>
       </span>
     </div>
 
@@ -92,7 +92,7 @@
       <h1>Custom Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-07-11</h4>
+            <h4 class="date">2018-07-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Custom_Models.Rmd"><code>vignettes/Custom_Models.Rmd</code></a></small>
       <div class="hidden name"><code>Custom_Models.Rmd</code></div>
@@ -110,7 +110,7 @@
 <li><p><code>link</code>: a character string giving the name of the link function.</p></li>
 <li><p><code>linkfun</code>: a function that transforms the mean of the distribution of the outcome to the linear predictor scale.</p></li>
 <li><p><code>linkinv</code>: a function that is the inverse of the <code>linkfun</code> defined above.</p></li>
-<li><p><code>log_dens</code>: a function that returns the log of the probability density function or the log of the probability mass function of the distribution of the outcome given the random effects. This function should have exactly five arguments named, <code>y</code> the repeated measurements outcome, <code>eta</code> denoting the linear predictor (fixed + random effects), <code>mu_fun</code> the function to calculate the mean from the linear predictor (i.e., the <code>linkinv</code> function), <code>phis</code> a vector of possible extra dispersion/scale parameters, and <code>eta_zi</code> the linear predictor (fixed + random effects) for the logistic regression for the extra zeros; relevant in the cases of zero-inflated and two-part models. <strong>Even if <code>phis</code> and <code>eta_zi</code> may not be required, it should always appear as an argument of <code>log_dens</code></strong>. Moreover, when the extra parameters <code>phis</code> are required, they should be appropriately transformed in order for the optimization of the log-likelihood to be unconstrained with regard to these parameters. Finally, <code>log_dens</code> should be fully vectorized with respect to <code>eta</code> and <code>eta_zi</code>. That is, for a numeric vector <code>y</code> and a numeric matrix <code>eta</code>, it should return a matrix with the log density evaluated at each column of <code>eta</code>, and likewise for <code>eta_zi</code>.</p></li>
+<li><p><code>log_dens</code>: a function that returns the log of the probability density function or the log of the probability mass function of the distribution of the outcome given the random effects. This function should have exactly five arguments named, <code>y</code> the repeated measurements outcome, <code>eta</code> denoting the linear predictor (fixed + random effects), <code>mu_fun</code> the function to calculate the mean from the linear predictor (i.e., the <code>linkinv</code> function), <code>phis</code> a vector of possible extra dispersion/scale parameters, and <code>eta_zi</code> the linear predictor (fixed + random effects) for the logistic regression for the extra zeros; relevant in the cases of zero-inflated and two-part models. <strong>Even if <code>phis</code> and <code>eta_zi</code> may not be required, it should always appear as arguments of <code>log_dens</code></strong>. Moreover, when the extra parameters <code>phis</code> are required, they should be appropriately transformed in order for the optimization of the log-likelihood to be unconstrained with regard to these parameters. Finally, <code>log_dens</code> should be fully vectorized with respect to <code>eta</code> and <code>eta_zi</code>. That is, for a numeric vector <code>y</code> and a numeric matrix <code>eta</code>, it should return a matrix with the log density evaluated at each column of <code>eta</code>, and likewise for <code>eta_zi</code>.</p></li>
 </ul>
 <p>For the internal calculations the derivative of <code>log_dens</code> with respect to the linear predictor <code>eta</code> and extra parameters <code>phis</code> (when present) is also required. If it is not given, then it is approximated numerically using a central difference approximation. However, it greatly facilitates stability and speed if the user also specifies these functions. If the user specifies these functions, they should have the names <code>score_eta_fun</code> and <code>score_phis_fun</code>, respectively, and both of them have three arguments named <code>y</code> the numeric vector of the repeated measurements outcome, <code>mu</code> the numeric vector or matrix of the mean of the outcome and <code>phis</code> a numeric vector of the extra parameters.</p>
 <div id="negative-binomial-mixed-effects-model" class="section level2">
@@ -148,7 +148,7 @@ dd<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">rnbi
                         <span class="dt">initial_values =</span> <span class="kw">list</span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw">poisson</span>()))
 )
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;    3.82    0.01    3.85</span>
+<span class="co">#&gt;    4.11    0.00    4.11</span>
 
 fm1
 <span class="co">#&gt; </span>
@@ -221,7 +221,7 @@ fm1
                         <span class="dt">initial_values =</span> <span class="kw">list</span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw">poisson</span>()))
 )
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;    1.29    0.00    1.30</span>
+<span class="co">#&gt;    1.44    0.00    1.45</span>
 
 fm2
 <span class="co">#&gt; </span>
