@@ -47,7 +47,7 @@ $$\begin{eqnarray*}
 \end{eqnarray*}$$
 where $\theta$ denotes the full parameter vector including the fixed effects, the extra
 potential dispersion/shape parameters $\phi$ and the unique element of the covariance 
-matrix $D$, and $p(\cdot)$ denotes a probability density or probability mass functions. The 
+matrix $D$, and $p(\cdot)$ denotes a probability density or probability mass function. The 
 integral in the definition of $\ell(\theta)$ does not have a closed-form solution, and 
 numerical approximations are required to obtain the maximum likelihood estimates.
 
@@ -57,10 +57,10 @@ a nice overview is given in
 approximate these integrals is the Laplace approximation. However, the general consensus 
 has been that in the standard but difficult cases of binary/dichotomous data and count data
 with small counts and few repeated measurements, the accuracy of this approximation is 
-rather low. Due to this fact, the general concesus is that the gold standard numerical 
+rather low. Due to this fact, the general consensus is that the gold standard numerical 
 approximation method is the adaptive Gaussian quadrature rule (*note: we focus here on 
-maximum likelihood estimation; under the Bayesian paradigm, approaches, such as MCMC and
-Hamiltonian Monte Carlo also provde accurate evaluation of the intergrals*). This is more 
+maximum likelihood estimation; under the Bayesian paradigm, approaches, such as, MCMC and
+Hamiltonian Monte Carlo also provide accurate evaluation of the integrals*). This is more 
 computationally intensive but also more accurate. This package provides an efficient 
 implementation of the adaptive Gaussian quadrature rule, allowing for multiple correlated 
 random effects (e.g., random intercepts, linear and quadratic random slopes) but currently
