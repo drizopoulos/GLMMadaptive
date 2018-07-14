@@ -1,7 +1,8 @@
 GLMMadaptive: Generalized Linear Mixed Models using Adaptive Gaussian Quadrature
 ================
 
-[![Travis-CI Build Status](https://travis-ci.org/drizopoulos/GLMMadaptive.svg?branch=master)](https://travis-ci.org/drizopoulos/GLMMadaptive) [![CRAN status](http://www.r-pkg.org/badges/version/GLMMadaptive)](https://cran.r-project.org/package=GLMMadaptive) [![](https://cranlogs.r-pkg.org/badges/grand-total/GLMMadaptive)](https://CRAN.R-project.org/package=GLMMadaptive) [![Rdoc](http://www.rdocumentation.org/badges/version/GLMMadaptive)](http://www.rdocumentation.org/packages/GLMMadaptive) [![Download counter](http://cranlogs.r-pkg.org/badges/GLMMadaptive)](https://cran.r-project.org/package=GLMMadaptive) 
+[![Travis-CI Build Status](https://travis-ci.org/drizopoulos/GLMMadaptive.svg?branch=master)](https://travis-ci.org/drizopoulos/GLMMadaptive) [![CRAN status](http://www.r-pkg.org/badges/version/GLMMadaptive)](https://cran.r-project.org/package=GLMMadaptive) [![](https://cranlogs.r-pkg.org/badges/grand-total/GLMMadaptive)](https://CRAN.R-project.org/package=GLMMadaptive) [![Download counter](http://cranlogs.r-pkg.org/badges/GLMMadaptive)](https://cran.r-project.org/package=GLMMadaptive) 
+[![Rdoc](http://www.rdocumentation.org/badges/version/GLMMadaptive)](http://www.rdocumentation.org/packages/GLMMadaptive) 
 
 <img src="man/figures/logo.png" height="205" align="right"/>
 
@@ -9,7 +10,7 @@ Description
 ------------
 
 This repository contains the source files for the R package <strong>GLMMadaptive</strong>. 
-This package fits mixed effects models for grouped / repeated measurements data for which
+This package fits mixed effects models for grouped/clustered outcome variables for which
 the integral over the random effects in the definition of the marginal likelihood cannot
 be solved analytically. The package approximates these integrals using the adaptive 
 Gauss-Hermite quadrature rule.
@@ -52,21 +53,22 @@ Let `y` denote a grouped/clustered outcome, `g` denote the grouping factor, and 
 `x2` covariates. A mixed effects model with `y` as outcome, `x1` and `x2` as fixed effects,
 and random intercepts is fitted with the code:
 ```r
-fm <- mixed_model(y ~ x1 + x2, random = ~ 1 | g, data = DF)
+fm <- mixed_model(fixed = y ~ x1 + x2, random = ~ 1 | g, data = DF,
+                  family = poisson())
 
 summary(fm)
 ```
 
 In the `data` argument we provide the data frame `DF`, which contains the aforementioned 
-variables. To include in the random-effects part intercepts and `x1`, we update the call
-to `mixed_model()` as
+variables. In the family argument we specify the distribution of the grouped/clustered 
+outcome conditional on the random effects. To include in the random-effects part 
+intercepts and `x1`, we update the call to `mixed_model()` as
 ```r
-gm <- mixed_model(y ~ x1 + x2, random = ~ x1 | g, data = DF)
+gm <- mixed_model(fixed = y ~ x1 + x2, random = ~ x1 | g, data = DF,
+                  family = poisson())
 
 summary(gm)
 ```
-
-
  
 Installation
 ------------
