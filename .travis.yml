@@ -1,7 +1,5 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
-install: travis_wait 30 mvn install
-
 language: r
 cache: packages
 sudo: required
@@ -25,15 +23,3 @@ r_packages:
   - knitr
   - rmarkdown
   - pkgdown
-
-after_success:
-  - Rscript -e 'pkgdown::build_site()'
-
-deploy:
-  provider: pages
-  skip-cleanup: true
-  github-token: $GITHUB_PAT
-  keep-history: true
-  local-dir: docs
-  on:
-    branch: master
