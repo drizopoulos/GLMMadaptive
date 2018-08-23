@@ -994,3 +994,33 @@ simulate.MixMod <- function (object, nsim = 1, seed = NULL, acount_MLEs_var = FA
     }
     out
 }
+
+model.matrix.MixMod <- function (object, type = c("fixed", "random"), ...) {
+    type <- match.arg(type)
+    if (type == "fixed") {
+        model.matrix(object$Terms$termsX, object$model_frames$mfX)
+    } else {
+        model.matrix(object$Terms$termsZ, object$model_frames$mfZ)
+    }
+}
+
+model.frame.MixMod <- function (formula, type = c("fixed", "random"), ...) {
+    type <- match.arg(type)
+    if (type == "fixed") {
+        formula$model_frames$mfX
+    } else {
+        formula$model_frames$mfZ
+    }
+}
+
+terms.MixMod <- function (x, type = c("fixed", "random"), ...) {
+    type <- match.arg(type)
+    if (type == "fixed") {
+        x$Terms$termsX
+    } else {
+        x$Terms$termsZ
+    }
+}
+
+
+

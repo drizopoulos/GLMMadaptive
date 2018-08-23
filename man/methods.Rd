@@ -18,6 +18,12 @@
 \alias{predict.MixMod}
 \alias{simulate}
 \alias{simulate.MixMod}
+\alias{terms}
+\alias{terms.MixMod}
+\alias{model.matrix}
+\alias{model.matrix.MixMod}
+\alias{model.frame}
+\alias{model.frame.MixMod}
 
 \title{
 Various Methods for Standard Generics
@@ -76,10 +82,22 @@ simulate(object, nsim = 1, seed = NULL, \dots)
 
 \method{simulate}{MixMod}(object, nsim = 1, seed = NULL, 
     acount_MLEs_var = FALSE, sim_fun = NULL, \dots)
+    
+terms(x, \dots)
+
+\method{terms}{MixMod}(x, type = c("fixed", "random"), \dots)
+
+model.frame(formula, \dots)
+
+\method{model.frame}{MixMod}(formula, type = c("fixed", "random"), \dots)
+
+model.matrix(object, \dots)
+
+\method{model.matrix}{MixMod}(object, type = c("fixed", "random"), \dots)
 }
 
 \arguments{
-\item{object, object2}{objects inheriting from class \code{"MixMod"}. When \code{object2}
+\item{object, object2, x, formula}{objects inheriting from class \code{"MixMod"}. When \code{object2}
   is also provided, then the model behind \code{object} must be nested within the model 
   behind \code{object2}.}
 \item{sub_model}{character string indicating for which sub-model to extract the estimated

@@ -19,10 +19,10 @@ mixed_model(fixed, random, data, family, na.action = na.exclude,
 \arguments{
 \item{fixed}{a formula for the fixed-effects part of the model, including the outcome.}
 \item{random}{a formula for the random-effects part of the model. This should only contain
-    the right-hand side part, e.g., \code{~ time | id}, where is \code{time} is a variable
-    and \code{id} the grouping factor. When a \code{||} is used in the definition of this
-    argument (instead of \code{|}), then the covariance matrix of the random effects is 
-    assumed to be diagonal.}
+    the right-hand side part, e.g., \code{~ time | id}, where \code{time} is a variable,
+    and \code{id} the grouping factor. When the symbol \code{||} is used in the definition
+    of this argument (instead of \code{|}), then the covariance matrix of the random 
+    effects is assumed to be diagonal.}
 \item{data}{a data.frame containing the variables required in \code{fixed} and 
     \code{random}.}
 \item{family}{a \code{\link{family}} object specifying the type of the repeatedly measured response 

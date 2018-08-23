@@ -1,6 +1,6 @@
 export(mixed_model, marginal_coefs, coef, fixef, ranef, confint, anova, fitted, residuals, 
        effectPlotData, negative.binomial, predict, zi.poisson, zi.negative.binomial,
-       simulate)
+       simulate, model.matrix, model.frame, terms)
 
 importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
              "dbinom", "dnorm", "dpois", "fitted", "glm.fit", "logLik",
@@ -34,6 +34,9 @@ S3method(print, m_coefs)
 S3method(effectPlotData, MixMod)
 S3method(predict, MixMod)
 S3method(simulate, MixMod)
+S3method(model.matrix, MixMod)
+S3method(model.frame, MixMod)
+S3method(terms, MixMod)
 
 
 
