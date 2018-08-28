@@ -64,7 +64,7 @@ effects plot." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.3</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.5</span>
       </span>
     </div>
 
@@ -207,8 +207,8 @@ effectPlotData(object, newdata,
 <span class='no'>times</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='fu'>replicate</span>(<span class='no'>n</span>, <span class='fu'>c</span>(<span class='fl'>0</span>, <span class='fu'>sort</span>(<span class='fu'>runif</span>(<span class='no'>K</span>-<span class='fl'>1</span>, <span class='fl'>0</span>, <span class='no'>t.max</span>)))))
 <span class='no'>group</span> <span class='kw'>&lt;-</span> <span class='fu'>sample</span>(<span class='fu'>rep</span>(<span class='fl'>0</span>:<span class='fl'>1</span>, <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>n</span>/<span class='fl'>2</span>))
 <span class='no'>DF</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>year</span> <span class='kw'>=</span> <span class='no'>times</span>, <span class='kw'>group</span> <span class='kw'>=</span> <span class='fu'>factor</span>(<span class='fu'>rep</span>(<span class='no'>group</span>, <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>K</span>)))
-<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'>model.matrix</span>(~ <span class='no'>group</span> * <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>)
-<span class='no'>Z</span> <span class='kw'>&lt;-</span> <span class='fu'>model.matrix</span>(~ <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>)
+<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='methods.html'>model.matrix</a></span>(~ <span class='no'>group</span> * <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>)
+<span class='no'>Z</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='methods.html'>model.matrix</a></span>(~ <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>)
 
 <span class='no'>b</span> <span class='kw'>&lt;-</span> <span class='fu'>cbind</span>(<span class='fu'>rnorm</span>(<span class='no'>n</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fu'>sqrt</span>(<span class='no'>D</span>[<span class='fl'>1</span>, <span class='fl'>1</span>])), <span class='fu'>rnorm</span>(<span class='no'>n</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fu'>sqrt</span>(<span class='no'>D</span>[<span class='fl'>2</span>, <span class='fl'>2</span>])))
 <span class='no'>id</span> <span class='kw'>&lt;-</span> <span class='fu'>rep</span>(<span class='fl'>1</span>:<span class='no'>n</span>, <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>K</span>)

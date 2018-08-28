@@ -64,7 +64,7 @@ mixed models." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.3</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.5</span>
       </span>
     </div>
 
@@ -231,8 +231,8 @@ marginalization of regression parameters from mixed models of binary outcomes.
 <span class='no'>times</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='fu'>replicate</span>(<span class='no'>n</span>, <span class='fu'>c</span>(<span class='fl'>0</span>, <span class='fu'>sort</span>(<span class='fu'>runif</span>(<span class='no'>K</span>-<span class='fl'>1</span>, <span class='fl'>0</span>, <span class='no'>t.max</span>)))))
 <span class='no'>group</span> <span class='kw'>&lt;-</span> <span class='fu'>sample</span>(<span class='fu'>rep</span>(<span class='fl'>0</span>:<span class='fl'>1</span>, <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>n</span>/<span class='fl'>2</span>))
 <span class='no'>DF</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>year</span> <span class='kw'>=</span> <span class='no'>times</span>, <span class='kw'>group</span> <span class='kw'>=</span> <span class='fu'>factor</span>(<span class='fu'>rep</span>(<span class='no'>group</span>, <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>K</span>)))
-<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'>model.matrix</span>(~ <span class='no'>group</span> * <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>)
-<span class='no'>Z</span> <span class='kw'>&lt;-</span> <span class='fu'>model.matrix</span>(~ <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>)
+<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='methods.html'>model.matrix</a></span>(~ <span class='no'>group</span> * <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>)
+<span class='no'>Z</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='methods.html'>model.matrix</a></span>(~ <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>)
 
 <span class='no'>b</span> <span class='kw'>&lt;-</span> <span class='fu'>cbind</span>(<span class='fu'>rnorm</span>(<span class='no'>n</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fu'>sqrt</span>(<span class='no'>D</span>[<span class='fl'>1</span>, <span class='fl'>1</span>])), <span class='fu'>rnorm</span>(<span class='no'>n</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fu'>sqrt</span>(<span class='no'>D</span>[<span class='fl'>2</span>, <span class='fl'>2</span>])))
 <span class='no'>id</span> <span class='kw'>&lt;-</span> <span class='fu'>rep</span>(<span class='fl'>1</span>:<span class='no'>n</span>, <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>K</span>)
@@ -247,11 +247,11 @@ marginalization of regression parameters from mixed models of binary outcomes.
 
 <span class='fu'><a href='methods.html'>fixef</a></span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; (Intercept)        year      group1 year:group1 
 #&gt; -2.88907871  0.19374986 -0.53597641  0.00989955 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; (Intercept)        year      group1 year:group1 
-#&gt;     -1.3193      0.0884     -0.2582      0.0054 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='no'>fm1</span>, <span class='kw'>std_errors</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;               Value Std.Err  z-value   p-value
-#&gt; (Intercept) -1.3193  0.0385 -34.2391   &lt; 1e-04
-#&gt; year         0.0884  0.0016  56.0004   &lt; 1e-04
-#&gt; group1      -0.2582  0.0570  -4.5334   &lt; 1e-04
-#&gt; year:group1  0.0054  0.0020   2.6149 0.0089249
+#&gt;     -1.3193      0.0884     -0.2582      0.0054 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='no'>fm1</span>, <span class='kw'>std_errors</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;               Value Std.Err  z-value  p-value
+#&gt; (Intercept) -1.3193  0.0409 -32.2717  &lt; 1e-04
+#&gt; year         0.0884  0.0022  40.1337  &lt; 1e-04
+#&gt; group1      -0.2582  0.0533  -4.8437  &lt; 1e-04
+#&gt; year:group1  0.0054  0.0022   2.4530 0.014167
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

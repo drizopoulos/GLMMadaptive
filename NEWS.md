@@ -1,3 +1,11 @@
+# GLMMadaptive 0.3.0
+
+## General
+* added S3 methods for the terms(), model.frame() and model.matrix() generics in order to
+work with the **multcomp** package.
+
+* A new vignette illustrating multiple comparisons with the **multcomp** package.
+
 # GLMMadaptive 0.2.0
 
 ## General

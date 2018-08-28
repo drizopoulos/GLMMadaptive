@@ -132,7 +132,7 @@ using:
 marginal_coefs(fm)
 ```
 
-The function calculates the marginal probabilities in our case (because we have a binary
+The function calculates the marginal log odds ratios in our case (because we have a binary
 outcome) using a Monte Carlo procedure with number of samples determined by the `M` 
 argument.
 
