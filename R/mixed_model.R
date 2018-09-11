@@ -43,7 +43,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     form_random <- getRE_Formula(random)
     mfZ <- model.frame(terms(form_random, data = data), data = data)
     if (!is.null(na_exclude))
-        mfZ <- mfZ[-na_exclude, ]
+        mfZ <- mfZ[-na_exclude, , drop = FALSE]
     termsZ <- terms(mfZ)
     Z <- model.matrix(termsZ, mfZ)
     id_nam <- all.vars(getID_Formula(random))
