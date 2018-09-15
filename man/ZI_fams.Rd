@@ -1,19 +1,23 @@
-\name{Zero Inflated Family Objects}
+\name{Zero Inflated & Hurdle Family Objects}
 \alias{zi.poisson}
 \alias{zi.negative.binomial}
+\alias{hurdle.poisson}
+\alias{hurdle.negative.binomial}
 
 \title{
-Family functions for Zero-Inflated Poisson and Negative Binomial Mixed Models
+Family functions for Zero-Inflated & Hurdle Poisson and Negative Binomial Mixed Models
 }
 
 \description{
-Specifies the information required to fit a zero-inflated Poisson and zero-inflated 
-Negative Binomial generalized linear mixed model, using \code{mixed_model()}.
+Specifies the information required to fit a zero-inflated and hurdle Poisson, and 
+zero-inflated and hurdle Negative Binomial generalized linear mixed model, using 
+\code{mixed_model()}.
 }
 
 \usage{
 zi.poisson()
 zi.negative.binomial()
+hurdle.poisson()
 }
 
 \note{Currently only the log-link is implemented.}

@@ -112,7 +112,8 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
         inits <- c(inits, 
                    list(gammas = glm.fit(X_zi, as.numeric(y == 0), 
                                          family = binomial())$coefficients))
-        if (family$family %in% c("zero-inflated poisson", "zero-inflated negative binomial"))
+        if (family$family %in% c("zero-inflated poisson", "zero-inflated negative binomial",
+                                 "hurdle poisson", "hurdle negative binomial"))
             inits$betas <- glm.fit(X, y, family = poisson())$coefficients
     }
     ##########################
@@ -170,7 +171,8 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
                                            phis = NULL, rep(0, length(y))), TRUE),
                          "try-error")
     if (has_phis) {
-        if (family$family %in% c("negative binomial", "zero-inflated negative binomial")) {
+        if (family$family %in% c("negative binomial", "zero-inflated negative binomial",
+                                 "hurdle negative binomial")) {
             n_phis <- 1
         } else if (is.null(n_phis)) {
             stop("argument 'n_phis' needs to be specified.\n")

@@ -1,6 +1,8 @@
 # GLMMadaptive 0.3.0
 
 ## General
+* Hudle Poisson and negative binomial models are now implemented using the family objects `hurdle.poisson` and `hurdle.negative.binomial`, respectively.
+
 * added S3 methods for the terms(), model.frame() and model.matrix() generics in order to
 work with the **multcomp** package.
 

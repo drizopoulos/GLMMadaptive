@@ -507,3 +507,126 @@ zi.negative.binomial <- function () {
                    score_phis_fun = score_phis_fun),
               class = "family")
 }
+
+hurdle.poisson <- function () {
+    stats <- make.link("log")
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+        # binary indicator for y > 0
+        ind <- y > 0
+        # non-zero part
+        eta <- as.matrix(eta)
+        mu <- mu_fun(eta)
+        eta_zi <- as.matrix(eta_zi)
+        out <- eta
+        out[ind, ] <- plogis(eta_zi[ind, ], lower.tail = FALSE, log.p = TRUE) - 
+            mu[ind, ] + y[ind] * eta[ind, ] - log(- expm1(-mu[ind, ])) - lgamma(y[ind] + 1)
+        # zero part
+        out[!ind, ] <- plogis(eta_zi[!ind, ], log.p = TRUE)
+        attr(out, "mu_y") <- mu
+        out
+    }
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
+        # binary indicator for y > 0
+        ind <- y > 0
+        # non-zero part
+        mu <- as.matrix(mu)
+        mu_ind <- mu[ind, ]
+        out <- mu
+        out[!ind, ] <- 0
+        out[ind, ] <- - mu_ind + y[ind] + (exp(-mu_ind) * mu_ind) / expm1(-mu_ind) 
+        out
+    }
+    score_eta_zi_fun <- function (y, mu, phis, eta_zi) {
+        ind <- y > 0
+        probs <- plogis(as.matrix(eta_zi))
+        out <- 1 - probs
+        out[ind, ] <- - probs[ind, ]
+        out
+    }
+    simulate <- function (n, mu, phis, eta_zi) {
+        y <- qpois(runif(n, ppois(0, mu), 1), mu)
+        y[as.logical(rbinom(n, 1, plogis(eta_zi)))] <- 0
+        y
+    }
+    structure(list(family = "hurdle poisson", link = stats$name, 
+                   linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,
+                   score_eta_fun = score_eta_fun, score_eta_zi_fun = score_eta_zi_fun,
+                   simulate = simulate),
+              class = "family")
+}
+
+hurdle.negative.binomial <- function () {
+    stats <- make.link("log")
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+        phis <- exp(phis)
+        # binary indicator for y > 0
+        ind <- y > 0
+        # non-zero part
+        eta <- as.matrix(eta)
+        mu <- mu_fun(eta)
+        log_mu_phis <- log(mu + phis)
+        eta_zi <- as.matrix(eta_zi)
+        out <- eta
+        comp1 <- lgamma(y + phis) - lgamma(phis) - lgamma(y + 1)
+        comp2 <- phis * log(phis) - phis * log_mu_phis
+        comp3 <- y * log(mu) - y * log_mu_phis
+        log_g <- comp1 + comp2 + comp3
+        comp4 <- log(1 - (1 + mu / phis)^(-phis))
+        out[ind, ] <- plogis(eta_zi[ind, ], lower.tail = FALSE, log.p = TRUE) + 
+            log_g[ind, ] - comp4[ind, ]
+        # zero part
+        out[!ind, ] <- plogis(eta_zi[!ind, ], log.p = TRUE)
+        attr(out, "mu_y") <- mu
+        out
+    }
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
+        phis <- exp(phis)
+        # binary indicator for y > 0
+        ind <- y > 0
+        # non-zero part
+        mu <- as.matrix(mu)
+        mu_phis <- mu + phis
+        comp2 <- - phis / mu_phis
+        comp3 <- y / mu - y / mu_phis
+        k <- (1 + mu / phis)
+        comp4 <- k^(- phis - 1) / (1 - k^(-phis))
+        mu.eta <- mu
+        out <- (comp2 + comp3 - comp4) * mu.eta
+        out[!ind, ] <- 0
+        out
+    }
+    score_eta_zi_fun <- function (y, mu, phis, eta_zi) {
+        ind <- y > 0
+        probs <- plogis(as.matrix(eta_zi))
+        out <- 1 - probs
+        out[ind, ] <- - probs[ind, ]
+        out
+    }
+    score_phis_fun <- function (y, mu, phis, eta_zi) {
+        ind_y0 <- y == 0
+        phis <- exp(phis)
+        mu <- as.matrix(mu)
+        mu_phis <- mu + phis
+        comp1 <- digamma(y + phis) - digamma(phis)
+        comp2 <- log(phis) + 1 - log(mu_phis) - phis / mu_phis
+        comp3 <- - y / mu_phis
+        k <- mu / phis
+        k1 <- 1 + k
+        comp4 <- k1^(-phis) * (k / k1 - log(k1)) / (1 - k1^(-phis))
+        out <- (comp1 + comp2 + comp3 + comp4) * phis
+        out[ind_y0, ] <- 0
+        out
+    }
+    simulate <- function (n, mu, phis, eta_zi) {
+        y <- qnbinom(runif(n, pnbinom(0, mu = mu, size = exp(phis)), 1), 
+                     mu = mu, size = exp(phis))
+        y[as.logical(rbinom(n, 1, plogis(eta_zi)))] <- 0
+        y
+    }
+    structure(list(family = "hurdle negative binomial", link = stats$name, 
+                   linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,
+                   score_eta_fun = score_eta_fun, score_eta_zi_fun = score_eta_zi_fun,
+                   score_phis_fun = score_phis_fun,
+                   simulate = simulate),
+              class = "family")
+}
