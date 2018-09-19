@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.5</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.8</span>
       </span>
     </div>
 
@@ -92,7 +92,7 @@
       <h1>Zero-Inflated and Two-Part Mixed Effects Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-08-28</h4>
+            <h4 class="date">2018-09-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/ZeroInflated_and_TwoPart_Models.Rmd"><code>vignettes/ZeroInflated_and_TwoPart_Models.Rmd</code></a></small>
       <div class="hidden name"><code>ZeroInflated_and_TwoPart_Models.Rmd</code></div>
@@ -109,7 +109,7 @@
 <div id="zero-inflated-poisson-mixed-effects-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#zero-inflated-poisson-mixed-effects-model" class="anchor"></a>Zero-Inflated Poisson Mixed Effects Model</h2>
-<p>We start our illustrations by showing how we can fit a zero-inflated Poisson mixed effects model. The specification of the required <code>family</code> object is already available in the package as the object returned by <code><a href="../reference/ZI_fams.html">zi.poisson()</a></code>. <em>Currently, only the log link is allowed.</em> First, we simulate longitudinal data from a zero-inflated negative binomial distribution:</p>
+<p>We start our illustrations by showing how we can fit a zero-inflated Poisson mixed effects model. The specification of the required <code>family</code> object is already available in the package as the object returned by <code><a href="../reference/extra_fams.html">zi.poisson()</a></code>. <em>Currently, only the log link is allowed.</em> First, we simulate longitudinal data from a zero-inflated negative binomial distribution:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
 n &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># number of subjects</span>
 K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span>
@@ -129,7 +129,7 @@ X_zi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/method
 Z_zi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> DF)
 
 betas &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">1.5</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="op">-</span><span class="fl">0.03</span>) <span class="co"># fixed effects coefficients non-zero part</span>
-shape &lt;-<span class="st"> </span><span class="dv">2</span>
+shape &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># shape/size parameter of the negative binomial distribution</span>
 gammas &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0.5</span>) <span class="co"># fixed effects coefficients zero part</span>
 D11 &lt;-<span class="st"> </span><span class="fl">0.5</span> <span class="co"># variance of random intercepts non-zero part</span>
 D22 &lt;-<span class="st"> </span><span class="fl">0.4</span> <span class="co"># variance of random intercepts zero part</span>
@@ -146,7 +146,7 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">rnbi
 DF<span class="op">$</span>y[<span class="kw">as.logical</span>(<span class="kw">rbinom</span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> <span class="kw">plogis</span>(eta_zi)))] &lt;-<span class="st"> </span><span class="dv">0</span></code></pre></div>
 <p>A zero-inflated Poisson mixed model with only fixed effects in the zero part is fitted with the following call to <code><a href="../reference/mixed_model.html">mixed_model()</a></code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
-                   <span class="dt">family =</span> <span class="kw"><a href="../reference/ZI_fams.html">zi.poisson</a></span>(), <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex)
+                   <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">zi.poisson</a></span>(), <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex)
 
 fm1
 <span class="co">#&gt; </span>
@@ -212,9 +212,9 @@ fm2
 <div id="zero-inflated-negative-binomial-mixed-effects-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#zero-inflated-negative-binomial-mixed-effects-model" class="anchor"></a>Zero-Inflated Negative Binomial Mixed Effects Model</h2>
-<p>We continue with the same data, but we now take into account the potential over-dispersion in the data using a zero-inflated negative binomial model. To fit this mixed model we use an almost identical syntax to what we just did above - the only difference is that we now specify as family the <code><a href="../reference/ZI_fams.html">zi.negative.binomial()</a></code> object:</p>
+<p>We continue with the same data, but we now take into account the potential over-dispersion in the data using a zero-inflated negative binomial model. To fit this mixed model we use an almost identical syntax to what we just did above - the only difference is that we now specify as family the <code><a href="../reference/extra_fams.html">zi.negative.binomial()</a></code> object:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gm1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
-                   <span class="dt">family =</span> <span class="kw"><a href="../reference/ZI_fams.html">zi.negative.binomial</a></span>(), <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex)
+                   <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">zi.negative.binomial</a></span>(), <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex)
 
 gm1
 <span class="co">#&gt; </span>
@@ -291,8 +291,8 @@ eta_zi &lt;-<span class="st"> </span><span class="kw">as.vector</span>(X_zi <spa
 DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">exp</span>(<span class="kw">rnorm</span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">mean =</span> eta_y, <span class="dt">sd =</span> sigma))
 <span class="co"># we set the zeros from the logistic regression</span>
 DF<span class="op">$</span>y[<span class="kw">as.logical</span>(<span class="kw">rbinom</span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> <span class="kw">plogis</span>(eta_zi)))] &lt;-<span class="st"> </span><span class="dv">0</span></code></pre></div>
-<p>We define the <code>family</code> object: The minimal requirement is to specify the <code>log_dens</code> component and the link function; however, as also explained in the <a href="http://www.drizopoulos.com/vignettes/Custom_Models.html">Custom Models</a> vignette, the internal calculations will be faster and more stable if the user also specifies the score vector for the linear predictor of the non-zero part (function <code>score_eta_fun()</code>), the derivative of the log density with respect to <code>phis</code> (function <code>score_phis_fun()</code>), and because we have a model with a zero part, also the derivative of the log density with respect to the linear predictor of the zero part (function <code>score_eta_zi_fun()</code>). Finally, for being able to simulate from the model using the <code><a href="../reference/methods.html">simulate()</a></code> method, the function <code><a href="../reference/methods.html">simulate()</a></code> within the family object can also be specified. Hence, the family object for the two-part model is defined as:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_part.lognormal &lt;-<span class="st"> </span><span class="cf">function</span> () {
+<p>To fit the two-part mixed model for log-normal data we can use the already build-in <code><a href="../reference/extra_fams.html">hurdle.lognormal()</a></code> family object. However, just as an illustration, and to show that users can define their own family objects to be used in <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, we explain how exactly <code><a href="../reference/extra_fams.html">hurdle.lognormal()</a></code> is specified. To define the family object: The minimal requirement is to specify the <code>log_dens</code> component and the link function; however, as also explained in the <a href="http://www.drizopoulos.com/vignettes/Custom_Models.html">Custom Models</a> vignette, the internal calculations will be faster and more stable if the user also specifies the score vector for the linear predictor of the non-zero part (function <code>score_eta_fun()</code>), the derivative of the log density with respect to <code>phis</code> (function <code>score_phis_fun()</code>), and because we have a model with a zero part, also the derivative of the log density with respect to the linear predictor of the zero part (function <code>score_eta_zi_fun()</code>). Finally, for being able to simulate from the model using the <code><a href="../reference/methods.html">simulate()</a></code> method, the function <code><a href="../reference/methods.html">simulate()</a></code> within the family object can also be specified. Hence, the family object for the two-part model is defined as:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hurdle.lognormal &lt;-<span class="st"> </span><span class="cf">function</span> () {
     stats &lt;-<span class="st"> </span><span class="kw">make.link</span>(<span class="st">"identity"</span>)
     log_dens &lt;-<span class="st"> </span><span class="cf">function</span> (y, eta, mu_fun, phis, eta_zi) {
         sigma &lt;-<span class="st"> </span><span class="kw">exp</span>(phis)
@@ -351,14 +351,14 @@ DF<span class="op">$</span>y[<span class="kw">as.logical</span>(<span class="kw"
 }</code></pre></div>
 <p>Then to fit the model, we provide the user-defined family object in the <code>family</code> argument of <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, specifying also that we have one dispersion parameter in the family (i.e., <code>n_phis = 1</code>), and that in the zero part we only include fixed effects:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">km1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, 
-                  <span class="dt">family =</span> <span class="kw">two_part.lognormal</span>(), <span class="dt">n_phis =</span> <span class="dv">1</span>,
+                  <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">hurdle.lognormal</a></span>(), <span class="dt">n_phis =</span> <span class="dv">1</span>,
                   <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex)
 
 km1
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 | id, data = DF, </span>
-<span class="co">#&gt;     family = two_part.lognormal(), zi_fixed = ~sex, n_phis = 1)</span>
+<span class="co">#&gt;     family = hurdle.lognormal(), zi_fixed = ~sex, n_phis = 1)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Model:</span>
@@ -388,7 +388,7 @@ km2
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 || id, data = DF, </span>
-<span class="co">#&gt;     family = two_part.lognormal(), zi_fixed = ~sex, zi_random = ~1 | </span>
+<span class="co">#&gt;     family = hurdle.lognormal(), zi_fixed = ~sex, zi_random = ~1 | </span>
 <span class="co">#&gt;         id, n_phis = 1)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; </span>
@@ -427,6 +427,193 @@ rep_y &lt;-<span class="st"> </span><span class="kw">apply</span>(out, <span cla
        <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">"lightgrey"</span>, <span class="st">"black"</span>), <span class="dt">bty =</span> <span class="st">"n"</span>, <span class="dt">cex =</span> <span class="fl">0.8</span>)</code></pre></div>
 <p><img src="ZeroInflated_and_TwoPart_Models_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 </div>
+<div id="two-parthurdle-poisson-mixed-effects-model" class="section level2">
+<h2 class="hasAnchor">
+<a href="#two-parthurdle-poisson-mixed-effects-model" class="anchor"></a>Two-Part/Hurdle Poisson Mixed Effects Model</h2>
+<p>An alternative modeling framework to account for high percentages of 0 in count data is hurdle models. These models are similar to the two-part model for semi-continuous data presented above. The difference is that for the positive part we have positive counts instead of a positive continuous outcome. For the positive counts, a truncated at zero Poisson or negative binomial distribution is typically used. Both hurdle Poisson and hurdle negative binomial mixed models can be fitted by <code><a href="../reference/mixed_model.html">mixed_model()</a></code> using the family objects <code><a href="../reference/extra_fams.html">hurdle.poisson()</a></code> and <code>hurdle.negative.binomial</code>, respectively.</p>
+<p>To illustrate how these models are fitted, we simulate some longitudinal data from a hurdle negative binomial model using the code:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">123</span>)
+n &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># number of subjects</span>
+K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span>
+t_max &lt;-<span class="st"> </span><span class="dv">5</span> <span class="co"># maximum follow-up time</span>
+
+<span class="co"># we constuct a data frame with the design: </span>
+<span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span>
+DF &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">id =</span> <span class="kw">rep</span>(<span class="kw">seq_len</span>(n), <span class="dt">each =</span> K),
+                 <span class="dt">time =</span> <span class="kw">c</span>(<span class="kw">replicate</span>(n, <span class="kw">c</span>(<span class="dv">0</span>, <span class="kw">sort</span>(<span class="kw">runif</span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),
+                 <span class="dt">sex =</span> <span class="kw">rep</span>(<span class="kw">gl</span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))
+
+<span class="co"># design matrices for the fixed and random effects non-zero part</span>
+X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)
+Z &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>time, <span class="dt">data =</span> DF)
+<span class="co"># design matrices for the fixed and random effects zero part</span>
+X_zi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex, <span class="dt">data =</span> DF)
+Z_zi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> DF)
+
+betas &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">1.5</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="op">-</span><span class="fl">0.03</span>) <span class="co"># fixed effects coefficients non-zero part</span>
+shape &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># shape/size parameter of the negative binomial distribution</span>
+gammas &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0.5</span>) <span class="co"># fixed effects coefficients zero part</span>
+D11 &lt;-<span class="st"> </span><span class="fl">0.5</span> <span class="co"># variance of random intercepts non-zero part</span>
+D22 &lt;-<span class="st"> </span><span class="fl">0.1</span> <span class="co"># variance of random slopes non-zero part</span>
+D33 &lt;-<span class="st"> </span><span class="fl">0.4</span> <span class="co"># variance of random intercepts zero part</span>
+
+<span class="co"># we simulate random effects</span>
+b &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">rnorm</span>(n, <span class="dt">sd =</span> <span class="kw">sqrt</span>(D11)), <span class="kw">rnorm</span>(n, <span class="dt">sd =</span> <span class="kw">sqrt</span>(D22)), <span class="kw">rnorm</span>(n, <span class="dt">sd =</span> <span class="kw">sqrt</span>(D33)))
+<span class="co"># linear predictor non-zero part</span>
+eta_y &lt;-<span class="st"> </span><span class="kw">as.vector</span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw">rowSums</span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="dt">drop =</span> <span class="ot">FALSE</span>]))
+<span class="co"># linear predictor zero part</span>
+eta_zi &lt;-<span class="st"> </span><span class="kw">as.vector</span>(X_zi <span class="op">%*%</span><span class="st"> </span>gammas <span class="op">+</span><span class="st"> </span><span class="kw">rowSums</span>(Z_zi <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, <span class="dv">3</span>, <span class="dt">drop =</span> <span class="ot">FALSE</span>]))
+<span class="co"># we simulate truncated at zero negative binomial longitudinal data</span>
+lower &lt;-<span class="st"> </span><span class="kw">pnbinom</span>(<span class="dv">0</span>, <span class="dt">mu =</span> <span class="kw">exp</span>(eta_y), <span class="dt">size =</span> shape)
+u &lt;-<span class="st"> </span><span class="kw">runif</span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">min =</span> lower, <span class="dt">max =</span> <span class="dv">1</span>)
+DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">qnbinom</span>(u, <span class="dt">mu =</span> <span class="kw">exp</span>(eta_y), <span class="dt">size =</span> shape)
+<span class="co"># we set the zeros from the logistic regression</span>
+DF<span class="op">$</span>y[<span class="kw">as.logical</span>(<span class="kw">rbinom</span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> <span class="kw">plogis</span>(eta_zi)))] &lt;-<span class="st"> </span><span class="dv">0</span></code></pre></div>
+<p>The following code fits a hurdle Poisson mixed effects model. In the fixed-effects part for the positive counts we include the main effects of <code>sex</code> and <code>time</code> and their interaction, and in the random-effects for the positive counts random intercepts and random slopes. For the zero-part we only include a fixed-effects part, using argument <code>zi_fixed</code>, with <code>sex</code> as the predictor:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dm1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, 
+                  <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">hurdle.poisson</a></span>(), <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex)
+
+dm1
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Call:</span>
+<span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~time | id, data = DF, </span>
+<span class="co">#&gt;     family = hurdle.poisson(), zi_fixed = ~sex)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Model:</span>
+<span class="co">#&gt;  family: hurdle poisson</span>
+<span class="co">#&gt;  link: log </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Random effects covariance matrix:</span>
+<span class="co">#&gt;              StdDev    Corr</span>
+<span class="co">#&gt; (Intercept)  0.8227        </span>
+<span class="co">#&gt; time         0.3655 -0.3159</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Fixed effects:</span>
+<span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
+<span class="co">#&gt;     1.52781877     0.08075223     0.09003660    -0.09189512 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Zero-part coefficients:</span>
+<span class="co">#&gt; (Intercept)   sexfemale </span>
+<span class="co">#&gt;  -1.4178427   0.4857483 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; log-Lik: -2802.3</span></code></pre></div>
+<p>Currently, only the log-link is implemented for the <code><a href="../reference/extra_fams.html">hurdle.poisson()</a></code> family. The output is similar as in the case of the zero-inflated models. However, it has been noted that the fixed-effects coefficients for the positive counts part relate to the mean <span class="math inline">\(\mu\)</span> of Poisson distribution that includes the zeros, not the mean for those who experience the event. The mean for those who experience more than one events is <span class="math inline">\(\mu / (1 - e^{-\mu})\)</span>. Hence, a <span class="math inline">\(\beta = 0.1\)</span> cannot be interpreted as reflecting a <span class="math inline">\(e^\beta =\)</span> 10% increase in the mean of the subjects who experience the events.</p>
+<p>We extend model <code>dm1</code> by also including a random intercept for the zero-part. As we have done above, this is achieved by specifying the <code>zi_random</code> argument, i.e.:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dm2 &lt;-<span class="st"> </span><span class="kw">update</span>(dm1, <span class="dt">zi_random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id)
+
+dm2
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Call:</span>
+<span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~time | id, data = DF, </span>
+<span class="co">#&gt;     family = hurdle.poisson(), zi_fixed = ~sex, zi_random = ~1 | </span>
+<span class="co">#&gt;         id)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Model:</span>
+<span class="co">#&gt;  family: hurdle poisson</span>
+<span class="co">#&gt;  link: log </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Random effects covariance matrix:</span>
+<span class="co">#&gt;                 StdDev    Corr        </span>
+<span class="co">#&gt; (Intercept)     0.8226  (Intr)    time</span>
+<span class="co">#&gt; time            0.3634 -0.3136        </span>
+<span class="co">#&gt; zi_(Intercept)  0.6605 -0.0099  0.0724</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Fixed effects:</span>
+<span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
+<span class="co">#&gt;     1.52753895     0.08367461     0.09194570    -0.08005393 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Zero-part coefficients:</span>
+<span class="co">#&gt; (Intercept)   sexfemale </span>
+<span class="co">#&gt;  -1.5382756   0.5176922 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; log-Lik: -2797.309</span></code></pre></div>
+<p>The likelihood ratio test between the two models is computed with the <code><a href="../reference/methods.html">anova()</a></code> method:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(dm1, dm2)
+<span class="co">#&gt; </span>
+<span class="co">#&gt;         AIC     BIC  log.Lik  LRT df p.value</span>
+<span class="co">#&gt; dm1 5622.60 5646.05 -2802.30                </span>
+<span class="co">#&gt; dm2 5618.62 5618.62 -2797.31 9.98  3  0.0187</span></code></pre></div>
+<p>The result indicates that the extra random effect for the zero-part improves the fit of the model.</p>
+</div>
+<div id="two-parthurdle-negative-binomial-mixed-effects-model" class="section level2">
+<h2 class="hasAnchor">
+<a href="#two-parthurdle-negative-binomial-mixed-effects-model" class="anchor"></a>Two-Part/Hurdle Negative Binomial Mixed Effects Model</h2>
+<p>We continue our illustration of hurdle models by fitting the hurdle negative binomial mixed model. The only change from the previous syntax we used is the name of the family object, namely, we use now <code><a href="../reference/extra_fams.html">hurdle.negative.binomial()</a></code>. The code below fits exactly the same model as model <code>dm1</code> above, but using now the negative binomial distribution for the positive counts:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hm1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, 
+                  <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">hurdle.negative.binomial</a></span>(), <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex)
+
+hm1
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Call:</span>
+<span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~time | id, data = DF, </span>
+<span class="co">#&gt;     family = hurdle.negative.binomial(), zi_fixed = ~sex)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Model:</span>
+<span class="co">#&gt;  family: hurdle negative binomial</span>
+<span class="co">#&gt;  link: log </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Random effects covariance matrix:</span>
+<span class="co">#&gt;              StdDev    Corr</span>
+<span class="co">#&gt; (Intercept)  0.7305        </span>
+<span class="co">#&gt; time         0.3248 -0.1172</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Fixed effects:</span>
+<span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
+<span class="co">#&gt;     1.48476535     0.07146542     0.10191941    -0.08920289 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Zero-part coefficients:</span>
+<span class="co">#&gt; (Intercept)   sexfemale </span>
+<span class="co">#&gt;  -1.4178427   0.4857483 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; phi parameters:</span>
+<span class="co">#&gt;  0.677947 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; log-Lik: -2181.468</span></code></pre></div>
+<p>Also for the <code><a href="../reference/extra_fams.html">hurdle.negative.binomial()</a></code> family only the log-link is implemented. The structure of the output is identical to what we had for the hurdle Poisson model. Again we should note that the fixed-effects coefficients for the positive part have an interpretation for the mean of the entire distribution, not only for the positive counts.</p>
+<p>We update again the fitted model <code>hm1</code> by including a random intercept for the zero-part:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hm2 &lt;-<span class="st"> </span><span class="kw">update</span>(hm1, <span class="dt">zi_random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id)
+
+hm2
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Call:</span>
+<span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~time | id, data = DF, </span>
+<span class="co">#&gt;     family = hurdle.negative.binomial(), zi_fixed = ~sex, zi_random = ~1 | </span>
+<span class="co">#&gt;         id)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Model:</span>
+<span class="co">#&gt;  family: hurdle negative binomial</span>
+<span class="co">#&gt;  link: log </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Random effects covariance matrix:</span>
+<span class="co">#&gt;                 StdDev    Corr        </span>
+<span class="co">#&gt; (Intercept)     0.7305  (Intr)    time</span>
+<span class="co">#&gt; time            0.3243 -0.1140        </span>
+<span class="co">#&gt; zi_(Intercept)  0.6648 -0.0520  0.1467</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Fixed effects:</span>
+<span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
+<span class="co">#&gt;     1.47815662     0.06708721     0.10517004    -0.08545594 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Zero-part coefficients:</span>
+<span class="co">#&gt; (Intercept)   sexfemale </span>
+<span class="co">#&gt;   -1.541591    0.519505 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; phi parameters:</span>
+<span class="co">#&gt;  0.6774959 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; log-Lik: -2176.314</span></code></pre></div>
+<p>The likelihood ratio test between the two models is computed with the <code><a href="../reference/methods.html">anova()</a></code> method:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(hm1, hm2)
+<span class="co">#&gt; </span>
+<span class="co">#&gt;         AIC     BIC  log.Lik   LRT df p.value</span>
+<span class="co">#&gt; hm1 4382.94 4408.99 -2181.47                 </span>
+<span class="co">#&gt; hm2 4378.63 4378.63 -2176.31 10.31  3  0.0161</span></code></pre></div>
+<p>The result again indicates that the extra random effect for the zero-part improves the fit of the model.</p>
+</div>
 </div>
   </div>
 
@@ -440,6 +627,8 @@ rep_y &lt;-<span class="st"> </span><span class="kw">apply</span>(out, <span cla
 <li><a href="#zero-inflated-poisson-mixed-effects-model">Zero-Inflated Poisson Mixed Effects Model</a></li>
       <li><a href="#zero-inflated-negative-binomial-mixed-effects-model">Zero-Inflated Negative Binomial Mixed Effects Model</a></li>
       <li><a href="#two-part-mixed-effects-model-for-semi-continuous-data">Two-Part Mixed Effects Model for Semi-Continuous Data</a></li>
+      <li><a href="#two-parthurdle-poisson-mixed-effects-model">Two-Part/Hurdle Poisson Mixed Effects Model</a></li>
+      <li><a href="#two-parthurdle-negative-binomial-mixed-effects-model">Two-Part/Hurdle Negative Binomial Mixed Effects Model</a></li>
       </ul>
 </li>
       </ul>

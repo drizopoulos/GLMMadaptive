@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.5</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.8</span>
       </span>
     </div>
 
@@ -133,6 +133,7 @@
 <h2 class="hasAnchor">
 <a href="#general" class="anchor"></a>General</h2>
 <ul>
+<li><p>Hudle Poisson and negative binomial models are now implemented using the family objects <code>hurdle.poisson</code> and <code>hurdle.negative.binomial</code>, respectively.</p></li>
 <li><p>added S3 methods for the terms(), model.frame() and model.matrix() generics in order to work with the <strong>multcomp</strong> package.</p></li>
 <li><p>A new vignette illustrating multiple comparisons with the <strong>multcomp</strong> package.</p></li>
 </ul>
@@ -146,7 +147,7 @@
 <h2 class="hasAnchor">
 <a href="#general-1" class="anchor"></a>General</h2>
 <ul>
-<li><p>Zero-inflated Poisson and negative binomial models are now implemented using the family objects <code><a href="../reference/ZI_fams.html">zi.poisson()</a></code> and <code><a href="../reference/ZI_fams.html">zi.negative.binomial()</a></code>, respectively. In addition, taking into advantage of the fact that users can specify their own log density functions for the outcome, two-part / hurdle model can also be implemented.</p></li>
+<li><p>Zero-inflated Poisson and negative binomial models are now implemented using the family objects <code><a href="../reference/extra_fams.html">zi.poisson()</a></code> and <code><a href="../reference/extra_fams.html">zi.negative.binomial()</a></code>, respectively. In addition, taking into advantage of the fact that users can specify their own log density functions for the outcome, two-part / hurdle model can also be implemented.</p></li>
 <li><p>A new vignette illustrates how the zero-inflated models can be fitted.</p></li>
 <li>The <code><a href="../reference/methods.html">predict()</a></code> method is now fully available. It calculates predictions, and standard errors for models returned by <code><a href="../reference/mixed_model.html">mixed_model()</a></code> at three levels:
 <ul>
