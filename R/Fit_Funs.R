@@ -630,3 +630,101 @@ hurdle.negative.binomial <- function () {
                    simulate = simulate),
               class = "family")
 }
+
+hurdle.lognormal <- function () {
+    stats <- make.link("identity")
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+        sigma <- exp(phis)
+        # binary indicator for y > 0
+        ind <- y > 0
+        # non-zero part
+        eta <- as.matrix(eta)
+        eta_zi <- as.matrix(eta_zi)
+        out <- eta
+        out[ind, ] <- plogis(eta_zi[ind, ], lower.tail = FALSE, log.p = TRUE) + 
+            dnorm(x = log(y[ind]), mean = eta[ind, ], sd = sigma, log = TRUE)
+        # zero part
+        out[!ind, ] <- plogis(eta_zi[!ind, ], log.p = TRUE)
+        attr(out, "mu_y") <- eta
+        out
+    }
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
+        sigma <- exp(phis)
+        # binary indicator for y > 0
+        ind <- y > 0
+        # non-zero part
+        eta <- as.matrix(mu)
+        out <- eta
+        out[!ind, ] <- 0
+        out[ind, ] <- (log(y[ind]) - eta[ind, ]) / sigma^2
+        out
+    }
+    score_eta_zi_fun <- function (y, mu, phis, eta_zi) {
+        ind <- y > 0
+        probs <- plogis(as.matrix(eta_zi))
+        out <- 1 - probs
+        out[ind, ] <- - probs[ind, ]
+        out
+    }
+    score_phis_fun <- function (y, mu, phis, eta_zi) {
+        sigma <- exp(phis)
+        # binary indicator for y > 0
+        ind <- y > 0
+        # non-zero part
+        eta <- as.matrix(mu)
+        out <- eta
+        out[!ind, ] <- 0
+        out[ind, ] <- - 1 + (log(y[ind]) - eta[ind, ])^2 / sigma^2
+        out
+    }
+    simulate <- function (n, mu, phis, eta_zi) {
+        y <- rnorm(n = n, mean = mu, sd = exp(phis))
+        y[as.logical(rbinom(n, 1, plogis(eta_zi)))] <- 0
+        y
+    }
+    structure(list(family = "hurdle log-normal", link = stats$name, 
+                   linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,
+                   score_eta_fun = score_eta_fun, score_eta_zi_fun = score_eta_zi_fun,
+                   score_phis_fun = score_phis_fun, simulate = simulate),
+              class = "family")
+}
+
+beta.fam <- function () {
+    stats <- make.link("logit")
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+        # the log density function
+        phi <- exp(phis)
+        mu <- mu_fun(eta)
+        mu_phi <- mu * phi
+        comp1 <- lgamma(phi) - lgamma(mu_phi)
+        comp2 <- (mu_phi - 1) * log(y) - lgamma(phi - mu_phi)
+        comp3 <- (phi - mu_phi - 1) * log(1 - y)
+        out <- comp1 + comp2 + comp3
+        attr(out, "mu_y") <- mu
+        out
+    }
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
+        # the derivative of the log density w.r.t. mu
+        phi <- exp(phis)
+        mu_phi <- mu * phi
+        comp1 <- - digamma(mu_phi) * phi
+        comp2 <- phi * (log(y) + digamma(phi - mu_phi))
+        comp3 <- - phi * log(1 - y)
+        # the derivative of mu w.r.t. eta (this depends on the chosen link function)
+        mu.eta <- mu - mu * mu
+        (comp1 + comp2 + comp3) * mu.eta
+    }
+    score_phis_fun <- function (y, mu, phis, eta_zi) {
+        phi <- exp(phis)
+        mu_phi <- mu * phi
+        mu1 <- 1 - mu
+        comp1 <- digamma(phi) - digamma(mu_phi) * mu
+        comp2 <- mu * log(y) - digamma(phi - mu_phi) * mu1
+        comp3 <- log(1 - y) * mu1
+        (comp1 + comp2 + comp3) * phi
+    }
+    structure(list(family = "beta", link = stats$name, linkfun = stats$linkfun,
+                   linkinv = stats$linkinv, log_dens = log_dens, 
+                   score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun),
+              class = "family")
+}

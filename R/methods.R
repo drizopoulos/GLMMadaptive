@@ -233,7 +233,8 @@ print.summary.MixMod <- function (x, digits = max(4, getOption("digits") - 4), .
         print(coef_table)
     }
     if (!is.null(x$phis_table)) {
-        if (NB <- x$family$family %in% c("negative binomial", "zero-inflated negative binomial")) 
+        if (NB <- x$family$family %in% c("negative binomial", "zero-inflated negative binomial",
+                                         "hurdle negative binomial")) 
             cat("\nlog(dispersion) parameter:\n")
         else
             cat("\nphi parameters:\n")

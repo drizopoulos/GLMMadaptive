@@ -37,6 +37,9 @@ object.
 - Zero-inflated Poisson and negative binomial models using the `zi.poisson()` and 
 `zi.negative.binomial()` family objects.
 
+- Hurdle Poisson and negative binomial models using the `hurdle.poisson()` and 
+`hurdle.negative.binomial()` family objects.
+
 - Users may also specify their own log-density function for the repeated measurements 
 response variable, and the internal algorithms will take care of the optimization.
 
