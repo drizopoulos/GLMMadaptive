@@ -129,7 +129,9 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
             if (i_contributions) {
                 sc2 <- matrix(0.0, n, ncx)
                 for (i in seq_len(n)) {
-                    sc2[i, ] <- drop(crossprod(X[id == i, ], y[id == i]))
+                    sc2[i, ] <- drop(
+                        if (NCOL(y) == 2) crossprod(X[id == i, , drop = FALSE], y[id == i, 1]) 
+                    else crossprod(X[id == i, ], y[id == i]))
                 }
                 - sc2 + sc
             } else {
