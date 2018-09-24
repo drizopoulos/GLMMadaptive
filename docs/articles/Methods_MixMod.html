@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.8</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.99</span>
       </span>
     </div>
 
@@ -92,7 +92,7 @@
       <h1>Methods for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-09-19</h4>
+            <h4 class="date">2018-09-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Methods_MixMod.Rmd"><code>vignettes/Methods_MixMod.Rmd</code></a></small>
       <div class="hidden name"><code>Methods_MixMod.Rmd</code></div>
@@ -134,9 +134,9 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">rbin
 <p>We continue by fitting the mixed effects logistic regression for <code>y</code> assuming random intercepts and random slopes for the random-effects part.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
                   <span class="dt">family =</span> <span class="kw">binomial</span>())</code></pre></div>
-<div id="detailed-output-confidence-intervals-and-covariance-matrix-of-the-mles" class="section level2">
+<div id="detailed-output-confidence-intervals-covariance-matrix-of-the-mles-and-robust-standard-errors" class="section level2">
 <h2 class="hasAnchor">
-<a href="#detailed-output-confidence-intervals-and-covariance-matrix-of-the-mles" class="anchor"></a>Detailed Output, Confidence Intervals and Covariance Matrix of the MLEs</h2>
+<a href="#detailed-output-confidence-intervals-covariance-matrix-of-the-mles-and-robust-standard-errors" class="anchor"></a>Detailed Output, Confidence Intervals, Covariance Matrix of the MLEs and Robust Standard Errors</h2>
 <p>As in the majority of model-fitting functions in R, the <code>print()</code> and <code>summary()</code> methods display a short and a detailed output of the fitted model, respectively. For <code>'MixMod'</code> objects we obtain</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm
 <span class="co">#&gt; </span>
@@ -229,6 +229,25 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">rbin
 <span class="co">#&gt; D_12           -0.095046383  0.0374304672 -1.872794e-01</span>
 <span class="co">#&gt; D_22            0.426886977 -0.1872794290  1.058810e+00</span></code></pre></div>
 <p>The elements of this covariance matrix that correspond to the elements of the covariance matrix of the random effects (i.e., the elements <code>D_xx</code>) are on the log-Cholesky scale.</p>
+<p>Robust standard errors using the sandwich estimator can be obtained by setting the logical argument <code>sandwich</code> to <code>TRUE</code>, i.e.,</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">vcov</span>(fm, <span class="dt">sandwich =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt;                 (Intercept)    sexfemale         time sexfemale:time</span>
+<span class="co">#&gt; (Intercept)     0.104351901 -0.071672817 -0.005555342   0.0023775477</span>
+<span class="co">#&gt; sexfemale      -0.071672817  0.214705553  0.003147819  -0.0183462871</span>
+<span class="co">#&gt; time           -0.005555342  0.003147819  0.002932681  -0.0026718810</span>
+<span class="co">#&gt; sexfemale:time  0.002377548 -0.018346287 -0.002671881   0.0061708150</span>
+<span class="co">#&gt; D_11           -0.085412338 -0.010902066  0.006386534   0.0033642442</span>
+<span class="co">#&gt; D_12            0.021480846 -0.005633021 -0.001786834  -0.0002913227</span>
+<span class="co">#&gt; D_22           -0.094979283  0.030120512  0.006798901   0.0025381625</span>
+<span class="co">#&gt;                        D_11          D_12         D_22</span>
+<span class="co">#&gt; (Intercept)    -0.085412338  0.0214808461 -0.094979283</span>
+<span class="co">#&gt; sexfemale      -0.010902066 -0.0056330213  0.030120512</span>
+<span class="co">#&gt; time            0.006386534 -0.0017868339  0.006798901</span>
+<span class="co">#&gt; sexfemale:time  0.003364244 -0.0002913227  0.002538163</span>
+<span class="co">#&gt; D_11            0.247885532 -0.0662560931  0.283959686</span>
+<span class="co">#&gt; D_12           -0.066256093  0.0290155130 -0.147970165</span>
+<span class="co">#&gt; D_22            0.283959686 -0.1479701654  0.868219167</span></code></pre></div>
+<p>The use of robust standard errors via the <code>sandwich</code> argument is also available in the <code>summary()</code>, <code><a href="../reference/methods.html">confint()</a></code>, <code><a href="../reference/methods.html">anova()</a></code>, <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>, <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code>, <code><a href="../reference/methods.html">predict()</a></code>, and <code><a href="../reference/methods.html">simulate()</a></code> methods.</p>
 </div>
 <div id="fixed-and-random-effects-estimates" class="section level2">
 <h2 class="hasAnchor">
@@ -299,7 +318,7 @@ expit &lt;-<span class="st"> </span><span class="cf">function</span> (x) <span c
 <span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">+</span><span class="st"> </span><span class="kw">expit</span>(low) <span class="op">+</span><span class="st"> </span><span class="kw">expit</span>(upp) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">data =</span> plot_data,
        <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">lty =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="dv">2</span>,
        <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Subject-Specific Probabilities"</span>)</code></pre></div>
-<p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-18-1.png" width="700"><img src="Methods_MixMod_files/figure-html/unnamed-chunk-18-2.png" width="700"></p>
+<p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-19-1.png" width="700"><img src="Methods_MixMod_files/figure-html/unnamed-chunk-19-2.png" width="700"></p>
 <p>The <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function also allows to compute marginal predictions using the marginalized coefficients described above. This is achieved by setting <code>marginal = TRUE</code> in the respective call (due to the required computing time, plot not shown):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">marginal =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">4</span>)
 
@@ -462,7 +481,7 @@ future_Times
       <ul class="nav nav-pills nav-stacked">
 <li>
 <a href="#mixmod-objects">MixMod Objects</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#detailed-output-confidence-intervals-and-covariance-matrix-of-the-mles">Detailed Output, Confidence Intervals and Covariance Matrix of the MLEs</a></li>
+<li><a href="#detailed-output-confidence-intervals-covariance-matrix-of-the-mles-and-robust-standard-errors">Detailed Output, Confidence Intervals, Covariance Matrix of the MLEs and Robust Standard Errors</a></li>
       <li><a href="#fixed-and-random-effects-estimates">Fixed and Random Effects Estimates</a></li>
       <li><a href="#marginalized-coefficients">Marginalized Coefficients</a></li>
       <li><a href="#fitted-values-and-residuals">Fitted Values and Residuals</a></li>

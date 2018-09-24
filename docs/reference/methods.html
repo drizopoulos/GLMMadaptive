@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.8</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.99</span>
       </span>
     </div>
 
@@ -155,12 +155,13 @@ confint(object, parm, level = 0.95, &#8230;)
 # S3 method for MixMod
 confint(object, 
   parm = c("fixed-effects", "var-cov","extra", "zero_part"), 
-  level = 0.95, &#8230;)
+  level = 0.95, sandwich = FALSE, &#8230;)
 
 anova(object, &#8230;)
 
 # S3 method for MixMod
-anova(object, object2, test = TRUE, L = NULL, &#8230;)
+anova(object, object2, test = TRUE, 
+  L = NULL, sandwich = FALSE, &#8230;)
 
 fitted(object, &#8230;)
 
@@ -183,13 +184,14 @@ predict(object, newdata, newdata2 = NULL,
     type_pred = c("link", "response"),
     type = c("mean_subject", "subject_specific", "marginal"),
     se.fit = FALSE, M = 300, df = 10, scale = 0.3, level = 0.95, 
-    seed = 1, &#8230;)
+    seed = 1, sandwich = FALSE, &#8230;)
     
 simulate(object, nsim = 1, seed = NULL, &#8230;)
 
 # S3 method for MixMod
 simulate(object, nsim = 1, seed = NULL, 
-    acount_MLEs_var = FALSE, sim_fun = NULL, &#8230;)
+    acount_MLEs_var = FALSE, sim_fun = NULL, 
+    sandwich = FALSE, &#8230;)
     
 terms(x, &#8230;)
 
@@ -247,6 +249,11 @@ model.matrix(object, type = c("fixed", "random"), &#8230;)</pre>
       <td><p>a numeric matrix representing a contrasts matrix. This is only used when in 
   <code>anova()</code> only <code>object</code> is provided, and it can only be specified for the fixed 
   effects. When <code>L</code> is used, a Wald test is performed.</p></td>
+    </tr>
+    <tr>
+      <th>sandwich</th>
+      <td><p>logical; if <code>TRUE</code> the sandwich estimator is used in the calculation
+  of standard errors.</p></td>
     </tr>
     <tr>
       <th>type</th>

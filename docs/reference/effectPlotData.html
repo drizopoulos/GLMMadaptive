@@ -64,7 +64,7 @@ effects plot." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.8</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.99</span>
       </span>
     </div>
 
@@ -141,7 +141,7 @@ effects plot.</p>
 # S3 method for MixMod
 effectPlotData(object, newdata, 
    level = 0.95, marginal = FALSE, K = 200, seed = 1, 
-   &#8230;)</pre>
+   sandwich = FALSE, &#8230;)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,7 +171,12 @@ effectPlotData(object, newdata,
     </tr>
     <tr>
       <th>seed</th>
-      <td><p>numerical scalar giving the seed to be used in the Monte Carlo scheme..</p></td>
+      <td><p>numerical scalar giving the seed to be used in the Monte Carlo scheme.</p></td>
+    </tr>
+    <tr>
+      <th>sandwich</th>
+      <td><p>logical; if <code>TRUE</code> robust/sandwich standard errors are used in the 
+    calculations.</p></td>
     </tr>
     <tr>
       <th>&#8230;</th>
