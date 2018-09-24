@@ -59,7 +59,7 @@ fm <- mixed_model(fixed = y ~ sex * time, random = ~ time | id, data = DF,
                   family = binomial())
 ```
 
-## Detailed Output, Confidence Intervals and Covariance Matrix of the MLEs
+## Detailed Output, Confidence Intervals, Covariance Matrix of the MLEs and Robust Standard Errors
 As in the majority of model-fitting functions in R, the `print()` and `summary()` methods
 display a short and a detailed output of the fitted model, respectively. For `'MixMod'` 
 objects we obtain
@@ -100,6 +100,17 @@ vcov(fm)
 
 The elements of this covariance matrix that correspond to the elements of the covariance 
 matrix of the random effects (i.e., the elements `D_xx`) are on the log-Cholesky scale.
+
+Robust standard errors using the sandwich estimator can be obtained by setting the logical
+argument `sandwich` to 
+`TRUE`, i.e.,
+```{r}
+vcov(fm, sandwich = TRUE)
+```
+
+The use of robust standard errors via the `sandwich` argument is also available in the 
+`summary()`, `confint()`, `anova()`, `marginal_coefs()`, `effectPlotData()`, `predict()`, 
+and `simulate()` methods.
 
 ## Fixed and Random Effects Estimates
 To extract the estimated fixed effects coefficients from a fitted mixed model, we can use

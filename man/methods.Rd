@@ -52,11 +52,12 @@ confint(object, parm, level = 0.95, \dots)
 
 \method{confint}{MixMod}(object, 
   parm = c("fixed-effects", "var-cov","extra", "zero_part"), 
-  level = 0.95, \dots)
+  level = 0.95, sandwich = FALSE, \dots)
 
 anova(object, \dots)
 
-\method{anova}{MixMod}(object, object2, test = TRUE, L = NULL, \dots)
+\method{anova}{MixMod}(object, object2, test = TRUE, 
+  L = NULL, sandwich = FALSE, \dots)
 
 fitted(object, \dots)
 
@@ -76,12 +77,13 @@ predict(object, \dots)
     type_pred = c("link", "response"),
     type = c("mean_subject", "subject_specific", "marginal"),
     se.fit = FALSE, M = 300, df = 10, scale = 0.3, level = 0.95, 
-    seed = 1, \dots)
+    seed = 1, sandwich = FALSE, \dots)
     
 simulate(object, nsim = 1, seed = NULL, \dots)
 
 \method{simulate}{MixMod}(object, nsim = 1, seed = NULL, 
-    acount_MLEs_var = FALSE, sim_fun = NULL, \dots)
+    acount_MLEs_var = FALSE, sim_fun = NULL, 
+    sandwich = FALSE, \dots)
     
 terms(x, \dots)
 
@@ -115,6 +117,8 @@ model.matrix(object, \dots)
 \item{L}{a numeric matrix representing a contrasts matrix. This is only used when in 
   \code{anova()} only \code{object} is provided, and it can only be specified for the fixed 
   effects. When \code{L} is used, a Wald test is performed.}
+\item{sandwich}{logical; if \code{TRUE} the sandwich estimator is used in the calculation
+  of standard errors.}
 \item{type}{character string indicating the type of fitted values / residuals / predictions
     to calculate. Option \code{"mean_subject"} corresponds to only using the fixed-effects
     part; option \code{"subject_specific"} corresponds to using both the fixed- and 

@@ -17,7 +17,7 @@ effectPlotData(object, newdata, level, \dots)
 
 \method{effectPlotData}{MixMod}(object, newdata, 
    level = 0.95, marginal = FALSE, K = 200, seed = 1, 
-   \dots)
+   sandwich = FALSE, \dots)
 }
 
 \arguments{
@@ -29,7 +29,9 @@ effectPlotData(object, newdata, level, \dots)
     marginal predicted values are calculated using function \code{\link{marginal_coefs}}.}
 \item{K}{numeric scalar denoting the number of Monte Carlo samples from the approximate
     posterior of the parameters; applicable only for zero-inflated models.}
-\item{seed}{numerical scalar giving the seed to be used in the Monte Carlo scheme..}
+\item{seed}{numerical scalar giving the seed to be used in the Monte Carlo scheme.}
+\item{sandwich}{logical; if \code{TRUE} robust/sandwich standard errors are used in the 
+    calculations.}
 \item{\dots}{additional argument; currently none is used.}
 }
 

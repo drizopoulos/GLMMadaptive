@@ -16,7 +16,8 @@ marginal_coefs(object, \dots)
 
 \method{marginal_coefs}{MixMod}(object, std_errors = FALSE, 
    link_fun = NULL, M = 3000, K = 100, seed = 1, 
-   cores = max(parallel::detectCores() - 1, 1), \dots)
+   cores = max(parallel::detectCores() - 1, 1), 
+   sandwich = FALSE, \dots)
 }
 
 \arguments{
@@ -31,6 +32,8 @@ marginal_coefs(object, \dots)
 \item{seed}{integer denoting the seed for the random number generation.}
 \item{cores}{integer giving the number of cores to use; applicable only when 
     \code{std_errors = TRUE}.}
+\item{sandwich}{logical; if \code{TRUE} robust/sandwich standard errors are used in the 
+    calculations.}
 \item{\dots}{extra arguments; currently none is used.}
 }
 

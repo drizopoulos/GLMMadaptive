@@ -47,9 +47,14 @@ print.MixMod <- function (x, digits = max(4, getOption("digits") - 4), ...) {
 }
 
 vcov.MixMod <- function (object, parm = c("all", "fixed-effects", "var-cov","extra", 
-                                          "zero_part"), ...) {
+                                          "zero_part"), sandwich = FALSE, ...) {
     parm <- match.arg(parm)
     V <- solve(object$Hessian)
+    if (sandwich) {
+        meat <- do.call('cbind', object$score_vect_contributions)
+        meat <- Reduce("+", lapply(split(meat, row(meat)), function (x) x %o% x))
+        V <- V %*% meat %*% V
+    }
     if (parm == "all") {
         return(V)
     }
@@ -147,10 +152,10 @@ ranef.MixMod <- function(object, post_vars = FALSE, ...) {
     out
 }
 
-summary.MixMod <- function (object, ...) {
+summary.MixMod <- function (object, sandwich = FALSE, ...) {
     betas <- fixef(object)
     n_betas <- length(betas)
-    V <- vcov(object)
+    V <- vcov(object, sandwich = sandwich)
     var_betas <- V[seq_len(n_betas), seq_len(n_betas)]
     ses <- sqrt(diag(var_betas))
     D <- object$D
@@ -262,9 +267,9 @@ coef.summary.MixMod <- function (object, ...) {
 
 confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra", 
                                              "zero_part"), 
-                            level = 0.95, ...) {
+                            level = 0.95, sandwich = FALSE, ...) {
     parm <- match.arg(parm)
-    V <- vcov(object)
+    V <- vcov(object, sandwich = sandwich)
     if (parm == "fixed-effects") {
         betas <- fixef(object)
         n_betas <- length(betas)
@@ -331,7 +336,8 @@ confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra",
     out
 }
 
-anova.MixMod <- function (object, object2, test = TRUE, L = NULL, ...) {
+anova.MixMod <- function (object, object2, test = TRUE, L = NULL, 
+                          sandwich = FALSE, ...) {
     if (missing(object2) && is.null(L))
         stop("either argument 'object2' or argument 'L' needs to be specified.\n")
     if (!missing(object2)) {
@@ -382,7 +388,7 @@ anova.MixMod <- function (object, object2, test = TRUE, L = NULL, ...) {
                  "It should have ", n_betas, " columns.\n")
         colnames(L) <- abbreviate(names(betas), 6)
         rownames(L) <- rep("", nrow(L))
-        V <- vcov(object)
+        V <- vcov(object, sandwich = sandwich)
         var_betas <- V[seq_len(n_betas), seq_len(n_betas)]
         Lbetas <- c(L %*% betas)
         LVtL <- L %*% tcrossprod(var_betas, L)
@@ -493,7 +499,7 @@ marginal_coefs <- function (object, ...) UseMethod("marginal_coefs")
 marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL, 
                                    M = 3000, K = 100,
                                    seed = 1, cores = max(parallel::detectCores() - 1, 1), 
-                                   ...) {
+                                   sandwich = FALSE, ...) {
     if (!is.null(object$gammas)) {
         stop("marginal_coefs() is not yet implemented for models with an extra zero-part.")
     }
@@ -543,7 +549,7 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
         diag_D <- all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
         list_thetas <- list(betas = betas, D = if (diag_D) log(diag(D)) else chol_transf(D))
         tht <- unlist(as.relistable(list_thetas))
-        V <- vcov(object)
+        V <- vcov(object, sandwich = sandwich)
         cluster_compute_marg_coefs <- function (block, tht, list_thetas, V, XX, Z, M,
                                                 compute_marg_coefs, chol_transf,
                                                 object, link_fun, seed) {
@@ -592,7 +598,7 @@ print.m_coefs <- function (x, digits = max(4, getOption("digits") - 4), ...) {
 effectPlotData <- function (object, newdata, level, ...) UseMethod("effectPlotData")
 
 effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FALSE, 
-                                   K = 200, seed = 1, ...) {
+                                   K = 200, seed = 1, sandwich = FALSE, ...) {
     termsX <- delete.response(object$Terms$termsX)
     mfX <- model.frame(termsX, newdata, 
                        xlev = .getXlevels(termsX, object$model_frames$mfX))
@@ -605,7 +611,7 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
         } else {
             betas <- fixef(object)
             n_betas <- length(betas)
-            V <- vcov(object)
+            V <- vcov(object, sandwich = sandwich)
             var_betas <- V[seq_len(n_betas), seq_len(n_betas)]
         }
         pred <- c(X %*% betas)
@@ -629,7 +635,7 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
         X_zi <- model.matrix(termsX_zi, mfX_zi)
         list_thetas <- list(betas = betas, gammas = gammas)
         tht <- unlist(as.relistable(list_thetas))
-        V <- vcov(object)
+        V <- vcov(object, sandwich = sandwich)
         ind <- c(seq_len(length(betas)), grep("zi_", colnames(V), fixed = TRUE))
         V <- V[ind, ind]
         new_tht <- MASS::mvrnorm(K, tht, V)
@@ -733,7 +739,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                             type_pred = c("link", "response"),
                             type = c("mean_subject", "subject_specific", "marginal"),
                             se.fit = FALSE, M = 300, df = 10, scale = 0.3, level = 0.95, 
-                            seed = 1, ...) {
+                            seed = 1, sandwich = FALSE, ...) {
     if (!is.null(object$gammas)) {
         stop("the predict() method is not yet implemented for models with an extra zero-part.")
     }
@@ -747,7 +753,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
         if (type == "mean_subject") {
             betas <- fixef(object)
             n_betas <- length(betas)
-            V <- vcov(object)
+            V <- vcov(object, sandwich = sandwich)
             var_betas <- V[seq_len(n_betas), seq_len(n_betas)]
             pred <- if (type_pred == "link") c(X %*% betas) else object$family$linkinv(c(X %*% betas))
             names(pred) <- row.names(newdata)
@@ -809,7 +815,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                                 phis = if (is.null(phis)) NA else phis)
             tht <- unlist(as.relistable(list_thetas))
             tht <- tht[!is.na(tht)]
-            V <- vcov(object)
+            V <- vcov(object, sandwich = sandwich)
             tht_new <- MASS::mvrnorm(M, tht, V)
             row_split_ind <- row(EBs$post_modes)
             mu <- split(EBs$post_modes, row_split_ind)
@@ -926,7 +932,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
 }
 
 simulate.MixMod <- function (object, nsim = 1, seed = NULL, acount_MLEs_var = FALSE, 
-                             sim_fun = NULL, ...) {
+                             sim_fun = NULL, sandwich = FALSE, ...) {
     if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
         runif(1)
     if (is.null(seed)) 
@@ -1005,7 +1011,7 @@ simulate.MixMod <- function (object, nsim = 1, seed = NULL, acount_MLEs_var = FA
             list_thetas <- c(list_thetas, list(gammas = gammas))
         }
         tht <- unlist(as.relistable(list_thetas))
-        new_thetas <- MASS::mvrnorm(nsim, tht, vcov(object))
+        new_thetas <- MASS::mvrnorm(nsim, tht, vcov(object, sandwich = sandwich))
     }
     out <- matrix(0.0, nrow(X), nsim)
     for (i in seq_len(nsim)) {

@@ -1,12 +1,14 @@
 # GLMMadaptive 0.3.0
 
 ## General
-* Hudle Poisson and negative binomial models are now implemented using the family objects `hurdle.poisson` and `hurdle.negative.binomial`, respectively.
+* Hurdle Poisson and negative binomial models are now implemented using the family objects `hurdle.poisson` and `hurdle.negative.binomial`, respectively.
 
-* added S3 methods for the terms(), model.frame() and model.matrix() generics in order to
+* added S3 methods for the `terms()`, `model.frame()` and `model.matrix()` generics in order to
 work with the **multcomp** package.
 
 * A new vignette illustrating multiple comparisons with the **multcomp** package.
+
+* Methods `vcov()`, `summary()`, `confint()`, `anova()`, `marginal_coefs()`, `effectPlotData()`, `predict()`, and `simulate()` have gained the logical argument `sandwich` to invoke the use of robust/sandwich standard errors in the calculations.
 
 # GLMMadaptive 0.2.0
 
