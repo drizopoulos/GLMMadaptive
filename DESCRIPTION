@@ -4,7 +4,6 @@ Version: 0.3-0
 Authors@R: person("Dimitris", "Rizopoulos", email = "d.rizopoulos@erasmusmc.nl",
                   role = c("aut", "cre"), comment = c(ORCID = '0000-0001-9397-0900'))
 Date: 2018-09-27
-Author: Dimitris Rizopoulos [aut, cre]
 Maintainer: Dimitris Rizopoulos <d.rizopoulos@erasmusmc.nl>
 BugReports: https://github.com/drizopoulos/GLMMadaptive/issues
 Description: Fits generalized linear mixed models for a single grouping factor under
