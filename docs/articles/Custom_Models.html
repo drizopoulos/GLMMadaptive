@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.99</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
       </span>
     </div>
 
@@ -60,6 +60,9 @@
     </li>
     <li>
       <a href="../articles/Methods_MixMod.html">Methods for MixMod Objects</a>
+    </li>
+    <li>
+      <a href="../articles/Multiple_Comparisons.html">Methods for MixMod Objects</a>
     </li>
     <li>
       <a href="../articles/ZeroInflated_and_TwoPart_Models.html">Zero-Inflated and Two-Part Mixed Effects Models</a>
@@ -92,7 +95,7 @@
       <h1>Custom Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-09-24</h4>
+            <h4 class="date">2018-09-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Custom_Models.Rmd"><code>vignettes/Custom_Models.Rmd</code></a></small>
       <div class="hidden name"><code>Custom_Models.Rmd</code></div>
@@ -148,7 +151,7 @@ dd<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">rnbi
                         <span class="dt">initial_values =</span> <span class="kw">list</span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw">poisson</span>()))
 )
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;     3.8     0.0     3.8</span>
+<span class="co">#&gt;    3.72    0.01    3.74</span>
 
 fm1
 <span class="co">#&gt; </span>
@@ -221,7 +224,7 @@ fm1
                         <span class="dt">initial_values =</span> <span class="kw">list</span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw">poisson</span>()))
 )
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;    1.31    0.03    1.35</span>
+<span class="co">#&gt;    1.42    0.03    1.47</span>
 
 fm2
 <span class="co">#&gt; </span>
@@ -441,11 +444,11 @@ gm
 <span class="co">#&gt;  1.379027 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; log-Lik: 1482.692</span></code></pre></div>
-<p>To depict the results of the model we create an effects plot, showing the longitudinal evolution of the average/median male and female. We start by constructing the data frame that contains the values we want to depict, and using it in the <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function:</p>
+<p>To depict the results of the model we create an effects plot, showing the longitudinal evolution of the average/median male and female. We start by constructing the data frame that contains the values we want to depict, and using it in the <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function; just for illustration, sandwich/robust standard errors are used in the calculation of the 95% poinwise cofidence intervals:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nDF &lt;-<span class="st"> </span><span class="kw">with</span>(DF, <span class="kw">expand.grid</span>(<span class="dt">time =</span> <span class="kw">seq</span>(<span class="kw">min</span>(time), <span class="kw">max</span>(time), <span class="dt">length =</span> <span class="dv">25</span>),
                             <span class="dt">sex =</span> <span class="kw">levels</span>(sex)))
 
-plot_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(gm, nDF)</code></pre></div>
+plot_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(gm, nDF, <span class="dt">sandwich =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p>The figure is created with a call to <code>xyplot()</code> from the <a href="https://cran.r-project.org/package=lattice"><strong>lattice</strong></a> package:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"lattice"</span>)
 <span class="kw">xyplot</span>(pred <span class="op">+</span><span class="st"> </span>low <span class="op">+</span><span class="st"> </span>upp <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">data =</span> plot_data,

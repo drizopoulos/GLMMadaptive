@@ -64,7 +64,7 @@ mixed models." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.99</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
       </span>
     </div>
 
@@ -94,6 +94,9 @@ mixed models." />
     </li>
     <li>
       <a href="../articles/Methods_MixMod.html">Methods for MixMod Objects</a>
+    </li>
+    <li>
+      <a href="../articles/Multiple_Comparisons.html">Methods for MixMod Objects</a>
     </li>
     <li>
       <a href="../articles/ZeroInflated_and_TwoPart_Models.html">Zero-Inflated and Two-Part Mixed Effects Models</a>
@@ -254,10 +257,10 @@ marginalization of regression parameters from mixed models of binary outcomes.
 <span class='fu'><a href='methods.html'>fixef</a></span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; (Intercept)        year      group1 year:group1 
 #&gt; -2.88907871  0.19374986 -0.53597641  0.00989955 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; (Intercept)        year      group1 year:group1 
 #&gt;     -1.3193      0.0884     -0.2582      0.0054 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='no'>fm1</span>, <span class='kw'>std_errors</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;               Value Std.Err  z-value  p-value
-#&gt; (Intercept) -1.3193  0.0356 -37.0739  &lt; 1e-04
-#&gt; year         0.0884  0.0018  49.2640  &lt; 1e-04
-#&gt; group1      -0.2582  0.0489  -5.2806  &lt; 1e-04
-#&gt; year:group1  0.0054  0.0022   2.4891 0.012807
+#&gt; (Intercept) -1.3193  0.0394 -33.5234  &lt; 1e-04
+#&gt; year         0.0884  0.0016  57.0078  &lt; 1e-04
+#&gt; group1      -0.2582  0.0550  -4.6910  &lt; 1e-04
+#&gt; year:group1  0.0054  0.0020   2.7264 0.006403
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

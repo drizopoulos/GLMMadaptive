@@ -1,5 +1,5 @@
 ---
-title: "Methods for MixMod Objects"
+title: "Multiple Comparisons for MixMod Objects"
 author: "Dimitris Rizopoulos"
 date: "`r Sys.Date()`"
 output:
