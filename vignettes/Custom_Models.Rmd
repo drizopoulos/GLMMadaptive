@@ -348,12 +348,13 @@ gm
 To depict the results of the model we create an effects plot, showing the longitudinal 
 evolution of the average/median male and female. We start by constructing the data frame 
 that contains the values we want to depict, and using it in the `effectPlotData()` 
-function:
+function; just for illustration, sandwich/robust standard errors are used in the 
+calculation of the 95% poinwise cofidence intervals:
 ```{r}
 nDF <- with(DF, expand.grid(time = seq(min(time), max(time), length = 25),
                             sex = levels(sex)))
 
-plot_data <- effectPlotData(gm, nDF)
+plot_data <- effectPlotData(gm, nDF, sandwich = TRUE)
 ```
 
 The figure is created with a call to `xyplot()` from the 

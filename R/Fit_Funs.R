@@ -131,7 +131,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
                 for (i in seq_len(n)) {
                     sc2[i, ] <- drop(
                         if (NCOL(y) == 2) crossprod(X[id == i, , drop = FALSE], y[id == i, 1]) 
-                    else crossprod(X[id == i, ], y[id == i]))
+                    else crossprod(X[id == i, , drop = FALSE], y[id == i]))
                 }
                 - sc2 + sc
             } else {
