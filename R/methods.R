@@ -160,13 +160,13 @@ summary.MixMod <- function (object, sandwich = FALSE, ...) {
     ses <- sqrt(diag(var_betas))
     D <- object$D
     n_D <- length(D[lower.tri(D, TRUE)])
-    coef_table <- cbind("Value" = betas, "Std.Err" = ses, "z-value" = betas / ses,
+    coef_table <- cbind("Estimate" = betas, "Std.Err" = ses, "z-value" = betas / ses,
                         "p-value" = 2 * pnorm(abs(betas / ses), lower.tail = FALSE))
     if (!is.null(object$gammas)) {
         gammas <- object$gammas
         ind_gammas <- grep("zi_", colnames(V), fixed = TRUE)
         ses <- sqrt(diag(V[ind_gammas, ind_gammas, drop = FALSE]))
-        coef_table_zi <- cbind("Value" = gammas, "Std.Err" = ses, "z-value" = gammas / ses,
+        coef_table_zi <- cbind("Estimate" = gammas, "Std.Err" = ses, "z-value" = gammas / ses,
                               "p-value" = 2 * pnorm(abs(gammas / ses), lower.tail = FALSE))
     }
     out <- list(coef_table = coef_table, 
@@ -178,7 +178,7 @@ summary.MixMod <- function (object, sandwich = FALSE, ...) {
         phis <- object$phis
         ind_phis <- grep("phi_", colnames(V), fixed = TRUE)
         var_phis <- as.matrix(V[ind_phis, ind_phis])
-        out$phis_table <- cbind("Value" = phis, "Std.Err" = sqrt(diag(var_phis)))
+        out$phis_table <- cbind("Estimate" = phis, "Std.Err" = sqrt(diag(var_phis)))
     }
     out$control <- object$control
     out$family <- object$family
@@ -332,7 +332,7 @@ confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra",
         }
     }
     colnames(out) <- c(paste(round(100 * c((1 - level) / 2, 
-                                         (1 + level) / 2), 1), "%"), "Value")[c(1,3,2)]
+                                         (1 + level) / 2), 1), "%"), "Estimate")[c(1,3,2)]
     out
 }
 
@@ -573,7 +573,7 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
         out$var_betas <- var(do.call("rbind", res))
         dimnames(out$var_betas) <- list(names(out$betas), names(out$betas))
         ses <- sqrt(diag(out$var_betas))
-        coef_table <- cbind("Value" = out$betas, "Std.Err" = ses,
+        coef_table <- cbind("Estimate" = out$betas, "Std.Err" = ses,
                             "z-value" = out$betas / ses,
                             "p-value" = 2 * pnorm(abs(out$betas / ses), lower.tail = FALSE))
         out$coef_table <- coef_table
