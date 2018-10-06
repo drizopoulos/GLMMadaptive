@@ -53,6 +53,12 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     id <- match(id_orig, unique(id_orig))
     ###########################
     # Zero inflation part
+    if (family$family %in% c("zero-inflated poisson", "zero-inflated negative binomial",
+                             "hurdle poisson", "hurdle negative binomial") && 
+        is.null(zi_fixed)) {
+        stop("you have defined a family with an extra zero-part;\nat least argument ",
+             "'zi_fixed' needs to be defined, and potentially also argument 'zi_random'.")
+    }
     if (!is.null(zi_fixed)) {
         if (!is.null(na_exclude)) 
             mfX_zi <- mfX_zi[-na_exclude, ]
@@ -85,7 +91,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
                 parscale_phis = 0.01, parscale_gammas = 0.01, tol1 = 1e-03, tol2 = 1e-04, 
                 tol3 = 1e-07, numeric_deriv = "fd", nAGQ = if (nRE < 3) 11 else 7, 
                 update_GH_every = 10, max_coef_value = 10, max_phis_value = exp(10), 
-                verbose = FALSE)
+                verbose = FALSE, optimParallel = FALSE)
     control <- c(control, list(...))
     namC <- names(con)
     con[(namc <- names(control))] <- control

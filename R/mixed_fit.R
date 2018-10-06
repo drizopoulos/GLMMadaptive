@@ -240,12 +240,20 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                      reltol = control$tol3,
                      parscale = rep(c(control$parscale_betas, control$parscale_D,
                                       control$parscale_phis, control$parscale_gammas), ns))
+        optFun <- if (control$optimParallel) optimParallel::optimParallel else stats::optim
+        if (control$optimParallel) {
+            cl <- parallel::makeCluster(2)
+            parallel::setDefaultCluster(cl = cl)
+            parallel::clusterExport(cl = cl, envir = environment(), 
+                                    varlist = list("chol_transf", "deriv_D", "jacobian2",
+                                                   "dmvt", "dmvnorm"))
+        }
         for (it in seq_len(control$iter_qN_outer)) {
             GH <- GHfun(post_modes, y_lis, N_lis, X_lis, Z_lis, offset_lis, X_zi_lis, 
                         Z_zi_lis, offset_zi_lis, betas, solve(D), phis, gammas, nAGQ, nRE, 
                         canonical, user_defined, Zty_lis, log_dens, mu_fun, var_fun, 
                         mu.eta_fun, score_eta_fun, score_phis_fun, score_eta_zi_fun)
-            opt <- optim(tht, logLik_mixed, score_mixed, method = control$optim_method,
+            opt <- optFun(tht, logLik_mixed, score_mixed, method = control$optim_method,
                          control = ctrl, id = id, y = y, N = N, X = X, Z = Z, 
                          offset = offset, X_zi = X_zi, Z_zi = Z_zi, offset_zi = offset_zi, 
                          GH = GH, canonical = canonical, user_defined = user_defined, 
@@ -276,6 +284,9 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
             }
             ctrl$maxit <- ctrl$maxit + control$iter_qN_incr
             if (control$verbose) cat("\n")
+        }
+        if (control$optimParallel) {
+            parallel::stopCluster(cl)
         }
     }
     list_thetas <- list(betas = betas, D = if (diag_D) log(diag(D)) else chol_transf(D))

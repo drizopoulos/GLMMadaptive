@@ -694,6 +694,23 @@ create_lists <- function (object, newdata) {
     mfZ <- model.frame(termsZ, newdata, 
                        xlev = .getXlevels(termsZ, object$model_frames$mfZ))
     Z <- model.matrix(termsZ, mfZ)
+    if (!is.null(object$gammas)) {
+        termsX_zi <- delete.response(object$Terms$termsX_zi)
+        mfX_zi <- model.frame(termsX_zi, newdata, 
+                              xlev = .getXlevels(termsX_zi, object$model_frames$mfX_zi))
+        offset_zi <- model.offset(mfX_zi)
+        X_zi <- model.matrix(termsX_zi, mfX_zi)
+        if (!is.null(object$Terms$termsZ_zi)) {
+            termsZ_zi <- delete.response(object$Terms$termsZ_zi)
+            mfZ_zi <- model.frame(termsZ_zi, newdata, 
+                                  xlev = .getXlevels(termsZ_zi, object$model_frames$mfZ_zi))
+            Z_zi <- model.matrix(termsZ_zi, mfZ_zi)
+        } else {
+            Z_zi <- NULL
+        }
+    } else {
+        X_zi <- offset_zi <- Z_zi <- NULL
+    }
     id_nam <- object$id_name
     id <- newdata[[id_nam]]
     id <- match(id, unique(id))
@@ -709,12 +726,16 @@ create_lists <- function (object, newdata) {
     }
     Zty_lis <- lapply(mapply(Zty_fun, Z_lis, y_lis, SIMPLIFY = FALSE), drop)
     Xty <- drop(if (NCOL(y) == 2) crossprod(X, y[, 1]) else crossprod(X, y))
+    X_zi_lis <- if (!is.null(X_zi)) lapply(id_unq, function (i) X_zi[id == i, , drop = FALSE])
+    Z_zi_lis <- if (!is.null(Z_zi)) lapply(id_unq, function (i) Z_zi[id == i, , drop = FALSE])
+    offset_zi_lis <- if (!is.null(offset_zi)) split(offset_zi, id)
     log_dens <- object$Funs$log_dens
     mu_fun <- object$Funs$mu_fun
     var_fun <- object$Funs$var_fun
     mu.eta_fun <- object$Funs$mu.eta_fun
     score_eta_fun <- object$Funs$score_eta_fun
     score_phis_fun <- object$Funs$score_phis_fun
+    score_eta_zi_fun <- object$Funs$score_eta_zi_fun
     family <- object$family
     canonical <- !is.null(family$family) &&
         ((family$family == "binomial" && family$link == "logit") ||
@@ -723,69 +744,115 @@ create_lists <- function (object, newdata) {
     user_defined <- !family$family %in% known_families
     numer_deriv <- if (object$control$numeric_deriv == "fd") fd else cd
     numer_deriv_vec <- if (object$control$numeric_deriv == "fd") fd_vec else cd_vec
-    start <- matrix(0.0, length(y_lis), ncol(Z))
+    nRE <- if (!is.null(Z_zi)) ncol(Z) + ncol(Z_zi) else ncol(Z)
+    start <- matrix(0.0, length(y_lis), nRE)
     betas <- fixef(object)
     invD <- solve(object$D)
     phis <- object$phis
-    list(y_lis = y_lis, N_lis = N_lis, X_lis = X_lis, Z_lis = Z_lis, Z = Z, id = id, 
-         id_nam = id_nam, offset_lis = offset_lis, betas = betas, invD = invD, 
-         phis = phis, start = start, canonical = canonical, user_defined = user_defined, 
-         Zty_lis = Zty_lis, log_dens = log_dens, mu_fun = mu_fun, var_fun = var_fun, 
+    gammas <- object$gammas
+    list(y_lis = y_lis, N_lis = N_lis, X_lis = X_lis, Z_lis = Z_lis, Z = Z, Z_zi = Z_zi,
+         X_zi_lis = X_zi_lis, Z_zi_lis = Z_zi_lis, offset_zi_lis = offset_zi_lis,
+         id = id, id_nam = id_nam, offset_lis = offset_lis, betas = betas, invD = invD, 
+         phis = phis, gammas = gammas, start = start, canonical = canonical, 
+         user_defined = user_defined, Zty_lis = Zty_lis, log_dens = log_dens, 
+         mu_fun = mu_fun, var_fun = var_fun, 
          mu.eta_fun = mu.eta_fun, score_eta_fun = score_eta_fun, termsZ = termsZ,
-         score_phis_fun = score_phis_fun)
+         score_phis_fun = score_phis_fun, score_eta_zi_fun = score_eta_zi_fun)
 }
 
 predict.MixMod <- function (object, newdata, newdata2 = NULL, 
-                            type_pred = c("link", "response"),
-                            type = c("mean_subject", "subject_specific", "marginal"),
+                            type_pred = c("response", "link"),
+                            type = c("mean_subject", "subject_specific", "marginal", "zero_part"),
                             se.fit = FALSE, M = 300, df = 10, scale = 0.3, level = 0.95, 
                             seed = 1, sandwich = FALSE, ...) {
-    if (!is.null(object$gammas)) {
-        stop("the predict() method is not yet implemented for models with an extra zero-part.")
-    }
     type_pred <- match.arg(type_pred)
     type <- match.arg(type)
+    if (!is.null(object$gammas) && type != "zero_part" && type_pred == "link") {
+        warning("for model with an extra zero-part only predictions at the level of the ",
+                "response variable are returned;\n'type_pred' is set to 'response'.")
+        type_pred <- "response"
+    }
     termsX <- delete.response(object$Terms$termsX)
     mfX <- model.frame(termsX, newdata, 
                        xlev = .getXlevels(termsX, object$model_frames$mfX))
     X <- model.matrix(termsX, mfX)
+    offset <- model.offset(mfX)
+    if (!is.null(object$gammas)) {
+        termsX_zi <- delete.response(object$Terms$termsX_zi)
+        mfX_zi <- model.frame(termsX_zi, newdata, 
+                              xlev = .getXlevels(termsX_zi, object$model_frames$mfX_zi))
+        X_zi <- model.matrix(termsX_zi, mfX_zi)
+        offset_zi <- model.offset(mfX_zi)
+        gammas <- fixef(object, sub_model = "zero_part")
+        eta_zi <- c(X_zi %*% gammas)
+        if (!is.null(offset_zi)) {
+            eta_zi <- eta_zi + offset_zi
+        }
+    }
     if (type %in% c("mean_subject", "marginal")) {
         if (type == "mean_subject") {
             betas <- fixef(object)
-            n_betas <- length(betas)
-            V <- vcov(object, sandwich = sandwich)
-            var_betas <- V[seq_len(n_betas), seq_len(n_betas)]
-            pred <- if (type_pred == "link") c(X %*% betas) else object$family$linkinv(c(X %*% betas))
+            var_betas <- vcov(object, parm = "fixed-effects", sandwich = sandwich)
+            eta_y <- c(X %*% betas)
+            if (!is.null(offset)) {
+                eta_y <- eta_y + offset
+            }
+            pred <- if (type_pred == "link") eta_y else object$family$linkinv(eta_y)
+            if (!is.null(object$gammas)) {
+                pred <- (1 - plogis(eta_zi)) * pred
+            }
             names(pred) <- row.names(newdata)
-            se_fit <- if (se.fit) sqrt(diag(X %*% var_betas %*% t(X)))
+            se_fit <- if (se.fit && is.null(object$gammas)) sqrt(diag(X %*% var_betas %*% t(X)))
         } else {
+            if (!is.null(object$gammas)) {
+                stop("the predict() method is not yet implemented for models with an extra zero-part.")
+            }
             mcoefs <- marginal_coefs(object, std_errors = TRUE, ...)
-            betas <- mcoefs$betas
+            betas <- fixef(object)
             var_betas <- mcoefs$var_betas
             pred <- if (type_pred == "link") c(X %*% betas) else object$family$linkinv(c(X %*% betas))
             names(pred) <- row.names(newdata)
             se_fit <- if (se.fit) sqrt(diag(X %*% var_betas %*% t(X)))
         }
+    } else if (type == "zero_part") {
+        if (is.null(object$gammas))
+            stop("the fitted model does not have an extra zero part.")
+        pred_zi <- if (type_pred == "link") eta_zi else plogis(eta_zi)
+        names(pred_zi) <- row.names(newdata)
+        var_gammas <- vcov(object, parm = "zero_part", sandwich = sandwich)
+        se_fit_zi <- if (se.fit) sqrt(diag(X_zi %*% var_gammas %*% t(X_zi)))
     } else {
         Lists <- create_lists(object, newdata)
         id <- Lists[["id"]]
         betas <- Lists[["betas"]]
+        gammas <- Lists[["gammas"]]
         Z <- Lists[["Z"]]
+        ncz <- ncol(Z)
+        Z_zi <- Lists[["Z_zi"]]
         EBs <- find_modes(b = Lists$start, y_lis = Lists[["y_lis"]], 
                           N_lis = Lists[["N_lis"]], X_lis = Lists[["X_lis"]], 
                           Z_lis = Lists[["Z_lis"]], offset_lis = Lists[["offset_lis"]], 
-                          X_zi_lis = NULL, Z_zi_lis = NULL, offset_zi_lis = NULL, 
+                          X_zi_lis = Lists[["X_zi_lis"]], Z_zi_lis = Lists[["Z_zi_lis"]], 
+                          offset_zi_lis = Lists[["offset_zi_lis"]], 
                           betas = betas, invD = Lists[["invD"]], phis = Lists[["phis"]], 
-                          gammas = NULL, canonical = Lists[["canonical"]], 
+                          gammas = gammas, canonical = Lists[["canonical"]], 
                           user_defined = Lists[["user_defined"]], 
                           Zty_lis = Lists[["Zty_lis"]], log_dens = Lists[["log_dens"]], 
                           mu_fun = Lists[["mu_fun"]], var_fun = Lists[["var_fun"]], 
                           mu.eta_fun = Lists[["mu.eta_fun"]], 
                           score_eta_fun = Lists[["score_eta_fun"]], 
                           score_phis_fun = Lists[["score_phis_fun"]], 
-                          score_eta_zi_fun = NULL)
-        eta <- c(X %*% betas) + rowSums(Z * EBs$post_modes[id, , drop = FALSE])
+                          score_eta_zi_fun = Lists[["score_eta_zi_fun"]])
+        eta <- c(X %*% betas) + rowSums(Z * EBs$post_modes[id, seq_len(ncz), drop = FALSE])
+        if (!is.null(offset))
+            eta <- eta + offset
+        if (!is.null(object$Terms$termsZ_zi)) {
+            eta_zi <- eta_zi + rowSums(Z_zi * EBs$post_modes[id, -seq_len(ncz), drop = FALSE])
+        }
         pred <- if (type_pred == "link") eta else object$family$linkinv(eta)
+        if (!is.null(object$gammas)) {
+            pred <- (1 - plogis(eta_zi)) * pred
+        }
         names(pred) <- row.names(newdata)
         if (se.fit) {
             if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
@@ -794,12 +861,20 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             set.seed(seed)
             RNGstate <- structure(seed, kind = as.list(RNGkind()))
             on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
-            log_post_b <- function (b_i, y_i, X_i, Z_i, offset_i, betas, invD, phis, 
-                                    log_dens, mu_fun) {
-                eta_y <- as.vector(X_i %*% betas + Z_i %*% b_i)
+            log_post_b <- function (b_i, y_i, X_i, Z_i, offset_i, X_zi_i, Z_zi_i, offset_zi_i,
+                                    betas, invD, phis, gammas, log_dens, mu_fun) {
+                ncz <- ncol(Z_i)
+                eta_y <- as.vector(X_i %*% betas + Z_i %*% b_i[seq_len(ncz)])
                 if (!is.null(offset_i))
                     eta_y <- eta_y + offset_i
-                sum(log_dens(y_i, eta_y, mu_fun, phis), na.rm = TRUE) -
+                if (!is.null(X_zi_i)) {
+                    eta_zi <- as.vector(X_zi_i %*% gammas)
+                    if (!is.null(Z_zi_i))
+                        eta_zi <- eta_zi + as.vector(Z_zi_i %*% b_i[-seq_len(ncz)])
+                    if (!is.null(offset_zi_i))
+                        eta_zi <- eta_zi + offset_zi_i
+                }
+                sum(log_dens(y_i, eta_y, mu_fun, phis, eta_zi), na.rm = TRUE) -
                     c(0.5 * crossprod(b_i, invD) %*% b_i)
             }
             log_dens <- object$Funs$log_dens
@@ -811,10 +886,14 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             phis <- object$phis
             D <- object$D
             diag_D <- all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
-            list_thetas <- list(betas = betas, D = if (diag_D) log(diag(D)) else chol_transf(D),
-                                phis = if (is.null(phis)) NA else phis)
+            list_thetas <- list(betas = betas, D = if (diag_D) log(diag(D)) else chol_transf(D))
+            if (!is.null(phis)) {
+                list_thetas <- c(list_thetas, list(phis = phis))
+            }
+            if (!is.null(gammas)) {
+                list_thetas <- c(list_thetas, list(gammas = gammas))
+            }
             tht <- unlist(as.relistable(list_thetas))
-            tht <- tht[!is.na(tht)]
             V <- vcov(object, sandwich = sandwich)
             tht_new <- MASS::mvrnorm(M, tht, V)
             row_split_ind <- row(EBs$post_modes)
@@ -836,6 +915,15 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             offset_lis <- Lists[["offset_lis"]]
             if (is.null(offset_lis))
                 offset_lis <- rep(list(NULL), length(y_lis))
+            X_zi_lis <- Lists[["X_zi_lis"]]
+            if (is.null(X_zi_lis))
+                X_zi_lis <- rep(list(NULL), length(y_lis))
+            Z_zi_lis <- Lists[["Z_zi_lis"]]
+            if (is.null(Z_zi_lis))
+                Z_zi_lis <- rep(list(NULL), length(y_lis))
+            offset_zi_lis <- Lists[["offset_zi_lis"]]
+            if (is.null(offset_zi_lis))
+                offset_zi_lis <- rep(list(NULL), length(y_lis))
             n <- length(pred)
             Preds <- matrix(0.0, n, M)
             b <- vector("list", M)
@@ -845,20 +933,27 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                 new_pars <- relist(tht_new[m, ], skeleton = list_thetas)
                 betas <- new_pars$betas
                 phis <- new_pars$phis
+                gammas <- new_pars$gammas
                 D <- if (diag_D) diag(exp(new_pars$D), length(new_pars$D)) else chol_transf(new_pars$D)
                 invD <- solve(D)
                 # Simulate new EBs
                 log_post_b_current <- mapply(log_post_b, b_i = b_current, y_i = y_lis, 
-                                             X_i = X_lis, Z_i = Z_lis, offset_i = offset_lis, 
+                                             X_i = X_lis, Z_i = Z_lis, offset_i = offset_lis,
+                                             X_zi_i = X_zi_lis, Z_zi_i = Z_zi_lis, 
+                                             offset_zi_i = offset_zi_lis,
                                              MoreArgs = list(betas = betas, invD = invD, 
-                                                             phis = phis, log_dens = log_dens, 
+                                                             phis = phis, gammas = gammas,
+                                                             log_dens = log_dens, 
                                                              mu_fun = mu_fun),
                                              SIMPLIFY = FALSE)
                 b_new <- lapply(EBs_proposed, function (x, m) x[m, ], m = m)
                 log_post_b_new <- mapply(log_post_b, b_i = b_new, y_i = y_lis, X_i = X_lis, 
                                          Z_i = Z_lis, offset_i = offset_lis, 
+                                         X_zi_i = X_zi_lis, Z_zi_i = Z_zi_lis, 
+                                         offset_zi_i = offset_zi_lis,
                                          MoreArgs = list(betas = betas, invD = invD, 
-                                                         phis = phis, log_dens = log_dens, 
+                                                         phis = phis, gammas = gammas,
+                                                         log_dens = log_dens, 
                                                          mu_fun = mu_fun),
                                          SIMPLIFY = FALSE)
                 alphas <- mapply(calc_alpha, log_post_b_new, log_post_b_current, dmvt_current, 
@@ -871,8 +966,19 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                 success_rate[m, ] <- keep_ind
                 # Calculate Predictions
                 b[[m]] <- do.call("rbind", b_current)
-                eta <- c(X %*% betas) + rowSums(Z * b[[m]][id, , drop = FALSE])
+                eta <- c(X %*% betas) + rowSums(Z * b[[m]][id, seq_len(ncz), drop = FALSE])
+                if (!is.null(offset))
+                    eta <- eta + offset
                 Preds[, m] <- if (type_pred == "link") eta else object$family$linkinv(eta)
+                if (!is.null(object$gammas)) {
+                    eta_zi <- as.vector(X_zi %*% gammas)
+                    if (!is.null(object$Terms$termsZ_zi)) {
+                        eta_zi <- eta_zi + rowSums(Z_zi * b[[m]][id, -seq_len(ncz), drop = FALSE])
+                    }
+                    if (!is.null(offset_zi))
+                        eta_zi <- eta_zi + offset_zi
+                    Preds[, m] <- (1 - plogis(eta_zi)) * Preds[, m]
+                }
             }
             se_fit <- apply(Preds, 1, sd, na.rm = TRUE)
             Qs <- apply(Preds, 1, quantile, 
@@ -888,12 +994,34 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             mfX2 <- model.frame(termsX, newdata2, 
                                 xlev = .getXlevels(termsX, object$model_frames$mfX))
             X2 <- model.matrix(termsX, mfX2)
+            offset2 <- model.offset(mfX2)
             termsZ <- Lists[["termsZ"]]
             mfZ2 <- model.frame(termsZ, newdata2, 
                                 xlev = .getXlevels(termsZ, object$model_frames$mfZ))
             Z2 <- model.matrix(termsZ, mfZ2)
-            eta2 <- c(X2 %*% betas) + rowSums(Z2 * EBs$post_modes[id2, , drop = FALSE])
+            ncz <- ncol(Z2)
+            eta2 <- c(X2 %*% betas) + rowSums(Z2 * EBs$post_modes[id2, seq_len(ncz), drop = FALSE])
+            if (!is.null(offset2)) {
+                eta2 <- eta2 + offset2
+            }
             pred2 <- if (type_pred == "link") eta2 else object$family$linkinv(eta2)
+            if (!is.null(object$gammas)) {
+                mfX2_zi <- model.frame(termsX_zi, newdata2, 
+                                    xlev = .getXlevels(termsX_zi, object$model_frames$mfX_zi))
+                X2_zi <- model.matrix(termsX_zi, mfX2_zi)
+                offset2_zi <- model.offset(mfX2_zi)
+                eta2_zi <- c(X2_zi %*% gammas)
+                if (!is.null(object$Terms$termsZ_zi)) {
+                    termsZ_zi <- object$Terms$termsZ_zi
+                    mfZ2_zi <- model.frame(termsZ_zi, newdata2, 
+                                           xlev = .getXlevels(termsZ_zi, object$model_frames$mfZ_zi))
+                    Z2_zi <- model.matrix(termsZ_zi, mfZ2_zi)
+                    eta2_zi <- eta2_zi + rowSums(Z2_zi * EBs$post_modes[id2, -seq_len(ncz), drop = FALSE])
+                }
+                if (!is.null(offset2_zi))
+                    eta2_zi <- eta2_zi + offset2_zi
+                pred2 <- (1 - plogis(eta2_zi)) * pred2
+            }
             names(pred2) <- row.names(newdata2)
             if (se.fit) {
                 Preds2 <- matrix(0.0, length(pred2), M)
@@ -901,8 +1029,18 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                     new_pars <- relist(tht_new[m, ], skeleton = list_thetas)
                     betas <- new_pars$betas
                     b_m <- b[[m]]
-                    eta2 <- c(X2 %*% betas) + rowSums(Z2 * b_m[id2, , drop = FALSE])
+                    eta2 <- c(X2 %*% betas) + rowSums(Z2 * b_m[id2, seq_len(ncz), drop = FALSE])
+                    if (!is.null(offset2))
+                        eta2 <- eta2 + offset2
                     Preds2[, m] <- if (type_pred == "link") eta2 else object$family$linkinv(eta2)
+                    if (!is.null(gammas)) {
+                        eta2_zi <- c(X2_zi %*% gammas)
+                        if (!is.null( object$Terms$termsZ_zi))
+                            eta2_zi <- eta2_zi + rowSums(Z2_zi * b_m[id2, -seq_len(ncz), drop = FALSE])
+                        if (!is.null(offset2_zi))
+                            eta2_zi <- eta2_zi + offset2_zi
+                        Preds2[, m] <- (1 - plogis(eta2_zi)) * Preds2[, m]
+                    }
                 }
                 se_fit2 <- apply(Preds2, 1, sd, na.rm = TRUE)
                 Qs2 <- apply(Preds2, 1, quantile, probs = c((1 - level) / 2, (1 + level) / 2))

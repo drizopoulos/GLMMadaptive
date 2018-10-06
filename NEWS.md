@@ -1,3 +1,8 @@
+# GLMMadaptive 0.4.0
+
+## General
+* The `predict()` method now works for zero-inflated and hurdle models.
+
 # GLMMadaptive 0.3.0
 
 ## General

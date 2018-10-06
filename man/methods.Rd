@@ -74,8 +74,8 @@ residuals(object, \dots)
 predict(object, \dots)
 
 \method{predict}{MixMod}(object, newdata, newdata2 = NULL, 
-    type_pred = c("link", "response"),
-    type = c("mean_subject", "subject_specific", "marginal"),
+    type_pred = c("response", "link"),
+    type = c("mean_subject", "subject_specific", "marginal", "zero_part"),
     se.fit = FALSE, M = 300, df = 10, scale = 0.3, level = 0.95, 
     seed = 1, sandwich = FALSE, \dots)
     
