@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.3</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@
       <h1>Methods for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-09-27</h4>
+            <h4 class="date">2018-10-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Methods_MixMod.Rmd"><code>vignettes/Methods_MixMod.Rmd</code></a></small>
       <div class="hidden name"><code>Methods_MixMod.Rmd</code></div>
@@ -187,11 +187,11 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">rbin
 <span class="co">#&gt; time         0.2489  0.6256</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt;                  Value Std.Err z-value p-value</span>
-<span class="co">#&gt; (Intercept)    -2.0716  0.3199 -6.4755 &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale      -1.1720  0.4722 -2.4819 0.01307</span>
-<span class="co">#&gt; time            0.2627  0.0564  4.6613 &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale:time  0.0025  0.0781  0.0319 0.97453</span>
+<span class="co">#&gt;                Estimate Std.Err z-value p-value</span>
+<span class="co">#&gt; (Intercept)     -2.0716  0.3199 -6.4755 &lt; 1e-04</span>
+<span class="co">#&gt; sexfemale       -1.1720  0.4722 -2.4819 0.01307</span>
+<span class="co">#&gt; time             0.2627  0.0564  4.6613 &lt; 1e-04</span>
+<span class="co">#&gt; sexfemale:time   0.0025  0.0781  0.0319 0.97453</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Integration:</span>
 <span class="co">#&gt; method: adaptive Gauss-Hermite quadrature rule</span>
@@ -202,14 +202,14 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">rbin
 <span class="co">#&gt; converged: TRUE</span></code></pre></div>
 <p>The output is rather self-explanatory. However, just note that the fixed-effects coefficients are on the linear predictor scale, and hence are the corresponding log-odds for the intercept and log-odds ratios for the rest of the parameters. The <code>summary()</code> only shows the estimated coefficients, standard errors and p-values, but no confidence intervals. These can be separately obtained using the <code><a href="../reference/methods.html">confint()</a></code> method, i.e.,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">exp</span>(<span class="kw"><a href="../reference/methods.html">confint</a></span>(fm))
-<span class="co">#&gt;                     2.5 %     Value    97.5 %</span>
+<span class="co">#&gt;                     2.5 %  Estimate    97.5 %</span>
 <span class="co">#&gt; (Intercept)    0.06729962 0.1259860 0.2358477</span>
 <span class="co">#&gt; sexfemale      0.12274967 0.3097362 0.7815624</span>
 <span class="co">#&gt; time           1.16444341 1.3004397 1.4523190</span>
 <span class="co">#&gt; sexfemale:time 0.86021510 1.0024965 1.1683115</span></code></pre></div>
 <p>By default the confidence intervals are produced for the fixed effects. Hence, taking the exp we obtain the confidence intervals for the corresponding odds-ratios. In addition, by default, the level of the confidence intervals is 95%. The following piece of code produces 90% confidence intervals for the variances of the random intercepts and slopes, and for their covariance:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">confint</a></span>(fm, <span class="dt">parm =</span> <span class="st">"var-cov"</span>, <span class="dt">level =</span> <span class="fl">0.90</span>)
-<span class="co">#&gt;                         5 %      Value       95 %</span>
+<span class="co">#&gt;                         5 %   Estimate       95 %</span>
 <span class="co">#&gt; var.(Intercept)  0.06950694 0.52709131 0.69278283</span>
 <span class="co">#&gt; cov.(Int)_time  -0.04285652 0.11302036 0.47390226</span>
 <span class="co">#&gt; var.time         0.02770139 0.06192966 0.05342255</span></code></pre></div>

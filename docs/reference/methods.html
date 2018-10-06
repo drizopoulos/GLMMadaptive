@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.3</span>
       </span>
     </div>
 
@@ -184,8 +184,8 @@ predict(object, &#8230;)
 
 # S3 method for MixMod
 predict(object, newdata, newdata2 = NULL, 
-    type_pred = c("link", "response"),
-    type = c("mean_subject", "subject_specific", "marginal"),
+    type_pred = c("response", "link"),
+    type = c("mean_subject", "subject_specific", "marginal", "zero_part"),
     se.fit = FALSE, M = 300, df = 10, scale = 0.3, level = 0.95, 
     seed = 1, sandwich = FALSE, &#8230;)
     
@@ -449,10 +449,10 @@ residuals.</p>
 #&gt; 5 -0.08780262 0.14026486
 #&gt; 6  0.38540380 0.06518884</div><div class='input'>
 
-<span class='fu'>confint</span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt;                  2.5 %      Value     97.5 %
+<span class='fu'>confint</span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt;                  2.5 %   Estimate     97.5 %
 #&gt; (Intercept) -2.2980651 -2.0659094 -1.8337536
 #&gt; year         0.1505146  0.2013052  0.2520958
-#&gt; group1      -0.7783206 -0.4716726 -0.1650247</div><div class='input'><span class='fu'>confint</span>(<span class='no'>fm1</span>, <span class='st'>"var-cov"</span>)</div><div class='output co'>#&gt;                       2.5 %       Value      97.5 %
+#&gt; group1      -0.7783206 -0.4716726 -0.1650247</div><div class='input'><span class='fu'>confint</span>(<span class='no'>fm1</span>, <span class='st'>"var-cov"</span>)</div><div class='output co'>#&gt;                       2.5 %    Estimate      97.5 %
 #&gt; var.(Intercept)  0.19174161 0.445903494  0.01815057
 #&gt; cov.(Int)_year  -0.06011975 0.003619409  0.14813679
 #&gt; var.year         0.16901360 0.194299176 -0.69049149</div><div class='input'>
