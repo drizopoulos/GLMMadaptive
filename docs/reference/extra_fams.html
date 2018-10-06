@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Family functions for Zero-Inflated Poisson and Negative Binomial Mixed Models — Zero Inflated Family Objects • GLMMadaptive</title>
+<title>Family functions for Beta, Zero-Inflated and Hurdle Poisson and Negative Binomial,
+and Hudle Log-Normal Mixed Models — Extra Family Objects • GLMMadaptive</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +31,12 @@
 
 
 
-<meta property="og:title" content="Family functions for Zero-Inflated Poisson and Negative Binomial Mixed Models — Zero Inflated Family Objects" />
+<meta property="og:title" content="Family functions for Beta, Zero-Inflated and Hurdle Poisson and Negative Binomial,
+and Hudle Log-Normal Mixed Models — Extra Family Objects" />
 
-<meta property="og:description" content="Specifies the information required to fit a zero-inflated Poisson and zero-inflated 
-Negative Binomial generalized linear mixed model, using mixed_model()." />
+<meta property="og:description" content="Specifies the information required to fit a Beta, zero-inflated and hurdle Poisson, 
+zero-inflated and hurdle Negative Binomial and a hurdle normal mixed-effects model, using 
+mixed_model()." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -64,7 +67,7 @@ Negative Binomial generalized linear mixed model, using mixed_model()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.5</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.3</span>
       </span>
     </div>
 
@@ -96,6 +99,9 @@ Negative Binomial generalized linear mixed model, using mixed_model()." />
       <a href="../articles/Methods_MixMod.html">Methods for MixMod Objects</a>
     </li>
     <li>
+      <a href="../articles/Multiple_Comparisons.html">Multiple Comparisons for MixMod Objects</a>
+    </li>
+    <li>
       <a href="../articles/ZeroInflated_and_TwoPart_Models.html">Zero-Inflated and Two-Part Mixed Effects Models</a>
     </li>
   </ul>
@@ -124,24 +130,31 @@ Negative Binomial generalized linear mixed model, using mixed_model()." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Family functions for Zero-Inflated Poisson and Negative Binomial Mixed Models</h1>
+    <h1>Family functions for Beta, Zero-Inflated and Hurdle Poisson and Negative Binomial,
+and Hudle Log-Normal Mixed Models</h1>
     
-    <div class="hidden name"><code>ZI_fams.Rd</code></div>
+    <div class="hidden name"><code>extra_fams.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Specifies the information required to fit a zero-inflated Poisson and zero-inflated 
-Negative Binomial generalized linear mixed model, using <code><a href='mixed_model.html'>mixed_model()</a></code>.</p>
+    <p>Specifies the information required to fit a Beta, zero-inflated and hurdle Poisson, 
+zero-inflated and hurdle Negative Binomial and a hurdle normal mixed-effects model, using 
+<code><a href='mixed_model.html'>mixed_model()</a></code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>zi.poisson</span>()
-<span class='fu'>zi.negative.binomial</span>()</pre>
+    <pre class="usage"><span class='fu'>beta.fam</span>()
+<span class='fu'>zi.poisson</span>()
+<span class='fu'>zi.negative.binomial</span>()
+<span class='fu'>hurdle.poisson</span>()
+<span class='fu'>hurdle.negative.binomial</span>()
+<span class='fu'>hurdle.lognormal</span>()</pre>
         
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Currently only the log-link is implemented.</p>
+    <p>Currently only the log-link is implemented for the Poisson and negative binomial 
+models, the logit link for the beta model and the identity link for the log-normal model.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -179,17 +192,17 @@ Negative Binomial generalized linear mixed model, using <code><a href='mixed_mod
 #&gt; (Intercept) 0.2172542
 #&gt; 
 #&gt; Fixed effects:
-#&gt;               Value Std.Err  z-value p-value
-#&gt; (Intercept)  1.8733  0.0204  91.7981 &lt; 1e-04
-#&gt; f12          0.5195  0.0253  20.5626 &lt; 1e-04
-#&gt; f13          0.9015  0.0238  37.8138 &lt; 1e-04
-#&gt; f2B          1.3964  0.0223  62.5296 &lt; 1e-04
-#&gt; f12:f2B     -0.3758  0.0281 -13.3588 &lt; 1e-04
-#&gt; f13:f2B     -0.6627  0.0267 -24.8105 &lt; 1e-04
+#&gt;             Estimate Std.Err  z-value p-value
+#&gt; (Intercept)   1.8733  0.0204  91.7981 &lt; 1e-04
+#&gt; f12           0.5195  0.0253  20.5626 &lt; 1e-04
+#&gt; f13           0.9015  0.0238  37.8138 &lt; 1e-04
+#&gt; f2B           1.3964  0.0223  62.5296 &lt; 1e-04
+#&gt; f12:f2B      -0.3758  0.0281 -13.3588 &lt; 1e-04
+#&gt; f13:f2B      -0.6627  0.0267 -24.8105 &lt; 1e-04
 #&gt; 
 #&gt; Zero-part coefficients:
-#&gt;               Value Std.Err  z-value p-value
-#&gt; (Intercept) -1.4414   0.049 -29.4462 &lt; 1e-04
+#&gt;             Estimate Std.Err  z-value p-value
+#&gt; (Intercept)  -1.4414   0.049 -29.4462 &lt; 1e-04
 #&gt; 
 #&gt; Integration:
 #&gt; method: adaptive Gauss-Hermite quadrature rule
@@ -238,21 +251,21 @@ Negative Binomial generalized linear mixed model, using <code><a href='mixed_mod
 #&gt; (Intercept) 0.1260495
 #&gt; 
 #&gt; Fixed effects:
-#&gt;               Value Std.Err z-value   p-value
-#&gt; (Intercept)  1.6883  0.0773 21.8530   &lt; 1e-04
-#&gt; f12          0.6158  0.1001  6.1523   &lt; 1e-04
-#&gt; f13          1.0015  0.0998 10.0351   &lt; 1e-04
-#&gt; f2B          1.6125  0.0992 16.2471   &lt; 1e-04
-#&gt; f12:f2B     -0.4644  0.1397 -3.3238 0.0008881
-#&gt; f13:f2B     -0.7410  0.1394 -5.3152   &lt; 1e-04
+#&gt;             Estimate Std.Err z-value   p-value
+#&gt; (Intercept)   1.6883  0.0773 21.8530   &lt; 1e-04
+#&gt; f12           0.6158  0.1001  6.1523   &lt; 1e-04
+#&gt; f13           1.0015  0.0998 10.0351   &lt; 1e-04
+#&gt; f2B           1.6125  0.0992 16.2471   &lt; 1e-04
+#&gt; f12:f2B      -0.4644  0.1397 -3.3238 0.0008881
+#&gt; f13:f2B      -0.7410  0.1394 -5.3152   &lt; 1e-04
 #&gt; 
 #&gt; Zero-part coefficients:
-#&gt;               Value Std.Err z-value p-value
-#&gt; (Intercept) -5.4713  4.3638 -1.2538 0.20992
+#&gt;             Estimate Std.Err z-value p-value
+#&gt; (Intercept)  -5.4713  4.3638 -1.2538 0.20992
 #&gt; 
 #&gt; log(dispersion) parameter:
-#&gt;   Value Std.Err
-#&gt;   -0.73  0.0547
+#&gt;   Estimate Std.Err
+#&gt;      -0.73  0.0547
 #&gt; 
 #&gt; Integration:
 #&gt; method: adaptive Gauss-Hermite quadrature rule

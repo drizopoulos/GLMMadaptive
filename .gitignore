@@ -8,5 +8,4 @@
 src/*.o
 src/*.so
 src/*.dll
-docs/*
 inst/doc
