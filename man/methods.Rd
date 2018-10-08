@@ -184,12 +184,21 @@ model.matrix(object, \dots)
  \code{\link{marginal_coefs}}. These predictions will be marginal / population averaged 
  predictions.
  
+ When \code{type = "zero_part"}, predictions are calculated for the logistic regression of
+ the extra zero-part of the model (i.e., applicable for zero-inflated and hurdle models).
+ 
  When \code{type = "subject_specific"}, predictions are calculated using both the fixed- 
  and random-effects parts, i.e., \eqn{X_i \beta + Z_i b_i}, where \eqn{X_i} and \eqn{Z_i} 
  are evaluated in \code{newdata}. Estimates for the random effects of each subject are 
  obtained as modes from the posterior distribution \eqn{[b_i | y_i; \theta]} evaluated in 
  \code{newdata} and with \eqn{theta} (denoting the parameters of the model, fixed effects
  and variance components) replaced by their maximum likelihood estimates. 
+ 
+ \bold{Notes:} (i) When \code{se.fit = TRUE} and \code{type_pred = "response"}, the 
+ standard errors returned are on the linear predictor scale, not the response scale. 
+ (ii) When \code{se.fit = TRUE} and the model contains an extra zero-part, no standard 
+ errors are computed when \code{type = "mean_subject"}. (iii) When the model contains an 
+ extra zero-part, \code{type = "marginal"} predictions are not yet implemented.
  
  When \code{se.fit = TRUE} and \code{type = "subject_specific"}, standard errors and 
  confidence intervals for the subject-specific predictions are obtained by a Monte Carlo 
