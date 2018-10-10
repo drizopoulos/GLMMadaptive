@@ -784,6 +784,10 @@ beta.fam <- function () {
         comp3 <- log(1 - y) * mu1
         (comp1 + comp2 + comp3) * phi
     }
+    simulate <- function (n, mu, phis, eta_zi) {
+        phi <- exp(phis)
+        rbeta(n, shape1 = mu * phi, shape2 = phi * (1 - mu))
+    }
     structure(list(family = "beta", link = stats$name, linkfun = stats$linkfun,
                    linkinv = stats$linkinv, log_dens = log_dens, 
                    score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun),

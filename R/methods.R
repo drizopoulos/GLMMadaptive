@@ -740,7 +740,7 @@ create_lists <- function (object, newdata) {
     canonical <- !is.null(family$family) &&
         ((family$family == "binomial" && family$link == "logit") ||
              (family$family == "poisson" && family$link == "log"))
-    known_families <- c("binomial", "poisson", "negative binomial")
+    known_families <- c("binomial", "poisson")
     user_defined <- !family$family %in% known_families
     numer_deriv <- if (object$control$numeric_deriv == "fd") fd else cd
     numer_deriv_vec <- if (object$control$numeric_deriv == "fd") fd_vec else cd_vec
@@ -817,10 +817,10 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
     } else if (type == "zero_part") {
         if (is.null(object$gammas))
             stop("the fitted model does not have an extra zero part.")
-        pred_zi <- if (type_pred == "link") eta_zi else plogis(eta_zi)
-        names(pred_zi) <- row.names(newdata)
+        pred <- if (type_pred == "link") eta_zi else plogis(eta_zi)
+        names(pred) <- row.names(newdata)
         var_gammas <- vcov(object, parm = "zero_part", sandwich = sandwich)
-        se_fit_zi <- if (se.fit) sqrt(diag(X_zi %*% var_gammas %*% t(X_zi)))
+        se_fit <- if (se.fit) sqrt(diag(X_zi %*% var_gammas %*% t(X_zi)))
     } else {
         Lists <- create_lists(object, newdata)
         id <- Lists[["id"]]
@@ -931,18 +931,18 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             for (m in seq_len(M)) {
                 # Extract simulared new parameter values
                 new_pars <- relist(tht_new[m, ], skeleton = list_thetas)
-                betas <- new_pars$betas
-                phis <- new_pars$phis
-                gammas <- new_pars$gammas
-                D <- if (diag_D) diag(exp(new_pars$D), length(new_pars$D)) else chol_transf(new_pars$D)
-                invD <- solve(D)
+                betas_m <- new_pars$betas
+                phis_m <- new_pars$phis
+                gammas_m <- new_pars$gammas
+                D_m <- if (diag_D) diag(exp(new_pars$D), length(new_pars$D)) else chol_transf(new_pars$D)
+                invD_m <- solve(D)
                 # Simulate new EBs
                 log_post_b_current <- mapply(log_post_b, b_i = b_current, y_i = y_lis, 
                                              X_i = X_lis, Z_i = Z_lis, offset_i = offset_lis,
                                              X_zi_i = X_zi_lis, Z_zi_i = Z_zi_lis, 
                                              offset_zi_i = offset_zi_lis,
-                                             MoreArgs = list(betas = betas, invD = invD, 
-                                                             phis = phis, gammas = gammas,
+                                             MoreArgs = list(betas = betas_m, invD = invD_m, 
+                                                             phis = phis_m, gammas = gammas_m,
                                                              log_dens = log_dens, 
                                                              mu_fun = mu_fun),
                                              SIMPLIFY = FALSE)
@@ -951,8 +951,8 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                                          Z_i = Z_lis, offset_i = offset_lis, 
                                          X_zi_i = X_zi_lis, Z_zi_i = Z_zi_lis, 
                                          offset_zi_i = offset_zi_lis,
-                                         MoreArgs = list(betas = betas, invD = invD, 
-                                                         phis = phis, gammas = gammas,
+                                         MoreArgs = list(betas = betas_m, invD = invD_m, 
+                                                         phis = phis_m, gammas = gammas_m,
                                                          log_dens = log_dens, 
                                                          mu_fun = mu_fun),
                                          SIMPLIFY = FALSE)
@@ -966,12 +966,12 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                 success_rate[m, ] <- keep_ind
                 # Calculate Predictions
                 b[[m]] <- do.call("rbind", b_current)
-                eta <- c(X %*% betas) + rowSums(Z * b[[m]][id, seq_len(ncz), drop = FALSE])
+                eta <- c(X %*% betas_m) + rowSums(Z * b[[m]][id, seq_len(ncz), drop = FALSE])
                 if (!is.null(offset))
                     eta <- eta + offset
                 Preds[, m] <- if (type_pred == "link") eta else object$family$linkinv(eta)
                 if (!is.null(object$gammas)) {
-                    eta_zi <- as.vector(X_zi %*% gammas)
+                    eta_zi <- as.vector(X_zi %*% gammas_m)
                     if (!is.null(object$Terms$termsZ_zi)) {
                         eta_zi <- eta_zi + rowSums(Z_zi * b[[m]][id, -seq_len(ncz), drop = FALSE])
                     }
@@ -1027,14 +1027,15 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                 Preds2 <- matrix(0.0, length(pred2), M)
                 for (m in seq_len(M)) {
                     new_pars <- relist(tht_new[m, ], skeleton = list_thetas)
-                    betas <- new_pars$betas
+                    betas_m <- new_pars$betas
                     b_m <- b[[m]]
-                    eta2 <- c(X2 %*% betas) + rowSums(Z2 * b_m[id2, seq_len(ncz), drop = FALSE])
+                    gammas_m <- new_pars$gammas
+                    eta2 <- c(X2 %*% betas_m) + rowSums(Z2 * b_m[id2, seq_len(ncz), drop = FALSE])
                     if (!is.null(offset2))
                         eta2 <- eta2 + offset2
                     Preds2[, m] <- if (type_pred == "link") eta2 else object$family$linkinv(eta2)
                     if (!is.null(gammas)) {
-                        eta2_zi <- c(X2_zi %*% gammas)
+                        eta2_zi <- c(X2_zi %*% gammas_m)
                         if (!is.null( object$Terms$termsZ_zi))
                             eta2_zi <- eta2_zi + rowSums(Z2_zi * b_m[id2, -seq_len(ncz), drop = FALSE])
                         if (!is.null(offset2_zi))

@@ -48,7 +48,6 @@ find_modes <- function (b, y_lis, N_lis, X_lis, Z_lis, offset_lis, X_zi_lis, Z_z
                     l2 <- log_dens(y_i, eta_y, mu_fun, phis, eta_zi - 1e-04)
                     c(out, - crossprod(Z_zi_i, (l1 - l2) / (2 * 1e-04)))
                 }
-                 
             }
             out
         } else {
