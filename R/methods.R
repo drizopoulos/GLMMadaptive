@@ -1205,5 +1205,85 @@ terms.MixMod <- function (x, type = c("fixed", "random"), ...) {
     }
 }
 
+scoring_rules <- function (object, newdata, newdata2 = NULL,
+                           type = "subject_specific", max_count = 2000, 
+                           return_newdata = FALSE) {
+    termsX <- object$Terms$termsX
+    ND <- if (is.null(newdata2)) newdata else newdata2
+    y <- model.response(model.frame(termsX, data = ND,
+                                    xlev = .getXlevels(termsX, object$model_frames$mfX)))
+    if (is.null(y)) {
+        stop("the outcome variable is not in 'newdata' and/or 'newdata2'.")
+    }
+    n <- length(y)
+    if (object$family$family == "binomial" && NCOL(y) == 2) {
+        N <- max_count <- y[, 1] + y[, 2]
+        y <- y[, 1]
+    } else if (object$family$family == "binomial" && NCOL(y) == 1) {
+        N <- max_count <- rep(1, n)
+    } else {
+        N <- NULL
+    }
+    max_count <- rep(max_count, length.out = n)
+    prob_fun <- if (object$family$family == "binomial") {
+        function (x, mean, pis, N) dbinom(x, size = N, prob = mean)
+    } else if (object$family$family == "poisson") {
+        function (x, mean, pis, N) dpois(x, lambda = mean)
+    } else if (object$family$family == "negative binomial") {
+        function (x, mean, pis, N) dnbinom(x, mu = mean, size = exp(object$phis))
+    } else if (object$family$family == "zero-inflated poisson") {
+        function (x, mean, pis, N) {
+            ind0 <- x == 0
+            out <- (1 - pis) * dpois(x, lambda = mean)
+            out[ind0] <- pis + out[ind0]
+            out
+        }
+    } else if (object$family$family == "zero-inflated negative binomial") {
+        function (x, mean, pis, N) {
+            ind0 <- x == 0
+            out <- (1 - pis) * dnbinom(x, mu = mean, size = exp(object$phis))
+            out[ind0] <- pis + out[ind0]
+            out
+        }
+    } else if (object$family$family == "hurdle poisson") {
+        function (x, mean, pis, N) {
+            ind0 <- x == 0
+            trunc_zero <- dpois(x, lambda = mean) / 
+                ppois(0, lambda = mean, lower.tail = FALSE)
+            out <- (1 - pis) * trunc_zero
+            out[ind0] <- pis
+            out
+        }
+    } else if (object$family$family == "hurdle negative binomial") {
+        function (x, mean, pis, N) {
+            ind0 <- x == 0
+            trunc_zero <- dnbinom(x, mu = mean, size = exp(object$phis)) / 
+                pnbinom(0, mu = mean, size = exp(object$phis), lower.tail = FALSE)
+            out <- (1 - pis) * trunc_zero
+            out[ind0] <- pis
+            out
+        }
+    }
+    max_count_seq <- lapply(max_count, seq, from = 0)
+    pred <- predict(object, newdata = newdata, newdata2 = newdata2, type = type)
+    preds_zi <- if (!is.null(object$gammas)) predict(object, newdata, newdata2 = newdata2, 
+                                                     type = "zero_part")
+    if (!is.null(newdata2)) {
+        pred <- pred$pred2
+        preds_zi <- preds_zi$pred2
+    }
+    logarithmic <- quadratic <- spherical <- numeric(n)
+    for (i in seq_len(n)) {
+        p_y <- prob_fun(y[i], mean = pred[i], pis = preds_zi[i], N[i])
+        quadrat_p <- sum(prob_fun(max_count_seq[[i]], mean = pred[i], 
+                                  pis = preds_zi[i], N[i])^2)
+        logarithmic[i] <- - log(p_y)
+        quadratic[i] <- - 2 * p_y + quadrat_p
+        spherical[i] <- - p_y / sqrt(quadrat_p)
+    }
+    result <- data.frame(logarithmic = logarithmic, quadratic = quadratic, 
+                         spherical = spherical)
+    if (return_newdata) cbind(ND, result) else result
+}
 
 
