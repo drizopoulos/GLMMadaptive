@@ -479,7 +479,7 @@ fitted.MixMod <- function (object, type = c("mean_subject", "subject_specific", 
         }
         if (!is.null(offset_zi))
             eta_zi <- eta_zi + offset_zi
-        (1 - plogis(eta_zi)) * mu
+        plogis(eta_zi, lower.tail = FALSE) * mu
     }
     names(mu) <- rownames(X)
     mu
@@ -799,7 +799,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             }
             pred <- if (type_pred == "link") eta_y else object$family$linkinv(eta_y)
             if (!is.null(object$gammas)) {
-                pred <- (1 - plogis(eta_zi)) * pred
+                pred <- plogis(eta_zi, lower.tail = FALSE) * pred
             }
             names(pred) <- row.names(newdata)
             se_fit <- if (se.fit && is.null(object$gammas)) sqrt(diag(X %*% var_betas %*% t(X)))
@@ -851,7 +851,8 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
         }
         pred <- if (type_pred == "link") eta else object$family$linkinv(eta)
         if (!is.null(object$gammas)) {
-            pred <- (1 - plogis(eta_zi)) * pred
+            pred <- plogis(eta_zi, lower.tail = FALSE) * pred
+            attr(pred, "zi_probs") <- plogis(eta_zi)
         }
         names(pred) <- row.names(newdata)
         if (se.fit) {
@@ -977,7 +978,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                     }
                     if (!is.null(offset_zi))
                         eta_zi <- eta_zi + offset_zi
-                    Preds[, m] <- (1 - plogis(eta_zi)) * Preds[, m]
+                    Preds[, m] <- plogis(eta_zi, lower.tail = FALSE) * Preds[, m]
                 }
             }
             se_fit <- apply(Preds, 1, sd, na.rm = TRUE)
@@ -1020,7 +1021,8 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                 }
                 if (!is.null(offset2_zi))
                     eta2_zi <- eta2_zi + offset2_zi
-                pred2 <- (1 - plogis(eta2_zi)) * pred2
+                pred2 <- plogis(eta2_zi, lower.tail = FALSE) * pred2
+                attr(pred2, "zi_probs") <- plogis(eta2_zi)
             }
             names(pred2) <- row.names(newdata2)
             if (se.fit) {
@@ -1040,7 +1042,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                             eta2_zi <- eta2_zi + rowSums(Z2_zi * b_m[id2, -seq_len(ncz), drop = FALSE])
                         if (!is.null(offset2_zi))
                             eta2_zi <- eta2_zi + offset2_zi
-                        Preds2[, m] <- (1 - plogis(eta2_zi)) * Preds2[, m]
+                        Preds2[, m] <- plogis(eta2_zi, lower.tail = FALSE) * Preds2[, m]
                     }
                 }
                 se_fit2 <- apply(Preds2, 1, sd, na.rm = TRUE)
@@ -1205,8 +1207,7 @@ terms.MixMod <- function (x, type = c("fixed", "random"), ...) {
     }
 }
 
-scoring_rules <- function (object, newdata, newdata2 = NULL,
-                           type = "subject_specific", max_count = 2000, 
+scoring_rules <- function (object, newdata, newdata2 = NULL, max_count = 2000, 
                            return_newdata = FALSE) {
     termsX <- object$Terms$termsX
     ND <- if (is.null(newdata2)) newdata else newdata2
@@ -1265,18 +1266,18 @@ scoring_rules <- function (object, newdata, newdata2 = NULL,
         }
     }
     max_count_seq <- lapply(max_count, seq, from = 0)
-    pred <- predict(object, newdata = newdata, newdata2 = newdata2, type = type)
-    preds_zi <- if (!is.null(object$gammas)) predict(object, newdata, newdata2 = newdata2, 
-                                                     type = "zero_part")
+    pred <- predict(object, newdata = newdata, newdata2 = newdata2, 
+                    type = "subject_specific")
+    pred_zi <- if (!is.null(object$gammas)) attr(pred, "zi_probs")
     if (!is.null(newdata2)) {
         pred <- pred$pred2
-        preds_zi <- preds_zi$pred2
+        pred_zi <- attr(pred, "zi_probs")
     }
     logarithmic <- quadratic <- spherical <- numeric(n)
     for (i in seq_len(n)) {
-        p_y <- prob_fun(y[i], mean = pred[i], pis = preds_zi[i], N[i])
+        p_y <- prob_fun(y[i], mean = pred[i], pis = pred_zi[i], N[i])
         quadrat_p <- sum(prob_fun(max_count_seq[[i]], mean = pred[i], 
-                                  pis = preds_zi[i], N[i])^2)
+                                  pis = pred_zi[i], N[i])^2)
         logarithmic[i] <- - log(p_y)
         quadratic[i] <- - 2 * p_y + quadrat_p
         spherical[i] <- - p_y / sqrt(quadrat_p)
