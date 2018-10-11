@@ -10,7 +10,7 @@ importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
              "terms", "var", "vcov", ".getXlevels", "delete.response", "qnorm", "rnorm",
            "confint", "residuals", "coef", "anova", "dt", "quantile", "rchisq", "runif", 
            "sd", "predict", "binomial", "plogis", "poisson", "simulate", "rbinom", 
-           "rnbinom", "rpois", "ppois", "qpois", "qnbinom", "pnbinom")
+           "rnbinom", "rpois", "ppois", "qpois", "qnbinom", "pnbinom", "dnbinom", "rbeta")
 importFrom("utils", "as.relistable", "relist")
 importFrom("MASS", "mvrnorm")
 importFrom("parallel", "makeCluster", "stopCluster", "detectCores", "parLapply")
