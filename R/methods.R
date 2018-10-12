@@ -764,7 +764,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                             type_pred = c("response", "link"),
                             type = c("mean_subject", "subject_specific", "marginal", "zero_part"),
                             se.fit = FALSE, M = 300, df = 10, scale = 0.3, level = 0.95, 
-                            seed = 1, sandwich = FALSE, ...) {
+                            seed = 1, return_newdata = FALSE, sandwich = FALSE, ...) {
     type_pred <- match.arg(type_pred)
     type <- match.arg(type)
     if (!is.null(object$gammas) && type != "zero_part" && type_pred == "link") {
@@ -1053,22 +1053,52 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             }
         }
     }
-    if (se.fit) {
-        if (is.null(newdata2)) {
-            if (type == "subject_specific") 
-                list(pred = pred, se.fit = se_fit, low = low, upp = upp,
-                     success_rate = colMeans(success_rate))
-            else 
-                list(pred = pred, se.fit = se_fit)
+    if (return_newdata) {
+        na_exclude <- attr(mfX, "na.action")
+        if (!is.null(object$gammas)) { 
+            na_exclude <- union(attr(mfX_zi, "na.action"), na_exclude)
+        }
+        if (!is.null(na_exclude))
+            newdata <- newdata[-na_exclude, ]
+        newdata$pred <- pred
+        if (se.fit && type == "subject_specific") {
+            newdata$low <- low
+            newdata$upp <- upp
+        }
+        if (!is.null(newdata2)) {
+            na_exclude2 <- attr(mfX2, "na.action")
+            if (!is.null(object$gammas)) { 
+                na_exclude2 <- union(attr(mfX2_zi, "na.action"), na_exclude)
+            }
+            if (!is.null(na_exclude))
+                newdata2 <- newdata2[-na_exclude2, ]
+            newdata2$pred <- pred2
+            if (se.fit && type == "subject_specific") {
+                newdata2$low <- low2
+                newdata2$upp <- upp2
+            }
+            return(list(newdata = newdata, newdata2 = newdata2))
         } else {
-            if (type == "subject_specific")
-                list(pred = pred, pred2 = pred2, se.fit = se_fit, se.fit2 = se_fit2,
-                     low = low, upp = upp, low2 = low2, upp2 = upp2)
-            else
-                list(pred = pred, pred2 = pred2, se.fit = se_fit, se.fit2 = se_fit2)
+            return(newdata)
         }
     } else {
-        if (is.null(newdata2)) pred else list(pred = pred, pred2 = pred2)
+        if (se.fit) {
+            if (is.null(newdata2)) {
+                if (type == "subject_specific") 
+                    list(pred = pred, se.fit = se_fit, low = low, upp = upp,
+                         success_rate = colMeans(success_rate))
+                else 
+                    list(pred = pred, se.fit = se_fit)
+            } else {
+                if (type == "subject_specific")
+                    list(pred = pred, pred2 = pred2, se.fit = se_fit, se.fit2 = se_fit2,
+                         low = low, upp = upp, low2 = low2, upp2 = upp2)
+                else
+                    list(pred = pred, pred2 = pred2, se.fit = se_fit, se.fit2 = se_fit2)
+            }
+        } else {
+            if (is.null(newdata2)) pred else list(pred = pred, pred2 = pred2)
+        }
     }
 }
 
@@ -1278,9 +1308,9 @@ scoring_rules <- function (object, newdata, newdata2 = NULL, max_count = 2000,
         p_y <- prob_fun(y[i], mean = pred[i], pis = pred_zi[i], N[i])
         quadrat_p <- sum(prob_fun(max_count_seq[[i]], mean = pred[i], 
                                   pis = pred_zi[i], N[i])^2)
-        logarithmic[i] <- - log(p_y)
-        quadratic[i] <- - 2 * p_y + quadrat_p
-        spherical[i] <- - p_y / sqrt(quadrat_p)
+        logarithmic[i] <- log(p_y)
+        quadratic[i] <- 2 * p_y + quadrat_p
+        spherical[i] <- p_y / sqrt(quadrat_p)
     }
     result <- data.frame(logarithmic = logarithmic, quadratic = quadratic, 
                          spherical = spherical)

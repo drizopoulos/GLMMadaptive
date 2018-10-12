@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.3</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.5</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@
       <h1>Methods for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-10-06</h4>
+            <h4 class="date">2018-10-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Methods_MixMod.Rmd"><code>vignettes/Methods_MixMod.Rmd</code></a></small>
       <div class="hidden name"><code>Methods_MixMod.Rmd</code></div>
@@ -389,18 +389,18 @@ pred_DF
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $se.fit</span>
 <span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.03050864 0.03071506 0.03491426 0.11869586 </span>
+<span class="co">#&gt; 0.02789734 0.02809443 0.03218202 0.11386294 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $low</span>
 <span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.03921410 0.04013640 0.04605767 0.05164671 </span>
+<span class="co">#&gt; 0.03879535 0.03989853 0.04526640 0.04706515 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $upp</span>
 <span class="co">#&gt;         1         2         3         4 </span>
-<span class="co">#&gt; 0.1499965 0.1523295 0.1781380 0.5064422 </span>
+<span class="co">#&gt; 0.1472472 0.1478227 0.1662718 0.4965264 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $success_rate</span>
-<span class="co">#&gt; [1] 0.4833333</span></code></pre></div>
+<span class="co">#&gt; [1] 0.5033333</span></code></pre></div>
 <p>Suppose now that we want predictions at time points at which no responses <code>y</code> have been recorded, e.g.,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">future_Times &lt;-<span class="st"> </span>pred_DF[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="kw">c</span>(<span class="st">"id"</span>, <span class="st">"time"</span>, <span class="st">"sex"</span>)]
 future_Times<span class="op">$</span>time &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">10</span>)
@@ -417,32 +417,32 @@ future_Times
 <span class="co">#&gt; 0.07623721 0.07729536 0.08982069 0.17702658 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $pred2</span>
-<span class="co">#&gt;          1          2          3 </span>
-<span class="co">#&gt; 0.08078333 0.09203400 0.19265735 </span>
+<span class="co">#&gt;         1         2         3 </span>
+<span class="co">#&gt; 0.1015482 0.1115191 0.1905586 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $se.fit</span>
 <span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.03050864 0.03071506 0.03491426 0.11869586 </span>
+<span class="co">#&gt; 0.02789734 0.02809443 0.03218202 0.11386294 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $se.fit2</span>
 <span class="co">#&gt;          1          2          3 </span>
-<span class="co">#&gt; 0.04169858 0.04932497 0.13338745 </span>
+<span class="co">#&gt; 0.03879429 0.04618988 0.12848454 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $low</span>
 <span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.03921410 0.04013640 0.04605767 0.05164671 </span>
+<span class="co">#&gt; 0.03879535 0.03989853 0.04526640 0.04706515 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $upp</span>
 <span class="co">#&gt;         1         2         3         4 </span>
-<span class="co">#&gt; 0.1499965 0.1523295 0.1781380 0.5064422 </span>
+<span class="co">#&gt; 0.1472472 0.1478227 0.1662718 0.4965264 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $low2</span>
 <span class="co">#&gt;          1          2          3 </span>
-<span class="co">#&gt; 0.04982712 0.05069234 0.05126023 </span>
+<span class="co">#&gt; 0.04976927 0.04925355 0.04708840 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $upp2</span>
 <span class="co">#&gt;         1         2         3 </span>
-<span class="co">#&gt; 0.2077120 0.2286854 0.5668449</span></code></pre></div>
+<span class="co">#&gt; 0.1919316 0.2181698 0.5587416</span></code></pre></div>
 </div>
 <div id="simulate" class="section level2">
 <h2 class="hasAnchor">

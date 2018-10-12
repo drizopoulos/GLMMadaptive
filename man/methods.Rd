@@ -77,7 +77,7 @@ predict(object, \dots)
     type_pred = c("response", "link"),
     type = c("mean_subject", "subject_specific", "marginal", "zero_part"),
     se.fit = FALSE, M = 300, df = 10, scale = 0.3, level = 0.95, 
-    seed = 1, sandwich = FALSE, \dots)
+    seed = 1, return_newdata = FALSE, sandwich = FALSE, \dots)
     
 simulate(object, nsim = 1, seed = NULL, \dots)
 
@@ -144,6 +144,10 @@ model.matrix(object, \dots)
 \item{scale}{numeric scalar or vector denoting the scaling applied to the subject-specific
     covariance matrices of the random effects; see \bold{Details} for more information.}
 \item{seed}{numerical scalar giving the seed to be used in the Monte Carlo scheme.}
+\item{return_newdata}{logical; if \code{TRUE} the \code{predict()} method returns a copy
+    of the \code{newdata} and of \code{newdata2} if the corresponding argument was not 
+    \code{NULL}, with extra columns the predictions, and the lower and upper limits of
+    the cofidence intervals when \code{type = "subject_specific"}.}
 \item{nsim}{numeric scalar giving the number of times to simulate the response variable.}
 \item{acount_MLEs_var}{logical; if \code{TRUE} it accounts for the variability of the 
     maximum likelihood estimates (MLEs) by simulating a new value for the parameters from 
