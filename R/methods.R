@@ -928,6 +928,9 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             n <- length(pred)
             Preds <- matrix(0.0, n, M)
             b <- vector("list", M)
+            if (!is.null(object$gammas)) {
+                zi_probs <- matrix(0.0, n, M)
+            }
             success_rate <- matrix(FALSE, M, length(y_lis))
             for (m in seq_len(M)) {
                 # Extract simulared new parameter values
@@ -979,6 +982,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                     if (!is.null(offset_zi))
                         eta_zi <- eta_zi + offset_zi
                     Preds[, m] <- plogis(eta_zi, lower.tail = FALSE) * Preds[, m]
+                    zi_probs[, m] <- plogis(eta_zi)
                 }
             }
             se_fit <- apply(Preds, 1, sd, na.rm = TRUE)
@@ -986,6 +990,13 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                         probs = c((1 - level) / 2, (1 + level) / 2))
             low <- Qs[1, ]
             upp <- Qs[2, ]
+            if (!is.null(gammas)) {
+                Qs_zi <- apply(zi_probs, 1, quantile, 
+                            probs = c((1 - level) / 2, (1 + level) / 2))
+                
+                attr(low, "zi_probs") <- Qs_zi[1, ]
+                attr(upp, "zi_probs") <- Qs_zi[2, ]
+            }
             names(se_fit) <- names(low) <- names(upp) <- names(pred)
         }
         if (!is.null(newdata2)) {
@@ -1027,6 +1038,9 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             names(pred2) <- row.names(newdata2)
             if (se.fit) {
                 Preds2 <- matrix(0.0, length(pred2), M)
+                if (!is.null(gammas)) {
+                    zi_probs2 <- matrix(0.0, length(pred2), M)
+                }
                 for (m in seq_len(M)) {
                     new_pars <- relist(tht_new[m, ], skeleton = list_thetas)
                     betas_m <- new_pars$betas
@@ -1043,12 +1057,20 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                         if (!is.null(offset2_zi))
                             eta2_zi <- eta2_zi + offset2_zi
                         Preds2[, m] <- plogis(eta2_zi, lower.tail = FALSE) * Preds2[, m]
+                        zi_probs2[, m] <- plogis(eta2_zi)
                     }
                 }
                 se_fit2 <- apply(Preds2, 1, sd, na.rm = TRUE)
                 Qs2 <- apply(Preds2, 1, quantile, probs = c((1 - level) / 2, (1 + level) / 2))
                 low2 <- Qs2[1, ]
                 upp2 <- Qs2[2, ]
+                if (!is.null(gammas)) {
+                    Qs2_zi <- apply(zi_probs2, 1, quantile, 
+                                   probs = c((1 - level) / 2, (1 + level) / 2))
+                    
+                    attr(low2, "zi_probs") <- Qs2_zi[1, ]
+                    attr(upp2, "zi_probs") <- Qs2_zi[2, ]
+                }
                 names(se_fit2) <- names(low2) <- names(upp2) <- names(pred2)
             }
         }

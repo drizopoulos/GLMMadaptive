@@ -24,12 +24,32 @@ trellis.par.set(par.xlab.text = list(cex = 1.1),
                 strip.border = list(cex = 0.8))
 ```
 
-# Dynamic Predictions with MixMod Objects
-## Theory
+# Introduction
+In the setting of longitudinal data analysis *** the concept of dynamic individualized predictions. These are
+predictions that are updated as extra longitudinal information is recorded for a 
+subject. 
 
+We start by introducing the notation for our setting. Let $y_i$ denote the $n_i \times 1$ 
+longitudinal response vector for the $i$-th subject ($i = 1, \ldots, n$), with element 
+$y_{il}$ denoting the value of the longitudinal outcome taken at time point $t_{il}$, 
+$l = 1, \ldots, n_i$. We also let $\mathcal D_n = \{y_i; i = 1, \ldots, n\}$ denote all
+available longitudinal outcome information in the original sample.
 
-## Illustration
-### Calculation Using the `predict()` Method
+We are interested in deriving predictions for a new subject $j$ from the same population 
+who has provided is with a set of longitudinal measurements 
+$\mathcal Y_j(t) = \{ y_j(t_{jl}); 0 \leq t_{jl} \leq t, l = 1, \ldots, n_j \}$. Given the
+fact that we observed these measurements, it is more relevant to focus on conditional 
+subject-specific predictions. In particular, for any time $u > t$ we are interested in the
+conditional mean
+\[
+\omega_j(u \mid t) = E \{ y_j(u) \mid \mathcal Y_j(t), \mathcal D_n\}, \quad u > t.
+\]
+The time-dynamic nature of $\omega_j(u \mid t)$ is evident because when new information is
+recorded for subject $j$ at time $t' > t$, we can update these predictions to obtain 
+$\omega_j(u \mid t')$, and therefore proceed in a time-dynamic manner.
+
+# Illustration
+## Calculation and Confidence Intervals
 We start by simulating some data for a zero-inflated count longitudinal outcome from a 
 negative binomial distribution:
 ```{r, simulate_data}
@@ -130,23 +150,93 @@ pred_data <- do.call("rbind", mapply(rbind, splt_data_pre, splt_data_post,
 Next we produce the figure of the dynamic predictions for 9 randomly selected subjects 
 from the test dataset:
 ```{r, dyn_preds_fig, fig.align = "center", fig.width = 8.5, fig.height = 7.5}
+ids <- sample(pred_data$id, 9)
+
 key <- list(space = "top", rep = FALSE, adj = 1,
             text = list(c("Observed Counts")),
             points = list(pch = 1, col = 1), 
-            text = list(c("Expected Counts", "95% CI")),
+            text = list(c("Expected Counts", "95% Confidence Interval")),
             lines = list(lty = c(1, 2), col = c(2, 1)),
             text = list("RE estimates\n info period"),
             lines = list(lty = 3, col = 1))
 
 xyplot(y + pred + low + upp ~ time | factor(id), data = pred_data, 
-       subset = id %in% sample(pred_data$id, 9), layout = c(3, 3),
+       subset = id %in% ids, layout = c(3, 3),
        type = c("p", rep("l", 3)), distribute.type = TRUE, 
        lty = c(0, 1, 2, 2), col = c(1, 2, 1, 1), key = key,
        abline = list(v = 2, lty = 3), scales = list(y = list(relation = "free")),
        xlab = "Follow-up Time", ylab = "Counts")
 ```
 
-### Proper Scoring Rules
+## Prediction Intervals
+As mentioned above, the interval shown in the figure of the dynamic predictions is a 95%
+confidence interval. If we wish a 95% prediction interval instead, a couple of extra steps 
+are required. First, we need the quantile function (i.e., inverse cumulative distribution
+function) of the zero-inflated negative binomial distribution. Since there this 
+distribution is not one of the available distributions in the **stats** package, we write 
+a function to compute it:
+```{r, qzinbinom}
+qzinbinom <- function (p, mu, shape, zi_probs) {
+    pnew <- (p - zi_probs) / (1 - zi_probs)
+    qnbinom(pmax(pnew, 0), mu = mu, size = shape)
+}
+```
+
+As we see, to calculate quantiles we need the shape parameter and the probabilities of 
+each measurement being an extra zero. These are given as the attribute `zi_probs` of the 
+`pred` column of the data.frame returned by the `predict()` method, and similarly, the 
+lower and upper limits for these probabilities are given as the attribute `zi_probs` of
+the `low` and `upp` columns returned by `predict()`. Using analogous code as above, 
+we extract them and put them as an extra column in the `zi_probs` data.frame:
+```{r zi_probs}
+zi_probs_data <- data.frame(zi_probs = attr(preds_fm2$newdata$pred, "zi_probs"),
+                            zi_probs_low = attr(preds_fm2$newdata$low, "zi_probs"),
+                            zi_probs_upp = attr(preds_fm2$newdata$upp, "zi_probs"))
+
+zi_probs_data2 <- data.frame(zi_probs = attr(preds_fm2$newdata2$pred, "zi_probs"),
+                            zi_probs_low = attr(preds_fm2$newdata2$low, "zi_probs"),
+                            zi_probs_upp = attr(preds_fm2$newdata2$upp, "zi_probs"))
+
+splt_data_pre <- split(zi_probs_data, preds_fm2$newdata$id)
+splt_data_post <- split(zi_probs_data2, preds_fm2$newdata2$id)
+zi_probs <- do.call("rbind", mapply(rbind, splt_data_pre, splt_data_post, 
+                                    SIMPLIFY = FALSE))
+```
+
+For the shape parameter, we extract the 95% confidence interval using the `confint()` 
+method:
+```{r CI_shape}
+CI_shape <- confint(fm2, "extra")
+```
+
+Now we have all the components to calculate the lower and upper limit of the 95% 
+prediction intervals, i.e.,
+```{r, Pred_Interval}
+pred_data$lowPI <- qzinbinom(0.025, pred_data$low, CI_shape[, "2.5 %"], 
+                             zi_probs$zi_probs_upp)
+pred_data$uppPI <- qzinbinom(0.975, pred_data$upp, CI_shape[, "97.5 %"], 
+                             zi_probs$zi_probs_low)
+```
+
+Using an analogous to the `xyplot()` function from the **lattice** we produce the plot
+```{r, dyn_preds_fig_PI, fig.align = "center", fig.width = 8.5, fig.height = 7.5}
+key <- list(space = "top", rep = FALSE, adj = 1,
+            text = list(c("Observed Counts")),
+            points = list(pch = 1, col = 1), 
+            text = list(c("Expected Counts", "95% Prediction Interval")),
+            lines = list(lty = c(1, 2), col = c(2, 1)),
+            text = list("RE estimates\n info period"),
+            lines = list(lty = 3, col = 1))
+
+xyplot(y + pred + lowPI + uppPI ~ time | factor(id), data = pred_data, 
+       subset = id %in% ids, layout = c(3, 3),
+       type = c("p", rep("l", 3)), distribute.type = TRUE, 
+       lty = c(0, 1, 2, 2), col = c(1, 2, 1, 1), key = key,
+       abline = list(v = 2, lty = 3), scales = list(y = list(relation = "free")),
+       xlab = "Follow-up Time", ylab = "Counts")
+```
+
+## Proper Scoring Rules
 To evaluate the quality of the predictions we utilize the framework of
 [proper scoring rules](https://en.wikipedia.org/wiki/Scoring_rule). The logarithmic, 
 quadratic/Brier and spherical scoring rules can be calculated for the dynamic 
