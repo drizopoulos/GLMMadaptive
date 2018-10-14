@@ -25,11 +25,11 @@ trellis.par.set(par.xlab.text = list(cex = 1.1),
 ```
 
 # Introduction
-In the setting of longitudinal data analysis *** the concept of dynamic individualized predictions. These are
-predictions that are updated as extra longitudinal information is recorded for a 
+In the setting of longitudinal data dynamic individualized predictions are predictions for
+the longitudinal outcomes that are updated as extra measurements are recorded for a 
 subject. 
 
-We start by introducing the notation for our setting. Let $y_i$ denote the $n_i \times 1$ 
+We start by introducing the notation for this setting. Let $y_i$ denote the $n_i \times 1$ 
 longitudinal response vector for the $i$-th subject ($i = 1, \ldots, n$), with element 
 $y_{il}$ denoting the value of the longitudinal outcome taken at time point $t_{il}$, 
 $l = 1, \ldots, n_i$. We also let $\mathcal D_n = \{y_i; i = 1, \ldots, n\}$ denote all
@@ -47,6 +47,30 @@ conditional mean
 The time-dynamic nature of $\omega_j(u \mid t)$ is evident because when new information is
 recorded for subject $j$ at time $t' > t$, we can update these predictions to obtain 
 $\omega_j(u \mid t')$, and therefore proceed in a time-dynamic manner.
+
+Calculation of these predictions proceeds more naturally under the (asymptotic) Bayesian
+paradigm. Namely, $\omega_j(u \mid t)$ is the expected value of the posterior predictive 
+distribution
+\[
+p\{y_j(u) \mid \mathcal Y_j(t), \mathcal D_n\} = \int p\{y_j(u) \mid \mathcal Y_j(t), 
+\theta\} \, p(\theta \mid \mathcal D_n) \; d\theta,
+\]
+where $p(\theta \mid \mathcal D_n)$ denotes the posterior distribution of the parameters
+obtained from the original sample $\mathcal D_n$. If we have fitted the model by maximum
+likelihood, as it is done in the **GLMMadaptive** package, we can approximate this 
+posterior distribution by a multivariate normal distribution centered at the maximum 
+likelihood estimates, and with variance-covariance matrix the inverse of the observed 
+information matrix.
+
+The first term in the integrand can be further expanded into:
+\begin{eqnarray*}
+p\{y_j(u) \mid \mathcal Y_j(t), \theta\} & = & 
+\int p\{y_j(u) \mid b_j, \mathcal Y_j(t), \theta\} \, 
+p \{b_j \mid \mathcal Y_j(t), \theta\} \; db_j\\ &&\\
+& = & \int p\{y_j(u) \mid b_j, \theta\} \, p \{b_j \mid \mathcal Y_j(t), \theta\} \; db_j.
+\end{eqnarray*}
+By combining these integral equations, we can derive a Monte Carlo scheme to estimate 
+$\omega_j(u \mid t)$ and its confidence interval.
 
 # Illustration
 ## Calculation and Confidence Intervals
@@ -172,7 +196,7 @@ xyplot(y + pred + low + upp ~ time | factor(id), data = pred_data,
 As mentioned above, the interval shown in the figure of the dynamic predictions is a 95%
 confidence interval. If we wish a 95% prediction interval instead, a couple of extra steps 
 are required. First, we need the quantile function (i.e., inverse cumulative distribution
-function) of the zero-inflated negative binomial distribution. Since there this 
+function) of the zero-inflated negative binomial distribution. Since this 
 distribution is not one of the available distributions in the **stats** package, we write 
 a function to compute it:
 ```{r, qzinbinom}
