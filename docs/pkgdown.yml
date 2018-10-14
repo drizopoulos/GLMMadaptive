@@ -3,6 +3,7 @@ pkgdown: 1.1.0
 pkgdown_sha: ~
 articles:
   Custom_Models: Custom_Models.html
+  Dynamic_Predictions: Dynamic_Predictions.html
   GLMMadaptive_basics: GLMMadaptive_basics.html
   Methods_MixMod: Methods_MixMod.html
   Multiple_Comparisons: Multiple_Comparisons.html

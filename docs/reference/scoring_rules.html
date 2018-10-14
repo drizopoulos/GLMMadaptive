@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • GLMMadaptive</title>
+<title>Proper Scoring Rules for Categorical Data — scoring_rules • GLMMadaptive</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Proper Scoring Rules for Categorical Data — scoring_rules" />
+
+<meta property="og:description" content="Calculates the logarithmic, quadratic/Brier and spherical based on a fitted mixed model
+for categorical data." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -49,7 +52,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -125,85 +128,90 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Proper Scoring Rules for Categorical Data</h1>
+    
+    <div class="hidden name"><code>scoring_rules.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>Calculates the logarithmic, quadratic/Brier and spherical based on a fitted mixed model
+for categorical data.</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="effectPlotData.html">effectPlotData()</a></code> </p>
-        </td>
-        <td><p>Predicted Values for Effects Plots</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="extra_fams.html">beta.fam()</a></code> <code><a href="extra_fams.html">zi.poisson()</a></code> <code><a href="extra_fams.html">zi.negative.binomial()</a></code> <code><a href="extra_fams.html">hurdle.poisson()</a></code> <code><a href="extra_fams.html">hurdle.negative.binomial()</a></code> <code><a href="extra_fams.html">hurdle.lognormal()</a></code> </p>
-        </td>
-        <td><p>Family functions for Beta, Zero-Inflated and Hurdle Poisson and Negative Binomial,
-and Hudle Log-Normal Mixed Models</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="GLMMadaptive.html">GLMMadaptive</a></code> </p>
-        </td>
-        <td><p>Generalized Linear Mixed Models using Adaptive Gaussian Quadrature</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="marginal_coefs.html">marginal_coefs()</a></code> </p>
-        </td>
-        <td><p>Marginal Coefficients from Generalized Linear Mixed Models</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="methods.html">coef()</a></code> <code><a href="methods.html">fixef()</a></code> <code><a href="methods.html">ranef()</a></code> <code><a href="methods.html">confint()</a></code> <code><a href="methods.html">anova()</a></code> <code><a href="methods.html">fitted()</a></code> <code><a href="methods.html">residuals()</a></code> <code><a href="methods.html">predict()</a></code> <code><a href="methods.html">simulate()</a></code> <code><a href="methods.html">terms()</a></code> <code><a href="methods.html">model.frame()</a></code> <code><a href="methods.html">model.matrix()</a></code> </p>
-        </td>
-        <td><p>Various Methods for Standard Generics</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="mixed_model.html">mixed_model()</a></code> </p>
-        </td>
-        <td><p>Generalized Linear Mixed Effects Models</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="negative_binomial.html">negative.binomial()</a></code> </p>
-        </td>
-        <td><p>Family function for Negative Binomial Mixed Models</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="scoring_rules.html">scoring_rules()</a></code> </p>
-        </td>
-        <td><p>Proper Scoring Rules for Categorical Data</p></td>
-      </tr>
-    </tbody>
+    <pre class="usage"><span class='fu'>scoring_rules</span>(<span class='no'>object</span>, <span class='no'>newdata</span>, <span class='kw'>newdata2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max_count</span> <span class='kw'>=</span> <span class='fl'>2000</span>,
+    <span class='kw'>return_newdata</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>object</th>
+      <td><p>an object inheriting from class <code>"MixMod"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>newdata</th>
+      <td><p>a data.frame based on which to estimate the random effect and calculate 
+    predictions. It should contain the response variable.</p></td>
+    </tr>
+    <tr>
+      <th>newdata2</th>
+      <td><p>a data.frame based on which to estimate the random effect and calculate 
+    predictions. It should contain the response variable.</p></td>
+    </tr>
+    <tr>
+      <th>max_count</th>
+      <td><p>numeric scalar denoting the maximum count up to which to calculate 
+    probabilities; this is relevant for count response data.</p></td>
+    </tr>
+    <tr>
+      <th>return_newdata</th>
+      <td><p>logical; if <code>TRUE</code> the values of the scoring rules are 
+    ruturned as extra columns of the <code>newdata</code> or <code>newdata2</code> data.frame.</p></td>
+    </tr>
     </table>
-  </div>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A data.frame with (extra) columns the values of the logarithmic, quadratic and spherical
+scoring rules calculated based on the fitted model and the observed responses in 
+<code>newdata</code> or <code>newdata2</code>.</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Carvalho, A. (2016). An overview of applications of proper scoring rules. 
+<em>Decision Analysis</em> <b>13</b>, 223--242. doi:10.1287/deca.2016.0337</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='mixed_model.html'>mixed_model</a></code>,
+<code><a href='methods.html'>predict.MixMod</a></code></p></div>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fl'>NA</span></div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='fl'>NA</span></div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='fl'>NA</span></div><div class='output co'>#&gt; [1] NA</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#references">References</a></li>
+
+      <li><a href="#see-also">See also</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
     </ul>
+
+    <h2>Author</h2>
+    
+Dimitris Rizopoulos <a href='mailto:d.rizopoulos@erasmusmc.nl'>d.rizopoulos@erasmusmc.nl</a>
+
   </div>
 </div>
 
