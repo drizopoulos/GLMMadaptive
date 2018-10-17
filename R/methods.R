@@ -553,14 +553,20 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
         cluster_compute_marg_coefs <- function (block, tht, list_thetas, V, XX, Z, M,
                                                 compute_marg_coefs, chol_transf,
                                                 object, link_fun, seed) {
+            if (!exists(".Random.seed", envir = .GlobalEnv)) 
+                runif(1)
+            RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+            on.exit(assign(".Random.seed", RNGstate, envir = .GlobalEnv))
             n_block <- length(block)
             m_betas <- matrix(0.0, n_block, length(list_thetas[["betas"]]))
             for (b in seq_along(block)) {
+                seed. <- seed + block[b]
+                set.seed(seed.)
                 new_tht <- relist(MASS::mvrnorm(1, tht, V), skeleton = list_thetas)
                 new_betas <- new_tht$betas
                 new_D <- chol_transf(new_tht$D)
                 m_betas[b, ] <- compute_marg_coefs(object, XX, new_betas, Z, new_D, M,
-                                                   link_fun, seed = seed + block[b])
+                                                   link_fun, seed = seed.)
             }
             m_betas
         }
