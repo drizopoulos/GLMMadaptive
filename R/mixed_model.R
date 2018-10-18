@@ -54,7 +54,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     ###########################
     # Zero inflation part
     if (family$family %in% c("zero-inflated poisson", "zero-inflated negative binomial",
-                             "hurdle poisson", "hurdle negative binomial") && 
+                             "hurdle poisson", "hurdle negative binomial", "hurdle beta") && 
         is.null(zi_fixed)) {
         stop("you have defined a family with an extra zero-part;\nat least argument ",
              "'zi_fixed' needs to be defined, and potentially also argument 'zi_random'.")
@@ -179,7 +179,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     if (has_phis) {
         if (family$family %in% c("negative binomial", "zero-inflated negative binomial",
                                  "hurdle negative binomial", "hurdle log-normal",
-                                 "beta")) {
+                                 "beta", "hurdle beta")) {
             n_phis <- 1
         } else if (is.null(n_phis)) {
             stop("argument 'n_phis' needs to be specified.\n")
