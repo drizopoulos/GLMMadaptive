@@ -793,3 +793,78 @@ beta.fam <- function () {
                    score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun),
               class = "family")
 }
+
+hurdle.beta.fam <- function () {
+    stats <- make.link("logit")
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+        phi <- exp(phis)
+        # binary indicator for y > 0
+        ind <- y > 0
+        # non-zero part
+        eta <- as.matrix(eta)
+        eta_zi <- as.matrix(eta_zi)
+        out <- eta
+        mu <- mu_fun(eta)
+        mu_phi <- mu * phi
+        comp1 <- lgamma(phi) - lgamma(mu_phi)
+        comp2 <- (mu_phi - 1) * log(y) - lgamma(phi - mu_phi)
+        comp3 <- (phi - mu_phi - 1) * log(1 - y)
+        out[ind, ] <- plogis(eta_zi[ind, ], lower.tail = FALSE, log.p = TRUE) + 
+            comp1[ind, ] + comp2[ind, ] + comp3[ind, ]
+        # zero part
+        out[!ind, ] <- plogis(eta_zi[!ind, ], log.p = TRUE)
+        attr(out, "mu_y") <- eta
+        out
+    }
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
+        phi <- exp(phis)
+        # binary indicator for y > 0
+        ind <- y > 0
+        # non-zero part
+        mu <- as.matrix(mu)
+        mu_phi <- mu * phi
+        out <- mu
+        comp1 <- - digamma(mu_phi) * phi
+        comp2 <- phi * (log(y) + digamma(phi - mu_phi))
+        comp3 <- - phi * log(1 - y)
+        mu.eta <- mu - mu * mu
+        out[!ind, ] <- 0
+        out[ind, ] <- (comp1[ind, ] + comp2[ind, ] + comp3[ind]) * mu.eta[ind, ]
+        out
+    }
+    score_eta_zi_fun <- function (y, mu, phis, eta_zi) {
+        ind <- y > 0
+        probs <- plogis(as.matrix(eta_zi))
+        out <- 1 - probs
+        out[ind, ] <- - probs[ind, ]
+        out
+    }
+    score_phis_fun <- function (y, mu, phis, eta_zi) {
+        phi <- exp(phis)
+        # binary indicator for y > 0
+        ind <- y > 0
+        # non-zero part
+        mu <- as.matrix(mu)
+        mu_phi <- mu * phi
+        mu1 <- 1 - mu
+        out <- mu
+        comp1 <- digamma(phi) - digamma(mu_phi) * mu
+        comp2 <- mu * log(y) - digamma(phi - mu_phi) * mu1
+        comp3 <- log(1 - y) * mu1
+        out[ind, ] <- (comp1[ind, ] + comp2[ind, ] + comp3[ind, ]) * phi
+        out[!ind, ] <- 0
+        out
+    }
+    simulate <- function (n, mu, phis, eta_zi) {
+        phi <- exp(phis)
+        y <- rbeta(n, shape1 = mu * phi, shape2 = phi * (1 - mu))
+        y[as.logical(rbinom(n, 1, plogis(eta_zi)))] <- 0
+        y
+    }
+    structure(list(family = "hurdle beta", link = stats$name, 
+                   linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,
+                   score_eta_fun = score_eta_fun, score_eta_zi_fun = score_eta_zi_fun,
+                   score_phis_fun = score_phis_fun, simulate = simulate),
+              class = "family")
+}
+

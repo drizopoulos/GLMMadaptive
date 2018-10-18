@@ -5,15 +5,17 @@
 \alias{hurdle.poisson}
 \alias{hurdle.negative.binomial}
 \alias{hurdle.lognormal}
+\alias{hurdle.beta.fam}
 
 
 \title{
 Family functions for Beta, Zero-Inflated and Hurdle Poisson and Negative Binomial,
-and Hudle Log-Normal Mixed Models}
+Hurdle Log-Normal, and Hurdle Beta Mixed Models}
 
 \description{
 Specifies the information required to fit a Beta, zero-inflated and hurdle Poisson, 
-zero-inflated and hurdle Negative Binomial and a hurdle normal mixed-effects model, using 
+zero-inflated and hurdle Negative Binomial, a hurdle normal and a hurdle Beta 
+mixed-effects model, using 
 \code{mixed_model()}.
 }
 
@@ -24,10 +26,12 @@ zi.negative.binomial()
 hurdle.poisson()
 hurdle.negative.binomial()
 hurdle.lognormal()
+hurdle.beta.fam()
 }
 
 \note{Currently only the log-link is implemented for the Poisson and negative binomial 
-models, the logit link for the beta model and the identity link for the log-normal model.}
+models, the logit link for the beta and hurdle beta models and the identity link for the 
+log-normal model.}
 
 \examples{
 # simulate some data from a negative binomial model
