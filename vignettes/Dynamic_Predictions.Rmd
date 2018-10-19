@@ -310,9 +310,19 @@ xyplot(spherical + spherical2 ~ time, data = scoring_data,
        key = key)
 ```
 
+And with similar code we also produce the scatterplot of the logarithmic for the two 
+models and the same period:
+```{r, fig_scr_rules2, fig.align = "center", fig.width = 8.5, fig.height = 7.5}
+xyplot(logarithmic + logarithmic2 ~ time, data = scoring_data,
+       type = c("p", "smooth"), pch = ".", col = c(1, 2),
+       xlab = "Follow-up Time", ylab = "Spherical Scoring Rule",
+       key = key, ylim = c(-8, 0.5))
+```
+
 The spherical rule takes values in the interval $[0, 1]$, with values closer to 1 
-indicating a more accurate prediction model. We observe that the predictions obtained from the 
-zero-inflated negative binomial mixed model are more accurate for the whole range of 
-future time points from 2 to 4. In addition, we observe that the accuracy of the 
-predictions diminishes the further away we move from time point 2 up to which information
-was used for the calculation of the random effects.
+indicating a more accurate prediction model, and the logarithmic rule in the interval 
+$(-\infty, 0]$, with values closer to 0 indicating a more accurate prediction model. We 
+observe that the predictions obtained from the zero-inflated negative binomial mixed model
+are more accurate for the whole range of future time points from 2 to 4. In addition, we 
+observe that the accuracy of the predictions diminishes the further away we move from time
+point 2 up to which information we have used for the calculation of the random effects.
