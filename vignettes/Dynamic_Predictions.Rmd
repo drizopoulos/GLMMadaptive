@@ -310,7 +310,7 @@ xyplot(spherical + spherical2 ~ time, data = scoring_data,
        key = key)
 ```
 
-And with similar code we also produce the scatterplot of the logarithmic for the two 
+And with similar code we also produce the scatterplot of the logarithmic rule for the two 
 models and the same period:
 ```{r, fig_scr_rules2, fig.align = "center", fig.width = 8.5, fig.height = 7.5}
 xyplot(logarithmic + logarithmic2 ~ time, data = scoring_data,
