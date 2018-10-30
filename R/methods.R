@@ -51,7 +51,10 @@ vcov.MixMod <- function (object, parm = c("all", "fixed-effects", "var-cov","ext
     parm <- match.arg(parm)
     V <- solve(object$Hessian)
     if (sandwich) {
-        meat <- do.call('cbind', object$score_vect_contributions)
+        meat <- object$score_vect_contributions
+        ind <- !names(meat) %in% "score.D"
+        meat[ind] <- lapply(meat[ind], rowsum, group = object$id, reorder = FALSE)
+        meat <- do.call('cbind', meat)
         meat <- Reduce("+", lapply(split(meat, row(meat)), function (x) x %o% x))
         V <- V %*% meat %*% V
     }
