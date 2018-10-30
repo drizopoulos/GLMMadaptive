@@ -191,9 +191,9 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
         ncx_zi <- ncol(X_zi)
         sc <- if (i_contributions) matrix(0.0, NN, ncx_zi) else numeric(ncx_zi)
         for (l in seq_len(ncx_zi)) {
-            cc <- drop(rowsum(X_zi[, l] * z, id, reorder = FALSE))
+            cc <- drop(rowsum(X_zi[, l] * drop(z), id, reorder = FALSE))
             if (i_contributions) {
-                sc[, l] <- c((X_zi[, l] * z * p_by[id, ]) %*% wGH)
+                sc[, l] <- c((X_zi[, l] * drop(z) * p_by[id, ]) %*% wGH)
             } else {
                 sc[l] <- sum(c((cc * p_by) %*% wGH), na.rm = TRUE)
             }
