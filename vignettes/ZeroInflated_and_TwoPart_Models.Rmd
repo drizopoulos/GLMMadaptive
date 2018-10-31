@@ -285,11 +285,13 @@ y <- DF$y
 y[y > 0] <- log(y[y > 0])
 x_vals <- seq(min(y), max(y), length.out = 500)
 out <- simulate(km2, nsim = 30, acount_MLEs_var = TRUE)
+ind <- out > sqrt(.Machine$double.eps)
+out[ind] <- log(out[ind])
 rep_y <- apply(out, 2, function (x, x_vals) ecdf(x)(x_vals), x_vals = x_vals)
 matplot(x_vals, rep_y, type = "l", lty = 1, col = "lightgrey", 
         xlab = "Response Variable", ylab = "Empirical CDF")
 lines(x_vals, ecdf(y)(x_vals))
-legend("bottomright", c("replicated data", "observed data"), lty = 1, 
+legend("bottomright", c("log replicated data", "log observed data"), lty = 1, 
        col = c("lightgrey", "black"), bty = "n", cex = 0.8)
 ```
 

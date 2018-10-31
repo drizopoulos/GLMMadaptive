@@ -734,7 +734,7 @@ hurdle.lognormal <- function () {
         out
     }
     simulate <- function (n, mu, phis, eta_zi) {
-        y <- rnorm(n = n, mean = mu, sd = exp(phis))
+        y <- rlnorm(n = n, meanlog = mu, sdlog = exp(phis))
         y[as.logical(rbinom(n, 1, plogis(eta_zi)))] <- 0
         y
     }
