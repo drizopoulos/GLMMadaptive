@@ -315,7 +315,7 @@ models and the same period:
 ```{r, fig_scr_rules2, fig.align = "center", fig.width = 8.5, fig.height = 7.5}
 xyplot(logarithmic + logarithmic2 ~ time, data = scoring_data,
        type = c("p", "smooth"), pch = ".", col = c(1, 2),
-       xlab = "Follow-up Time", ylab = "Spherical Scoring Rule",
+       xlab = "Follow-up Time", ylab = "Logarithmic Scoring Rule",
        key = key, ylim = c(-8, 0.5))
 ```
 
