@@ -127,7 +127,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
                 }
            }
             if (i_contributions) {
-                - X * if (NCOL(y) == 2) y[, 1] else y + sc
+                - (X * if (NCOL(y) == 2) y[, 1] else y) + sc
             } else {
                 - Xty + sc
             }

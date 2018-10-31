@@ -72,10 +72,12 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                      "divergence of the optimization algorithm, indicating that an overly\n",
                      "complex model is fitted to the data. For example, this could be\n",
                      "caused when including random-effects terms (e.g., in the\n", 
-                     "zero-inflated part) that you do not need.\n")
+                     "zero-inflated part) that you do not need. Otherwise, adjust the\n",
+                     "'max_coef_value' control argument.\n")
     large_shape_mgs <- paste("A value greater than 22000 has been detected for the shape/size\n",
                              "parameter of the negative binomial distribution. This typically\n",
-                             "indicates that the Poisson model would be better.\n")
+                             "indicates that the Poisson model would be better. Otherwise,\n",
+                             "adjust the 'max_phis_value' control argument.")
     if (iter_EM > 0) {
         Params <- matrix(0.0, iter_EM, nparams)
         GH <- GHfun(post_modes, y_lis, N_lis, X_lis, Z_lis, offset_lis, X_zi_lis, Z_zi_lis, 
