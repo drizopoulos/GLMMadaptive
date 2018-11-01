@@ -98,7 +98,7 @@
       <h1>Zero-Inflated and Two-Part Mixed Effects Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-10-31</h4>
+            <h4 class="date">2018-11-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/ZeroInflated_and_TwoPart_Models.Rmd"><code>vignettes/ZeroInflated_and_TwoPart_Models.Rmd</code></a></small>
       <div class="hidden name"><code>ZeroInflated_and_TwoPart_Models.Rmd</code></div>
@@ -425,11 +425,13 @@ y &lt;-<span class="st"> </span>DF<span class="op">$</span>y
 y[y <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>] &lt;-<span class="st"> </span><span class="kw">log</span>(y[y <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>])
 x_vals &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="kw">min</span>(y), <span class="kw">max</span>(y), <span class="dt">length.out =</span> <span class="dv">500</span>)
 out &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">simulate</a></span>(km2, <span class="dt">nsim =</span> <span class="dv">30</span>, <span class="dt">acount_MLEs_var =</span> <span class="ot">TRUE</span>)
+ind &lt;-<span class="st"> </span>out <span class="op">&gt;</span><span class="st"> </span><span class="kw">sqrt</span>(.Machine<span class="op">$</span>double.eps)
+out[ind] &lt;-<span class="st"> </span><span class="kw">log</span>(out[ind])
 rep_y &lt;-<span class="st"> </span><span class="kw">apply</span>(out, <span class="dv">2</span>, <span class="cf">function</span> (x, x_vals) <span class="kw">ecdf</span>(x)(x_vals), <span class="dt">x_vals =</span> x_vals)
 <span class="kw">matplot</span>(x_vals, rep_y, <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">lty =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="st">"lightgrey"</span>, 
         <span class="dt">xlab =</span> <span class="st">"Response Variable"</span>, <span class="dt">ylab =</span> <span class="st">"Empirical CDF"</span>)
 <span class="kw">lines</span>(x_vals, <span class="kw">ecdf</span>(y)(x_vals))
-<span class="kw">legend</span>(<span class="st">"bottomright"</span>, <span class="kw">c</span>(<span class="st">"replicated data"</span>, <span class="st">"observed data"</span>), <span class="dt">lty =</span> <span class="dv">1</span>, 
+<span class="kw">legend</span>(<span class="st">"bottomright"</span>, <span class="kw">c</span>(<span class="st">"log replicated data"</span>, <span class="st">"log observed data"</span>), <span class="dt">lty =</span> <span class="dv">1</span>, 
        <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">"lightgrey"</span>, <span class="st">"black"</span>), <span class="dt">bty =</span> <span class="st">"n"</span>, <span class="dt">cex =</span> <span class="fl">0.8</span>)</code></pre></div>
 <p><img src="ZeroInflated_and_TwoPart_Models_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 </div>
