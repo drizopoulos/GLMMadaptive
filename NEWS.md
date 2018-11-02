@@ -9,6 +9,8 @@ object.
 * The new function `scoring_rules()` calculates proper scoring rule for subject-specific
 predictions from mixed models for categorical data.
 
+* Added support for the **emmeans** package.
+
 # GLMMadaptive 0.3.0
 
 ## General

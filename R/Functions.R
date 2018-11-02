@@ -469,3 +469,22 @@ rmvt <- function (n, mu, Sigma, df) {
     if (n == 1L) drop(X) else t.default(X)
 }
 
+register_s3_method <- function (pkg, generic, class) {
+    fun <- get(paste0(generic, ".", class), envir = parent.frame())
+    if (isNamespaceLoaded(pkg))
+        registerS3method(generic, class, fun, envir = asNamespace(pkg))
+    # Also ensure registration is done if pkg is loaded later:
+    setHook(
+        packageEvent(pkg, "onLoad"),
+        function (...)
+            registerS3method(generic, class, fun, envir = asNamespace(pkg))
+    )
+}
+
+.onLoad <- function (libname, pkgname) {
+    if (requireNamespace("emmeans", quietly = TRUE)) {
+        register_s3_method("emmeans", "recover_data", "MixMod")
+        register_s3_method("emmeans", "emm_basis", "MixMod")
+    }
+}
+

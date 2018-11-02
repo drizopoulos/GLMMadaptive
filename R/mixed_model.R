@@ -244,6 +244,8 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     out$control <- con
     out$Funs <- Funs
     out$family <- family
+    out$na.action <- na.action
+    out$contrasts <- attr(X, "contrasts")
     out$call <- call
     class(out) <- "MixMod"
     out

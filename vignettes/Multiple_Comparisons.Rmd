@@ -21,8 +21,10 @@ library("GLMMadaptive")
 
 # Multiple Comparisons with MixMod Objects
 In this vignette we illustrate how to correct p-values for multiple comparisons using the
-[**multcomp**](https://cran.r-project.org/package=multcomp) package. 
+[**multcomp**](https://cran.r-project.org/package=multcomp) and 
+[**emmeans**](https://cran.r-project.org/package=emmeans) packages. 
 
+## Additive Model
 We start by simulating some data for a binary longitudinal outcome:
 ```{r}
 set.seed(1234)
@@ -76,3 +78,18 @@ fm_mc <- glht(fm, linfct = mcp(time = "Tukey"),
 
 summary(fm_mc)
 ```
+
+## Interactions
+```{r}
+gm <- mixed_model(fixed = y ~ sex * time, random = ~ 1 | id, data = DF,
+                  family = binomial())
+```
+
+```{r}
+library("emmeans")
+gm_mc <- emmeans(gm, ~ sex | time)
+
+summary(gm_mc)
+```
+
+

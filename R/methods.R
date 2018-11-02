@@ -1268,6 +1268,22 @@ terms.MixMod <- function (x, type = c("fixed", "random"), ...) {
     }
 }
 
+recover_data.MixMod <- function (object, ...) {
+    fcall <- object$call
+    emmeans::recover_data(fcall, delete.response(terms(object)), object$na.action, ...)
+}
+
+emm_basis.MixMod <- function (object, trms, xlev, grid, ...) { 
+    m <- model.frame(trms, grid, na.action = na.pass, xlev = xlev)
+    X <- model.matrix(trms, m, contrasts.arg = object$contrasts) 
+    bhat <- fixef(object) 
+    V <- vcov(object, parm = "fixed-effects")
+    nbasis <- matrix(NA) 
+    dfargs <- list(df = Inf)
+    dffun <- function (k, dfargs) dfargs$df
+    list(X = X, bhat = bhat, nbasis = nbasis, V = V, dffun = dffun, dfargs = dfargs)
+}
+
 scoring_rules <- function (object, newdata, newdata2 = NULL, max_count = 2000, 
                            return_newdata = FALSE) {
     termsX <- object$Terms$termsX
