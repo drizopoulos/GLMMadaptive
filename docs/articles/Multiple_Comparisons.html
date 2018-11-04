@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.899</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.4.0</span>
       </span>
     </div>
 
@@ -98,7 +98,7 @@
       <h1>Multiple Comparisons for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-11-01</h4>
+            <h4 class="date">2018-11-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Multiple_Comparisons.Rmd"><code>vignettes/Multiple_Comparisons.Rmd</code></a></small>
       <div class="hidden name"><code>Multiple_Comparisons.Rmd</code></div>
@@ -110,7 +110,10 @@
 <div id="multiple-comparisons-with-mixmod-objects" class="section level1">
 <h1 class="hasAnchor">
 <a href="#multiple-comparisons-with-mixmod-objects" class="anchor"></a>Multiple Comparisons with MixMod Objects</h1>
-<p>In this vignette we illustrate how to correct p-values for multiple comparisons using the <a href="https://cran.r-project.org/package=multcomp"><strong>multcomp</strong></a> package.</p>
+<p>In this vignette we illustrate how to correct p-values for multiple comparisons using the <a href="https://cran.r-project.org/package=multcomp"><strong>multcomp</strong></a> and <a href="https://cran.r-project.org/package=emmeans"><strong>emmeans</strong></a> packages.</p>
+<div id="additive-model" class="section level2">
+<h2 class="hasAnchor">
+<a href="#additive-model" class="anchor"></a>Additive Model</h2>
 <p>We start by simulating some data for a binary longitudinal outcome:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
 n &lt;-<span class="st"> </span><span class="dv">300</span> <span class="co"># number of subjects</span>
@@ -218,6 +221,57 @@ fm_mc &lt;-<span class="st"> </span><span class="kw">glht</span>(fm, <span class
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; (Adjusted p values reported -- single-step method)</span></code></pre></div>
 </div>
+<div id="interaction-model" class="section level2">
+<h2 class="hasAnchor">
+<a href="#interaction-model" class="anchor"></a>Interaction Model</h2>
+<p>We continue our illustration by including the interaction term between <code>sex</code> and <code>time</code>, and we focus on the difference between males and females for the various time points. We start by fitting the model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
+                  <span class="dt">family =</span> <span class="kw">binomial</span>())</code></pre></div>
+<p>To compute the estimated log odds for males and females at the different time points we use the <code>emmeans()</code> functions from the <strong>emmeans</strong> package:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"emmeans"</span>)
+gm_mc &lt;-<span class="st"> </span><span class="kw">emmeans</span>(gm, <span class="op">~</span><span class="st"> </span>sex <span class="op">|</span><span class="st"> </span>time)
+
+gm_mc
+<span class="co">#&gt; time = Time1:</span>
+<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL  asymp.UCL</span>
+<span class="co">#&gt;  male   -2.737017 0.3421930 Inf -3.407703 -2.0663308</span>
+<span class="co">#&gt;  female -1.209182 0.2550117 Inf -1.708995 -0.7093678</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; time = Time2:</span>
+<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL  asymp.UCL</span>
+<span class="co">#&gt;  male   -1.675620 0.2755058 Inf -2.215602 -1.1356387</span>
+<span class="co">#&gt;  female -1.435439 0.2629832 Inf -1.950877 -0.9200015</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; time = Time3:</span>
+<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL  asymp.UCL</span>
+<span class="co">#&gt;  male   -4.398350 0.5452336 Inf -5.466988 -3.3297118</span>
+<span class="co">#&gt;  female -1.389421 0.2612568 Inf -1.901475 -0.8773671</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; time = Time4:</span>
+<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL  asymp.UCL</span>
+<span class="co">#&gt;  male   -1.336933 0.2610534 Inf -1.848589 -0.8252781</span>
+<span class="co">#&gt;  female -1.252104 0.2564246 Inf -1.754687 -0.7495210</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Confidence level used: 0.95</span></code></pre></div>
+<p>The corresponding pairwise comparisons are performed by the <code>pairs()</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pairs</span>(gm_mc)
+<span class="co">#&gt; time = Time1:</span>
+<span class="co">#&gt;  contrast         estimate        SE  df z.ratio p.value</span>
+<span class="co">#&gt;  male - female -1.52783517 0.4097558 Inf  -3.729  0.0002</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; time = Time2:</span>
+<span class="co">#&gt;  contrast         estimate        SE  df z.ratio p.value</span>
+<span class="co">#&gt;  male - female -0.24018095 0.3664609 Inf  -0.655  0.5122</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; time = Time3:</span>
+<span class="co">#&gt;  contrast         estimate        SE  df z.ratio p.value</span>
+<span class="co">#&gt;  male - female -3.00892881 0.5851176 Inf  -5.142  &lt;.0001</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; time = Time4:</span>
+<span class="co">#&gt;  contrast         estimate        SE  df z.ratio p.value</span>
+<span class="co">#&gt;  male - female -0.08482945 0.3550390 Inf  -0.239  0.8112</span></code></pre></div>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -225,7 +279,12 @@ fm_mc &lt;-<span class="st"> </span><span class="kw">glht</span>(fm, <span class
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#multiple-comparisons-with-mixmod-objects">Multiple Comparisons with MixMod Objects</a></li>
+<li>
+<a href="#multiple-comparisons-with-mixmod-objects">Multiple Comparisons with MixMod Objects</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#additive-model">Additive Model</a></li>
+      <li><a href="#interaction-model">Interaction Model</a></li>
+      </ul>
+</li>
       </ul>
 </div>
       </div>

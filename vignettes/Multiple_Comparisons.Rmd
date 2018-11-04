@@ -79,17 +79,26 @@ fm_mc <- glht(fm, linfct = mcp(time = "Tukey"),
 summary(fm_mc)
 ```
 
-## Interactions
+## Interaction Model
+We continue our illustration by including the interaction term between `sex` and `time`,
+and we focus on the difference between males and females for the various time points. We
+start by fitting the model:
 ```{r}
 gm <- mixed_model(fixed = y ~ sex * time, random = ~ 1 | id, data = DF,
                   family = binomial())
 ```
 
-```{r}
+To compute the estimated log odds for males and females at the different time points we
+use the `emmeans()` functions from the **emmeans** package:
+```{r, message = FALSE}
 library("emmeans")
 gm_mc <- emmeans(gm, ~ sex | time)
 
-summary(gm_mc)
+gm_mc
 ```
 
+The corresponding pairwise comparisons are performed by the `pairs()` function:
+```{r}
+pairs(gm_mc)
+```
 
