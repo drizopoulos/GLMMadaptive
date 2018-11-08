@@ -25,10 +25,30 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     data <- as.data.frame(data) # in case 'data' is a tibble
     mfX <- model.frame(terms(fixed, data = data), data = data, na.action = na.action)
     na_exclude <- attr(mfX, "na.action")
+    form_random <- getRE_Formula(random)
+    mfZ <- model.frame(terms(form_random, data = data), data = data)
+    na_exclude_z <- attr(mfZ, "na.action")
     if (!is.null(zi_fixed)) { 
         mfX_zi <- model.frame(terms(zi_fixed, data = data), data = data, 
                               na.action = na.action)
-        na_exclude <- union(attr(mfX_zi, "na.action"), na_exclude)
+        na_exclude_zi <- attr(mfX_zi, "na.action")
+    } else {
+        na_exclude_zi <- NULL
+    }
+    ind <- !unique(names(c(na_exclude_z, na_exclude_zi))) %in% names(na_exclude)
+    if (length(ind) && any(ind)) {
+        keep <- !row.names(mfX) %in% unique(names(c(na_exclude_z, na_exclude_zi)))[ind]
+        mfX <- mfX[keep, , drop = FALSE]
+    }
+    ind <- !unique(names(c(na_exclude, na_exclude_zi))) %in% names(na_exclude_z)
+    if (length(ind) && any(ind)) {
+        keep <- !row.names(mfZ) %in% unique(names(c(na_exclude, na_exclude_zi)))[ind]
+        mfZ <- mfZ[keep, , drop = FALSE]
+    }
+    ind <- !unique(names(c(na_exclude, na_exclude_z))) %in% names(na_exclude_zi)
+    if (length(ind) && any(ind)) {
+        keep <- !row.names(mfX_zi) %in% unique(names(c(na_exclude, na_exclude_z)))[ind]
+        mfX_zi <- mfX_zi[keep, , drop = FALSE]
     }
     termsX <- terms(mfX)
     y <- model.response(mfX)
@@ -40,10 +60,6 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     }
     X <- model.matrix(termsX, mfX)
     offset <- model.offset(mfX)
-    form_random <- getRE_Formula(random)
-    mfZ <- model.frame(terms(form_random, data = data), data = data)
-    if (!is.null(na_exclude))
-        mfZ <- mfZ[-na_exclude, , drop = FALSE]
     termsZ <- terms(mfZ)
     Z <- model.matrix(termsZ, mfZ)
     id_nam <- all.vars(getID_Formula(random))
@@ -60,8 +76,6 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
              "'zi_fixed' needs to be defined, and potentially also argument 'zi_random'.")
     }
     if (!is.null(zi_fixed)) {
-        if (!is.null(na_exclude)) 
-            mfX_zi <- mfX_zi[-na_exclude, ]
         termsX_zi <- terms(mfX_zi)
         X_zi <- model.matrix(termsX_zi, mfX_zi)
         offset_zi <- model.offset(mfX_zi)

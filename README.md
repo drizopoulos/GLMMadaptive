@@ -9,11 +9,10 @@ GLMMadaptive: Generalized Linear Mixed Models using Adaptive Gaussian Quadrature
 Description
 ------------
 
-This repository contains the source files for the R package <strong>GLMMadaptive</strong>. 
-This package fits mixed effects models for grouped/clustered outcome variables for which
-the integral over the random effects in the definition of the marginal likelihood cannot
-be solved analytically. The package approximates these integrals using the adaptive 
-Gauss-Hermite quadrature rule.
+<strong>GLMMadaptive</strong> fits mixed effects models for grouped/clustered outcome 
+variables for which the integral over the random effects in the definition of the marginal
+likelihood cannot be solved analytically. The package approximates these integrals using 
+the adaptive Gauss-Hermite quadrature rule.
 
 Multiple random effects terms can be included for the grouping factor (e.g., random 
 intercepts, random linear slopes, random quadratic slopes), but currently only a single
