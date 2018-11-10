@@ -102,3 +102,5 @@ The corresponding pairwise comparisons are performed by the `pairs()` function:
 pairs(gm_mc)
 ```
 
+For additional examples in testing interactions with the **emmeans** package check the 
+vignette: `vignette("interactions", package = "emmeans")`.
