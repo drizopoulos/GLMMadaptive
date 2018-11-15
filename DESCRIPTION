@@ -18,4 +18,4 @@ LazyData: yes
 License: GPL (>= 3)
 URL: https://drizopoulos.github.io/GLMMadaptive/, https://github.com/drizopoulos/GLMMadaptive
 VignetteBuilder: knitr
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1

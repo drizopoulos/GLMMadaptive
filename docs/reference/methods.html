@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.4.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.4.2</span>
       </span>
     </div>
 
@@ -196,6 +196,7 @@ simulate(object, nsim = 1, seed = NULL, &#8230;)
 
 # S3 method for MixMod
 simulate(object, nsim = 1, seed = NULL, 
+    type = c("subject_specific", "mean_subject"),
     acount_MLEs_var = FALSE, sim_fun = NULL, 
     sandwich = FALSE, &#8230;)
     
