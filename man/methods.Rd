@@ -82,6 +82,7 @@ predict(object, \dots)
 simulate(object, nsim = 1, seed = NULL, \dots)
 
 \method{simulate}{MixMod}(object, nsim = 1, seed = NULL, 
+    type = c("subject_specific", "mean_subject"),
     acount_MLEs_var = FALSE, sim_fun = NULL, 
     sandwich = FALSE, \dots)
     

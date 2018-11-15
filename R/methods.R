@@ -1133,8 +1133,10 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
     }
 }
 
-simulate.MixMod <- function (object, nsim = 1, seed = NULL, acount_MLEs_var = FALSE, 
-                             sim_fun = NULL, sandwich = FALSE, ...) {
+simulate.MixMod <- function (object, nsim = 1, seed = NULL, 
+                             type = c("subject_specific", "mean_subject"),
+                             acount_MLEs_var = FALSE, sim_fun = NULL, 
+                             sandwich = FALSE, ...) {
     if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
         runif(1)
     if (is.null(seed)) 
@@ -1145,6 +1147,7 @@ simulate.MixMod <- function (object, nsim = 1, seed = NULL, acount_MLEs_var = FA
         RNGstate <- structure(seed, kind = as.list(RNGkind()))
         on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
     }
+    type <- match.arg(type)
     if (is.null(sim_fun)) {
         if (object$family$family == "binomial") {
             N <- if ((y <- NCOL(model.response(object$model_frames$mfX))) == 2) 
@@ -1226,6 +1229,8 @@ simulate.MixMod <- function (object, nsim = 1, seed = NULL, acount_MLEs_var = FA
             else chol_transf(new_thetas_i$D)
         }
         b_i <- MASS::mvrnorm(n, rep(0, nRE), D)
+        if (type == "mean_subject")
+            b_i <- b_i * 0
         eta_y <- c(X %*% betas) + rowSums(Z * b_i[id, ind, drop = FALSE])
         if (!is.null(offset))
             eta_y <- eta_y + offset
