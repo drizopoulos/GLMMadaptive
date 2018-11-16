@@ -637,7 +637,7 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
         on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
         mu_fun <- object$Funs$mu_fun
         betas <- fixef(object)
-        gammas <- fixef(object, sub_model = "zero_inflated")
+        gammas <- fixef(object, sub_model = "zero_part")
         termsX_zi <- object$Terms$termsX_zi
         mfX_zi <- model.frame(termsX_zi, newdata, 
                               xlev = .getXlevels(termsX_zi, object$model_frames$mfX_zi))
