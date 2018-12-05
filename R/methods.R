@@ -276,7 +276,7 @@ confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra",
     if (parm == "fixed-effects") {
         betas <- fixef(object)
         n_betas <- length(betas)
-        ses_betas <- sqrt(diag(V[seq_len(n_betas), seq_len(n_betas)]))
+        ses_betas <- sqrt(diag(V[seq_len(n_betas), seq_len(n_betas), drop = FALSE]))
         out <- cbind(betas + qnorm((1 - level) / 2) * ses_betas, betas,
                      betas + qnorm((1 + level) / 2) * ses_betas)
     } else if (parm == "var-cov") {
@@ -329,7 +329,7 @@ confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra",
         } else {
             gammas <- object$gammas
             ind_gammas <- grep("zi_", colnames(V), fixed = TRUE)
-            ses_gammas <- sqrt(diag(V[ind_gammas, ind_gammas]))
+            ses_gammas <- sqrt(diag(V[ind_gammas, ind_gammas, drop = FALSE]))
             out <- cbind(gammas + qnorm((1 - level) / 2) * ses_gammas, gammas,
                          gammas + qnorm((1 + level) / 2) * ses_gammas)
         }
