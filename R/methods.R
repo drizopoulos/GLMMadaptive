@@ -36,10 +36,13 @@ print.MixMod <- function (x, digits = max(4, getOption("digits") - 4), ...) {
         print(x$gammas)
     }
     if (!is.null(x$phis)) {
-        if (x$family$family %in% c("negative binomial", "zero-inflated negative binomial")) 
+        if (x$family$family %in% c("negative binomial", "zero-inflated negative binomial")) {
             cat("\ndispersion parameter:\n", exp(x$phis), "\n")
-        else
+        } else if (x$family$family %in% c("hurdle log-normal")) {
+            cat("\nResidual std. dev.:\n", exp(x$phis), "\n")
+        } else {
             cat("\nphi parameters:\n", x$phis, "\n")
+        }
     }
     cat("\nlog-Lik:", x$logLik)
     cat("\n\n")
@@ -63,7 +66,7 @@ vcov.MixMod <- function (object, parm = c("all", "fixed-effects", "var-cov","ext
     }
     if (parm == "fixed-effects") {
         n_betas <- length(object$coefficients)
-        return(V[seq_len(n_betas), seq_len(n_betas)])
+        return(V[seq_len(n_betas), seq_len(n_betas), drop = FALSE])
     }
     if (parm == "var-cov") {
         D <- object$D
@@ -93,7 +96,7 @@ vcov.MixMod <- function (object, parm = c("all", "fixed-effects", "var-cov","ext
         } else {
             gammas <- object$gammas
             ind_gammas <- grep("zi_", colnames(V), fixed = TRUE)
-            return(V[ind_gammas, ind_gammas])
+            return(V[ind_gammas, ind_gammas, drop = FALSE])
         }
     }
 }
@@ -180,7 +183,7 @@ summary.MixMod <- function (object, sandwich = FALSE, ...) {
     if (!is.null(object$phis)) {
         phis <- object$phis
         ind_phis <- grep("phi_", colnames(V), fixed = TRUE)
-        var_phis <- as.matrix(V[ind_phis, ind_phis])
+        var_phis <- V[ind_phis, ind_phis, drop = FALSE]
         out$phis_table <- cbind("Estimate" = phis, "Std.Err" = sqrt(diag(var_phis)))
     }
     out$control <- object$control
@@ -242,10 +245,13 @@ print.summary.MixMod <- function (x, digits = max(4, getOption("digits") - 4), .
     }
     if (!is.null(x$phis_table)) {
         if (NB <- x$family$family %in% c("negative binomial", "zero-inflated negative binomial",
-                                         "hurdle negative binomial")) 
+                                         "hurdle negative binomial")) {
             cat("\nlog(dispersion) parameter:\n")
-        else
+        } else if (NB <- x$family$family %in% c("hurdle log-normal")) {
+            cat("\nlog(residual std. dev.):\n")
+        } else {
             cat("\nphi parameters:\n")
+        }
         phis_table <- as.data.frame(x$phis_table)
         if (NB) 
             row.names(phis_table) <- " "
