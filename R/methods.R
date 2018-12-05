@@ -159,7 +159,7 @@ summary.MixMod <- function (object, sandwich = FALSE, ...) {
     betas <- fixef(object)
     n_betas <- length(betas)
     V <- vcov(object, sandwich = sandwich)
-    var_betas <- V[seq_len(n_betas), seq_len(n_betas)]
+    var_betas <- V[seq_len(n_betas), seq_len(n_betas), drop = FALSE]
     ses <- sqrt(diag(var_betas))
     D <- object$D
     n_D <- length(D[lower.tri(D, TRUE)])
