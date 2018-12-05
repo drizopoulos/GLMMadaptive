@@ -573,7 +573,7 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
                 set.seed(seed.)
                 new_tht <- relist(MASS::mvrnorm(1, tht, V), skeleton = list_thetas)
                 new_betas <- new_tht$betas
-                new_D <- chol_transf(new_tht$D)
+                new_D <- if (diag_D) diag(exp(new_tht$D)) else chol_transf(new_tht$D)
                 m_betas[b, ] <- compute_marg_coefs(object, XX, new_betas, Z, new_D, M,
                                                    link_fun, seed = seed.)
             }

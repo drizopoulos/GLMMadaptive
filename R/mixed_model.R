@@ -65,7 +65,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     id_nam <- all.vars(getID_Formula(random))
     id_orig <- model.frame(terms(getID_Formula(random)), data)[[1L]]
     if (!is.null(na_exclude))
-        id_orig <- id_orig[-na_exclude]
+        id_orig <- id_orig[-na_exclude] # <---------- Fix when NAs
     id <- match(id_orig, unique(id_orig))
     ###########################
     # Zero inflation part
