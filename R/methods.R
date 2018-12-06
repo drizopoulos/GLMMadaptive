@@ -543,8 +543,8 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
         for (i in seq_len(n)) {
             set.seed(seed + i)
             id_i <- id == i
-            b <- t(V %*% t(matrix(rnorm(M * nRE), M, nRE)))
-            Zb <- Z[id_i, , drop = FALSE] %*% t(b)
+            b <- V %*% t(matrix(rnorm(M * nRE), M, nRE))
+            Zb <- t(sapply(seq_len(sum(id_i)), function (l) Z[l, , drop = FALSE] %*% b))
             mu <- mu_fun(Xbetas[id_i] + Zb)
             marg_inv_mu[id_i] <- link_fun(rowMeans(mu))
         }

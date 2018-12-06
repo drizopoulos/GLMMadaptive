@@ -359,7 +359,7 @@ plot_data <- effectPlotData(gm, nDF, sandwich = TRUE)
 
 The figure is created with a call to `xyplot()` from the 
 [**lattice**](https://cran.r-project.org/package=lattice) package:
-```{r, fig.show = "hold"}
+```{r, fig.show = "hold", fig.align = "center", fig.width = 8.5, fig.height = 7.5}
 library("lattice")
 xyplot(pred + low + upp ~ time | sex, data = plot_data,
        type = "l", lty = c(1, 2, 2), col = c(2, 1, 1), lwd = 2,
