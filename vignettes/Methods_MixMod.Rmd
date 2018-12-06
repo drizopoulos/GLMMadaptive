@@ -151,9 +151,8 @@ Standard errors for the marginalized coefficients are obtained by setting
 `std_errors = TRUE` in the call to `marginal_coefs()`, and require a double Monte Carlo
 procedure for which argument `K` comes also into play. To speed up computations, the 
 outer Monte Carlo procedure is performed in parallel using package **parallel** and 
-number of cores specified in the `cores` argument (due to the required computing time, 
-these standard errors are not displayed): 
-```{r, eval = FALSE}
+number of cores specified in the `cores` argument: 
+```{r}
 marginal_coefs(fm, std_errors = TRUE)
 ```
 
@@ -207,7 +206,7 @@ plot_data <- effectPlotData(fm, nDF)
 
 Then we can produce the plot using for example the `xyplot()` function from package 
 **lattice**, e.g.,
-```{r, fig.show="hold"}
+```{r, fig.show = "hold", fig.align = "center", fig.width = 8.5, fig.height = 7.5}
 library("lattice")
 xyplot(pred + low + upp ~ time | sex, data = plot_data,
        type = "l", lty = c(1, 2, 2), col = c(2, 1, 1), lwd = 2,
@@ -221,8 +220,8 @@ xyplot(expit(pred) + expit(low) + expit(upp) ~ time | sex, data = plot_data,
 
 The `effectPlotData()` function also allows to compute marginal predictions using the
 marginalized coefficients described above. This is achieved by setting `marginal = TRUE`
-in  the respective call (due to the required computing time, plot not shown):
-```{r, eval = FALSE}
+in  the respective call:
+```{r, fig.align = "center", fig.width = 8.5, fig.height = 7.5}
 plot_data_m <- effectPlotData(fm, nDF, marginal = TRUE, cores = 4)
 
 # we put the two groups in the same panel

@@ -532,20 +532,22 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
         if (!is.null(object$offset)) {
             Xbetas <- Xbetas + object$offset
         }
+        id <- match(object$id, unique(object$id))
         nRE <- ncol(Z)
-        n <- nrow(X)
+        N <- nrow(X)
+        n <- length(unique(id))
         eS <- eigen(D, symmetric = TRUE)
         ev <- eS$values
         V <- eS$vectors %*% diag(sqrt(pmax(ev, 0)), nRE)
-        marg_inv_mu <- numeric(n)
+        marg_inv_mu <- numeric(N)
         for (i in seq_len(n)) {
             set.seed(seed + i)
+            id_i <- id == i
             b <- t(V %*% t(matrix(rnorm(M * nRE), M, nRE)))
-            Zb <- c(Z[i, , drop = FALSE] %*% t(b))
-            mu <- mu_fun(Xbetas[i] + Zb)
-            marg_inv_mu[i] <- link_fun(mean(mu))
+            Zb <- Z[id_i, , drop = FALSE] %*% t(b)
+            mu <- mu_fun(Xbetas[id_i] + Zb)
+            marg_inv_mu[id_i] <- link_fun(rowMeans(mu))
         }
-        c(solve(crossprod(X), crossprod(X, marg_inv_mu)))
         res <- c(solve(crossprod(X), crossprod(X, marg_inv_mu)))
         names(res) <- names(betas)
         res
