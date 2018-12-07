@@ -240,7 +240,7 @@ hurdle.lognormal <- function () {
         out
     }
     simulate <- function (n, mu, phis, eta_zi) {
-        y <- rnorm(n = n, mean = mu, sd = exp(phis))
+        y <- rlnorm(n = n, meanlog = mu, sdlog = exp(phis))
         y[as.logical(rbinom(n, 1, plogis(eta_zi)))] <- 0
         y
     }
@@ -279,7 +279,7 @@ distribution function estimated in the observed data with estimates of the empir
 distribution function obtained from simulated/replicated data from the model. In the call
 to `simulate()` below we also specify to account for the variability in the maximum 
 likelihood estimates by setting `acount_MLEs_var = TRUE`:
-```{r}
+```{r, fig.align = "center", fig.width = 8.5, fig.height = 7.5}
 par(mar = c(2.5, 2.5, 0, 0), mgp = c(1.1, 0.5, 0), cex.axis = 0.7, cex.lab = 0.8)
 y <- DF$y
 y[y > 0] <- log(y[y > 0])
