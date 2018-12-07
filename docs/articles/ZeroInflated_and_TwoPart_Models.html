@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.6</span>
       </span>
     </div>
 
@@ -102,7 +102,7 @@
       <h1>Zero-Inflated and Two-Part Mixed Effects Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-12-05</h4>
+            <h4 class="date">2018-12-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/ZeroInflated_and_TwoPart_Models.Rmd"><code>vignettes/ZeroInflated_and_TwoPart_Models.Rmd</code></a></small>
       <div class="hidden name"><code>ZeroInflated_and_TwoPart_Models.Rmd</code></div>
@@ -349,7 +349,7 @@ DF<span class="op">$</span>y[<span class="kw"><a href="https://www.rdocumentatio
         out
     }
     simulate &lt;-<span class="st"> </span><span class="cf">function</span> (n, mu, phis, eta_zi) {
-        y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="dt">n =</span> n, <span class="dt">mean =</span> mu, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis))
+        y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Lognormal">rlnorm</a></span>(<span class="dt">n =</span> n, <span class="dt">meanlog =</span> mu, <span class="dt">sdlog =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis))
         y[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/logical">as.logical</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n, <span class="dv">1</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Logistic">plogis</a></span>(eta_zi)))] &lt;-<span class="st"> </span><span class="dv">0</span>
         y
     }
@@ -437,7 +437,7 @@ rep_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
 <span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/lines">lines</a></span>(x_vals, <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/ecdf">ecdf</a></span>(y)(x_vals))
 <span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/legend">legend</a></span>(<span class="st">"bottomright"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"log replicated data"</span>, <span class="st">"log observed data"</span>), <span class="dt">lty =</span> <span class="dv">1</span>, 
        <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"lightgrey"</span>, <span class="st">"black"</span>), <span class="dt">bty =</span> <span class="st">"n"</span>, <span class="dt">cex =</span> <span class="fl">0.8</span>)</code></pre></div>
-<p><img src="ZeroInflated_and_TwoPart_Models_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<p><img src="ZeroInflated_and_TwoPart_Models_files/figure-html/unnamed-chunk-11-1.png" width="816" style="display: block; margin: auto;"></p>
 </div>
 <div id="two-parthurdle-poisson-mixed-effects-model" class="section level2">
 <h2 class="hasAnchor">

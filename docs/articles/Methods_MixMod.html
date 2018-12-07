@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.6</span>
       </span>
     </div>
 
@@ -102,7 +102,7 @@
       <h1>Methods for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-12-05</h4>
+            <h4 class="date">2018-12-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Methods_MixMod.Rmd"><code>vignettes/Methods_MixMod.Rmd</code></a></small>
       <div class="hidden name"><code>Methods_MixMod.Rmd</code></div>
@@ -289,10 +289,15 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <p>The fixed effects estimates in mixed models with nonlinear link functions have an interpretation conditional on the random effects. However, often we wish to obtain parameters with a marginal / population averaged interpretation, which leads many researchers to use generalized estimating equations, and dealing with potential issues with missing data. Nonetheless, recently <a href="https://dx.doi.org/10.1111/biom.12707">Hedeker et al.</a> have proposed a nice solution to this problem. Their approach is implemented in function <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>. For example, for model <code>fm</code> we obtain the marginalized coefficients using:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(fm)
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;        -1.6016        -1.0881         0.1766         0.0506</span></code></pre></div>
+<span class="co">#&gt;        -1.6002        -1.0950         0.1761         0.0510</span></code></pre></div>
 <p>The function calculates the marginal log odds ratios in our case (because we have a binary outcome) using a Monte Carlo procedure with number of samples determined by the <code>M</code> argument.</p>
-<p>Standard errors for the marginalized coefficients are obtained by setting <code>std_errors = TRUE</code> in the call to <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>, and require a double Monte Carlo procedure for which argument <code>K</code> comes also into play. To speed up computations, the outer Monte Carlo procedure is performed in parallel using package <strong>parallel</strong> and number of cores specified in the <code>cores</code> argument (due to the required computing time, these standard errors are not displayed):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(fm, <span class="dt">std_errors =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>Standard errors for the marginalized coefficients are obtained by setting <code>std_errors = TRUE</code> in the call to <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>, and require a double Monte Carlo procedure for which argument <code>K</code> comes also into play. To speed up computations, the outer Monte Carlo procedure is performed in parallel using package <strong>parallel</strong> and number of cores specified in the <code>cores</code> argument:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(fm, <span class="dt">std_errors =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">2</span>)
+<span class="co">#&gt;                Estimate Std.Err z-value   p-value</span>
+<span class="co">#&gt; (Intercept)     -1.6002  0.2872 -5.5722   &lt; 1e-04</span>
+<span class="co">#&gt; sexfemale       -1.0950  0.3695 -2.9632 0.0030443</span>
+<span class="co">#&gt; time             0.1761  0.0333  5.2828   &lt; 1e-04</span>
+<span class="co">#&gt; sexfemale:time   0.0510  0.0368  1.3872 0.1653766</span></code></pre></div>
 </div>
 <div id="fitted-values-and-residuals" class="section level2">
 <h2 class="hasAnchor">
@@ -328,9 +333,9 @@ expit &lt;-<span class="st"> </span><span class="cf">function</span> (x) <span c
 <span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">+</span><span class="st"> </span><span class="kw">expit</span>(low) <span class="op">+</span><span class="st"> </span><span class="kw">expit</span>(upp) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">data =</span> plot_data,
        <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="dv">2</span>,
        <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Subject-Specific Probabilities"</span>)</code></pre></div>
-<p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-19-1.png" width="700"><img src="Methods_MixMod_files/figure-html/unnamed-chunk-19-2.png" width="700"></p>
-<p>The <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function also allows to compute marginal predictions using the marginalized coefficients described above. This is achieved by setting <code>marginal = TRUE</code> in the respective call (due to the required computing time, plot not shown):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">marginal =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">4</span>)
+<p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-19-1.png" width="816" style="display: block; margin: auto;"><img src="Methods_MixMod_files/figure-html/unnamed-chunk-19-2.png" width="816" style="display: block; margin: auto;"></p>
+<p>The <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function also allows to compute marginal predictions using the marginalized coefficients described above. This is achieved by setting <code>marginal = TRUE</code> in the respective call:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">marginal =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">2</span>)
 
 <span class="co"># we put the two groups in the same panel</span>
 my.panel.bands &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, upper, lower, fill, col, subscripts, ..., font, 
@@ -348,6 +353,7 @@ my.panel.bands &lt;-<span class="st"> </span><span class="cf">function</span>(x,
            <span class="kw">panel.superpose</span>(x, y, <span class="dt">panel.groups =</span> <span class="st">'my.panel.bands'</span>, ...)
            <span class="kw">panel.xyplot</span>(x, y, <span class="dt">lwd =</span> <span class="dv">2</span>,  ...)
 }, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Marginal Probabilities"</span>)</code></pre></div>
+<p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-20-1.png" width="816" style="display: block; margin: auto;"></p>
 </div>
 <div id="comparing-two-models" class="section level2">
 <h2 class="hasAnchor">

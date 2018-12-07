@@ -65,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.6</span>
       </span>
     </div>
 
@@ -481,7 +481,7 @@ residuals.</p>
 #&gt; var.year         0.16901360 0.194299176 -0.69049149</div><div class='input'>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'>fitted</span>(<span class='no'>fm1</span>, <span class='st'>"subject_specific"</span>))</div><div class='output co'>#&gt;          1          2          3          4          5          6 
 #&gt; 0.05461510 0.07273399 0.28483782 0.47363514 0.54791283 0.55336246 </div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'>residuals</span>(<span class='no'>fm1</span>, <span class='st'>"marginal"</span>))</div><div class='output co'>#&gt;          1          2          3          4          5          6 
-#&gt; -0.1738808 -0.1900299 -0.2946049 -0.3580472 -0.3826880 -0.3845364 </div><div class='input'>
+#&gt; -0.1735175 -0.1896618 -0.2942596 -0.3577495 -0.3824137 -0.3842639 </div><div class='input'>
 <span class='no'>fm2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(<span class='kw'>fixed</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>year</span> * <span class='no'>group</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='no'>year</span> <span class='kw'>|</span> <span class='no'>id</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>,
                    <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/family'>binomial</a></span>())
 
