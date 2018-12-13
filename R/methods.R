@@ -358,12 +358,13 @@ anova.MixMod <- function (object, object2, test = TRUE, L = NULL,
                     "' has not converged.")
         L0 <- logLik(object)
         L1 <- logLik(object2)
+        if (L0 > L1) {
+            L0 <- logLik(object2)
+            L1 <- logLik(object)
+        }
         nb0 <- attr(L0, "df")
         nb1 <- attr(L1, "df")
         df <- nb1 - nb0
-        if (test && df < 0) {
-            stop("'object' should be nested in 'object2'.\n")
-        }
         if (test && df == 0) {
             test <- FALSE
             warning("the two objects represent models with the same number of parameters;",
@@ -383,9 +384,6 @@ anova.MixMod <- function (object, object2, test = TRUE, L = NULL,
         if (test) {
             LRT <- - 2 * (L0 - L1)
             attributes(LRT) <- NULL
-            if (LRT < 0)
-                warning("either the two models are not nested or the model ",
-                        "represented by 'object2' fell on a local maxima.\n")
             out$LRT <- LRT
             out$p.value <- pchisq(LRT, df, lower.tail = FALSE)
         }
@@ -654,7 +652,7 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
         tht <- unlist(as.relistable(list_thetas))
         V <- vcov(object, sandwich = sandwich)
         ind <- c(seq_len(length(betas)), grep("zi_", colnames(V), fixed = TRUE))
-        V <- V[ind, ind]
+        V <- V[ind, ind, drop = FALSE]
         new_tht <- MASS::mvrnorm(K, tht, V)
         if (marginal) {
             stop("the 'marginal = TRUE' option of effectPlotData() is not yet ", 
