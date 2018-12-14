@@ -901,7 +901,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             }
             phis <- object$phis
             D <- object$D
-            diag_D <- all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
+            diag_D <- ncol(D) > 1 && all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
             list_thetas <- list(betas = betas, D = if (diag_D) log(diag(D)) else chol_transf(D))
             if (!is.null(phis)) {
                 list_thetas <- c(list_thetas, list(phis = phis))
@@ -1208,7 +1208,7 @@ simulate.MixMod <- function (object, nsim = 1, seed = NULL,
     D <- object$D
     gammas <- object$gammas
     phis <- object$phis
-    diag_D <- all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
+    diag_D <- ncol(D) > 1 && all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
     nRE <- ncol(D)
     ind <- vector("logical", nRE)
     ind[grep("zi_", colnames(D), fixed = TRUE, invert = TRUE)] <- TRUE
