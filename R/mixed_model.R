@@ -46,7 +46,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
         mfZ <- mfZ[keep, , drop = FALSE]
     }
     ind <- !unique(names(c(na_exclude, na_exclude_z))) %in% names(na_exclude_zi)
-    if (length(ind) && any(ind)) {
+    if (length(ind) && any(ind) && !is.null(zi_fixed)) {
         keep <- !row.names(mfX_zi) %in% unique(names(c(na_exclude, na_exclude_z)))[ind]
         mfX_zi <- mfX_zi[keep, , drop = FALSE]
     }
@@ -65,7 +65,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     id_nam <- all.vars(getID_Formula(random))
     id_orig <- model.frame(terms(getID_Formula(random)), data)[[1L]]
     if (!is.null(na_exclude))
-        id_orig <- id_orig[-na_exclude] # <---------- Fix when NAs
+        id_orig <- id_orig[-unique(c(na_exclude, na_exclude_z, na_exclude_zi))]
     id <- match(id_orig, unique(id_orig))
     ###########################
     # Zero inflation part
@@ -149,6 +149,9 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
         c(list(penalized = TRUE), penalized)
     } else {
         stop("argument 'penalized' must be a logical or a list.\n")
+    }
+    if (penalized$penalized) {
+        inits$betas <- rep(0, length(inits$betas))
     }
     ##########################
     # Functions

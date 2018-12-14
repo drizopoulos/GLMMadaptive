@@ -1,3 +1,13 @@
+# GLMMadaptive 0.5.0
+
+## General
+* Added support for the **DHARMa** package.
+
+* The new vignette *Goodness of Fit for MixMod Objects* describes how to check the fit 
+of mixed models fitted by **GLMMadaptive**.
+
+* Function `marginal_coefs()` has a faster implementation.
+
 # GLMMadaptive 0.4.0
 
 ## General

@@ -146,8 +146,23 @@ extract <- function (obj) {
 sapply(models, extract)
 ```
 
-We observe rather stable model with virtually no differences between the different choices
+We observe a rather stable model with virtually no differences between the different choices
 of quadrature points.
+
+We first compare the model with a simple logistic regression that does not include any
+random effects:
+```{r}
+km <- glm(y ~ sex * time, data = DF, family = binomial())
+
+anova(fm1, km)
+```
+
+We obtain a highly significant p-value suggesting that there are correlations in the data
+that cannot be ignored. *Note:* the `anova()` method that performs the likelihood ratio
+test calculates the p-value using the standard $\chi^2$ distribution, here with one 
+degree of freedom. However, because the null hypothesis for testing variance parameters is
+on the boundary of the corresponding parameter space, it would be more appropriate to use 
+a mixture of $\chi^2$ distributions.
 
 We extend model `fm1` by also including a random slopes term; however, we assume that the 
 covariance between the random intercepts and random slopes is zero. This is achieved by

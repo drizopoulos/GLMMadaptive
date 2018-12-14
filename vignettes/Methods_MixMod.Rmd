@@ -273,7 +273,7 @@ predict(fm, newdata = pred_DF, type_pred = "response",
 ```
 
 Population averaged predictions can be obtained by first calculating the marginalized 
-coefficients (using `marginal_Coefs()`) and multiplying them with the fixed effects 
+coefficients (using `marginal_coefs()`) and multiplying them with the fixed effects 
 design matrix; this is achieved using the option `type = "marginal"` (due to the required 
 computing time, predictions not shown):
 ```{r, eval = FALSE}
