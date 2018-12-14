@@ -555,7 +555,7 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
         blocks <- split(seq_len(K), rep(seq_len(cores), each = ceiling(K / cores),
                                         length.out = K))
         D <- object$D
-        diag_D <- all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
+        diag_D <- ncol(D) > 1 && all(abs(D[lower.tri(D)]) < sqrt(.Machine$double.eps))
         list_thetas <- list(betas = betas, D = if (diag_D) log(diag(D)) else chol_transf(D))
         tht <- unlist(as.relistable(list_thetas))
         V <- vcov(object, sandwich = sandwich)
@@ -573,7 +573,7 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
                 set.seed(seed.)
                 new_tht <- relist(MASS::mvrnorm(1, tht, V), skeleton = list_thetas)
                 new_betas <- new_tht$betas
-                new_D <- if (diag_D) diag(exp(new_tht$D)) else chol_transf(new_tht$D)
+                new_D <- if (diag_D) diag(exp(new_tht$D), length(new_tht$D)) else chol_transf(new_tht$D)
                 m_betas[b, ] <- compute_marg_coefs(object, XX, new_betas, Z, new_D, M,
                                                    link_fun, seed = seed.)
             }
