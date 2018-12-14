@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.8</span>
       </span>
     </div>
 
@@ -102,7 +102,7 @@
       <h1>Methods for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-12-07</h4>
+            <h4 class="date">2018-12-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Methods_MixMod.Rmd"><code>vignettes/Methods_MixMod.Rmd</code></a></small>
       <div class="hidden name"><code>Methods_MixMod.Rmd</code></div>
@@ -390,7 +390,7 @@ pred_DF
 <span class="co">#&gt; $se.fit</span>
 <span class="co">#&gt;         1         2         3         4 </span>
 <span class="co">#&gt; 0.3199119 0.3162100 0.2874263 0.4608707</span></code></pre></div>
-<p>Population averaged predictions can be obtained by first calculating the marginalized coefficients (using <code>marginal_Coefs()</code>) and multiplying them with the fixed effects design matrix; this is achieved using the option <code>type = "marginal"</code> (due to the required computing time, predictions not shown):</p>
+<p>Population averaged predictions can be obtained by first calculating the marginalized coefficients (using <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>) and multiplying them with the fixed effects design matrix; this is achieved using the option <code>type = "marginal"</code> (due to the required computing time, predictions not shown):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">predict</a></span>(fm, <span class="dt">newdata =</span> pred_DF, <span class="dt">type_pred =</span> <span class="st">"response"</span>,
         <span class="dt">type =</span> <span class="st">"marginal"</span>, <span class="dt">se.fit =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p>Finally, we calculate subject-specific predictions; the standard errors are calculated with a Monte Carlo scheme (for details check the online help file):</p>
@@ -519,7 +519,7 @@ future_Times
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
 </div>
       </footer>
 </div>

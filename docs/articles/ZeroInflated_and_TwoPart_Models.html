@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.8</span>
       </span>
     </div>
 
@@ -102,7 +102,7 @@
       <h1>Zero-Inflated and Two-Part Mixed Effects Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-12-07</h4>
+            <h4 class="date">2018-12-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/ZeroInflated_and_TwoPart_Models.Rmd"><code>vignettes/ZeroInflated_and_TwoPart_Models.Rmd</code></a></small>
       <div class="hidden name"><code>ZeroInflated_and_TwoPart_Models.Rmd</code></div>
@@ -257,8 +257,8 @@ gm1
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(gm1, fm2, <span class="dt">test =</span> <span class="ot">FALSE</span>)
 <span class="co">#&gt; </span>
 <span class="co">#&gt;         AIC     BIC  log.Lik df</span>
-<span class="co">#&gt; gm1 3933.49 3954.33 -1958.75   </span>
-<span class="co">#&gt; fm2 4446.61 4446.61 -2214.31  1</span></code></pre></div>
+<span class="co">#&gt; gm1 3933.49 3954.33 -2214.31   </span>
+<span class="co">#&gt; fm2 4446.61 4446.61 -1958.75 -1</span></code></pre></div>
 <p>We observe that accounting for the over-dispersion seems to better improve the fit than including the random intercepts term in the zero part.</p>
 </div>
 <div id="two-part-mixed-effects-model-for-semi-continuous-data" class="section level2">
@@ -655,7 +655,7 @@ hm2
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
 </div>
       </footer>
 </div>

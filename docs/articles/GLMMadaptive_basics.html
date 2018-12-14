@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.8</span>
       </span>
     </div>
 
@@ -102,7 +102,7 @@
       <h1>GLMMadaptive Basics</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-12-07</h4>
+            <h4 class="date">2018-12-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/GLMMadaptive_basics.Rmd"><code>vignettes/GLMMadaptive_basics.Rmd</code></a></small>
       <div class="hidden name"><code>GLMMadaptive_basics.Rmd</code></div>
@@ -222,7 +222,16 @@ models &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocu
 <span class="co">#&gt; sexfemale:time     0.04005485    0.04011138    0.0401111</span>
 <span class="co">#&gt; var_(Intercept)    4.26248278    4.26261536    4.2627503</span>
 <span class="co">#&gt; logLik          -374.51974940 -374.51986569 -374.5198354</span></code></pre></div>
-<p>We observe rather stable model with virtually no differences between the different choices of quadrature points.</p>
+<p>We observe a rather stable model with virtually no differences between the different choices of quadrature points.</p>
+<p>We first compare the model with a simple logistic regression that does not include any random effects:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">km &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())
+
+<span class="kw"><a href="../reference/methods.html">anova</a></span>(fm1, km)
+<span class="co">#&gt; </span>
+<span class="co">#&gt;        AIC    BIC log.Lik    LRT df p.value</span>
+<span class="co">#&gt; fm1 759.04 772.07 -455.55                  </span>
+<span class="co">#&gt; km  919.11 919.11 -374.52 162.07  1 &lt;0.0001</span></code></pre></div>
+<p>We obtain a highly significant p-value suggesting that there are correlations in the data that cannot be ignored. <em>Note:</em> the <code><a href="../reference/methods.html">anova()</a></code> method that performs the likelihood ratio test calculates the p-value using the standard <span class="math inline">\(\chi^2\)</span> distribution, here with one degree of freedom. However, because the null hypothesis for testing variance parameters is on the boundary of the corresponding parameter space, it would be more appropriate to use a mixture of <span class="math inline">\(\chi^2\)</span> distributions.</p>
 <p>We extend model <code>fm1</code> by also including a random slopes term; however, we assume that the covariance between the random intercepts and random slopes is zero. This is achieved by using the <code>||</code> symbol in the specification of the <code>random</code> argument, i.e.,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">||</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
                    <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</code></pre></div>
@@ -356,7 +365,7 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
 </div>
       </footer>
 </div>
