@@ -358,13 +358,9 @@ anova.MixMod <- function (object, object2, test = TRUE, L = NULL,
                     "' has not converged.")
         L0 <- logLik(object)
         L1 <- logLik(object2)
-        if (L0 > L1) {
-            L0 <- logLik(object2)
-            L1 <- logLik(object)
-        }
         nb0 <- attr(L0, "df")
         nb1 <- attr(L1, "df")
-        df <- nb1 - nb0
+        df <- abs(nb1 - nb0)
         if (test && df == 0) {
             test <- FALSE
             warning("the two objects represent models with the same number of parameters;",
@@ -382,7 +378,7 @@ anova.MixMod <- function (object, object2, test = TRUE, L = NULL,
                     nam1 = deparse(substitute(object2)), L1 = L1, aic1 = AIC(object2),
                     bic1 = AIC(object2), df = df, test = test)
         if (test) {
-            LRT <- - 2 * (L0 - L1)
+            LRT <- abs(- 2 * (L0 - L1))
             attributes(LRT) <- NULL
             out$LRT <- LRT
             out$p.value <- pchisq(LRT, df, lower.tail = FALSE)
