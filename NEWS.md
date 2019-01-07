@@ -6,7 +6,11 @@
 * The new vignette *Goodness of Fit for MixMod Objects* describes how to check the fit 
 of mixed models fitted by **GLMMadaptive**.
 
-* Function `marginal_coefs()` has a faster implementation.
+* Added support for the **effects** package.
+
+* There is a new section in the vignette *Methods for MixMod Objects* illustrating the use of the **effects** package.
+
+* Function `marginal_coefs()` has a faster implementation. Compared to the previous implementation the results will be slightly different.
 
 # GLMMadaptive 0.4.0
 

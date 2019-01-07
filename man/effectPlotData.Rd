@@ -110,7 +110,7 @@ xyplot(expit(pred) ~ year, group = group, data = plot_data, upper = expit(plot_d
        low = expit(plot_data$low), type = "l", col = c("blue", "red"), 
        fill = c("#0000FF80", "#FF000080"),
        panel = function (x, y, ...) {
-           panel.superpose(x, y, panel.groups = 'my.panel.bands', ...)
+           panel.superpose(x, y, panel.groups = my.panel.bands, ...)
            panel.xyplot(x, y, lwd = 2,  ...)
 }, xlab = "Follow-up time", ylab = "Probabilities")
 

@@ -486,5 +486,8 @@ register_s3_method <- function (pkg, generic, class) {
         register_s3_method("emmeans", "recover_data", "MixMod")
         register_s3_method("emmeans", "emm_basis", "MixMod")
     }
+    if (requireNamespace("effects", quietly = TRUE)) {
+        register_s3_method("effects", "Effect", "MixMod")
+    }
 }
 

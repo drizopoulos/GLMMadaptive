@@ -11,11 +11,12 @@ importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
            "confint", "residuals", "coef", "anova", "dt", "quantile", "rchisq", "runif", 
            "sd", "predict", "binomial", "plogis", "poisson", "simulate", "rbinom", 
            "rnbinom", "rpois", "ppois", "qpois", "qnbinom", "pnbinom", "dnbinom", "rbeta",
-           "rlnorm", "na.pass")
+           "rlnorm", "na.pass", "formula")
 importFrom("utils", "as.relistable", "relist")
 importFrom("MASS", "mvrnorm")
 importFrom("parallel", "makeCluster", "stopCluster", "detectCores", "parLapply")
 importFrom("nlme", "fixef", "ranef")
+
 
 S3method(print, MixMod)
 S3method(logLik, MixMod)
@@ -39,7 +40,7 @@ S3method(simulate, MixMod)
 S3method(model.matrix, MixMod)
 S3method(model.frame, MixMod)
 S3method(terms, MixMod)
-
+S3method(formula, MixMod)
 
 
 
