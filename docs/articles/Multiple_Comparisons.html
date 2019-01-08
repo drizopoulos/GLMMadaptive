@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.99</span>
       </span>
     </div>
 
@@ -102,7 +102,7 @@
       <h1>Multiple Comparisons for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-12-16</h4>
+            <h4 class="date">2019-01-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Multiple_Comparisons.Rmd"><code>vignettes/Multiple_Comparisons.Rmd</code></a></small>
       <div class="hidden name"><code>Multiple_Comparisons.Rmd</code></div>
@@ -237,43 +237,43 @@ gm_mc &lt;-<span class="st"> </span><span class="kw">emmeans</span>(gm, <span cl
 
 gm_mc
 <span class="co">#&gt; time = Time1:</span>
-<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL  asymp.UCL</span>
-<span class="co">#&gt;  male   -2.737017 0.3421930 Inf -3.407703 -2.0663308</span>
-<span class="co">#&gt;  female -1.209182 0.2550117 Inf -1.708995 -0.7093678</span>
+<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL asymp.UCL</span>
+<span class="co">#&gt;  male   -2.737017 0.3421930 Inf -3.407703 -2.066331</span>
+<span class="co">#&gt;  female -1.209182 0.2550117 Inf -1.708995 -0.709368</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time2:</span>
-<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL  asymp.UCL</span>
-<span class="co">#&gt;  male   -1.675620 0.2755058 Inf -2.215602 -1.1356387</span>
-<span class="co">#&gt;  female -1.435439 0.2629832 Inf -1.950877 -0.9200015</span>
+<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL asymp.UCL</span>
+<span class="co">#&gt;  male   -1.675620 0.2755058 Inf -2.215602 -1.135639</span>
+<span class="co">#&gt;  female -1.435439 0.2629832 Inf -1.950877 -0.920002</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time3:</span>
-<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL  asymp.UCL</span>
-<span class="co">#&gt;  male   -4.398350 0.5452336 Inf -5.466988 -3.3297118</span>
-<span class="co">#&gt;  female -1.389421 0.2612568 Inf -1.901475 -0.8773671</span>
+<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL asymp.UCL</span>
+<span class="co">#&gt;  male   -4.398350 0.5452336 Inf -5.466988 -3.329712</span>
+<span class="co">#&gt;  female -1.389421 0.2612568 Inf -1.901475 -0.877367</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time4:</span>
-<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL  asymp.UCL</span>
-<span class="co">#&gt;  male   -1.336933 0.2610534 Inf -1.848589 -0.8252781</span>
-<span class="co">#&gt;  female -1.252104 0.2564246 Inf -1.754687 -0.7495210</span>
+<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL asymp.UCL</span>
+<span class="co">#&gt;  male   -1.336933 0.2610534 Inf -1.848589 -0.825278</span>
+<span class="co">#&gt;  female -1.252104 0.2564246 Inf -1.754687 -0.749521</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Confidence level used: 0.95</span></code></pre></div>
 <p>The corresponding pairwise comparisons are performed by the <code><a href="https://www.rdocumentation.org/packages/graphics/topics/pairs">pairs()</a></code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/pairs">pairs</a></span>(gm_mc)
 <span class="co">#&gt; time = Time1:</span>
-<span class="co">#&gt;  contrast         estimate        SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female -1.52783517 0.4097558 Inf  -3.729  0.0002</span>
+<span class="co">#&gt;  contrast        estimate        SE  df z.ratio p.value</span>
+<span class="co">#&gt;  male - female -1.5278352 0.4097558 Inf  -3.729  0.0002</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time2:</span>
-<span class="co">#&gt;  contrast         estimate        SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female -0.24018095 0.3664609 Inf  -0.655  0.5122</span>
+<span class="co">#&gt;  contrast        estimate        SE  df z.ratio p.value</span>
+<span class="co">#&gt;  male - female -0.2401810 0.3664609 Inf  -0.655  0.5122</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time3:</span>
-<span class="co">#&gt;  contrast         estimate        SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female -3.00892881 0.5851176 Inf  -5.142  &lt;.0001</span>
+<span class="co">#&gt;  contrast        estimate        SE  df z.ratio p.value</span>
+<span class="co">#&gt;  male - female -3.0089288 0.5851176 Inf  -5.142  &lt;.0001</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time4:</span>
-<span class="co">#&gt;  contrast         estimate        SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female -0.08482945 0.3550390 Inf  -0.239  0.8112</span></code></pre></div>
+<span class="co">#&gt;  contrast        estimate        SE  df z.ratio p.value</span>
+<span class="co">#&gt;  male - female -0.0848295 0.3550390 Inf  -0.239  0.8112</span></code></pre></div>
 <p>For additional examples in testing interactions with the <strong>emmeans</strong> package check the vignette: <code><a href="https://cran.rstudio.com/web/packages/emmeans/vignettes/interactions.html">vignette("interactions", package = "emmeans")</a></code>.</p>
 </div>
 </div>

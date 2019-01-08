@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.99</span>
       </span>
     </div>
 
@@ -102,7 +102,7 @@
       <h1>Methods for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2018-12-16</h4>
+            <h4 class="date">2019-01-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Methods_MixMod.Rmd"><code>vignettes/Methods_MixMod.Rmd</code></a></small>
       <div class="hidden name"><code>Methods_MixMod.Rmd</code></div>
@@ -355,6 +355,15 @@ my.panel.bands &lt;-<span class="st"> </span><span class="cf">function</span>(x,
 }, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Marginal Probabilities"</span>)</code></pre></div>
 <p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-20-1.png" width="816" style="display: block; margin: auto;"></p>
 </div>
+<div id="effect-plots-using-the-effects-package" class="section level2">
+<h2 class="hasAnchor">
+<a href="#effect-plots-using-the-effects-package" class="anchor"></a>Effect Plots using the effects package</h2>
+<p>In addition to using the <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function, the same type of effect plots can be produced by the <a href="https://cran.r-project.org/package=effects"><strong>effects</strong></a> package. For example, based on the <code>fm</code> model we produce the effect plot for <code>time</code> and for the two groups using the call to <code>predictorEffect()</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"effects"</span>)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(<span class="kw">predictorEffect</span>(<span class="st">"time"</span>, fm), <span class="dt">type =</span> <span class="st">"response"</span>)</code></pre></div>
+<p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-21-1.png" width="816" style="display: block; margin: auto;"></p>
+<p>For the additional functionality provided by the <a href="https://cran.r-project.org/package=effects"><strong>effects</strong></a> package check the vignette: <code><a href="https://cran.rstudio.com/web/packages/effects/vignettes/predictor-effects-gallery.pdf">vignette("predictor-effects-gallery", package = "effects")</a></code></p>
+</div>
 <div id="comparing-two-models" class="section level2">
 <h2 class="hasAnchor">
 <a href="#comparing-two-models" class="anchor"></a>Comparing Two Models</h2>
@@ -502,6 +511,7 @@ future_Times
       <li><a href="#marginalized-coefficients">Marginalized Coefficients</a></li>
       <li><a href="#fitted-values-and-residuals">Fitted Values and Residuals</a></li>
       <li><a href="#effect-plots">Effect Plots</a></li>
+      <li><a href="#effect-plots-using-the-effects-package">Effect Plots using the effects package</a></li>
       <li><a href="#comparing-two-models">Comparing Two Models</a></li>
       <li><a href="#predictions">Predictions</a></li>
       <li><a href="#simulate">Simulate</a></li>
