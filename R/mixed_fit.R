@@ -238,12 +238,9 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
         ns <- c("betas" = 0, "D" = 0, "phis" = 0, "gammas" = 0)
         lng <- sapply(list_thetas, length)
         ns[names(lng)] <- lng
-        ctrl <- list(maxit = control$iter_qN, trace = 10 * control$verbose,
-                     reltol = control$tol3,
-                     parscale = rep(c(control$parscale_betas, control$parscale_D,
-                                      control$parscale_phis, control$parscale_gammas), ns))
-        optFun <- if (control$optimParallel) optimParallel::optimParallel else stats::optim
-        if (control$optimParallel) {
+        parscale <- rep(c(control$parscale_betas, control$parscale_D,
+                          control$parscale_phis, control$parscale_gammas), ns)
+       if (control$optimizer == "optimParallel") {
             cl <- parallel::makeCluster(2)
             parallel::setDefaultCluster(cl = cl)
             parallel::clusterExport(cl = cl, envir = environment(), 
@@ -255,16 +252,16 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                         Z_zi_lis, offset_zi_lis, betas, solve(D), phis, gammas, nAGQ, nRE, 
                         canonical, user_defined, Zty_lis, log_dens, mu_fun, var_fun, 
                         mu.eta_fun, score_eta_fun, score_phis_fun, score_eta_zi_fun)
-            opt <- optFun(tht, logLik_mixed, score_mixed, method = control$optim_method,
-                         control = ctrl, id = id, y = y, N = N, X = X, Z = Z, 
-                         offset = offset, X_zi = X_zi, Z_zi = Z_zi, offset_zi = offset_zi, 
-                         GH = GH, canonical = canonical, user_defined = user_defined, 
-                         Xty = Xty, log_dens = log_dens, mu_fun = mu_fun, 
-                         var_fun = var_fun, mu.eta_fun = mu.eta_fun, 
-                         score_eta_fun = score_eta_fun, score_eta_zi_fun = score_eta_zi_fun, 
-                         score_phis_fun = score_phis_fun, list_thetas = list_thetas, 
-                         diag_D = diag_D, penalized = penalized, pen_mu = pen_mu, 
-                         pen_invSigma = pen_invSigma, pen_df = pen_df)
+            opt <- optFun(tht, logLik_mixed, score_mixed, parscale = parscale,
+                          control = control, id = id, y = y, N = N, X = X, Z = Z, 
+                          offset = offset, X_zi = X_zi, Z_zi = Z_zi, offset_zi = offset_zi, 
+                          GH = GH, canonical = canonical, user_defined = user_defined, 
+                          Xty = Xty, log_dens = log_dens, mu_fun = mu_fun, 
+                          var_fun = var_fun, mu.eta_fun = mu.eta_fun, 
+                          score_eta_fun = score_eta_fun, score_eta_zi_fun = score_eta_zi_fun, 
+                          score_phis_fun = score_phis_fun, list_thetas = list_thetas, 
+                          diag_D = diag_D, penalized = penalized, pen_mu = pen_mu, 
+                          pen_invSigma = pen_invSigma, pen_df = pen_df)
             new_pars <- relist(opt$par, skeleton = list_thetas)
             betas <- new_pars$betas
             phis <- new_pars$phis
@@ -279,15 +276,14 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                 exp(phis) > control$max_phis_value) {
                 stop(large_shape_mgs)
             }
-            
             if (opt$convergence == 0) {
                 converged <- TRUE
                 break
             }
-            ctrl$maxit <- ctrl$maxit + control$iter_qN_incr
+            control$iter_qN <- control$iter_qN + control$iter_qN_incr
             if (control$verbose) cat("\n")
         }
-        if (control$optimParallel) {
+        if (control$optimizer == "optimParallel") {
             parallel::stopCluster(cl)
         }
     }
@@ -326,5 +322,22 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
          logLik = logLik, Hessian = Hessian, 
          score_vect_contributions = score_vect_contributions,
          converged = converged)
+}
+
+optFun <- function (start, objective, gradient, parscale, control, ...) {
+    if (control$optimizer == "optim") {
+        stats::optim(start, objective, gradient, method = control$optim_method,
+                     control = list(maxit = control$iter_qN, trace = 10 * control$verbose,
+                                    reltol = control$tol3, parscale = parscale), ...)
+    } else if (control$optimizer == "optimParallel") {
+        optimParallel::optimParallel(start, objective, gradient, method = control$optim_method,
+                                     control = list(maxit = control$iter_qN, trace = 10 * control$verbose,
+                                                    reltol = control$tol3, parscale = parscale), ...)
+        
+    } else {
+        stats::nlminb(start, objective, gradient, scale = 1 / parscale, 
+                      control = list(iter.max = control$iter_qN, trace = 10 * control$verbose,
+                                     rel.tol = control$tol3), ...)
+    }
 }
 

@@ -237,7 +237,7 @@ xyplot(expit(pred) ~ time, group = sex, data = plot_data_m,
        type = "l", col = c("blue", "red"), 
        fill = c("#0000FF80", "#FF000080"),
        panel = function (x, y, ...) {
-           panel.superpose(x, y, panel.groups = 'my.panel.bands', ...)
+           panel.superpose(x, y, panel.groups = my.panel.bands, ...)
            panel.xyplot(x, y, lwd = 2,  ...)
 }, xlab = "Follow-up time", ylab = "Marginal Probabilities")
 ```
@@ -246,13 +246,20 @@ xyplot(expit(pred) ~ time, group = sex, data = plot_data_m,
 In addition to using the `effectPlotData()` function, the same type of effect plots can
 be produced by the [**effects**](https://cran.r-project.org/package=effects) package. For
 example, based on the `fm` model we produce the effect plot for `time` and for the two 
-groups using the call to `predictorEffect()`:
+groups using the call to `predictorEffect()` and its `plot()` method:
 ```{r, fig.align = "center", fig.width = 8.5, fig.height = 7.5, message = FALSE}
 library("effects")
+plot(predictorEffect("time", fm), type = "link")
+```
+
+The `type` argument controls the scale of the y-axis, namely, `type = "link"` corresponds 
+to the log-odds scale. If we would like to obtain the figure in the probability scale, we
+should set `type = "response"`, i.e.,
+```{r, fig.align = "center", fig.width = 8.5, fig.height = 7.5, message = FALSE}
 plot(predictorEffect("time", fm), type = "response")
 ```
 
-For the additional functionality provided by the [**effects**](https://cran.r-project.org/package=effects) package check the vignette: `vignette("predictor-effects-gallery", package = "effects")` 
+For the additional functionality provided by the [**effects**](https://cran.r-project.org/package=effects) package, check the vignette: `vignette("predictor-effects-gallery", package = "effects")`.
 
 ## Comparing Two Models
 The `anova()` method can be used to compare two fitted mixed models using a likelihood 

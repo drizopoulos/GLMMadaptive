@@ -68,8 +68,13 @@ mixed_model(fixed, random, data, family, na.action = na.exclude,
             quasi-Newton; default is 10.}
         \item{iter_qN_incr}{numeric scalar denoting the increment in \code{iter_qN} for
             each outer iteration; default is 10.}
+        \item{optimizer}{character string denoting the optimizer to be used; available 
+            options are \code{"optim"} (default), \code{"nlminb"} and 
+            \code{"optimParallel"}, the last option implemented in the 
+            \bold{optimParallel} package.}
         \item{optim_method}{character string denoting the type of \code{\link{optim}} 
-            algorithm to be used; default s "BFGS".}
+            algorithm to be used when \code{optimizer = "optim"}; default is the BFGS 
+            algorithm.}
         \item{parscale_betas}{the control argument \code{parscale} of \code{\link{optim}} for
             the fixed-effects; default is 0.1.}
         \item{parscale_betas}{the control argument \code{parscale} of \code{\link{optim}} for
@@ -81,7 +86,7 @@ mixed_model(fixed, random, data, family, na.action = na.exclude,
             convergence; \code{tol1} and \code{tol2} are for checking convergence in 
             successive parameter values; \code{tol3} is similar to \code{reltop} of 
             \code{\link{optim}}; default values are \code{1e-03}, \code{1e-04}, and 
-            \code{1e-07}, respectively.}
+            \code{1e-08}, respectively.}
         \item{numeric_deriv}{character string denoting the type of numerical derivatives
             to be used. Options are \code{"fd"} for forward differences, and \code{cd}
             for central difference; default is \code{"fd"}.}

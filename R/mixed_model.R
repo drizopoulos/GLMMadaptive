@@ -101,11 +101,11 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     ###########################
     # control settings
     con <- list(iter_EM = 30, iter_qN_outer = 15, iter_qN = 10, iter_qN_incr = 10,
-                optim_method = "BFGS", parscale_betas = 0.1, parscale_D = 0.01,
-                parscale_phis = 0.01, parscale_gammas = 0.01, tol1 = 1e-03, tol2 = 1e-04, 
-                tol3 = 1e-07, numeric_deriv = "fd", nAGQ = if (nRE < 3) 11 else 7, 
-                update_GH_every = 10, max_coef_value = 10, max_phis_value = exp(10), 
-                verbose = FALSE, optimParallel = FALSE)
+                optimizer = "optim", optim_method = "BFGS", parscale_betas = 0.1, 
+                parscale_D = 0.01, parscale_phis = 0.01, parscale_gammas = 0.01, 
+                tol1 = 1e-04, tol2 = 1e-05, tol3 = 1e-08, numeric_deriv = "fd", 
+                nAGQ = if (nRE < 3) 11 else 7, update_GH_every = 10, max_coef_value = 12, 
+                max_phis_value = exp(10), verbose = FALSE)
     control <- c(control, list(...))
     namC <- names(con)
     con[(namc <- names(control))] <- control

@@ -12,6 +12,10 @@ of mixed models fitted by **GLMMadaptive**.
 
 * Function `marginal_coefs()` has a faster implementation. Compared to the previous implementation the results will be slightly different.
 
+* The optimizer `nlminb()` can now also be invoked using the new control argument `optimizer`; default is `"optim"` corresponding to function `optim()`.
+
+* The new vignette *Optimization and Numerical Integration in GLMMadaptive* describes how to control the optimization and numerical integration procedures in the package.
+
 # GLMMadaptive 0.4.0
 
 ## General
