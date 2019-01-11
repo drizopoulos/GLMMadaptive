@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.99</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.999</span>
       </span>
     </div>
 
@@ -72,6 +72,9 @@
       <a href="../articles/Multiple_Comparisons.html">Multiple Comparisons for MixMod Objects</a>
     </li>
     <li>
+      <a href="../articles/Optimization.html">Optimization and Numerical Integration in GLMMadaptive</a>
+    </li>
+    <li>
       <a href="../articles/ZeroInflated_and_TwoPart_Models.html">Zero-Inflated and Two-Part Mixed Effects Models</a>
     </li>
   </ul>
@@ -102,7 +105,7 @@
       <h1>GLMMadaptive Basics</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-01-08</h4>
+            <h4 class="date">2019-01-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/GLMMadaptive_basics.Rmd"><code>vignettes/GLMMadaptive_basics.Rmd</code></a></small>
       <div class="hidden name"><code>GLMMadaptive_basics.Rmd</code></div>
@@ -183,18 +186,18 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fit statistics:</span>
 <span class="co">#&gt;    log.Lik      AIC      BIC</span>
-<span class="co">#&gt;  -374.5197 759.0395 772.0653</span>
+<span class="co">#&gt;  -374.5197 759.0394 772.0653</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;               StdDev</span>
-<span class="co">#&gt; (Intercept) 2.064578</span>
+<span class="co">#&gt; (Intercept) 2.064622</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;                Estimate Std.Err z-value  p-value</span>
-<span class="co">#&gt; (Intercept)     -2.6162  0.4447 -5.8837  &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale       -1.3234  0.6435 -2.0567 0.039714</span>
-<span class="co">#&gt; time             0.2850  0.0395  7.2077  &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale:time   0.0401  0.0545  0.7356 0.461982</span>
+<span class="co">#&gt; (Intercept)     -2.6182  0.4448 -5.8862  &lt; 1e-04</span>
+<span class="co">#&gt; sexfemale       -1.3242  0.6436 -2.0575 0.039639</span>
+<span class="co">#&gt; time             0.2851  0.0396  7.2089  &lt; 1e-04</span>
+<span class="co">#&gt; sexfemale:time   0.0402  0.0545  0.7372 0.461005</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Integration:</span>
 <span class="co">#&gt; method: adaptive Gauss-Hermite quadrature rule</span>
@@ -216,12 +219,12 @@ models &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocu
 
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(models, extract)
 <span class="co">#&gt;                       nAGQ=11       nAGQ=15      nAGQ=21</span>
-<span class="co">#&gt; (Intercept)       -2.61624891   -2.61601552   -2.6160838</span>
-<span class="co">#&gt; sexfemale         -1.32341472   -1.32337720   -1.3233880</span>
-<span class="co">#&gt; time               0.28503221    0.28513076    0.2851331</span>
-<span class="co">#&gt; sexfemale:time     0.04005485    0.04011138    0.0401111</span>
-<span class="co">#&gt; var_(Intercept)    4.26248278    4.26261536    4.2627503</span>
-<span class="co">#&gt; logLik          -374.51974940 -374.51986569 -374.5198354</span></code></pre></div>
+<span class="co">#&gt; (Intercept)       -2.61816557   -2.61679077   -2.6168440</span>
+<span class="co">#&gt; sexfemale         -1.32418678   -1.32349829   -1.3235049</span>
+<span class="co">#&gt; time               0.28514773    0.28501148    0.2850151</span>
+<span class="co">#&gt; sexfemale:time     0.04015372    0.04020003    0.0401995</span>
+<span class="co">#&gt; var_(Intercept)    4.26266211    4.26351799    4.2636311</span>
+<span class="co">#&gt; logLik          -374.51972108 -374.51983340 -374.5198046</span></code></pre></div>
 <p>We observe a rather stable model with virtually no differences between the different choices of quadrature points.</p>
 <p>We first compare the model with a simple logistic regression that does not include any random effects:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">km &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())
@@ -249,7 +252,7 @@ models &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocu
 <span class="co">#&gt; </span>
 <span class="co">#&gt;        AIC    BIC log.Lik  LRT df p.value</span>
 <span class="co">#&gt; fm2 730.94 746.57 -359.47                </span>
-<span class="co">#&gt; fm3 731.66 731.66 -358.83 1.29  1  0.2566</span></code></pre></div>
+<span class="co">#&gt; fm3 731.66 731.66 -358.83 1.29  1  0.2564</span></code></pre></div>
 <p>The results now suggest that indeed the covariance between the two random effects terms is not statistically different from zero.</p>
 </div>
 <div id="penalized-mixed-effects-poisson-regression" class="section level2">
@@ -299,18 +302,18 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fit statistics:</span>
 <span class="co">#&gt;    log.Lik      AIC      BIC</span>
-<span class="co">#&gt;  -2790.338 5590.675 5603.701</span>
+<span class="co">#&gt;  -2782.331 5574.663 5587.689</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;               StdDev</span>
-<span class="co">#&gt; (Intercept) 1.185021</span>
+<span class="co">#&gt;                StdDev</span>
+<span class="co">#&gt; (Intercept) 0.9785518</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt;                Estimate Std.Err  z-value  p-value</span>
-<span class="co">#&gt; (Intercept)      3.0355  0.7634   3.9765  &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale       -0.7930  0.4598  -1.7248 0.084564</span>
-<span class="co">#&gt; time             0.2403  0.0016 151.2794  &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale:time  -0.0510  0.0028 -18.3911  &lt; 1e-04</span>
+<span class="co">#&gt;                Estimate Std.Err  z-value   p-value</span>
+<span class="co">#&gt; (Intercept)      2.9461  0.3091   9.5316   &lt; 1e-04</span>
+<span class="co">#&gt; sexfemale       -0.8651  0.2711  -3.1913 0.0014162</span>
+<span class="co">#&gt; time             0.2404  0.0016 151.3470   &lt; 1e-04</span>
+<span class="co">#&gt; sexfemale:time  -0.0511  0.0028 -18.3994   &lt; 1e-04</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Integration:</span>
 <span class="co">#&gt; method: adaptive Gauss-Hermite quadrature rule</span>
@@ -324,10 +327,10 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
                    <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>(), <span class="dt">penalized =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="st">'unpenalized'</span> =<span class="st"> </span><span class="kw"><a href="../reference/methods.html">fixef</a></span>(gm1), <span class="st">'penalized'</span> =<span class="st"> </span><span class="kw"><a href="../reference/methods.html">fixef</a></span>(gm2))
 <span class="co">#&gt;                unpenalized   penalized</span>
-<span class="co">#&gt; (Intercept)     3.03545929  2.94238986</span>
-<span class="co">#&gt; sexfemale      -0.79302156 -0.82073289</span>
-<span class="co">#&gt; time            0.24028826  0.24043929</span>
-<span class="co">#&gt; sexfemale:time -0.05104033 -0.05118503</span></code></pre></div>
+<span class="co">#&gt; (Intercept)     2.94614349  2.94238986</span>
+<span class="co">#&gt; sexfemale      -0.86510298 -0.82073289</span>
+<span class="co">#&gt; time            0.24039622  0.24043929</span>
+<span class="co">#&gt; sexfemale:time -0.05106264 -0.05118503</span></code></pre></div>
 <p>In this example we observe small differences between the penalized and unpenalized models. The users have the option to alter the specification of the Student’s t penalty by directly specifying the mean, scale and degrees of freedom arguments of the distribution. For example, a ridge penalty could be placed by setting the degrees of freedom to a high value. The call in this case should be:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gm3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
                    <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>(), 

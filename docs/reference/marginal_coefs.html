@@ -66,7 +66,7 @@ mixed models." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.99</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.999</span>
       </span>
     </div>
 
@@ -105,6 +105,9 @@ mixed models." />
     </li>
     <li>
       <a href="../articles/Multiple_Comparisons.html">Multiple Comparisons for MixMod Objects</a>
+    </li>
+    <li>
+      <a href="../articles/Optimization.html">Optimization and Numerical Integration in GLMMadaptive</a>
     </li>
     <li>
       <a href="../articles/ZeroInflated_and_TwoPart_Models.html">Zero-Inflated and Two-Part Mixed Effects Models</a>
@@ -262,13 +265,13 @@ marginalization of regression parameters from mixed models of binary outcomes.
 <span class='no'>fm1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(<span class='kw'>fixed</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>year</span> * <span class='no'>group</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> <span class='kw'>|</span> <span class='no'>id</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>,
                    <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/family'>binomial</a></span>())
 
-<span class='fu'><a href='methods.html'>fixef</a></span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; (Intercept)        year      group1 year:group1 
-#&gt; -2.88907871  0.19374986 -0.53597641  0.00989955 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; (Intercept)        year      group1 year:group1 
-#&gt;     -1.3208      0.0884     -0.2524      0.0052 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='no'>fm1</span>, <span class='kw'>std_errors</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;             Estimate Std.Err  z-value p-value
-#&gt; (Intercept)  -1.3208  0.1132 -11.6635 &lt; 1e-04
-#&gt; year          0.0884  0.0048  18.5721 &lt; 1e-04
-#&gt; group1       -0.2524  0.1590  -1.5869 0.11254
-#&gt; year:group1   0.0052  0.0060   0.8706 0.38395
+<span class='fu'><a href='methods.html'>fixef</a></span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt;  (Intercept)         year       group1  year:group1 
+#&gt; -2.888701065  0.193737928 -0.536198170  0.009911002 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; (Intercept)        year      group1 year:group1 
+#&gt;     -1.3206      0.0884     -0.2525      0.0052 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='no'>fm1</span>, <span class='kw'>std_errors</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;             Estimate Std.Err  z-value p-value
+#&gt; (Intercept)  -1.3206  0.1132 -11.6621 &lt; 1e-04
+#&gt; year          0.0884  0.0048  18.5716 &lt; 1e-04
+#&gt; group1       -0.2525  0.1590  -1.5875 0.11239
+#&gt; year:group1   0.0052  0.0060   0.8716 0.38345
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -66,7 +66,7 @@ Gaussian quadrature." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.99</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.999</span>
       </span>
     </div>
 
@@ -105,6 +105,9 @@ Gaussian quadrature." />
     </li>
     <li>
       <a href="../articles/Multiple_Comparisons.html">Multiple Comparisons for MixMod Objects</a>
+    </li>
+    <li>
+      <a href="../articles/Optimization.html">Optimization and Numerical Integration in GLMMadaptive</a>
     </li>
     <li>
       <a href="../articles/ZeroInflated_and_TwoPart_Models.html">Zero-Inflated and Two-Part Mixed Effects Models</a>
@@ -231,8 +234,13 @@ Gaussian quadrature.</p>
             quasi-Newton; default is 10.</p></dd>
         <dt>iter_qN_incr</dt><dd><p>numeric scalar denoting the increment in <code>iter_qN</code> for
             each outer iteration; default is 10.</p></dd>
+        <dt>optimizer</dt><dd><p>character string denoting the optimizer to be used; available 
+            options are <code>"optim"</code> (default), <code>"nlminb"</code> and 
+            <code>"optimParallel"</code>, the last option implemented in the 
+            <b>optimParallel</b> package.</p></dd>
         <dt>optim_method</dt><dd><p>character string denoting the type of <code><a href='https://www.rdocumentation.org/packages/stats/topics/optim'>optim</a></code> 
-            algorithm to be used; default s "BFGS".</p></dd>
+            algorithm to be used when <code>optimizer = "optim"</code>; default is the BFGS 
+            algorithm.</p></dd>
         <dt>parscale_betas</dt><dd><p>the control argument <code>parscale</code> of <code><a href='https://www.rdocumentation.org/packages/stats/topics/optim'>optim</a></code> for
             the fixed-effects; default is 0.1.</p></dd>
         <dt>parscale_betas</dt><dd><p>the control argument <code>parscale</code> of <code><a href='https://www.rdocumentation.org/packages/stats/topics/optim'>optim</a></code> for
@@ -244,7 +252,7 @@ Gaussian quadrature.</p>
             convergence; <code>tol1</code> and <code>tol2</code> are for checking convergence in 
             successive parameter values; <code>tol3</code> is similar to <code>reltop</code> of 
             <code><a href='https://www.rdocumentation.org/packages/stats/topics/optim'>optim</a></code>; default values are <code>1e-03</code>, <code>1e-04</code>, and 
-            <code>1e-07</code>, respectively.</p></dd>
+            <code>1e-08</code>, respectively.</p></dd>
         <dt>numeric_deriv</dt><dd><p>character string denoting the type of numerical derivatives
             to be used. Options are <code>"fd"</code> for forward differences, and <code>cd</code>
             for central difference; default is <code>"fd"</code>.</p></dd>
@@ -345,16 +353,16 @@ respect to the parameters are internally programmed.</p>
                    <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/family'>binomial</a></span>())
 
 <span class='co'># fixed effects</span>
-<span class='fu'><a href='methods.html'>fixef</a></span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; (Intercept)        year      group1 year:group1 
-#&gt; -2.88907871  0.19374986 -0.53597641  0.00989955 </div><div class='input'>
+<span class='fu'><a href='methods.html'>fixef</a></span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt;  (Intercept)         year       group1  year:group1 
+#&gt; -2.888701065  0.193737928 -0.536198170  0.009911002 </div><div class='input'>
 <span class='co'># random effects</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'><a href='methods.html'>ranef</a></span>(<span class='no'>fm1</span>))</div><div class='output co'>#&gt;   (Intercept)
-#&gt; 1    1.044125
-#&gt; 2    2.026647
-#&gt; 3    2.230191
-#&gt; 4    2.226230
-#&gt; 5    1.739762
-#&gt; 6    2.111285</div><div class='input'>
+#&gt; 1    1.043981
+#&gt; 2    2.026502
+#&gt; 3    2.229900
+#&gt; 4    2.226081
+#&gt; 5    1.739506
+#&gt; 6    2.111138</div><div class='input'>
 <span class='co'># detailed output</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; 
 #&gt; Call:
@@ -375,14 +383,14 @@ respect to the parameters are internally programmed.</p>
 #&gt; 
 #&gt; Random effects covariance matrix:
 #&gt;               StdDev
-#&gt; (Intercept) 3.096228
+#&gt; (Intercept) 3.096206
 #&gt; 
 #&gt; Fixed effects:
 #&gt;             Estimate Std.Err  z-value p-value
-#&gt; (Intercept)  -2.8891  0.2358 -12.2523 &lt; 1e-04
-#&gt; year          0.1937  0.0090  21.5377 &lt; 1e-04
-#&gt; group1       -0.5360  0.3294  -1.6272 0.10369
-#&gt; year:group1   0.0099  0.0125   0.7916 0.42857
+#&gt; (Intercept)  -2.8887  0.2358 -12.2511 &lt; 1e-04
+#&gt; year          0.1937  0.0090  21.5372 &lt; 1e-04
+#&gt; group1       -0.5362  0.3294  -1.6279 0.10355
+#&gt; year:group1   0.0099  0.0125   0.7926 0.42803
 #&gt; 
 #&gt; Integration:
 #&gt; method: adaptive Gauss-Hermite quadrature rule
@@ -394,10 +402,10 @@ respect to the parameters are internally programmed.</p>
 <span class='co'># fitted values for the 'mean subject', i.e., with</span>
 <span class='co'># random effects values equal to 0</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'><a href='methods.html'>fitted</a></span>(<span class='no'>fm1</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"mean_subject"</span>))</div><div class='output co'>#&gt;          1          2          3          4          5          6 
-#&gt; 0.03152154 0.03942559 0.12336640 0.20704055 0.24656366 0.24967954 </div><div class='input'>
+#&gt; 0.03152630 0.03943148 0.12338289 0.20706534 0.24659161 0.24970773 </div><div class='input'>
 <span class='co'># fitted values for the conditioning on the estimated random effects</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'><a href='methods.html'>fitted</a></span>(<span class='no'>fm1</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"subject_specific"</span>))</div><div class='output co'>#&gt;          1          2          3          4          5          6 
-#&gt; 0.08463845 0.10442549 0.28560921 0.42586730 0.48178316 0.48595434 </div><div class='input'>
+#&gt; 0.08463936 0.10442654 0.28561091 0.42586898 0.48178474 0.48595591 </div><div class='input'>
 ##############
 </div><div class='input'><span class='no'>fm2</span> <span class='kw'>&lt;-</span> <span class='fu'>mixed_model</span>(<span class='kw'>fixed</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>year</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> <span class='kw'>|</span> <span class='no'>id</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>,
                    <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/family'>binomial</a></span>())
@@ -406,7 +414,7 @@ respect to the parameters are internally programmed.</p>
 <span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>fm2</span>, <span class='no'>fm1</span>)</div><div class='output co'>#&gt; 
 #&gt;         AIC     BIC  log.Lik  LRT df p.value
 #&gt; fm2 5949.84 5962.48 -2971.92                
-#&gt; fm1 5951.18 5951.18 -2970.59 2.65  2  0.2656
+#&gt; fm1 5951.18 5951.18 -2970.59 2.65  2  0.2657
 #&gt; </div><div class='input'>
 <span class='co'># the same hypothesis but with a Wald test</span>
 <span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>fm1</span>, <span class='kw'>L</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>), <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>)))</div><div class='output co'>#&gt; 
@@ -418,7 +426,7 @@ respect to the parameters are internally programmed.</p>
 #&gt;       0    0      0      1
 #&gt; 
 #&gt;    Chisq df Pr(&gt;|Chi|)
-#&gt;   2.6498  2     0.2658
+#&gt;   2.6521  2     0.2655
 #&gt; </div><div class='input'>
 <span class='co'>##############</span>
 
@@ -456,8 +464,8 @@ respect to the parameters are internally programmed.</p>
 
 <span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>fm1_slp_diag</span>, <span class='no'>fm1_slp</span>)</div><div class='output co'>#&gt; 
 #&gt;                  AIC     BIC  log.Lik  LRT df p.value
-#&gt; fm1_slp_diag 5010.44 5035.73 -2499.22                
-#&gt; fm1_slp      5012.37 5012.37 -2499.19 0.07  1  0.7893
+#&gt; fm1_slp_diag 5010.28 5035.57 -2499.14                
+#&gt; fm1_slp      5012.34 5012.34 -2499.17 0.06  1  0.8129
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

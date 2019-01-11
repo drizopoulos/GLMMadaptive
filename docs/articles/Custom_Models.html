@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.99</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.999</span>
       </span>
     </div>
 
@@ -72,6 +72,9 @@
       <a href="../articles/Multiple_Comparisons.html">Multiple Comparisons for MixMod Objects</a>
     </li>
     <li>
+      <a href="../articles/Optimization.html">Optimization and Numerical Integration in GLMMadaptive</a>
+    </li>
+    <li>
       <a href="../articles/ZeroInflated_and_TwoPart_Models.html">Zero-Inflated and Two-Part Mixed Effects Models</a>
     </li>
   </ul>
@@ -102,7 +105,7 @@
       <h1>Custom Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-01-08</h4>
+            <h4 class="date">2019-01-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Custom_Models.Rmd"><code>vignettes/Custom_Models.Rmd</code></a></small>
       <div class="hidden name"><code>Custom_Models.Rmd</code></div>
@@ -158,7 +161,7 @@ dd<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
                         <span class="dt">initial_values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>()))
 )
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;    4.14    0.02    4.18</span>
+<span class="co">#&gt;    4.76    0.01    4.81</span>
 
 fm1
 <span class="co">#&gt; </span>
@@ -173,16 +176,16 @@ fm1
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;                StdDev</span>
-<span class="co">#&gt; (Intercept) 0.2351877</span>
+<span class="co">#&gt; (Intercept) 0.2324253</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt; (Intercept)         f12         f13         f2B     f12:f2B     f13:f2B </span>
-<span class="co">#&gt;   1.6330839   0.6032994   1.0155659   1.5444927  -0.4417942  -0.5861719 </span>
+<span class="co">#&gt;   1.6304869   0.6029562   1.0152191   1.5443873  -0.4410025  -0.5854637 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  -0.6555019 </span>
+<span class="co">#&gt;  -0.6549776 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -10019.07</span></code></pre></div>
+<span class="co">#&gt; log-Lik: -10018.89</span></code></pre></div>
 <p>In the call to <code><a href="../reference/mixed_model.html">mixed_model()</a></code> we specify the argument <code>n_phis</code> which lets the function know how many extra parameters does the distribution of the outcome have. In addition, we also specify that better quality initial values for the fixed effects <code>betas</code> can be obtained by fitting a Poisson regression model to the repeated measurements outcome (ignoring the correlations) with the same design matrix as the fixed-effects design matrix. For the unique elements of the random effects covariance matrix and for the extra parameters <code>phis</code> the default initial values are used.</p>
 <p>In the output, the reported phi parameters is on the log scale, because in the definition of <code>log_dens</code> we specified that <code>phis &lt;- exp(phis)</code>.</p>
 <p>As mentioned above, the internal computations are facilitated if the user also specifies the derivatives of the log density with respect to the linear predictor <code>eta</code> and the extra parameters <code>phis</code>. Hence, in the following we define a new negative binomial family object with these functions also defined:</p>
@@ -231,7 +234,7 @@ fm1
                         <span class="dt">initial_values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>()))
 )
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;    1.47    0.00    1.47</span>
+<span class="co">#&gt;    1.77    0.00    1.77</span>
 
 fm2
 <span class="co">#&gt; </span>
@@ -246,16 +249,16 @@ fm2
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;                StdDev</span>
-<span class="co">#&gt; (Intercept) 0.2351877</span>
+<span class="co">#&gt; (Intercept) 0.2324254</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt; (Intercept)         f12         f13         f2B     f12:f2B     f13:f2B </span>
-<span class="co">#&gt;   1.6330839   0.6032994   1.0155659   1.5444927  -0.4417942  -0.5861719 </span>
+<span class="co">#&gt;   1.6304869   0.6029562   1.0152191   1.5443873  -0.4410025  -0.5854637 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  -0.6555019 </span>
+<span class="co">#&gt;  -0.6549775 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -10019.07</span></code></pre></div>
+<span class="co">#&gt; log-Lik: -10018.89</span></code></pre></div>
 <p>We obtain almost identical results, but in half of the computing time in this example. Depending on the size of the data set, the gain in computing time when the derivatives for <code>eta</code> and <code>phis</code> are provided can be much more substantial.</p>
 </div>
 <div id="students-t-mixed-effects-model" class="section level2">
@@ -336,17 +339,17 @@ fm
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;              StdDev    Corr</span>
-<span class="co">#&gt; (Intercept)  1.4095        </span>
-<span class="co">#&gt; time         1.2110 -0.2183</span>
+<span class="co">#&gt; (Intercept)  1.4088        </span>
+<span class="co">#&gt; time         1.2078 -0.2160</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;     20.0327862     -0.7065143      0.3439576     -0.1323599 </span>
+<span class="co">#&gt;     20.0379657     -0.7142730      0.3414929     -0.1284271 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  0.1451971 </span>
+<span class="co">#&gt;  0.1451852 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -1823.893</span></code></pre></div>
+<span class="co">#&gt; log-Lik: -1823.892</span></code></pre></div>
 <p>As was the case also for the negative binomial model, the extra <code>phis</code> parameter has been appropriately transformed to have an unconstrained optimization of the likelihood. Hence, the estimated <code>sigma</code> parameter is <code>exp(fm$phis) =</code> 1.156.</p>
 </div>
 <div id="beta-mixed-effects-model" class="section level2">
@@ -440,17 +443,17 @@ gm
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;              StdDev    Corr</span>
-<span class="co">#&gt; (Intercept)  0.7187        </span>
-<span class="co">#&gt; time         0.2320  0.3463</span>
+<span class="co">#&gt; (Intercept)  0.7211        </span>
+<span class="co">#&gt; time         0.2324  0.3436</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;    -1.68076865    -0.43027100     0.20164743    -0.01401002 </span>
+<span class="co">#&gt;    -1.68278433    -0.43038935     0.20178943    -0.01401582 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  1.379027 </span>
+<span class="co">#&gt;  1.382763 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: 1482.692</span></code></pre></div>
+<span class="co">#&gt; log-Lik: 1482.694</span></code></pre></div>
 <p>To depict the results of the model we create an effects plot, showing the longitudinal evolution of the average/median male and female. We start by constructing the data frame that contains the values we want to depict, and using it in the <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function; just for illustration, sandwich/robust standard errors are used in the calculation of the 95% poinwise cofidence intervals:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nDF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(DF, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/expand.grid">expand.grid</a></span>(<span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">min</a></span>(time), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">max</a></span>(time), <span class="dt">length =</span> <span class="dv">25</span>),
                             <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(sex)))

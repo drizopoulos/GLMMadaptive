@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.99</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.999</span>
       </span>
     </div>
 
@@ -72,6 +72,9 @@
       <a href="../articles/Multiple_Comparisons.html">Multiple Comparisons for MixMod Objects</a>
     </li>
     <li>
+      <a href="../articles/Optimization.html">Optimization and Numerical Integration in GLMMadaptive</a>
+    </li>
+    <li>
       <a href="../articles/ZeroInflated_and_TwoPart_Models.html">Zero-Inflated and Two-Part Mixed Effects Models</a>
     </li>
   </ul>
@@ -102,7 +105,7 @@
       <h1>Multiple Comparisons for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-01-08</h4>
+            <h4 class="date">2019-01-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Multiple_Comparisons.Rmd"><code>vignettes/Multiple_Comparisons.Rmd</code></a></small>
       <div class="hidden name"><code>Multiple_Comparisons.Rmd</code></div>
@@ -167,15 +170,15 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;               StdDev</span>
-<span class="co">#&gt; (Intercept) 1.448146</span>
+<span class="co">#&gt; (Intercept) 1.448263</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;             Estimate Std.Err z-value    p-value</span>
-<span class="co">#&gt; (Intercept)  -2.2865  0.2496 -9.1597    &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale     0.8853  0.2448  3.6171 0.00029798</span>
-<span class="co">#&gt; timeTime2     0.3066  0.2266  1.3533 0.17594625</span>
-<span class="co">#&gt; timeTime3    -0.5049  0.2463 -2.0501 0.04035455</span>
-<span class="co">#&gt; timeTime4     0.5633  0.2237  2.5184 0.01178997</span>
+<span class="co">#&gt; (Intercept)  -2.2862  0.2496 -9.1590    &lt; 1e-04</span>
+<span class="co">#&gt; sexfemale     0.8854  0.2448  3.6172 0.00029783</span>
+<span class="co">#&gt; timeTime2     0.3066  0.2266  1.3532 0.17599273</span>
+<span class="co">#&gt; timeTime3    -0.5053  0.2463 -2.0517 0.04019725</span>
+<span class="co">#&gt; timeTime4     0.5631  0.2237  2.5176 0.01181581</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Integration:</span>
 <span class="co">#&gt; method: adaptive Gauss-Hermite quadrature rule</span>
@@ -215,12 +218,12 @@ fm_mc &lt;-<span class="st"> </span><span class="kw">glht</span>(fm, <span class
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Linear Hypotheses:</span>
 <span class="co">#&gt;                    Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; Time2 - Time1 == 0   0.3066     0.2266   1.353  0.52811    </span>
-<span class="co">#&gt; Time3 - Time1 == 0  -0.5049     0.2463  -2.050  0.16945    </span>
-<span class="co">#&gt; Time4 - Time1 == 0   0.5633     0.2237   2.518  0.05691 .  </span>
-<span class="co">#&gt; Time3 - Time2 == 0  -0.8115     0.2423  -3.350  0.00465 ** </span>
-<span class="co">#&gt; Time4 - Time2 == 0   0.2567     0.2165   1.186  0.63520    </span>
-<span class="co">#&gt; Time4 - Time3 == 0   1.0682     0.2406   4.440  &lt; 0.001 ***</span>
+<span class="co">#&gt; Time2 - Time1 == 0   0.3066     0.2266   1.353  0.52820    </span>
+<span class="co">#&gt; Time3 - Time1 == 0  -0.5053     0.2463  -2.052  0.16889    </span>
+<span class="co">#&gt; Time4 - Time1 == 0   0.5631     0.2237   2.518  0.05702 .  </span>
+<span class="co">#&gt; Time3 - Time2 == 0  -0.8119     0.2423  -3.351  0.00463 ** </span>
+<span class="co">#&gt; Time4 - Time2 == 0   0.2565     0.2165   1.185  0.63561    </span>
+<span class="co">#&gt; Time4 - Time3 == 0   1.0684     0.2406   4.441  &lt; 0.001 ***</span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; (Adjusted p values reported -- single-step method)</span></code></pre></div>
@@ -238,42 +241,42 @@ gm_mc &lt;-<span class="st"> </span><span class="kw">emmeans</span>(gm, <span cl
 gm_mc
 <span class="co">#&gt; time = Time1:</span>
 <span class="co">#&gt;  sex       emmean        SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male   -2.737017 0.3421930 Inf -3.407703 -2.066331</span>
-<span class="co">#&gt;  female -1.209182 0.2550117 Inf -1.708995 -0.709368</span>
+<span class="co">#&gt;  male   -2.738232 0.3423074 Inf -3.409142 -2.067321</span>
+<span class="co">#&gt;  female -1.206952 0.2549322 Inf -1.706610 -0.707294</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time2:</span>
 <span class="co">#&gt;  sex       emmean        SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male   -1.675620 0.2755058 Inf -2.215602 -1.135639</span>
-<span class="co">#&gt;  female -1.435439 0.2629832 Inf -1.950877 -0.920002</span>
+<span class="co">#&gt;  male   -1.675516 0.2755219 Inf -2.215529 -1.135503</span>
+<span class="co">#&gt;  female -1.435062 0.2629607 Inf -1.950455 -0.919668</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time3:</span>
 <span class="co">#&gt;  sex       emmean        SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male   -4.398350 0.5452336 Inf -5.466988 -3.329712</span>
-<span class="co">#&gt;  female -1.389421 0.2612568 Inf -1.901475 -0.877367</span>
+<span class="co">#&gt;  male   -4.402035 0.5458561 Inf -5.471894 -3.332177</span>
+<span class="co">#&gt;  female -1.388287 0.2612069 Inf -1.900243 -0.876331</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time4:</span>
 <span class="co">#&gt;  sex       emmean        SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male   -1.336933 0.2610534 Inf -1.848589 -0.825278</span>
-<span class="co">#&gt;  female -1.252104 0.2564246 Inf -1.754687 -0.749521</span>
+<span class="co">#&gt;  male   -1.337404 0.2610915 Inf -1.849134 -0.825674</span>
+<span class="co">#&gt;  female -1.251788 0.2564064 Inf -1.754335 -0.749241</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Confidence level used: 0.95</span></code></pre></div>
 <p>The corresponding pairwise comparisons are performed by the <code><a href="https://www.rdocumentation.org/packages/graphics/topics/pairs">pairs()</a></code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/pairs">pairs</a></span>(gm_mc)
 <span class="co">#&gt; time = Time1:</span>
 <span class="co">#&gt;  contrast        estimate        SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female -1.5278352 0.4097558 Inf  -3.729  0.0002</span>
+<span class="co">#&gt;  male - female -1.5312794 0.4098482 Inf  -3.736  0.0002</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time2:</span>
 <span class="co">#&gt;  contrast        estimate        SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female -0.2401810 0.3664609 Inf  -0.655  0.5122</span>
+<span class="co">#&gt;  male - female -0.2404544 0.3664767 Inf  -0.656  0.5117</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time3:</span>
 <span class="co">#&gt;  contrast        estimate        SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female -3.0089288 0.5851176 Inf  -5.142  &lt;.0001</span>
+<span class="co">#&gt;  male - female -3.0137489 0.5857024 Inf  -5.146  &lt;.0001</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time4:</span>
 <span class="co">#&gt;  contrast        estimate        SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female -0.0848295 0.3550390 Inf  -0.239  0.8112</span></code></pre></div>
+<span class="co">#&gt;  male - female -0.0856159 0.3550660 Inf  -0.241  0.8095</span></code></pre></div>
 <p>For additional examples in testing interactions with the <strong>emmeans</strong> package check the vignette: <code><a href="https://cran.rstudio.com/web/packages/emmeans/vignettes/interactions.html">vignette("interactions", package = "emmeans")</a></code>.</p>
 </div>
 </div>

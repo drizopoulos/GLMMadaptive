@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.99</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.999</span>
       </span>
     </div>
 
@@ -72,6 +72,9 @@
       <a href="../articles/Multiple_Comparisons.html">Multiple Comparisons for MixMod Objects</a>
     </li>
     <li>
+      <a href="../articles/Optimization.html">Optimization and Numerical Integration in GLMMadaptive</a>
+    </li>
+    <li>
       <a href="../articles/ZeroInflated_and_TwoPart_Models.html">Zero-Inflated and Two-Part Mixed Effects Models</a>
     </li>
   </ul>
@@ -102,7 +105,7 @@
       <h1>Zero-Inflated and Two-Part Mixed Effects Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-01-08</h4>
+            <h4 class="date">2019-01-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/ZeroInflated_and_TwoPart_Models.Rmd"><code>vignettes/ZeroInflated_and_TwoPart_Models.Rmd</code></a></small>
       <div class="hidden name"><code>ZeroInflated_and_TwoPart_Models.Rmd</code></div>
@@ -199,24 +202,24 @@ fm2
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;                 StdDev    Corr</span>
-<span class="co">#&gt; (Intercept)     0.7391        </span>
-<span class="co">#&gt; zi_(Intercept)  0.7157 -0.6334</span>
+<span class="co">#&gt; (Intercept)     0.7406        </span>
+<span class="co">#&gt; zi_(Intercept)  0.6904 -0.6556</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;   1.5902225072  -0.0117290754  -0.0029500093   0.0001046371 </span>
+<span class="co">#&gt;   1.5881570711  -0.0083137636  -0.0030264830   0.0002554746 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Zero-part coefficients:</span>
 <span class="co">#&gt; (Intercept)   sexfemale </span>
-<span class="co">#&gt;  -1.1201182   0.4416912 </span>
+<span class="co">#&gt;  -1.1103020   0.4282111 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2214.306</span></code></pre></div>
+<span class="co">#&gt; log-Lik: -2214.276</span></code></pre></div>
 <p>We test if we need the extra random effect using a likelihood ratio test:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(fm1, fm2)
 <span class="co">#&gt; </span>
 <span class="co">#&gt;         AIC     BIC  log.Lik   LRT df p.value</span>
 <span class="co">#&gt; fm1 4461.87 4480.11 -2223.94                 </span>
-<span class="co">#&gt; fm2 4446.61 4446.61 -2214.31 19.26  2   1e-04</span></code></pre></div>
+<span class="co">#&gt; fm2 4446.55 4446.55 -2214.28 19.32  2   1e-04</span></code></pre></div>
 <p>The results suggest that the extra random effect improves the fit of the model.</p>
 </div>
 <div id="zero-inflated-negative-binomial-mixed-effects-model" class="section level2">
@@ -239,18 +242,18 @@ gm1
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;                StdDev</span>
-<span class="co">#&gt; (Intercept) 0.8291406</span>
+<span class="co">#&gt; (Intercept) 0.8293515</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;    1.471442764    0.027018363    0.003096235   -0.006574982 </span>
+<span class="co">#&gt;    1.467900626    0.029416703    0.003005305   -0.006440699 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Zero-part coefficients:</span>
 <span class="co">#&gt; (Intercept)   sexfemale </span>
-<span class="co">#&gt;  -1.5551763   0.5913118 </span>
+<span class="co">#&gt;  -1.5554713   0.5914944 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; dispersion parameter:</span>
-<span class="co">#&gt;  2.227321 </span>
+<span class="co">#&gt;  2.227075 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; log-Lik: -1958.746</span></code></pre></div>
 <p>Similarly to <code>fm1</code>, in <code>gm1</code> we specified only fixed effects for the logistic regression for the zero part. We now compare this model with the zero-inflated Poisson model that allowed for a random intercept in the zero part. The comparison can be done with the <code><a href="../reference/methods.html">anova()</a></code> method; because the two models are not nested, we set <code>test = FALSE</code> in the call to <code><a href="../reference/methods.html">anova()</a></code>, i.e.:</p>
@@ -258,7 +261,7 @@ gm1
 <span class="co">#&gt; </span>
 <span class="co">#&gt;         AIC     BIC  log.Lik df</span>
 <span class="co">#&gt; gm1 3933.49 3954.33 -1958.75   </span>
-<span class="co">#&gt; fm2 4446.61 4446.61 -2214.31  1</span></code></pre></div>
+<span class="co">#&gt; fm2 4446.55 4446.55 -2214.28  1</span></code></pre></div>
 <p>We observe that accounting for the over-dispersion seems to better improve the fit than including the random intercepts term in the zero part.</p>
 </div>
 <div id="two-part-mixed-effects-model-for-semi-continuous-data" class="section level2">
@@ -498,12 +501,12 @@ dm1
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;              StdDev    Corr</span>
-<span class="co">#&gt; (Intercept)  0.8227        </span>
-<span class="co">#&gt; time         0.3655 -0.3159</span>
+<span class="co">#&gt; (Intercept)  0.8229        </span>
+<span class="co">#&gt; time         0.3652 -0.3133</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;     1.52781877     0.08075223     0.09003660    -0.09189512 </span>
+<span class="co">#&gt;     1.52799681     0.08046775     0.08982336    -0.09129448 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Zero-part coefficients:</span>
 <span class="co">#&gt; (Intercept)   sexfemale </span>
@@ -528,19 +531,19 @@ dm2
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;                 StdDev    Corr        </span>
-<span class="co">#&gt; (Intercept)     0.8226  (Intr)    time</span>
-<span class="co">#&gt; time            0.3634 -0.3136        </span>
-<span class="co">#&gt; zi_(Intercept)  0.6605 -0.0099  0.0724</span>
+<span class="co">#&gt; (Intercept)     0.8227  (Intr)    time</span>
+<span class="co">#&gt; time            0.3636 -0.3135        </span>
+<span class="co">#&gt; zi_(Intercept)  0.6601 -0.0089  0.0698</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;     1.52753895     0.08367461     0.09194570    -0.08005393 </span>
+<span class="co">#&gt;     1.52752248     0.08381132     0.09213789    -0.08032932 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Zero-part coefficients:</span>
 <span class="co">#&gt; (Intercept)   sexfemale </span>
-<span class="co">#&gt;  -1.5382756   0.5176922 </span>
+<span class="co">#&gt;  -1.5386156   0.5177395 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2797.309</span></code></pre></div>
+<span class="co">#&gt; log-Lik: -2797.308</span></code></pre></div>
 <p>The likelihood ratio test between the two models is computed with the <code><a href="../reference/methods.html">anova()</a></code> method:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(dm1, dm2)
 <span class="co">#&gt; </span>
@@ -570,18 +573,18 @@ hm1
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;              StdDev    Corr</span>
 <span class="co">#&gt; (Intercept)  0.7305        </span>
-<span class="co">#&gt; time         0.3248 -0.1172</span>
+<span class="co">#&gt; time         0.3249 -0.1170</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;     1.48476535     0.07146542     0.10191941    -0.08920289 </span>
+<span class="co">#&gt;     1.48250218     0.07508276     0.10249953    -0.08978082 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Zero-part coefficients:</span>
 <span class="co">#&gt; (Intercept)   sexfemale </span>
 <span class="co">#&gt;  -1.4178427   0.4857483 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  0.677947 </span>
+<span class="co">#&gt;  0.6778918 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; log-Lik: -2181.468</span></code></pre></div>
 <p>Also for the <code><a href="../reference/extra_fams.html">hurdle.negative.binomial()</a></code> family only the log-link is implemented. The structure of the output is identical to what we had for the hurdle Poisson model. Again we should note that the fixed-effects coefficients for the positive part have an interpretation for the mean of the entire distribution, not only for the positive counts.</p>
@@ -602,22 +605,22 @@ hm2
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;                 StdDev    Corr        </span>
-<span class="co">#&gt; (Intercept)     0.7305  (Intr)    time</span>
-<span class="co">#&gt; time            0.3243 -0.1140        </span>
-<span class="co">#&gt; zi_(Intercept)  0.6648 -0.0520  0.1467</span>
+<span class="co">#&gt; (Intercept)     0.7313  (Intr)    time</span>
+<span class="co">#&gt; time            0.3258 -0.1161        </span>
+<span class="co">#&gt; zi_(Intercept)  0.6610 -0.0522  0.1420</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;     1.47815662     0.06708721     0.10517004    -0.08545594 </span>
+<span class="co">#&gt;     1.47626158     0.07041272     0.10539676    -0.08613159 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Zero-part coefficients:</span>
 <span class="co">#&gt; (Intercept)   sexfemale </span>
-<span class="co">#&gt;   -1.541591    0.519505 </span>
+<span class="co">#&gt;  -1.5425483   0.5193066 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  0.6774959 </span>
+<span class="co">#&gt;  0.6759281 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2176.314</span></code></pre></div>
+<span class="co">#&gt; log-Lik: -2176.313</span></code></pre></div>
 <p>The likelihood ratio test between the two models is computed with the <code><a href="../reference/methods.html">anova()</a></code> method:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(hm1, hm2)
 <span class="co">#&gt; </span>
