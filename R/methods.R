@@ -1284,6 +1284,10 @@ formula.MixMod <- function (x, type = c("fixed", "random"), ...) {
     formula(terms(x, type = type))
 }
 
+family.MixMod <- function (object, ...) {
+    object$family
+}
+
 recover_data.MixMod <- function (object, ...) {
     fcall <- object$call
     emmeans::recover_data(fcall, delete.response(terms(object)), object$na.action, ...)
