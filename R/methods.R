@@ -1094,7 +1094,11 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
         if (!is.null(na_exclude))
             newdata <- newdata[-na_exclude, ]
         newdata$pred <- pred
+        if (se.fit && type == "marginal") {
+            newdata$se.fit <- se_fit
+        }
         if (se.fit && type == "subject_specific") {
+            newdata$se.fit <- se_fit
             newdata$low <- low
             newdata$upp <- upp
         }
@@ -1107,6 +1111,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                 newdata2 <- newdata2[-na_exclude2, ]
             newdata2$pred <- pred2
             if (se.fit && type == "subject_specific") {
+                newdata$se.fit2 <- se_fit2
                 newdata2$low <- low2
                 newdata2$upp <- upp2
             }

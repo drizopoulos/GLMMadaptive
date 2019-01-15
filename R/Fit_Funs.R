@@ -863,3 +863,70 @@ hurdle.beta.fam <- function () {
               class = "family")
 }
 
+compoisson <- function (max = 100) {
+    stats <- make.link("log")
+    .max <- max
+    env <- new.env(parent = .GlobalEnv)
+    assign(".max", max, envir = env)
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+        # the log density function
+        phis <- exp(phis)
+        mu <- mu_fun(eta)
+        Z <- function (lambda, nu, sumTo) {
+            out <- lambda
+            j <- seq(1, sumTo)
+            log_lambda <- log(lambda)
+            nu_log_factorial <- nu * cumsum(log(j))
+            for (i in seq_along(out)) {
+                out[i] <- 1 + sum(exp(j * log_lambda[i] - nu_log_factorial))
+            }
+            out
+        }
+        out <- y * log(mu) - phis * lgamma(y + 1) - log(Z(mu, phis, .max))
+        attr(out, "mu_y") <- mu
+        out
+    }
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
+        phi <- exp(phis)
+        Y <- function (lambda, nu, sumTo) {
+            out <- lambda
+            j <- seq(1, sumTo)
+            log_lambda <- log(lambda)
+            log_j <- log(j)
+            nu_log_factorial <- nu * cumsum(log_j)
+            for (i in seq_along(out)) {
+                F1 <- j * log_lambda[i] - nu_log_factorial
+                num <- sum(exp(log_j + F1))
+                den <- 1 + sum(exp(F1))
+                out[i] <- num / den
+            }
+            out
+        }
+        y - Y(mu, phi, .max)
+    }
+    score_phis_fun <- function (y, mu, phis, eta_zi) {
+        phi <- exp(phis)
+        W <- function (lambda, nu, sumTo) {
+            out <- lambda
+            j <- seq(1, sumTo)
+            log_lambda <- log(lambda)
+            log_factorial <- cumsum(log(j))
+            log_log_factorial <- log(log_factorial)
+            nu_log_factorial <- nu * log_factorial
+            for (i in seq_along(out)) {
+                num <- sum(exp(j * log_lambda[i] + log_log_factorial - nu_log_factorial))
+                den <- 1 + sum(exp(j * log_lambda[i] - nu_log_factorial))
+                out[i] <- num / den
+            }
+            out
+        }
+        (- lgamma(y + 1) + W(mu, phi, .max)) * phi
+    }
+    simulate <- function (n, mu, phis, eta_zi) {
+        phi <- exp(phis)
+    }
+    structure(list(family = "Conway–Maxwell–Poisson", link = stats$name, 
+                   linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,
+                   score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun),
+              class = "family")
+}
