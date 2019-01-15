@@ -925,7 +925,7 @@ compoisson <- function (max = 100) {
     simulate <- function (n, mu, phis, eta_zi) {
         phi <- exp(phis)
     }
-    structure(list(family = "Conway–Maxwell–Poisson", link = stats$name, 
+    structure(list(family = "Conway Maxwell Poisson", link = stats$name, 
                    linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,
                    score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun),
               class = "family")
