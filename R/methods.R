@@ -1285,19 +1285,39 @@ family.MixMod <- function (object, ...) {
     object$family
 }
 
-recover_data.MixMod <- function (object, ...) {
+recover_data.MixMod <- function (object, mode = c("fixed-effects", "zero_part"), ...) {
     fcall <- object$call
-    emmeans::recover_data(fcall, delete.response(terms(object)), object$na.action, ...)
+    mode <- match.arg(mode)
+    if (mode == "fixed-effects") {
+        emmeans::recover_data(fcall, delete.response(terms(object)), object$na.action, 
+                              ...)
+    } else {
+        emmeans::recover_data(fcall, delete.response(terms(object, type = "zi_fixed")), 
+                              object$na.action, ...)
+    }
 }
 
-emm_basis.MixMod <- function (object, trms, xlev, grid, ...) { 
-    m <- model.frame(trms, grid, na.action = na.pass, xlev = xlev)
-    X <- model.matrix(trms, m, contrasts.arg = object$contrasts) 
-    bhat <- fixef(object) 
-    V <- vcov(object, parm = "fixed-effects")
-    nbasis <- matrix(NA) 
-    dfargs <- list(df = Inf)
-    dffun <- function (k, dfargs) dfargs$df
+emm_basis.MixMod <- function (object, trms, xlev, grid, 
+                              mode = c("fixed-effects", "zero_part"), ...) {
+    mode <- match.arg(mode)
+    if (mode == "fixed-effects") {
+        m <- model.frame(trms, grid, na.action = na.pass, xlev = xlev)
+        X <- model.matrix(trms, m, contrasts.arg = object$contrasts) 
+        bhat <- fixef(object, sub_model = "main") 
+        V <- vcov(object, parm = "fixed-effects")
+        nbasis <- matrix(NA) 
+        dfargs <- list(df = Inf)
+        dffun <- function (k, dfargs) dfargs$df
+    } else {
+        trms_zi <- terms(object, type = "zi_fixed")
+        m <- model.frame(trms_zi, grid, na.action = na.pass, xlev = xlev)
+        X <- model.matrix(trms_zi, m, contrasts.arg = object$contrasts) 
+        bhat <- fixef(object, sub_model = "zero_part") 
+        V <- vcov(object, parm = "zero_part")
+        nbasis <- matrix(NA) 
+        dfargs <- list(df = Inf)
+        dffun <- function (k, dfargs) dfargs$df
+    }
     list(X = X, bhat = bhat, nbasis = nbasis, V = V, dffun = dffun, dfargs = dfargs)
 }
 
