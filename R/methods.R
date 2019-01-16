@@ -1263,14 +1263,12 @@ model.matrix.MixMod <- function (object, type = c("fixed", "random", "zi_fixed",
     )
 }
 
-model.frame.MixMod <- function (formula, type = c("fixed", "random", "zi_fixed", "zi_random"), ...) {
+model.frame.MixMod <- function (formula, type = c("fixed", "random", "zi_fixed", 
+                                                  "zi_random"), ...) {
     type <- match.arg(type)
-    switch(type,
-           "fixed" = formula$model_frames$mfX,
-           "random" = formula$model_frames$mfZ,
-           "zi_fixed" = formula$model_frames$mfX_zi,
-           "zi_random" = formula$model_frames$mfZ_zi
-    )
+    switch(type, "fixed" = formula$model_frames$mfX, "random" = formula$model_frames$mfZ,
+           "zi_fixed" = formula$model_frames$mfX_zi, 
+           "zi_random" = formula$model_frames$mfZ_zi)
 }
 
 terms.MixMod <- function (x, type = c("fixed", "random", "zi_fixed", "zi_random"), ...) {
@@ -1280,7 +1278,9 @@ terms.MixMod <- function (x, type = c("fixed", "random", "zi_fixed", "zi_random"
 }
 
 formula.MixMod <- function (x, type = c("fixed", "random", "zi_fixed", "zi_random"), ...) {
-    formula(terms(x, type = type))
+    type <- match.arg(type)
+    switch(type, "fixed" = eval(x$call$fixed), "random" = eval(x$call$random),
+           "zi_fixed" = eval(x$call$zi_fixed), "zi_random" = eval(x$call$zi_random))
 }
 
 family.MixMod <- function (object, ...) {
