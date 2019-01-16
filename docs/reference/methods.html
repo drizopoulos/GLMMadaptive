@@ -65,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.99999</span>
       </span>
     </div>
 
@@ -211,17 +211,23 @@ simulate(object, nsim = 1, seed = NULL,
 terms(x, &#8230;)
 
 # S3 method for MixMod
-terms(x, type = c("fixed", "random"), &#8230;)
+terms(x, type = c("fixed", "random", "zi_fixed", "zi_random"), &#8230;)
+
+formula(x, &#8230;)
+
+# S3 method for MixMod
+formula(x, type = c("fixed", "random", "zi_fixed", "zi_random"), &#8230;)
+
 
 model.frame(formula, &#8230;)
 
 # S3 method for MixMod
-model.frame(formula, type = c("fixed", "random"), &#8230;)
+model.frame(formula, type = c("fixed", "random", "zi_fixed", "zi_random"), &#8230;)
 
 model.matrix(object, &#8230;)
 
 # S3 method for MixMod
-model.matrix(object, type = c("fixed", "random"), &#8230;)</pre>
+model.matrix(object, type = c("fixed", "random", "zi_fixed", "zi_random"), &#8230;)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
