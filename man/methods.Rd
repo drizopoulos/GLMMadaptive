@@ -20,6 +20,8 @@
 \alias{simulate.MixMod}
 \alias{terms}
 \alias{terms.MixMod}
+\alias{formula}
+\alias{formula.MixMod}
 \alias{model.matrix}
 \alias{model.matrix.MixMod}
 \alias{model.frame}
@@ -88,15 +90,20 @@ simulate(object, nsim = 1, seed = NULL, \dots)
     
 terms(x, \dots)
 
-\method{terms}{MixMod}(x, type = c("fixed", "random"), \dots)
+\method{terms}{MixMod}(x, type = c("fixed", "random", "zi_fixed", "zi_random"), \dots)
+
+formula(x, \dots)
+
+\method{formula}{MixMod}(x, type = c("fixed", "random", "zi_fixed", "zi_random"), \dots)
+
 
 model.frame(formula, \dots)
 
-\method{model.frame}{MixMod}(formula, type = c("fixed", "random"), \dots)
+\method{model.frame}{MixMod}(formula, type = c("fixed", "random", "zi_fixed", "zi_random"), \dots)
 
 model.matrix(object, \dots)
 
-\method{model.matrix}{MixMod}(object, type = c("fixed", "random"), \dots)
+\method{model.matrix}{MixMod}(object, type = c("fixed", "random", "zi_fixed", "zi_random"), \dots)
 }
 
 \arguments{

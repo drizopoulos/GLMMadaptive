@@ -1253,22 +1253,24 @@ simulate.MixMod <- function (object, nsim = 1, seed = NULL,
     out
 }
 
-model.matrix.MixMod <- function (object, type = c("fixed", "random"), ...) {
+model.matrix.MixMod <- function (object, type = c("fixed", "random", "zi_fixed", "zi_random"), ...) {
     type <- match.arg(type)
-    if (type == "fixed") {
-        model.matrix(object$Terms$termsX, object$model_frames$mfX)
-    } else {
-        model.matrix(object$Terms$termsZ, object$model_frames$mfZ)
-    }
+    switch(type,
+           "fixed" = model.matrix(object$Terms$termsX, object$model_frames$mfX),
+           "random" = model.matrix(object$Terms$termsZ, object$model_frames$mfZ),
+           "zi_fixed" = model.matrix(object$Terms$termsX_zi, object$model_frames$mfX_zi),
+           "zi_random" = model.matrix(object$Terms$termsZ_zi, object$model_frames$mfZ_zi)
+    )
 }
 
-model.frame.MixMod <- function (formula, type = c("fixed", "random"), ...) {
+model.frame.MixMod <- function (formula, type = c("fixed", "random", "zi_fixed", "zi_random"), ...) {
     type <- match.arg(type)
-    if (type == "fixed") {
-        formula$model_frames$mfX
-    } else {
-        formula$model_frames$mfZ
-    }
+    switch(type,
+           "fixed" = formula$model_frames$mfX,
+           "random" = formula$model_frames$mfZ,
+           "zi_fixed" = formula$model_frames$mfX_zi,
+           "zi_random" = formula$model_frames$mfZ_zi
+    )
 }
 
 terms.MixMod <- function (x, type = c("fixed", "random", "zi_fixed", "zi_random"), ...) {
