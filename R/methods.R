@@ -1271,16 +1271,13 @@ model.frame.MixMod <- function (formula, type = c("fixed", "random"), ...) {
     }
 }
 
-terms.MixMod <- function (x, type = c("fixed", "random"), ...) {
+terms.MixMod <- function (x, type = c("fixed", "random", "zi_fixed", "zi_random"), ...) {
     type <- match.arg(type)
-    if (type == "fixed") {
-        x$Terms$termsX
-    } else {
-        x$Terms$termsZ
-    }
+    switch(type, "fixed" = x$Terms$termsX, "random" = x$Terms$termsZ,
+           "zi_fixed" = x$Terms$termsX_zi, "zi_random" = x$Terms$termsZ_zi)
 }
 
-formula.MixMod <- function (x, type = c("fixed", "random"), ...) {
+formula.MixMod <- function (x, type = c("fixed", "random", "zi_fixed", "zi_random"), ...) {
     formula(terms(x, type = type))
 }
 
