@@ -11,7 +11,7 @@ importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
            "confint", "residuals", "coef", "anova", "dt", "quantile", "rchisq", "runif", 
            "sd", "predict", "binomial", "plogis", "poisson", "simulate", "rbinom", 
            "rnbinom", "rpois", "ppois", "qpois", "qnbinom", "pnbinom", "dnbinom", "rbeta",
-           "rlnorm", "na.pass", "formula", "family")
+           "rlnorm", "na.pass", "formula", "family", "optim", "nlminb")
 importFrom("utils", "as.relistable", "relist")
 importFrom("MASS", "mvrnorm")
 importFrom("parallel", "makeCluster", "stopCluster", "detectCores", "parLapply")

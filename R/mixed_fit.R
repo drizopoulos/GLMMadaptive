@@ -326,18 +326,18 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
 
 optFun <- function (start, objective, gradient, parscale, control, ...) {
     if (control$optimizer == "optim") {
-        stats::optim(start, objective, gradient, method = control$optim_method,
-                     control = list(maxit = control$iter_qN, trace = 10 * control$verbose,
-                                    reltol = control$tol3, parscale = parscale), ...)
+        optim(start, objective, gradient, method = control$optim_method,
+              control = list(maxit = control$iter_qN, trace = 10 * control$verbose,
+                             reltol = control$tol3, parscale = parscale), ...)
     } else if (control$optimizer == "optimParallel") {
         optimParallel::optimParallel(start, objective, gradient, method = control$optim_method,
                                      control = list(maxit = control$iter_qN, trace = 10 * control$verbose,
                                                     reltol = control$tol3, parscale = parscale), ...)
         
     } else {
-        stats::nlminb(start, objective, gradient, scale = 1 / parscale, 
-                      control = list(iter.max = control$iter_qN, trace = 10 * control$verbose,
-                                     rel.tol = control$tol3), ...)
+        nlminb(start, objective, gradient, scale = 1 / parscale, 
+               control = list(iter.max = control$iter_qN, trace = 10 * control$verbose,
+                              rel.tol = control$tol3), ...)
     }
 }
 
