@@ -31,6 +31,11 @@ hurdle.lognormal()
 hurdle.beta.fam()
 }
 
+\arguments{
+\item{link}{name of the link function.}
+\item{df}{the degrees of freedom of the Student's t distribution.}
+}
+
 \note{Currently only the log-link is implemented for the Poisson and negative binomial 
 models, the logit link for the beta and hurdle beta models and the identity link for the 
 log-normal model.}
