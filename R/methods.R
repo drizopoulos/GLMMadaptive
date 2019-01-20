@@ -1287,6 +1287,10 @@ family.MixMod <- function (object, ...) {
     object$family
 }
 
+nobs.MixMod <- function (object, ...) {
+    length(unique(object$id))
+}
+
 recover_data.MixMod <- function (object, mode = c("fixed-effects", "zero_part"), ...) {
     fcall <- object$call
     mode <- match.arg(mode)

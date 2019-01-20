@@ -863,6 +863,42 @@ hurdle.beta.fam <- function () {
               class = "family")
 }
 
+students.t <- function (df = stop("'df' must be specified"), link = "identity") {
+    .df <- df
+    env <- new.env(parent = .GlobalEnv)
+    assign(".df", df, envir = env)
+    stats <- make.link(link)
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+        # the log density function
+        sigma <- exp(phis)
+        out <- dt(x = (y - eta) / sigma, df = .df, log = TRUE) - log(sigma)
+        attr(out, "mu_y") <- eta
+        out
+    }
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
+        # the derivative of the log density w.r.t. mu
+        sigma2 <- exp(phis)^2
+        y_mu <- y - mu
+        (y_mu * (.df + 1) / (.df * sigma2)) / (1 + y_mu^2 / (.df * sigma2))
+    }
+    score_phis_fun <- function (y, mu, phis, eta_zi) {
+        sigma <- exp(phis)
+        y_mu2_df <- (y - mu)^2 / .df
+        (.df + 1) * y_mu2_df * sigma^{-2} / (1 + y_mu2_df / sigma^2) - 1
+    }
+    simulate <- function (n, mu, phis, eta_zi) {
+        phi <- exp(phis)
+        mu + phi * rt(n, df = .df)
+    }
+    environment(log_dens) <- environment(score_eta_fun) <- env
+    environment(score_phis_fun) <- environment(simulate) <- env
+    structure(list(family = "Student's-t", link = stats$name, linkfun = stats$linkfun,
+                   linkinv = stats$linkinv, log_dens = log_dens, 
+                   score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun,
+                   simulate = simulate),
+              class = "family")
+}
+
 compoisson <- function (max = 100) {
     stats <- make.link("log")
     .max <- max
