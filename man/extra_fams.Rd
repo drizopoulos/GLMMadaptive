@@ -21,7 +21,7 @@ mixed-effects model, using
 }
 
 \usage{
-students.t()
+students.t(df = stop("'df' must be specified"), link = "identity")
 beta.fam()
 zi.poisson()
 zi.negative.binomial()

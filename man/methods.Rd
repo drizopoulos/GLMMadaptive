@@ -26,6 +26,9 @@
 \alias{model.matrix.MixMod}
 \alias{model.frame}
 \alias{model.frame.MixMod}
+\alias{nobs}
+\alias{nobs.MixMod}
+
 
 \title{
 Various Methods for Standard Generics
@@ -104,6 +107,11 @@ model.frame(formula, \dots)
 model.matrix(object, \dots)
 
 \method{model.matrix}{MixMod}(object, type = c("fixed", "random", "zi_fixed", "zi_random"), \dots)
+
+nobs(object, \dots)
+
+\method{nobs}{MixMod}(object, \dots)
+
 }
 
 \arguments{
