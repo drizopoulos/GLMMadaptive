@@ -447,7 +447,7 @@ fitted.MixMod <- function (object, type = c("mean_subject", "subject_specific", 
                            link_fun = NULL, ...) {
     type <- match.arg(type)
     X <- model.matrix(object$Terms$termsX, object$model_frames$mfX)
-    eta <- if (type == "mean_subject") {
+    if (type == "mean_subject") {
         betas <- fixef(object)
         eta <- c(X %*% betas)
     } else if (type == "subject_specific") {
@@ -482,7 +482,7 @@ fitted.MixMod <- function (object, type = c("mean_subject", "subject_specific", 
         }
         if (!is.null(offset_zi))
             eta_zi <- eta_zi + offset_zi
-        plogis(eta_zi, lower.tail = FALSE) * mu
+        mu <- plogis(eta_zi, lower.tail = FALSE) * mu
     }
     names(mu) <- rownames(X)
     mu
@@ -782,6 +782,18 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
         warning("for model with an extra zero-part only predictions at the level of the ",
                 "response variable are returned;\n'type_pred' is set to 'response'.")
         type_pred <- "response"
+    }
+    if (missing(newdata)) {
+        newdata <- object$model_frames$mfX
+        combine <- function (mf, newdata) {
+            mf <- object$model_frames$mfX_zi
+            cond <- length(mf) >= 1 && any(ind <- !names(mf) %in% names(newdata))
+            if (cond) cbind(newdata, mf[ind]) else newdata
+        }
+        newdata <- combine(object$model_frames$mfZ, newdata)
+        newdata <- combine(object$model_frames$mfX_zi, newdata)
+        newdata <- combine(object$model_frames$mfZ_zi, newdata)
+        newdata[[object$id_name]] <- object[["id"]]
     }
     termsX <- delete.response(object$Terms$termsX)
     mfX <- model.frame(termsX, newdata, 
