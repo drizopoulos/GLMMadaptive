@@ -92,7 +92,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
             for (l in seq_len(ncx)) {
                 cc <- drop(rowsum(X[, l] * z, id, reorder = FALSE))
                 if (i_contributions) {
-                    sc[, l] <- c((X[, l] * z * p_by[id, ]) %*% wGH)
+                    sc[, l] <- c((X[, l] * z * p_by[id, , drop = FALSE]) %*% wGH)
                 } else {
                     sc[l] <- sum(c((cc * p_by) %*% wGH), na.rm = TRUE)
                 }
@@ -105,7 +105,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
             for (l in seq_len(ncx)) {
                 cc <- drop(rowsum(X[, l] * z, id, reorder = FALSE))
                 if (i_contributions) {
-                    sc[, l] <- c((X[, l] * z * p_by[id, ]) %*% wGH)
+                    sc[, l] <- c((X[, l] * z * p_by[id, , drop = FALSE]) %*% wGH)
                 } else {
                     sc[l] <- sum(c((cc * p_by) %*% wGH), na.rm = TRUE)
                 }
@@ -121,7 +121,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
             for (l in seq_len(ncx)) {
                 cc <- drop(rowsum(X[, l] * mu_y, id, reorder = FALSE))
                 if (i_contributions) {
-                    sc[, l] <- c((X[, l] * mu_y * p_by[id, ]) %*% wGH)
+                    sc[, l] <- c((X[, l] * mu_y * p_by[id, , drop = FALSE]) %*% wGH)
                 } else {
                     sc[l] <- sum(c((cc * p_by) %*% wGH), na.rm = TRUE)
                 }
@@ -138,7 +138,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
             for (l in seq_len(ncx)) {
                 cc <- drop(rowsum(X[, l] * z, id, reorder = FALSE))
                 if (i_contributions) {
-                    sc[, l] <- c((X[, l] * z * p_by[id, ]) %*% wGH)
+                    sc[, l] <- c((X[, l] * z * p_by[id, , drop = FALSE]) %*% wGH)
                 } else {
                     sc[l] <- sum(c((cc * p_by) %*% wGH), na.rm = TRUE)
                 }
@@ -164,7 +164,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
                 l2 <- log_dens(y, eta_y, mu_fun, phis2, eta_zi)
                 z <- (l1 - l2) / (phis1[i] - phis2[i])
                 if (i_contributions) {
-                    sc[, i] <- c((z * p_by[id, ]) %*% wGH)
+                    sc[, i] <- c((z * p_by[id, , drop = FALSE]) %*% wGH)
                 } else {
                     sc[i] <- sum(c((rowsum(z, id, reorder = FALSE) * p_by) %*% wGH), 
                                  na.rm = TRUE)
@@ -174,7 +174,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
         } else {
             z <- score_phis_fun(y, mu_y, phis, eta_zi)
             if (i_contributions) {
-                -c((z * p_by[id, ]) %*% wGH)
+                -c((z * p_by[id, , drop = FALSE]) %*% wGH)
             } else {
                 -sum(c((rowsum(z, id, reorder = FALSE) * p_by) %*% wGH), na.rm = TRUE)
             }
@@ -193,7 +193,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
         for (l in seq_len(ncx_zi)) {
             cc <- drop(rowsum(X_zi[, l] * drop(z), id, reorder = FALSE))
             if (i_contributions) {
-                sc[, l] <- c((X_zi[, l] * drop(z) * p_by[id, ]) %*% wGH)
+                sc[, l] <- c((X_zi[, l] * drop(z) * p_by[id, , drop = FALSE]) %*% wGH)
             } else {
                 sc[l] <- sum(c((cc * p_by) %*% wGH), na.rm = TRUE)
             }
