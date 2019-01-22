@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.99999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9999999</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
       <h1>Custom Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-01-16</h4>
+            <h4 class="date">2019-01-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Custom_Models.Rmd"><code>vignettes/Custom_Models.Rmd</code></a></small>
       <div class="hidden name"><code>Custom_Models.Rmd</code></div>
@@ -161,7 +161,7 @@ dd<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
                         <span class="dt">initial_values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>()))
 )
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;    5.44    0.00    5.45</span>
+<span class="co">#&gt;    5.84    0.03    5.90</span>
 
 fm1
 <span class="co">#&gt; </span>
@@ -234,7 +234,7 @@ fm1
                         <span class="dt">initial_values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>()))
 )
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;    2.09    0.00    2.14</span>
+<span class="co">#&gt;    2.69    0.04    2.80</span>
 
 fm2
 <span class="co">#&gt; </span>
@@ -323,7 +323,7 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span>eta_y <span class="op
 }</code></pre></div>
 <p>And we fit the model</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm &lt;-<span class="st">  </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, 
-                   <span class="dt">family =</span> <span class="kw">students.t</span>(<span class="dv">4</span>), <span class="dt">n_phis =</span> <span class="dv">1</span>, 
+                   <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">students.t</a></span>(<span class="dv">4</span>), <span class="dt">n_phis =</span> <span class="dv">1</span>, 
                    <span class="dt">initial_values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">gaussian</a></span>()))
 
 fm

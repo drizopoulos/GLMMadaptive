@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.99999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9999999</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
       <h1>Methods for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-01-16</h4>
+            <h4 class="date">2019-01-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Methods_MixMod.Rmd"><code>vignettes/Methods_MixMod.Rmd</code></a></small>
       <div class="hidden name"><code>Methods_MixMod.Rmd</code></div>
@@ -369,6 +369,7 @@ my.panel.bands &lt;-<span class="st"> </span><span class="cf">function</span>(x,
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(<span class="kw">predictorEffect</span>(<span class="st">"time"</span>, fm), <span class="dt">type =</span> <span class="st">"response"</span>)</code></pre></div>
 <p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-22-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>For the additional functionality provided by the <a href="https://cran.r-project.org/package=effects"><strong>effects</strong></a> package, check the vignette: <code><a href="https://cran.rstudio.com/web/packages/effects/vignettes/predictor-effects-gallery.pdf">vignette("predictor-effects-gallery", package = "effects")</a></code>.</p>
+<p><strong>Note:</strong> Effects plots via the <strong>effects</strong> package are currently only supported for the <code><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial()</a></code> and <code><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson()</a></code> families.</p>
 </div>
 <div id="comparing-two-models" class="section level2">
 <h2 class="hasAnchor">
