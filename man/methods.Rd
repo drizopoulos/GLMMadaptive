@@ -110,7 +110,7 @@ model.matrix(object, \dots)
 
 nobs(object, \dots)
 
-\method{nobs}{MixMod}(object, \dots)
+\method{nobs}{MixMod}(object, level = 0, \dots)
 
 }
 
@@ -128,7 +128,11 @@ nobs(object, \dots)
   parameters in the distribution of the outcome (e.g., the \eqn{\theta} parameter in
   the negative binomial family). Option \code{zero_inflated} corresponds to the 
   coefficients of the zero-inflated sub-model.}
-\item{level}{numeric scalar between 0 and 1 denoting the level of the confidence interval.}
+\item{level}{numeric scalar between 0 and 1 denoting the level of the confidence interval.
+    In the \code{nobs()} method it denotes the level at which the number of observations is
+    counted. The default value 0 corresponds to the number of independent sample units 
+    determined by the number of levels of the grouping variable. If set to a value greater
+    than zero, it returns the total number of observations.}
 \item{test}{logical; should a p-value be calculated.}
 \item{L}{a numeric matrix representing a contrasts matrix. This is only used when in 
   \code{anova()} only \code{object} is provided, and it can only be specified for the fixed 
