@@ -110,7 +110,7 @@ model.matrix(object, \dots)
 
 nobs(object, \dots)
 
-\method{nobs}{MixMod}(object, level = 0, \dots)
+\method{nobs}{MixMod}(object, level = 1, \dots)
 
 }
 
@@ -130,7 +130,7 @@ nobs(object, \dots)
   coefficients of the zero-inflated sub-model.}
 \item{level}{numeric scalar between 0 and 1 denoting the level of the confidence interval.
     In the \code{nobs()} method it denotes the level at which the number of observations is
-    counted. The default value 0 corresponds to the number of independent sample units 
+    counted. The value 0 corresponds to the number of independent sample units 
     determined by the number of levels of the grouping variable. If set to a value greater
     than zero, it returns the total number of observations.}
 \item{test}{logical; should a p-value be calculated.}

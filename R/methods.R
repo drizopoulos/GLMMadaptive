@@ -1299,7 +1299,7 @@ family.MixMod <- function (object, ...) {
     object$family
 }
 
-nobs.MixMod <- function (object, level = 0,...) {
+nobs.MixMod <- function (object, level = 1,...) {
     if (level == 0) {
         length(unique(object$id))
     } else {
