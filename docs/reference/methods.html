@@ -65,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9999999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.99999999</span>
       </span>
     </div>
 
@@ -232,7 +232,7 @@ model.matrix(object, type = c("fixed", "random", "zi_fixed", "zi_random"), &#823
 nobs(object, &#8230;)
 
 # S3 method for MixMod
-nobs(object, &#8230;)</pre>
+nobs(object, level = 1, &#8230;)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -264,7 +264,11 @@ nobs(object, &#8230;)</pre>
     </tr>
     <tr>
       <th>level</th>
-      <td><p>numeric scalar between 0 and 1 denoting the level of the confidence interval.</p></td>
+      <td><p>numeric scalar between 0 and 1 denoting the level of the confidence interval.
+    In the <code>nobs()</code> method it denotes the level at which the number of observations is
+    counted. The value 0 corresponds to the number of independent sample units 
+    determined by the number of levels of the grouping variable. If set to a value greater
+    than zero, it returns the total number of observations.</p></td>
     </tr>
     <tr>
       <th>test</th>

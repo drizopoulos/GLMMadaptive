@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.9999999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.99999999</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
       <h1>Multiple Comparisons for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-01-22</h4>
+            <h4 class="date">2019-01-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Multiple_Comparisons.Rmd"><code>vignettes/Multiple_Comparisons.Rmd</code></a></small>
       <div class="hidden name"><code>Multiple_Comparisons.Rmd</code></div>
@@ -192,6 +192,7 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <span class="co">#&gt; Loading required package: mvtnorm</span>
 <span class="co">#&gt; Loading required package: survival</span>
 <span class="co">#&gt; Loading required package: TH.data</span>
+<span class="co">#&gt; Warning: package 'TH.data' was built under R version 3.5.2</span>
 <span class="co">#&gt; Loading required package: MASS</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'MASS'</span>
@@ -236,47 +237,48 @@ fm_mc &lt;-<span class="st"> </span><span class="kw">glht</span>(fm, <span class
                   <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</code></pre></div>
 <p>To compute the estimated log odds for males and females at the different time points we use the <code>emmeans()</code> functions from the <strong>emmeans</strong> package:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"emmeans"</span>)
+<span class="co">#&gt; Warning: package 'emmeans' was built under R version 3.5.2</span>
 gm_mc &lt;-<span class="st"> </span><span class="kw">emmeans</span>(gm, <span class="op">~</span><span class="st"> </span>sex <span class="op">|</span><span class="st"> </span>time)
 
 gm_mc
 <span class="co">#&gt; time = Time1:</span>
-<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male   -2.738232 0.3423074 Inf -3.409142 -2.067321</span>
-<span class="co">#&gt;  female -1.206952 0.2549322 Inf -1.706610 -0.707294</span>
+<span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span>
+<span class="co">#&gt;  male    -2.74 0.342 Inf     -3.41    -2.067</span>
+<span class="co">#&gt;  female  -1.21 0.255 Inf     -1.71    -0.707</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time2:</span>
-<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male   -1.675516 0.2755219 Inf -2.215529 -1.135503</span>
-<span class="co">#&gt;  female -1.435062 0.2629607 Inf -1.950455 -0.919668</span>
+<span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span>
+<span class="co">#&gt;  male    -1.68 0.276 Inf     -2.22    -1.136</span>
+<span class="co">#&gt;  female  -1.44 0.263 Inf     -1.95    -0.920</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time3:</span>
-<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male   -4.402035 0.5458561 Inf -5.471894 -3.332177</span>
-<span class="co">#&gt;  female -1.388287 0.2612069 Inf -1.900243 -0.876331</span>
+<span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span>
+<span class="co">#&gt;  male    -4.40 0.546 Inf     -5.47    -3.332</span>
+<span class="co">#&gt;  female  -1.39 0.261 Inf     -1.90    -0.876</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time4:</span>
-<span class="co">#&gt;  sex       emmean        SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male   -1.337404 0.2610915 Inf -1.849134 -0.825674</span>
-<span class="co">#&gt;  female -1.251788 0.2564064 Inf -1.754335 -0.749241</span>
+<span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span>
+<span class="co">#&gt;  male    -1.34 0.261 Inf     -1.85    -0.826</span>
+<span class="co">#&gt;  female  -1.25 0.256 Inf     -1.75    -0.749</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Confidence level used: 0.95</span></code></pre></div>
 <p>The corresponding pairwise comparisons are performed by the <code><a href="https://www.rdocumentation.org/packages/graphics/topics/pairs">pairs()</a></code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/pairs">pairs</a></span>(gm_mc)
 <span class="co">#&gt; time = Time1:</span>
-<span class="co">#&gt;  contrast        estimate        SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female -1.5312794 0.4098482 Inf  -3.736  0.0002</span>
+<span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span>
+<span class="co">#&gt;  male - female  -1.5313 0.410 Inf -3.736  0.0002 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time2:</span>
-<span class="co">#&gt;  contrast        estimate        SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female -0.2404544 0.3664767 Inf  -0.656  0.5117</span>
+<span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span>
+<span class="co">#&gt;  male - female  -0.2405 0.366 Inf -0.656  0.5117 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time3:</span>
-<span class="co">#&gt;  contrast        estimate        SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female -3.0137489 0.5857024 Inf  -5.146  &lt;.0001</span>
+<span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span>
+<span class="co">#&gt;  male - female  -3.0137 0.586 Inf -5.146  &lt;.0001 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; time = Time4:</span>
-<span class="co">#&gt;  contrast        estimate        SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female -0.0856159 0.3550660 Inf  -0.241  0.8095</span></code></pre></div>
+<span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span>
+<span class="co">#&gt;  male - female  -0.0856 0.355 Inf -0.241  0.8095</span></code></pre></div>
 <p>For additional examples in testing interactions with the <strong>emmeans</strong> package check the vignette: <code><a href="https://cran.rstudio.com/web/packages/emmeans/vignettes/interactions.html">vignette("interactions", package = "emmeans")</a></code>.</p>
 </div>
 </div>
