@@ -606,6 +606,14 @@ print.m_coefs <- function (x, digits = max(4, getOption("digits") - 4), ...) {
     invisible(x)
 }
 
+coef.m_coefs <- function (object, ...) {
+    if (is.null(object$coef_table)) {
+        object$betas
+    } else {
+        object$coef_table
+    }
+}
+
 effectPlotData <- function (object, newdata, level, ...) UseMethod("effectPlotData")
 
 effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FALSE, 

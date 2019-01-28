@@ -35,6 +35,7 @@ S3method(fitted, MixMod)
 S3method(residuals, MixMod)
 S3method(marginal_coefs, MixMod)
 S3method(print, m_coefs)
+S3method(coef, m_coefs)
 S3method(effectPlotData, MixMod)
 S3method(predict, MixMod)
 S3method(simulate, MixMod)
@@ -44,6 +45,7 @@ S3method(terms, MixMod)
 S3method(formula, MixMod)
 S3method(family, MixMod)
 S3method(nobs, MixMod)
+
 
 
 
