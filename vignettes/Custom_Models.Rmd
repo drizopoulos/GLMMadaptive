@@ -243,7 +243,7 @@ students.t <- function (df = stop("'df' must be specified"), link = "identity") 
 }
 ```
 
-And we fit the model
+And we fit the model (results not shown)
 ```{r}
 fm <-  mixed_model(y ~ sex * time, random = ~ time | id, data = DF, 
                    family = students.t(4), n_phis = 1, 

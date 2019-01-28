@@ -95,7 +95,7 @@ resids_plot <- function (object, y, nsim = 1000,
     dharmaRes <- DHARMa::createDHARMa(simulatedResponse = sims, observedResponse = y, 
                               fittedPredictedResponse = fits, 
                               integerResponse = integerResponse)
-    DHARMa:::plot.DHARMa(dharmaRes, quantreg = TRUE)
+    DHARMa:::plot.DHARMa(dharmaRes, quantreg = FALSE)
 }
 ```
 

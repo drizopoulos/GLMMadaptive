@@ -151,9 +151,9 @@ Standard errors for the marginalized coefficients are obtained by setting
 `std_errors = TRUE` in the call to `marginal_coefs()`, and require a double Monte Carlo
 procedure for which argument `K` comes also into play. To speed up computations, the 
 outer Monte Carlo procedure is performed in parallel using package **parallel** and 
-number of cores specified in the `cores` argument: 
-```{r}
-marginal_coefs(fm, std_errors = TRUE, cores = 2)
+number of cores specified in the `cores` argument (results not shown): 
+```{r, eval = FALSE}
+marginal_coefs(fm, std_errors = TRUE, cores = 5)
 ```
 
 
@@ -220,9 +220,9 @@ xyplot(expit(pred) + expit(low) + expit(upp) ~ time | sex, data = plot_data,
 
 The `effectPlotData()` function also allows to compute marginal predictions using the
 marginalized coefficients described above. This is achieved by setting `marginal = TRUE`
-in  the respective call:
-```{r, fig.align = "center", fig.width = 8.5, fig.height = 7.5}
-plot_data_m <- effectPlotData(fm, nDF, marginal = TRUE, cores = 2)
+in  the respective call (results not shown):
+```{r, fig.align = "center", fig.width = 8.5, fig.height = 7.5, eval = FALSE}
+plot_data_m <- effectPlotData(fm, nDF, marginal = TRUE)
 
 # we put the two groups in the same panel
 my.panel.bands <- function(x, y, upper, lower, fill, col, subscripts, ..., font, 

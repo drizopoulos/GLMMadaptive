@@ -77,24 +77,24 @@ DF$y <- rbinom(n * K, 1, plogis(eta_y))
 ```
 
 We fit a mixed effects logistic regression for `y` assuming random intercepts for the random-effects part, and the main effects of `sex` and `time` for the fixed-effects part. In the call to `mixed_model()`, we are using the default values for the control arguments:
-```{r, default_controls}
+```{r, default_controls, eval = FALSE}
 mixed_model(fixed = y ~ sex + time, random = ~ 1 | id, data = DF, family = binomial())
 ```
 
 In the following example we do not use any EM iterations, and we specify as optimizer the `nlimnb()` function. In addition, during each iteration of the outer loop in which the modes of the modes of the conditional distribution of the random effects are relocated, we icrease the number of the quasi-Newton iterations by 5:
-```{r, noEM_nlminb}
+```{r, noEM_nlminb, eval = FALSE}
 mixed_model(fixed = y ~ sex + time, random = ~ 1 | id, data = DF, family = binomial(), 
             iter_EM = 0, optimizer = "nlminb", iter_qN_incr = 5)
 ```
 
 In the following call, we allow again for EM iterations, but we set the number of the iterations to 1000 giving the option to achieve convergence only during the EM-phase. In addition, we set to update the modes of the conditional distribution of the random effects every 5 iterations, and we also set the number of quadrature points to 21:
-```{r, onlyEM}
+```{r, onlyEM, eval = FALSE}
 mixed_model(fixed = y ~ sex + time, random = ~ 1 | id, data = DF, family = binomial(), 
             iter_EM = 1000, update_GH_every = 5, nAGQ = 21)
 ```
 
 To not run the optimization procedure at all, we need to also to set `iter_qN_outer` to 0, e.g.,
-```{r, noOptimization}
+```{r, noOptimization, eval = FALSE}
 mixed_model(fixed = y ~ sex + time, random = ~ 1 | id, data = DF, family = binomial(), 
             iter_EM = 0, iter_qN_outer = 0)
 ```
