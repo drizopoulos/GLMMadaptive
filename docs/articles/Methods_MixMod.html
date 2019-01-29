@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
       <h1>Methods for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-01-28</h4>
+            <h4 class="date">2019-01-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Methods_MixMod.Rmd"><code>vignettes/Methods_MixMod.Rmd</code></a></small>
       <div class="hidden name"><code>Methods_MixMod.Rmd</code></div>
@@ -294,13 +294,8 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
 <span class="co">#&gt;        -1.5973        -1.0931         0.1758         0.0503</span></code></pre></div>
 <p>The function calculates the marginal log odds ratios in our case (because we have a binary outcome) using a Monte Carlo procedure with number of samples determined by the <code>M</code> argument.</p>
-<p>Standard errors for the marginalized coefficients are obtained by setting <code>std_errors = TRUE</code> in the call to <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>, and require a double Monte Carlo procedure for which argument <code>K</code> comes also into play. To speed up computations, the outer Monte Carlo procedure is performed in parallel using package <strong>parallel</strong> and number of cores specified in the <code>cores</code> argument:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(fm, <span class="dt">std_errors =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">2</span>)
-<span class="co">#&gt;                Estimate Std.Err z-value   p-value</span>
-<span class="co">#&gt; (Intercept)     -1.5973  0.2879 -5.5479   &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale       -1.0931  0.3681 -2.9697 0.0029807</span>
-<span class="co">#&gt; time             0.1758  0.0315  5.5892   &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale:time   0.0503  0.0374  1.3460 0.1782902</span></code></pre></div>
+<p>Standard errors for the marginalized coefficients are obtained by setting <code>std_errors = TRUE</code> in the call to <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>, and require a double Monte Carlo procedure for which argument <code>K</code> comes also into play. To speed up computations, the outer Monte Carlo procedure is performed in parallel using package <strong>parallel</strong> and number of cores specified in the <code>cores</code> argument (results not shown):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(fm, <span class="dt">std_errors =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">5</span>)</code></pre></div>
 </div>
 <div id="fitted-values-and-residuals" class="section level2">
 <h2 class="hasAnchor">
@@ -337,8 +332,8 @@ expit &lt;-<span class="st"> </span><span class="cf">function</span> (x) <span c
        <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="dv">2</span>,
        <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Subject-Specific Probabilities"</span>)</code></pre></div>
 <p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-19-1.png" width="816" style="display: block; margin: auto;"><img src="Methods_MixMod_files/figure-html/unnamed-chunk-19-2.png" width="816" style="display: block; margin: auto;"></p>
-<p>The <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function also allows to compute marginal predictions using the marginalized coefficients described above. This is achieved by setting <code>marginal = TRUE</code> in the respective call:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">marginal =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">2</span>)
+<p>The <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function also allows to compute marginal predictions using the marginalized coefficients described above. This is achieved by setting <code>marginal = TRUE</code> in the respective call (results not shown):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">marginal =</span> <span class="ot">TRUE</span>)
 
 <span class="co"># we put the two groups in the same panel</span>
 my.panel.bands &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, upper, lower, fill, col, subscripts, ..., font, 
@@ -356,7 +351,6 @@ my.panel.bands &lt;-<span class="st"> </span><span class="cf">function</span>(x,
            <span class="kw">panel.superpose</span>(x, y, <span class="dt">panel.groups =</span> my.panel.bands, ...)
            <span class="kw">panel.xyplot</span>(x, y, <span class="dt">lwd =</span> <span class="dv">2</span>,  ...)
 }, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Marginal Probabilities"</span>)</code></pre></div>
-<p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-20-1.png" width="816" style="display: block; margin: auto;"></p>
 </div>
 <div id="effect-plots-using-the-effects-package" class="section level2">
 <h2 class="hasAnchor">
@@ -374,7 +368,7 @@ my.panel.bands &lt;-<span class="st"> </span><span class="cf">function</span>(x,
 <div id="comparing-two-models" class="section level2">
 <h2 class="hasAnchor">
 <a href="#comparing-two-models" class="anchor"></a>Comparing Two Models</h2>
-<p>The <code><a href="../reference/methods.html">anova()</a></code> method can be used to compare two fitted mixed models using a likelihood ratio test. For example, we test if we can test the null hypothesis that the covariance between the random intercepts and slopes is equal to zero using</p>
+<p>The <code><a href="../reference/methods.html">anova()</a></code> method can be used to compare two fitted mixed models using a likelihood ratio test. For example, we test if we can test the null hypothesis that the covariance between the random intercepts and slopes is equal to zero using:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">||</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
                   <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())
 

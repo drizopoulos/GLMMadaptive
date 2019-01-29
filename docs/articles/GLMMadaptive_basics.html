@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
       <h1>GLMMadaptive Basics</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-01-28</h4>
+            <h4 class="date">2019-01-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/GLMMadaptive_basics.Rmd"><code>vignettes/GLMMadaptive_basics.Rmd</code></a></small>
       <div class="hidden name"><code>GLMMadaptive_basics.Rmd</code></div>
@@ -244,15 +244,11 @@ models &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocu
 <span class="co">#&gt;        AIC    BIC log.Lik  LRT df p.value</span>
 <span class="co">#&gt; fm1 759.04 772.07 -374.52                </span>
 <span class="co">#&gt; fm2 730.94 730.94 -359.47 30.1  1 &lt;0.0001</span></code></pre></div>
-<p>The results suggest that we need the random slopes term. We continue by testing whether the covariance between the random effects terms is zero. The model under the alternative hypothesis is:</p>
+<p>The results suggest that we need the random slopes term. We continue by testing whether the covariance between the random effects terms is zero. The model under the alternative hypothesis is (results not shown):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
                    <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</code></pre></div>
-<p>And again the likelihood ratio test is performed by a call to <code><a href="../reference/methods.html">anova()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(fm2, fm3)
-<span class="co">#&gt; </span>
-<span class="co">#&gt;        AIC    BIC log.Lik  LRT df p.value</span>
-<span class="co">#&gt; fm2 730.94 746.57 -359.47                </span>
-<span class="co">#&gt; fm3 731.66 731.66 -358.83 1.29  1  0.2564</span></code></pre></div>
+<p>And again the likelihood ratio test is performed by a call to <code><a href="../reference/methods.html">anova()</a></code> (results not shown):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(fm2, fm3)</code></pre></div>
 <p>The results now suggest that indeed the covariance between the two random effects terms is not statistically different from zero.</p>
 </div>
 <div id="penalized-mixed-effects-poisson-regression" class="section level2">

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
       <h1>Optimization and Numerical Integration in GLMMadaptive</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-01-28</h4>
+            <h4 class="date">2019-01-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Optimization.Rmd"><code>vignettes/Optimization.Rmd</code></a></small>
       <div class="hidden name"><code>Optimization.Rmd</code></div>
@@ -161,93 +161,16 @@ eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
 <span class="co"># we simulate binary longitudinal data</span>
 DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dv">1</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Logistic">plogis</a></span>(eta_y))</code></pre></div>
 <p>We fit a mixed effects logistic regression for <code>y</code> assuming random intercepts for the random-effects part, and the main effects of <code>sex</code> and <code>time</code> for the fixed-effects part. In the call to <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, we are using the default values for the control arguments:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y ~ sex + time, random = ~1 | id, data = DF, </span>
-<span class="co">#&gt;     family = binomial())</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: binomial</span>
-<span class="co">#&gt;  link: logit </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;               StdDev</span>
-<span class="co">#&gt; (Intercept) 1.448263</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt; (Intercept)   sexfemale   timeTime2   timeTime3   timeTime4 </span>
-<span class="co">#&gt;  -2.2861691   0.8853771   0.3065818  -0.5052857   0.5631240 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -583.4797</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</code></pre></div>
 <p>In the following example we do not use any EM iterations, and we specify as optimizer the <code>nlimnb()</code> function. In addition, during each iteration of the outer loop in which the modes of the modes of the conditional distribution of the random effects are relocated, we icrease the number of the quasi-Newton iterations by 5:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>(), 
-            <span class="dt">iter_EM =</span> <span class="dv">0</span>, <span class="dt">optimizer =</span> <span class="st">"nlminb"</span>, <span class="dt">iter_qN_incr =</span> <span class="dv">5</span>)
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y ~ sex + time, random = ~1 | id, data = DF, </span>
-<span class="co">#&gt;     family = binomial(), iter_EM = 0, optimizer = "nlminb", iter_qN_incr = 5)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: binomial</span>
-<span class="co">#&gt;  link: logit </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;               StdDev</span>
-<span class="co">#&gt; (Intercept) 1.448291</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt; (Intercept)   sexfemale   timeTime2   timeTime3   timeTime4 </span>
-<span class="co">#&gt;  -2.2857450   0.8852305   0.3058359  -0.5058783   0.5624368 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -583.4797</span></code></pre></div>
+            <span class="dt">iter_EM =</span> <span class="dv">0</span>, <span class="dt">optimizer =</span> <span class="st">"nlminb"</span>, <span class="dt">iter_qN_incr =</span> <span class="dv">5</span>)</code></pre></div>
 <p>In the following call, we allow again for EM iterations, but we set the number of the iterations to 1000 giving the option to achieve convergence only during the EM-phase. In addition, we set to update the modes of the conditional distribution of the random effects every 5 iterations, and we also set the number of quadrature points to 21:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>(), 
-            <span class="dt">iter_EM =</span> <span class="dv">1000</span>, <span class="dt">update_GH_every =</span> <span class="dv">5</span>, <span class="dt">nAGQ =</span> <span class="dv">21</span>)
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y ~ sex + time, random = ~1 | id, data = DF, </span>
-<span class="co">#&gt;     family = binomial(), iter_EM = 1000, update_GH_every = 5, </span>
-<span class="co">#&gt;     nAGQ = 21)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: binomial</span>
-<span class="co">#&gt;  link: logit </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;               StdDev</span>
-<span class="co">#&gt; (Intercept) 1.447412</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt; (Intercept)   sexfemale   timeTime2   timeTime3   timeTime4 </span>
-<span class="co">#&gt;  -2.2851163   0.8851461   0.3058023  -0.5057473   0.5622581 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -583.4797</span></code></pre></div>
+            <span class="dt">iter_EM =</span> <span class="dv">1000</span>, <span class="dt">update_GH_every =</span> <span class="dv">5</span>, <span class="dt">nAGQ =</span> <span class="dv">21</span>)</code></pre></div>
 <p>To not run the optimization procedure at all, we need to also to set <code>iter_qN_outer</code> to 0, e.g.,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>(), 
-            <span class="dt">iter_EM =</span> <span class="dv">0</span>, <span class="dt">iter_qN_outer =</span> <span class="dv">0</span>)
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y ~ sex + time, random = ~1 | id, data = DF, </span>
-<span class="co">#&gt;     family = binomial(), iter_EM = 0, iter_qN_outer = 0)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: binomial</span>
-<span class="co">#&gt;  link: logit </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;             StdDev</span>
-<span class="co">#&gt; (Intercept)      1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt; (Intercept)   sexfemale   timeTime2   timeTime3   timeTime4 </span>
-<span class="co">#&gt;  -1.9783686   0.8020707   0.2680161  -0.4528847   0.4899832 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -588.082</span></code></pre></div>
+            <span class="dt">iter_EM =</span> <span class="dv">0</span>, <span class="dt">iter_qN_outer =</span> <span class="dv">0</span>)</code></pre></div>
 </div>
 </div>
   </div>

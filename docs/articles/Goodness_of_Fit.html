@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
       <h1>Goodness of Fit for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-01-28</h4>
+            <h4 class="date">2019-01-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Goodness_of_Fit.Rmd"><code>vignettes/Goodness_of_Fit.Rmd</code></a></small>
       <div class="hidden name"><code>Goodness_of_Fit.Rmd</code></div>
@@ -186,7 +186,7 @@ DF<span class="op">$</span>y[<span class="kw"><a href="https://www.rdocumentatio
     dharmaRes &lt;-<span class="st"> </span>DHARMa<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DHARMa/topics/createDHARMa">createDHARMa</a></span>(<span class="dt">simulatedResponse =</span> sims, <span class="dt">observedResponse =</span> y, 
                               <span class="dt">fittedPredictedResponse =</span> fits, 
                               <span class="dt">integerResponse =</span> integerResponse)
-    DHARMa<span class="op">:::</span><span class="kw">plot.DHARMa</span>(dharmaRes, <span class="dt">quantreg =</span> <span class="ot">TRUE</span>)
+    DHARMa<span class="op">:::</span><span class="kw">plot.DHARMa</span>(dharmaRes, <span class="dt">quantreg =</span> <span class="ot">FALSE</span>)
 }</code></pre></div>
 <p>This function has the following arguments:</p>
 <ul>
