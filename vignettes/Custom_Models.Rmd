@@ -181,7 +181,7 @@ for `eta` and `phis` are provided can be much more substantial.
 ## Student's t Mixed Effects Model
 We further illustrate the use of custom-made family objects by fitting a linear mixed 
 model but with Student's t distributed error terms. We start by simulating some data
-```{r}
+```{r, eval = FALSE}
 set.seed(1234)
 n <- 100 # number of subjects
 K <- 8 # number of measurements per subject
@@ -211,7 +211,7 @@ DF$y <- eta_y + sigma * rt(n * K, df = 4)
 ```
 
 Following we define the custom-made family object for the Student's t distribution:
-```{r}
+```{r, eval = FALSE}
 students.t <- function (df = stop("'df' must be specified"), link = "identity") {
     .df <- df
     env <- new.env(parent = .GlobalEnv)
@@ -244,17 +244,15 @@ students.t <- function (df = stop("'df' must be specified"), link = "identity") 
 ```
 
 And we fit the model (results not shown)
-```{r}
+```{r, eval = FALSE}
 fm <-  mixed_model(y ~ sex * time, random = ~ time | id, data = DF, 
                    family = students.t(4), n_phis = 1, 
                    initial_values = list("betas" = gaussian()))
-
-fm
 ```
 
 As was the case also for the negative binomial model, the extra `phis` parameter has been
 appropriately transformed to have an unconstrained optimization of the likelihood. Hence,
-the estimated `sigma` parameter is `exp(fm$phis) =` `r unname(round(exp(fm$phis), 3))`. 
+the estimated `sigma` parameter is given by `exp(fm$phis)`. 
 
 ## Beta Mixed-Effects Model
 As a final illustration we show how a beta mixed effects model can be fitted, i.e.,
@@ -274,17 +272,15 @@ DF <- data.frame(id = rep(seq_len(n), each = K),
 
 # design matrices for the fixed and random effects
 X <- model.matrix(~ sex * time, data = DF)
-Z <- model.matrix(~ time, data = DF)
 
 betas <- c(-2.2, -0.25, 0.24, -0.05) # fixed effects coefficients
 phi <- 5 # precision parameter of the Beta distribution
 D11 <- 0.9 # variance of random intercepts
-D22 <- 0.3 # variance of random slopes
 
 # we simulate random effects
-b <- cbind(rnorm(n, sd = sqrt(D11)), rnorm(n, sd = sqrt(D22)))
+b <- rnorm(n, sd = sqrt(D11))
 # linear predictor
-eta_y <- as.vector(X %*% betas + rowSums(Z * b[DF$id, ]))
+eta_y <- as.vector(X %*% betas + b[DF$id])
 # mean
 mu <- plogis(eta_y)
 # we simulate beta longitudinal data
@@ -339,7 +335,7 @@ beta.fam <- function () {
 
 And we fit the model
 ```{r}
-gm <- mixed_model(y ~ sex * time, random = ~ time | id, data = DF,
+gm <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF,
                   family = beta.fam(), n_phis = 1)
 
 gm

@@ -49,7 +49,7 @@ The `control` argument of function `mixed_model()` has a number of arguments tha
 
 ## Controlling the Optimization and Integration
 We start by simulating some data for a binary longitudinal outcome:
-```{r, sim_data}
+```{r, sim_data, eval = FALSE}
 set.seed(1234)
 n <- 300 # number of subjects
 K <- 4 # number of measurements per subject

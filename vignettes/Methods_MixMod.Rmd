@@ -266,12 +266,16 @@ For the additional functionality provided by the [**effects**](https://cran.r-pr
 ## Comparing Two Models
 The `anova()` method can be used to compare two fitted mixed models using a likelihood 
 ratio test. For example, we test if we can test the null hypothesis that the covariance
-between the random intercepts and slopes is equal to zero using
-```{r}
+between the random intercepts and slopes is equal to zero using:
+```{r, eval = FALSE}
 gm <- mixed_model(fixed = y ~ sex * time, random = ~ time || id, data = DF,
                   family = binomial())
 
 anova(gm, fm)
+#> 
+#>       AIC    BIC log.Lik  LRT df p.value
+#> gm 730.94 746.57 -359.47                
+#> fm 731.66 731.66 -358.83 1.29  1  0.2564
 ```
 
 
