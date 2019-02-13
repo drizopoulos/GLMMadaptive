@@ -393,8 +393,13 @@ getRE_Formula <- function (form) {
 }
 
 getID_Formula <- function (form) {
-    form <- form[[length(form)]]
-    asOneSidedFormula(form[[3]])
+    if (is.list(form)) {
+        nams <- names(form)
+        as.formula(paste0("~", nams[1L], "/", nams[2L]))
+    } else {
+        form <- form[[length(form)]]
+        asOneSidedFormula(form[[3]])
+    }
 }
 
 printCall <- function (call) {
@@ -445,12 +450,14 @@ dmvt <- function (x, mu, Sigma = NULL, invSigma = NULL, df, log = TRUE, prop = T
     ss <- x - rep(mu, each = nrow(x))
     quad <- rowSums((ss %*% invSigma) * ss)/df
     if (!prop)
-        fact <- lgamma((df + p)/2) - lgamma(df/2) - 0.5 * (p * (log(pi) + 
-                                                                    log(df)) + logdetSigma)
+        fact <- lgamma((df + p)/2) - lgamma(df/2) - 
+        0.5 * (p * (log(pi) + log(df)) + logdetSigma)
     if (log) {
-        if (!prop) as.vector(fact - 0.5 * (df + p) * log(1 + quad)) else as.vector(- 0.5 * (df + p) * log(1 + quad))
+        if (!prop) as.vector(fact - 0.5 * (df + p) * log(1 + quad)) else 
+            as.vector(- 0.5 * (df + p) * log(1 + quad))
     } else {
-        if (!prop) as.vector(exp(fact) * ((1 + quad)^(-(df + p)/2))) else as.vector(((1 + quad)^(-(df + p)/2)))
+        if (!prop) as.vector(exp(fact) * ((1 + quad)^(-(df + p)/2))) else 
+            as.vector(((1 + quad)^(-(df + p)/2)))
     }
 }
 
@@ -489,5 +496,42 @@ register_s3_method <- function (pkg, generic, class) {
     if (requireNamespace("effects", quietly = TRUE)) {
         register_s3_method("effects", "Effect", "MixMod")
     }
+}
+
+constructor_form_random <- function (formula, data) {
+    groups <- all.vars(getID_Formula(formula))
+    ngroups <- length(groups)
+    formula <- if (!is.list(formula)) {
+        form_random <- vector("list", ngroups)
+        names(form_random) <- groups
+        form_random[] <- lapply(form_random, function (x) getRE_Formula(formula))
+    } else formula
+    if (ngroups > 1) {
+        nesting <- function (form, group_name) {
+            terms_form <- attr(terms(form), "term.labels")
+            if (length(terms_form)) {
+                interaction_terms <- paste0(group_name, ":", terms_form, collapse = " + ")
+                as.formula(paste0("~ 0 + ", group_name, " + ", interaction_terms))
+            } else {
+                as.formula(paste0("~ 0 + ", group_name))
+            }
+        }
+        formula[-1] <- mapply(nesting, formula[-1], groups[-1], SIMPLIFY = FALSE)
+    }
+    formula
+}
+
+constructor_Z <- function (termsZ_i, mfZ_i, id) {
+    n <- length(unique(id))
+    Zmats <- vector("list", n)
+    for (i in seq_len(n)) {
+        mf <- model.frame(termsZ_i, mfZ_i[id == i, , drop = FALSE],
+                          drop.unused.levels = TRUE)
+        mm <- model.matrix(termsZ_i, mf)
+        assign <- attr(mm, "assign")
+        Zmats[[i]] <- mm[, c(t(sapply(unique(assign), function (x) which(assign == x)))), 
+                         drop = FALSE]
+    }
+    do.call("rbind", Zmats)
 }
 
