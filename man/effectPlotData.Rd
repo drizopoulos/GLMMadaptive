@@ -16,8 +16,8 @@ effects plot.
 effectPlotData(object, newdata, level, \dots)
 
 \method{effectPlotData}{MixMod}(object, newdata, 
-   level = 0.95, marginal = FALSE, K = 200, seed = 1, 
-   sandwich = FALSE, \dots)
+   level = 0.95, marginal = FALSE, CR_cohort_varname = NULL,
+   K = 200, seed = 1, sandwich = FALSE, \dots)
 }
 
 \arguments{
@@ -27,6 +27,8 @@ effectPlotData(object, newdata, level, \dots)
 \item{marginal}{logical; if \code{FALSE} predicted values are calculated for the "mean"
     subject (i.e., the one with random effects values equal to 0). When \code{TRUE} 
     marginal predicted values are calculated using function \code{\link{marginal_coefs}}.}
+\item{CR_cohort_varname}{a character string denoting the name of the cohort variable when
+    a continuation ratio model is fitted.}
 \item{K}{numeric scalar denoting the number of Monte Carlo samples from the approximate
     posterior of the parameters; applicable only for zero-inflated models.}
 \item{seed}{numerical scalar giving the seed to be used in the Monte Carlo scheme.}

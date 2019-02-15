@@ -173,7 +173,7 @@ summary.MixMod <- function (object, sandwich = FALSE, ...) {
         ind_gammas <- grep("zi_", colnames(V), fixed = TRUE)
         ses <- sqrt(diag(V[ind_gammas, ind_gammas, drop = FALSE]))
         coef_table_zi <- cbind("Estimate" = gammas, "Std.Err" = ses, "z-value" = gammas / ses,
-                              "p-value" = 2 * pnorm(abs(gammas / ses), lower.tail = FALSE))
+                               "p-value" = 2 * pnorm(abs(gammas / ses), lower.tail = FALSE))
     }
     out <- list(coef_table = coef_table, 
                 coef_table_zi = if (!is.null(object$gammas)) coef_table_zi,D = D, 
@@ -341,7 +341,7 @@ confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra",
         }
     }
     colnames(out) <- c(paste(round(100 * c((1 - level) / 2, 
-                                         (1 + level) / 2), 1), "%"), "Estimate")[c(1,3,2)]
+                                           (1 + level) / 2), 1), "%"), "Estimate")[c(1,3,2)]
     out
 }
 
@@ -369,7 +369,7 @@ anova.MixMod <- function (object, object2, test = TRUE, L = NULL,
         fam <- object$family$family
         fam2 <- object2$family$family
         if (test &&  (fam != fam2 && ((fam != "poisson" & fam2 != "negative binomial") &&
-                      (fam != "zero-inflated poisson" & fam2 != "zero-inflated negative binomial")))) {
+                                      (fam != "zero-inflated poisson" & fam2 != "zero-inflated negative binomial")))) {
             warning("it seems that the two objects represent model with different families;",
                     " are the models nested? If not, you should set 'test' to FALSE.")
         }
@@ -616,8 +616,9 @@ coef.m_coefs <- function (object, ...) {
 
 effectPlotData <- function (object, newdata, level, ...) UseMethod("effectPlotData")
 
-effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FALSE, 
-                                   K = 200, seed = 1, sandwich = FALSE, ...) {
+effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FALSE,
+                                   CR_cohort_varname = NULL, K = 200, seed = 1, 
+                                   sandwich = FALSE, ...) {
     termsX <- delete.response(object$Terms$termsX)
     mfX <- model.frame(termsX, newdata, 
                        xlev = .getXlevels(termsX, object$model_frames$mfX))
@@ -629,15 +630,43 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
             var_betas <- mcoefs$var_betas
         } else {
             betas <- fixef(object)
-            n_betas <- length(betas)
-            V <- vcov(object, sandwich = sandwich)
-            var_betas <- V[seq_len(n_betas), seq_len(n_betas)]
+            var_betas <- vcov(object, parm = "fixed-effects", sandwich = sandwich)
         }
-        pred <- c(X %*% betas)
-        ses <- sqrt(diag(X %*% var_betas %*% t(X)))
-        newdata$pred <- pred
-        newdata$low <- pred + qnorm((1 - level) / 2) * ses
-        newdata$upp <- pred + qnorm((1 + level) / 2) * ses
+        if (is.null(CR_cohort_varname)) {
+            pred <- c(X %*% betas)
+            ses <- sqrt(diag(X %*% var_betas %*% t(X)))
+            newdata$pred <- pred
+            newdata$low <- pred + qnorm((1 - level) / 2) * ses
+            newdata$upp <- pred + qnorm((1 + level) / 2) * ses
+        } else {
+            if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
+                runif(1)
+            R.seed <- get(".Random.seed", envir = .GlobalEnv)
+            set.seed(seed)
+            RNGstate <- structure(seed, kind = as.list(RNGkind()))
+            on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+            ##
+            cohort_var <- newdata[[CR_cohort_varname]]
+            nlvs <- nlevels(cohort_var)
+            eta <- do.call("cbind", split(c(X %*% betas), cohort_var))
+            logit_marg_probs <- qlogis(cr_marg_probs(eta))
+            new_betas <- MASS::mvrnorm(K, betas, var_betas)
+            sim_marg_probs <- array(0.0, dim = c(dim(logit_marg_probs), K))
+            for (k in seq_len(K)) {
+                eta_k <- do.call("cbind", split(c(X %*% new_betas[k, ]), cohort_var))
+                sim_marg_probs[, , k] <- qlogis(cr_marg_probs(eta_k))
+            }
+            logit_marg_probs_low <- apply(sim_marg_probs, c(1, 2), quantile, 
+                                          probs = (1 - level) / 2)
+            logit_marg_probs_upp <- apply(sim_marg_probs, c(1, 2), quantile, 
+                                          probs = (1 + level) / 2)
+            newdata <- newdata[cohort_var == levels(cohort_var)[1L], names(newdata) != CR_cohort_varname]
+            newdata <- do.call("rbind", rep(list(newdata), nlvs + 1)); row.names(newdata) <- NULL
+            newdata[["ordinal_response"]] <- rep(seq_len(nlvs + 1), each = nrow(newdata) / (nlvs + 1))
+            newdata$pred <- c(logit_marg_probs)
+            newdata$low <- c(logit_marg_probs_low)
+            newdata$upp <- c(logit_marg_probs_upp)
+        }
     } else {
         if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
             runif(1)
@@ -1023,7 +1052,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             upp <- Qs[2, ]
             if (!is.null(gammas)) {
                 Qs_zi <- apply(zi_probs, 1, quantile, 
-                            probs = c((1 - level) / 2, (1 + level) / 2))
+                               probs = c((1 - level) / 2, (1 + level) / 2))
                 
                 attr(low, "zi_probs") <- Qs_zi[1, ]
                 attr(upp, "zi_probs") <- Qs_zi[2, ]
@@ -1050,7 +1079,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             pred2 <- if (type_pred == "link") eta2 else object$family$linkinv(eta2)
             if (!is.null(object$gammas)) {
                 mfX2_zi <- model.frame(termsX_zi, newdata2, 
-                                    xlev = .getXlevels(termsX_zi, object$model_frames$mfX_zi))
+                                       xlev = .getXlevels(termsX_zi, object$model_frames$mfX_zi))
                 X2_zi <- model.matrix(termsX_zi, mfX2_zi)
                 offset2_zi <- model.offset(mfX2_zi)
                 eta2_zi <- c(X2_zi %*% gammas)
@@ -1097,7 +1126,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                 upp2 <- Qs2[2, ]
                 if (!is.null(gammas)) {
                     Qs2_zi <- apply(zi_probs2, 1, quantile, 
-                                   probs = c((1 - level) / 2, (1 + level) / 2))
+                                    probs = c((1 - level) / 2, (1 + level) / 2))
                     
                     attr(low2, "zi_probs") <- Qs2_zi[1, ]
                     attr(upp2, "zi_probs") <- Qs2_zi[2, ]
@@ -1436,5 +1465,3 @@ scoring_rules <- function (object, newdata, newdata2 = NULL, max_count = 2000,
                          spherical = spherical)
     if (return_newdata) cbind(ND, result) else result
 }
-
-

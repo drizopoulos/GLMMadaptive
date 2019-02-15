@@ -535,3 +535,61 @@ constructor_Z <- function (termsZ_i, mfZ_i, id) {
     do.call("rbind", Zmats)
 }
 
+cr_setup <- function (y, direction = c("forward", "backward")) {
+    direction <- match.arg(direction)
+    yname <- as.character(substitute("y"))
+    if (!is.factor(y)) {
+        y <- factor(y)
+    }
+    ylevels <- levels(y)
+    ncoefs <- length(ylevels) - 1
+    if (ncoefs < 2) {
+        stop("it seems that variable ", yname, " has two levels; use a mixed effects ",
+             "logistic regression instead.\n")
+    }
+    y <- as.numeric(unclass(y) - 1)
+    if (direction == "forward") {
+        reps <- ifelse(is.na(y), 1, ifelse(y < ncoefs - 1, y + 1, ncoefs))
+        subs <- rep(seq_along(y), reps)
+        cuts <- vector("list", ncoefs + 2)
+        cuts[[1]] <- NA
+        for (j in seq(0, ncoefs)) {
+            cuts[[j + 2]] <- seq(0, if (j < ncoefs - 1) j else ncoefs - 1)
+        } 
+        cuts <- unlist(cuts[ifelse(is.na(y), 1, y + 2)], use.names = FALSE)
+        labels <- c("all", paste0(yname, ">=", ylevels[2:ncoefs]))
+        y <- rep(y, reps)
+        Y <- as.numeric(y == cuts)
+    } else {
+        reps <- ifelse(is.na(y), 1, ifelse(y > ncoefs - 3, ncoefs - (y - 1), ncoefs))
+        subs <- rep(seq_along(y), reps)
+        cuts <- vector("list", ncoefs + 2)
+        cuts[[ncoefs + 2]] <- NA
+        for (j in seq(ncoefs, 0)) {
+            cuts[[j + 1]] <- seq(0, ncoefs - if (j > ncoefs - 3) j else 1)
+        } 
+        cuts <- unlist(cuts[ifelse(is.na(y), 1, y + 1)], use.names = FALSE)
+        labels <- c("all", paste0(yname, "<=", ylevels[ncoefs:2]))
+        y <- rep(y, reps)
+        Y <- as.numeric(y == (ncoefs - cuts))
+    }
+    cohort <- factor(cuts, levels = seq(0, ncoefs - 1), labels = labels)
+    list(y = Y, cohort = cohort, subs = subs, reps = reps)
+}
+
+cr_marg_probs <- function (eta, direction = c("forward", "backward")) {
+    direction <- match.arg(direction)
+    ncoefs <- ncol(eta)
+    if (direction == "forward") {
+        cumsum_1_minus_p <- t(apply(plogis(eta[, -ncoefs], log.p = TRUE, 
+                                           lower.tail = FALSE), 1, cumsum))
+        probs <- exp(plogis(eta, log.p = TRUE) + cbind(0, cumsum_1_minus_p))
+        cbind(probs, 1 - rowSums(probs))
+    } else {
+        cumsum_1_minus_p <- t(apply(plogis(eta[, seq(ncoefs, 2)], log.p = TRUE, 
+                                           lower.tail = FALSE), 1, cumsum))
+        probs <- exp(plogis(eta, log.p = TRUE) + 
+                         cbind(cumsum_1_minus_p[, seq(ncoefs - 1, 1)], 0))
+        cbind(1 - rowSums(probs), probs)
+    }
+}

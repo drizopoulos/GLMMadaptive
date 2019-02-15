@@ -1,3 +1,9 @@
+# GLMMadaptive 0.7.0
+
+## General
+* Mixed models for ordinal clustered outcomes using the continuation ratio model.
+
+
 # GLMMadaptive 0.5.0
 
 ## General

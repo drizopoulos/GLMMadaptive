@@ -1,0 +1,124 @@
+---
+title: "Mixed Models for Ordinal Data"
+author: "Dimitris Rizopoulos"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Mixed Models for Ordinal Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library("GLMMadaptive")
+library("lattice")
+```
+
+# Estimation Procedure
+
+
+
+# An Example
+## Data
+We start by simulating some data for an ordinal longitudinal outcome:
+```{r, sim_data, eval = TRUE}
+set.seed(1234)
+n <- 300 # number of subjects
+K <- 8 # number of measurements per subject
+t_max <- 15 # maximum follow-up time
+
+# we constuct a data frame with the design: 
+# everyone has a baseline measurment, and then measurements at random follow-up times
+DF <- data.frame(id = rep(seq_len(n), each = K),
+                 time = c(replicate(n, c(0, sort(runif(K - 1, 0, t_max))))),
+                 sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
+
+# design matrices for the fixed and random effects
+X <- model.matrix(~ sex * time, data = DF)[, -1]
+Z <- model.matrix(~ time, data = DF)
+
+thrs <- c(-1.5, 0, 0.9) # thresholds for the different ordinal categories
+betas <- c(-0.25, 0.24, -0.05) # fixed effects coefficients
+D11 <- 0.48 # variance of random intercepts
+D22 <- 0.1 # variance of random slopes
+
+# we simulate random effects
+b <- cbind(rnorm(n, sd = sqrt(D11)), rnorm(n, sd = sqrt(D22)))
+# linear predictor
+eta_y <- drop(X %*% betas + rowSums(Z * b[DF$id, , drop = FALSE]))
+# linear predictor for each category
+eta_y <- outer(eta_y, thrs, "+")
+# marginal probabilities per category
+mprobs <- cr_marg_probs(eta_y)
+# we simulate ordinal longitudinal data
+DF$y <- unname(apply(mprobs, 1, sample, x = ncol(mprobs), size = 1, replace = TRUE))
+```
+
+
+```{r, set_up_data, eval = TRUE}
+cr_vals <- cr_setup(DF$y)
+cr_data <- DF[cr_vals$subs, ]
+cr_data$y_new <- cr_vals$y
+cr_data$cohort <- cr_vals$cohort
+```
+
+
+```{r, random_intercepts, eval = TRUE}
+fm <- mixed_model(y_new ~ cohort + sex + time, random = ~ 1 | id, 
+                  data = cr_data, family = binomial())
+
+fm
+```
+
+
+```{r, relax_CR_assumption, eval = TRUE}
+gm <- mixed_model(y_new ~ cohort * sex + time, random = ~ 1 | id, 
+                  data = cr_data, family = binomial())
+
+gm
+```
+
+```{r, effect_plot_data, eval = TRUE}
+nDF <- with(cr_data, expand.grid(cohort = levels(cohort), sex = levels(sex), 
+                                 time = seq(0, 10, length.out = 55)))
+
+plot_data <- effectPlotData(fm, nDF)
+```
+
+```{r, CR_probs_plot, eval = TRUE, fig.align = "center", fig.width = 8.5, fig.height = 7.5}
+expit <- function (x) exp(x) / (1 + exp(x))
+my.panel.bands <- function(x, y, upper, lower, fill, col, subscripts, ..., font, 
+                           fontface) {
+    upper <- upper[subscripts]
+    lower <- lower[subscripts]
+    panel.polygon(c(x, rev(x)), c(upper, rev(lower)), col = fill, border = FALSE, ...)
+}
+
+xyplot(expit(pred) ~ time | sex, group = cohort, data = plot_data, 
+       upper = expit(plot_data$upp), low = expit(plot_data$low), type = "l",
+       panel = function (x, y, ...) {
+           panel.superpose(x, y, panel.groups = my.panel.bands, ...)
+           panel.xyplot(x, y, lwd = 2,  ...)
+       }, xlab = "Follow-up time", ylab = "Continuation Ratio Probabilities")
+```
+
+
+```{r, effect_plot_data_marg, eval = TRUE}
+plot_data_m <- effectPlotData(fm, nDF, CR_cohort_varname = "cohort")
+```
+
+```{r, CR_probs_plot_marg, eval = TRUE, fig.align = "center", fig.width = 8.5, fig.height = 7.5}
+xyplot(expit(pred) ~ time | sex, group = ordinal_response, data = plot_data_m, 
+       upper = expit(plot_data_m$upp), low = expit(plot_data_m$low), type = "l",
+       panel = function (x, y, ...) {
+           panel.superpose(x, y, panel.groups = my.panel.bands, ...)
+           panel.xyplot(x, y, lwd = 2,  ...)
+       }, xlab = "Follow-up time", ylab = "Marginal Probabilities")
+```
+
