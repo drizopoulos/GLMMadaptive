@@ -20,8 +20,36 @@ library("GLMMadaptive")
 library("lattice")
 ```
 
-# Estimation Procedure
+# Continuation Ratio Model
+## Definition
+In many applications the outcome of interest is an ordinal variable, i.e., a categorical variable with a natural ordering of its levels. For example, an ordinal response may represent levels of a standard measurement scale, such as severity of pain (none, mild, moderate, severe) or economic status, with three categories (low, medium and high). A variety of statistical models, namely,  proportional odds, adjacent category, stereotype logit, and continuation ratio can be used for an ordinal response. Here we focus on the continuation ratio model. Let $y_i$ denote a vector of grouped/clustered outcome for
+the $i$-th sample unit ($i = 1, \ldots, n$). We assume that each measurement in $y_{ij}$, $(j = 1, \ldots, n_i)$ can take values $K + 1$ possible values in the ordered set $\{0, 1, \ldots, K\}$. The continuation ratio mixed effects model is based on conditional probabilities for this outcome $y_i$. Namely, the *backward* formulation of the model postulates:
+\[
+\log \{ \Pr(y_{ij} = k \mid y_{ij} \leq k) \} = \alpha_k + x_{ij}^\top \beta + z_{ij}^\top b_i,
+\]
+whereas the forward formulation is:
+\[
+\log \{ \Pr(y_{ij} = k \mid y_{ij} \geq k) \} = \alpha_k + x_{ij}^\top \beta + z_{ij}^\top b_i,
+\]
+where $x_{ij}$ denotes the $j$-th row of the fixed effects design matrix $X_i$, with the corresponding fixed effects coefficients denoted by $\beta$, $z_{ij}$ denotes the $j$-th row of the random effects design matrix $Z_i$ with corresponding random effects $b_i$, which follow a normal distribution with mean zero and variance-covariance matrix $D$. The coefficients $\alpha_k$ denote the threshold parameters for each category. For identification reasons, $K$ threshold parameters are estimated.
 
+The backward formulation is commonly used when progression through disease states from none, mild, moderate,severe is represented by increasing integer values, and interest lies in estimating the odds ofmore severe disease compared to less severe disease. The forward formulation specifies that subjects have to 'pass through' one category to get to the next one. The forward formulation is a equivalent to a discrete version of Cox proportional hazards models.
+
+### Marginal Probabilities
+In the backward formulation the marginal probabilities for each category are given by
+$$
+\Pr(y_{ij} = k) = 
+\left \{
+\begin{array}{ll}
+\frac{\exp(\alpha_k + x_{ij}^\top \beta + z_{ij}^\top b_i)}{1 + \exp(\alpha_k + x_{ij}^\top \beta + z_{ij}^\top b_i)} & k = K,\\\\
+\frac{\exp(\alpha_k + x_{ij}^\top \beta + z_{ij}^\top b_i)}{1 + \exp(\alpha_k + x_{ij}^\top \beta + z_{ij}^\top b_i)} \times 
+\prod_{k' > k} \frac{1}{1 + \exp(\alpha_{k'} + x_{ij}^\top \beta + z_{ij}^\top b_i)}& k < K.
+\end{array}
+\right.
+$$
+
+## Estimation
+An advantage of the continuation ratio model is that its likelihood canbe easily re-expresse such that it can be fitted with software the fits (mixed effects) logistic regression. The details behind this re-expression of the likelihood are given, for example, in [Armstrong and Sloan (1989)](https://doi.org/10.1093/oxfordjournals.aje.a115109), and [Berridge and Whitehead (1991)](https://doi.org/10.1002/sim.4780101108).
 
 
 # An Example
