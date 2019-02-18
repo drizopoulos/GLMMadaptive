@@ -494,6 +494,9 @@ residuals.MixMod <- function (object, type = c("mean_subject", "subject_specific
     type <- match.arg(type)
     fits <- fitted(object, type = type, link_fun = link_fun)
     y <- model.response(object$model_frames$mfX)
+    if (is.factor(y)) {
+        y <- as.numeric(y != levels(y)[1L])
+    }
     tasnf_y(y) - fits
 }
 
@@ -731,10 +734,7 @@ create_lists <- function (object, newdata) {
                        xlev = .getXlevels(termsX, object$model_frames$mfX))
     y <- model.response(model.frame(object$Terms$termsX, newdata))
     if (is.factor(y)) {
-        if (family$family == "binomial")
-            y <- as.numeric(y != levels(y)[1L])
-        else
-            stop("the response variable should not be a factor.\n")
+        y <- as.numeric(y != levels(y)[1L])
     }
     offset <- model.offset(mfX)
     X <- model.matrix(termsX, mfX)
@@ -1206,7 +1206,7 @@ simulate.MixMod <- function (object, nsim = 1, seed = NULL,
     type <- match.arg(type)
     if (is.null(sim_fun)) {
         if (object$family$family == "binomial") {
-            N <- if ((y <- NCOL(model.response(object$model_frames$mfX))) == 2) 
+            N <- if ((NCOL(y <- model.response(object$model_frames$mfX))) == 2) 
                 y[, 1] + y[, 2] else 1
             .N <- N
             env <- new.env(parent = .GlobalEnv)
