@@ -68,7 +68,8 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
     tol1 <- control$tol1; tol2 <- control$tol2; tol3 <- control$tol3
     converged <- FALSE
     err_mgs <- paste("A large coefficient value has been detected during the optimization.\n",
-                     "Please re-scale you covariates. Alternatively, this may due to a\n",
+                     "Please re-scale you covariates and/or try setting the control argument\n", 
+                     "'iter_EM = 0'. Alternatively, this may due to a\n",
                      "divergence of the optimization algorithm, indicating that an overly\n",
                      "complex model is fitted to the data. For example, this could be\n",
                      "caused when including random-effects terms (e.g., in the\n", 
@@ -262,7 +263,8 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                           score_phis_fun = score_phis_fun, list_thetas = list_thetas, 
                           diag_D = diag_D, penalized = penalized, pen_mu = pen_mu, 
                           pen_invSigma = pen_invSigma, pen_df = pen_df)
-            new_pars <- relist(opt$par, skeleton = list_thetas)
+            tht <- opt$par
+            new_pars <- relist(tht, skeleton = list_thetas)
             betas <- new_pars$betas
             phis <- new_pars$phis
             gammas <- new_pars$gammas
