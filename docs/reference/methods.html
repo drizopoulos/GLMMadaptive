@@ -65,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1999</span>
       </span>
     </div>
 
@@ -107,6 +107,9 @@
     </li>
     <li>
       <a href="../articles/Optimization.html">Optimization and Numerical Integration in GLMMadaptive</a>
+    </li>
+    <li>
+      <a href="../articles/Ordinal_Mixed_Models.html">Mixed Models for Ordinal Data</a>
     </li>
     <li>
       <a href="../articles/ZeroInflated_and_TwoPart_Models.html">Zero-Inflated and Two-Part Mixed Effects Models</a>
@@ -476,38 +479,38 @@ residuals.</p>
                    <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/family'>binomial</a></span>())
 
 <span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'>coef</span>(<span class='no'>fm1</span>))</div><div class='output co'>#&gt;   (Intercept)      year     group1
-#&gt; 1   -2.378738 0.2683276 -0.4688267
-#&gt; 2   -2.222230 0.4207562 -0.4688267
-#&gt; 3   -1.928975 0.4171942 -0.4688267
-#&gt; 4   -2.090477 0.4455214 -0.4688267
-#&gt; 5   -2.155516 0.3418032 -0.4688267
-#&gt; 6   -1.684444 0.2665205 -0.4688267</div><div class='input'><span class='fu'>fixef</span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; (Intercept)        year      group1 
-#&gt;  -2.0658518   0.2010321  -0.4688267 </div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'>ranef</span>(<span class='no'>fm1</span>))</div><div class='output co'>#&gt;   (Intercept)       year
-#&gt; 1 -0.31288655 0.06729549
-#&gt; 2 -0.15637820 0.21972412
-#&gt; 3  0.13687699 0.21616212
-#&gt; 4 -0.02462537 0.24448930
-#&gt; 5 -0.08966418 0.14077113
-#&gt; 6  0.38140771 0.06548834</div><div class='input'>
+#&gt; 1   -2.375625 0.2680821 -0.4684564
+#&gt; 2   -2.220223 0.4205271 -0.4684564
+#&gt; 3   -1.929169 0.4172189 -0.4684564
+#&gt; 4   -2.089544 0.4453620 -0.4684564
+#&gt; 5   -2.154084 0.3416652 -0.4684564
+#&gt; 6   -1.686565 0.2666655 -0.4684564</div><div class='input'><span class='fu'>fixef</span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; (Intercept)        year      group1 
+#&gt;  -2.0651405   0.2008444  -0.4684564 </div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'>ranef</span>(<span class='no'>fm1</span>))</div><div class='output co'>#&gt;   (Intercept)       year
+#&gt; 1 -0.31048422 0.06723770
+#&gt; 2 -0.15508229 0.21968272
+#&gt; 3  0.13597132 0.21637448
+#&gt; 4 -0.02440311 0.24451762
+#&gt; 5 -0.08894378 0.14082079
+#&gt; 6  0.37857580 0.06582107</div><div class='input'>
 
 <span class='fu'>confint</span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt;                  2.5 %   Estimate     97.5 %
-#&gt; (Intercept) -2.2980737 -2.0658518 -1.8336299
-#&gt; year         0.1499901  0.2010321  0.2520741
-#&gt; group1      -0.7748002 -0.4688267 -0.1628532</div><div class='input'><span class='fu'>confint</span>(<span class='no'>fm1</span>, <span class='st'>"var-cov"</span>)</div><div class='output co'>#&gt;                       2.5 %      Estimate      97.5 %
-#&gt; var.(Intercept)  0.18817740  0.4415831552  0.01779614
-#&gt; cov.(Int)_year  -0.06203065 -0.0001873761  0.14243163
-#&gt; var.year         0.17225916  0.1956258453 -0.68899372</div><div class='input'>
+#&gt; (Intercept) -2.2972913 -2.0651405 -1.8329896
+#&gt; year         0.1497187  0.2008444  0.2519702
+#&gt; group1      -0.7742354 -0.4684564 -0.1626773</div><div class='input'><span class='fu'>confint</span>(<span class='no'>fm1</span>, <span class='st'>"var-cov"</span>)</div><div class='output co'>#&gt;                       2.5 %     Estimate      97.5 %
+#&gt; var.(Intercept)  0.18499820 4.377293e-01  0.01754996
+#&gt; cov.(Int)_year  -0.06142625 6.262338e-05  0.14300314
+#&gt; var.year         0.17235913 1.958232e-01 -0.68848502</div><div class='input'>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'>fitted</span>(<span class='no'>fm1</span>, <span class='st'>"subject_specific"</span>))</div><div class='output co'>#&gt;          1          2          3          4          5          6 
-#&gt; 0.05480732 0.07296825 0.28527579 0.47400594 0.54822133 0.55366585 </div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'>residuals</span>(<span class='no'>fm1</span>, <span class='st'>"marginal"</span>))</div><div class='output co'>#&gt;          1          2          3          4          5          6 
-#&gt; -0.1735376 -0.1896775 -0.2942393 -0.3577041 -0.3823583 -0.3842078 </div><div class='input'>
+#&gt; 0.05498808 0.07318531 0.28562644 0.47424881 0.54839516 0.55383431 </div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'>residuals</span>(<span class='no'>fm1</span>, <span class='st'>"marginal"</span>))</div><div class='output co'>#&gt;          1          2          3          4          5          6 
+#&gt; -0.1735453 -0.1896805 -0.2942063 -0.3576470 -0.3822919 -0.3841407 </div><div class='input'>
 <span class='no'>fm2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(<span class='kw'>fixed</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>year</span> * <span class='no'>group</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='no'>year</span> <span class='kw'>|</span> <span class='no'>id</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>,
                    <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/family'>binomial</a></span>())
 
 <span class='co'># likelihood ratio test between fm1 and fm2</span>
 <span class='fu'>anova</span>(<span class='no'>fm1</span>, <span class='no'>fm2</span>)</div><div class='output co'>#&gt; 
 #&gt;         AIC     BIC  log.Lik  LRT df p.value
-#&gt; fm1 5010.40 5035.68 -2499.20                
-#&gt; fm2 5012.34 5012.34 -2499.17 0.06  1  0.8073
+#&gt; fm1 5010.41 5035.69 -2499.20                
+#&gt; fm2 5012.35 5012.35 -2499.17 0.06  1  0.8067
 #&gt; </div><div class='input'>
 <span class='co'># the same but with a Wald test</span>
 <span class='fu'>anova</span>(<span class='no'>fm2</span>, <span class='kw'>L</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>)))</div><div class='output co'>#&gt; 
@@ -518,7 +521,7 @@ residuals.</p>
 #&gt;       0    0      0      1
 #&gt; 
 #&gt;    Chisq df Pr(&gt;|Chi|)
-#&gt;   0.0941  1      0.759
+#&gt;   0.0959  1     0.7568
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1999</span>
       </span>
     </div>
 
@@ -75,6 +75,9 @@
       <a href="../articles/Optimization.html">Optimization and Numerical Integration in GLMMadaptive</a>
     </li>
     <li>
+      <a href="../articles/Ordinal_Mixed_Models.html">Mixed Models for Ordinal Data</a>
+    </li>
+    <li>
       <a href="../articles/ZeroInflated_and_TwoPart_Models.html">Zero-Inflated and Two-Part Mixed Effects Models</a>
     </li>
   </ul>
@@ -105,7 +108,7 @@
       <h1>Optimization and Numerical Integration in GLMMadaptive</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-01-29</h4>
+            <h4 class="date">2019-02-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Optimization.Rmd"><code>vignettes/Optimization.Rmd</code></a></small>
       <div class="hidden name"><code>Optimization.Rmd</code></div>
@@ -117,7 +120,7 @@
 <div id="estimation-procedure" class="section level1">
 <h1 class="hasAnchor">
 <a href="#estimation-procedure" class="anchor"></a>Estimation Procedure</h1>
-<p>As described in vignette GLMMadaptive basics XXX, the log-likelihood function behind the mixed models fitted by <strong>GLMMadaptive</strong> contains an intractable integral over the random effects. In addition, the mode of the log-likelhood function cannot be calculated analytically. Therefore, maximum likelihood estimation requires a combination of numerical integration and optimization.</p>
+<p>As described in vignette GLMMadaptive basics (<code><a href="../articles/GLMMadaptive_basics.html">vignette("GLMMadaptive_basics", package = "GLMMadaptive")</a></code>), the log-likelihood function behind the mixed models fitted by <strong>GLMMadaptive</strong> contains an intractable integral over the random effects. In addition, the mode of the log-likelhood function cannot be calculated analytically. Therefore, maximum likelihood estimation requires a combination of numerical integration and optimization.</p>
 <p>For the numerical optimization two, interlinked by default, algorithms are implemented. An EM algorithm in which the random effects are treated as ‘missing data’, and a quasi-Newton algorithm for direct optimization. The EM algorithm is often a more stable algorithm, especially when the initial values are far from the mode of the log-likelihood; however, because it has a linear convergence rate it can be slow reaching the mode. On the other hand, quasi-Newton algorithms typically have a super-linear convergene rate, but they may have trouble if they are initiated far from the mode. For this reason, optimization procedure in <strong>GLMMadaptive</strong> starts with the EM algorithm for a fixed number of iterations that are used as a refinement of the initial values before switching to the quasi-Newton algorithm.</p>
 <p>The numerical integration over the random effects is done using the adaptive Gauss-Hermite quadrature rule. This also requires an optimization step of finding the modes of the complete-data (= observed response variable and unobserved random effects) log-likelihood with respect to the random effects, <em>for each sample unit</em>. To decrease the computational cost, the optimization procedure in <strong>GLMMadaptive</strong> does not locate these modes of the random effects in every iteration but every few iterations of the optimization procedure.</p>
 <p>The <code>control</code> argument of function <code><a href="../reference/mixed_model.html">mixed_model()</a></code> has a number of arguments that enable the user to determine how the numerical integration and optimization procedure are performed. The relevant arguments are:</p>

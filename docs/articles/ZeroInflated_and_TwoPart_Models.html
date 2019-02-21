@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1999</span>
       </span>
     </div>
 
@@ -75,6 +75,9 @@
       <a href="../articles/Optimization.html">Optimization and Numerical Integration in GLMMadaptive</a>
     </li>
     <li>
+      <a href="../articles/Ordinal_Mixed_Models.html">Mixed Models for Ordinal Data</a>
+    </li>
+    <li>
       <a href="../articles/ZeroInflated_and_TwoPart_Models.html">Zero-Inflated and Two-Part Mixed Effects Models</a>
     </li>
   </ul>
@@ -105,7 +108,7 @@
       <h1>Zero-Inflated and Two-Part Mixed Effects Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-01-29</h4>
+            <h4 class="date">2019-02-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/ZeroInflated_and_TwoPart_Models.Rmd"><code>vignettes/ZeroInflated_and_TwoPart_Models.Rmd</code></a></small>
       <div class="hidden name"><code>ZeroInflated_and_TwoPart_Models.Rmd</code></div>
@@ -202,18 +205,18 @@ fm2
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;                 StdDev    Corr</span>
-<span class="co">#&gt; (Intercept)     0.7406        </span>
-<span class="co">#&gt; zi_(Intercept)  0.6904 -0.6556</span>
+<span class="co">#&gt; (Intercept)     0.7394        </span>
+<span class="co">#&gt; zi_(Intercept)  0.6917 -0.6550</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;   1.5881570711  -0.0083137636  -0.0030264830   0.0002554746 </span>
+<span class="co">#&gt;   1.5891884685  -0.0085650817  -0.0030156086   0.0002487272 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Zero-part coefficients:</span>
 <span class="co">#&gt; (Intercept)   sexfemale </span>
-<span class="co">#&gt;  -1.1103020   0.4282111 </span>
+<span class="co">#&gt;   -1.112309    0.427672 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2214.276</span></code></pre></div>
+<span class="co">#&gt; log-Lik: -2214.277</span></code></pre></div>
 <p>We test if we need the extra random effect using a likelihood ratio test:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(fm1, fm2)
 <span class="co">#&gt; </span>
@@ -380,18 +383,18 @@ km1
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;                StdDev</span>
-<span class="co">#&gt; (Intercept) 0.9615228</span>
+<span class="co">#&gt; (Intercept) 0.9609426</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;    -2.08102787    -0.24015083     0.22302346    -0.05696434 </span>
+<span class="co">#&gt;    -2.08122468    -0.24046281     0.22303981    -0.05686286 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Zero-part coefficients:</span>
 <span class="co">#&gt; (Intercept)   sexfemale </span>
 <span class="co">#&gt;  -1.6034499   0.6713555 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  -0.3352479 </span>
+<span class="co">#&gt;  -0.3348787 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; log-Lik: -1214.208</span></code></pre></div>
 <p>The estimated standard deviation for the error terms is <code>exp(phis) =</code> 0.7 We extend the model by allowing for a random intercept in the zero-part, but using the <code>||</code> symbol in the <code>random</code> argument we specify the covariance matrix of the random effects is diagonal; hence, that the two random intercepts terms are uncorrelated:</p>
@@ -411,19 +414,19 @@ km2
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;                StdDev</span>
-<span class="co">#&gt; (Intercept)    0.9619</span>
+<span class="co">#&gt; (Intercept)    0.9609</span>
 <span class="co">#&gt; zi_(Intercept) 0.6043</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;    -2.08026578    -0.24025852     0.22301074    -0.05698636 </span>
+<span class="co">#&gt;     -2.0811898     -0.2405682      0.2230215     -0.0568855 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Zero-part coefficients:</span>
 <span class="co">#&gt; (Intercept)   sexfemale </span>
-<span class="co">#&gt;  -1.7160273   0.7096789 </span>
+<span class="co">#&gt;  -1.7160430   0.7096562 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  -0.3350702 </span>
+<span class="co">#&gt;  -0.3349759 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; log-Lik: -1210.313</span></code></pre></div>
 <p>Finally, we show how the <code><a href="../reference/methods.html">simulate()</a></code> method can be used to perform a replication / posterior predictive check. In particular, in the following code we compare the empirical distribution function estimated in the observed data with estimates of the empirical distribution function obtained from simulated/replicated data from the model. In the call to <code><a href="../reference/methods.html">simulate()</a></code> below we also specify to account for the variability in the maximum likelihood estimates by setting <code>acount_MLEs_var = TRUE</code>:</p>
@@ -501,12 +504,12 @@ dm1
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;              StdDev    Corr</span>
-<span class="co">#&gt; (Intercept)  0.8229        </span>
-<span class="co">#&gt; time         0.3652 -0.3133</span>
+<span class="co">#&gt; (Intercept)  0.8231        </span>
+<span class="co">#&gt; time         0.3649 -0.3136</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;     1.52799681     0.08046775     0.08982336    -0.09129448 </span>
+<span class="co">#&gt;     1.52797499     0.08041345     0.08988228    -0.09127713 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Zero-part coefficients:</span>
 <span class="co">#&gt; (Intercept)   sexfemale </span>

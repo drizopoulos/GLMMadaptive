@@ -66,7 +66,7 @@ effects plot." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1999</span>
       </span>
     </div>
 
@@ -108,6 +108,9 @@ effects plot." />
     </li>
     <li>
       <a href="../articles/Optimization.html">Optimization and Numerical Integration in GLMMadaptive</a>
+    </li>
+    <li>
+      <a href="../articles/Ordinal_Mixed_Models.html">Mixed Models for Ordinal Data</a>
     </li>
     <li>
       <a href="../articles/ZeroInflated_and_TwoPart_Models.html">Zero-Inflated and Two-Part Mixed Effects Models</a>
@@ -154,8 +157,8 @@ effects plot.</p>
 
 # S3 method for MixMod
 effectPlotData(object, newdata, 
-   level = 0.95, marginal = FALSE, K = 200, seed = 1, 
-   sandwich = FALSE, &#8230;)</pre>
+   level = 0.95, marginal = FALSE, CR_cohort_varname = NULL,
+   K = 200, seed = 1, sandwich = FALSE, &#8230;)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -177,6 +180,11 @@ effectPlotData(object, newdata,
       <td><p>logical; if <code>FALSE</code> predicted values are calculated for the "mean"
     subject (i.e., the one with random effects values equal to 0). When <code>TRUE</code> 
     marginal predicted values are calculated using function <code><a href='marginal_coefs.html'>marginal_coefs</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>CR_cohort_varname</th>
+      <td><p>a character string denoting the name of the cohort variable when
+    a continuation ratio model is fitted.</p></td>
     </tr>
     <tr>
       <th>K</th>

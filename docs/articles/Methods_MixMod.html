@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1999</span>
       </span>
     </div>
 
@@ -75,6 +75,9 @@
       <a href="../articles/Optimization.html">Optimization and Numerical Integration in GLMMadaptive</a>
     </li>
     <li>
+      <a href="../articles/Ordinal_Mixed_Models.html">Mixed Models for Ordinal Data</a>
+    </li>
+    <li>
       <a href="../articles/ZeroInflated_and_TwoPart_Models.html">Zero-Inflated and Two-Part Mixed Effects Models</a>
     </li>
   </ul>
@@ -105,7 +108,7 @@
       <h1>Methods for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-01-29</h4>
+            <h4 class="date">2019-02-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Methods_MixMod.Rmd"><code>vignettes/Methods_MixMod.Rmd</code></a></small>
       <div class="hidden name"><code>Methods_MixMod.Rmd</code></div>
@@ -164,14 +167,14 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;              StdDev    Corr</span>
-<span class="co">#&gt; (Intercept)  0.7187        </span>
-<span class="co">#&gt; time         0.2502  0.6113</span>
+<span class="co">#&gt; (Intercept)  0.6808        </span>
+<span class="co">#&gt; time         0.2510  0.6544</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;  -2.0643694133  -1.1665530279   0.2620691955   0.0007707252 </span>
+<span class="co">#&gt;   -2.057131526   -1.169617288    0.261562222    0.001962038 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -358.8278</span></code></pre></div>
+<span class="co">#&gt; log-Lik: -358.8142</span></code></pre></div>
 <p>and</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(fm)
 <span class="co">#&gt; </span>
@@ -189,19 +192,19 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fit statistics:</span>
 <span class="co">#&gt;    log.Lik      AIC      BIC</span>
-<span class="co">#&gt;  -358.8278 731.6556 749.8918</span>
+<span class="co">#&gt;  -358.8142 731.6283 749.8645</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;              StdDev    Corr</span>
-<span class="co">#&gt; (Intercept)  0.7187        </span>
-<span class="co">#&gt; time         0.2502  0.6113</span>
+<span class="co">#&gt; (Intercept)  0.6808        </span>
+<span class="co">#&gt; time         0.2510  0.6544</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;                Estimate Std.Err z-value  p-value</span>
-<span class="co">#&gt; (Intercept)     -2.0644  0.3181 -6.4904  &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale       -1.1666  0.4706 -2.4789 0.013178</span>
-<span class="co">#&gt; time             0.2621  0.0564  4.6472  &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale:time   0.0008  0.0782  0.0099 0.992140</span>
+<span class="co">#&gt; (Intercept)     -2.0571  0.3148 -6.5348  &lt; 1e-04</span>
+<span class="co">#&gt; sexfemale       -1.1696  0.4683 -2.4974 0.012509</span>
+<span class="co">#&gt; time             0.2616  0.0563  4.6428  &lt; 1e-04</span>
+<span class="co">#&gt; sexfemale:time   0.0020  0.0783  0.0250 0.980016</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Integration:</span>
 <span class="co">#&gt; method: adaptive Gauss-Hermite quadrature rule</span>
@@ -213,53 +216,53 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <p>The output is rather self-explanatory. However, just note that the fixed-effects coefficients are on the linear predictor scale, and hence are the corresponding log-odds for the intercept and log-odds ratios for the rest of the parameters. The <code><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary()</a></code> only shows the estimated coefficients, standard errors and p-values, but no confidence intervals. These can be separately obtained using the <code><a href="../reference/methods.html">confint()</a></code> method, i.e.,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(<span class="kw"><a href="../reference/methods.html">confint</a></span>(fm))
 <span class="co">#&gt;                     2.5 %  Estimate    97.5 %</span>
-<span class="co">#&gt; (Intercept)    0.06803282 0.1268983 0.2366971</span>
-<span class="co">#&gt; sexfemale      0.12382509 0.3114386 0.7833147</span>
-<span class="co">#&gt; time           1.16362534 1.2996165 1.4515007</span>
-<span class="co">#&gt; sexfemale:time 0.85850359 1.0007710 1.1666144</span></code></pre></div>
+<span class="co">#&gt; (Intercept)    0.06896758 0.1278201 0.2368936</span>
+<span class="co">#&gt; sexfemale      0.12399421 0.3104857 0.7774669</span>
+<span class="co">#&gt; time           1.16316314 1.2989578 1.4506059</span>
+<span class="co">#&gt; sexfemale:time 0.85937032 1.0019640 1.1682179</span></code></pre></div>
 <p>By default the confidence intervals are produced for the fixed effects. Hence, taking the exp we obtain the confidence intervals for the corresponding odds-ratios. In addition, by default, the level of the confidence intervals is 95%. The following piece of code produces 90% confidence intervals for the variances of the random intercepts and slopes, and for their covariance:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">confint</a></span>(fm, <span class="dt">parm =</span> <span class="st">"var-cov"</span>, <span class="dt">level =</span> <span class="fl">0.90</span>)
-<span class="co">#&gt;                         5 %   Estimate       95 %</span>
-<span class="co">#&gt; var.(Intercept)  0.06825058 0.51651825  0.6816400</span>
-<span class="co">#&gt; cov.(Int)_time  -0.04202635 0.10989607  0.4666900</span>
-<span class="co">#&gt; var.time         0.02749827 0.06257619 -0.0265259</span></code></pre></div>
+<span class="co">#&gt;                         5 %  Estimate      95 %</span>
+<span class="co">#&gt; var.(Intercept)  0.05522952 0.4635392 0.6792644</span>
+<span class="co">#&gt; cov.(Int)_time  -0.03492156 0.1118245 0.4770876</span>
+<span class="co">#&gt; var.time         0.02313902 0.0630008 0.1020497</span></code></pre></div>
 <p>The estimated variance-covariance matrix of the maximum likelihood estimates of all parameters is returned using the <code><a href="https://www.rdocumentation.org/packages/stats/topics/vcov">vcov()</a></code> method, e.g.,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/vcov">vcov</a></span>(fm)
 <span class="co">#&gt;                 (Intercept)    sexfemale         time sexfemale:time</span>
-<span class="co">#&gt; (Intercept)     0.101165224 -0.075849760 -0.008462724   0.0062319917</span>
-<span class="co">#&gt; sexfemale      -0.075849760  0.221451480  0.005982953  -0.0176929203</span>
-<span class="co">#&gt; time           -0.008462724  0.005982953  0.003180201  -0.0029688109</span>
-<span class="co">#&gt; sexfemale:time  0.006231992 -0.017692920 -0.002968811   0.0061205045</span>
-<span class="co">#&gt; D_11           -0.084199859 -0.019748821  0.008096949   0.0016856706</span>
-<span class="co">#&gt; D_12            0.016576226  0.004093456 -0.001789495  -0.0004009012</span>
-<span class="co">#&gt; D_22           -0.073143834 -0.017097128  0.009286057  -0.0003280204</span>
-<span class="co">#&gt;                        D_11          D_12          D_22</span>
-<span class="co">#&gt; (Intercept)    -0.084199859  0.0165762257 -0.0731438336</span>
-<span class="co">#&gt; sexfemale      -0.019748821  0.0040934561 -0.0170971279</span>
-<span class="co">#&gt; time            0.008096949 -0.0017894945  0.0092860572</span>
-<span class="co">#&gt; sexfemale:time  0.001685671 -0.0004009012 -0.0003280204</span>
-<span class="co">#&gt; D_11            0.378507260 -0.0924117805  0.3907641746</span>
-<span class="co">#&gt; D_12           -0.092411780  0.0363908848 -0.1731976327</span>
-<span class="co">#&gt; D_22            0.390764175 -0.1731976327  0.9380448133</span></code></pre></div>
+<span class="co">#&gt; (Intercept)     0.099095998 -0.074740425 -0.008311235   6.167033e-03</span>
+<span class="co">#&gt; sexfemale      -0.074740425  0.219329721  0.005954510  -1.765040e-02</span>
+<span class="co">#&gt; time           -0.008311235  0.005954510  0.003173891  -2.972294e-03</span>
+<span class="co">#&gt; sexfemale:time  0.006167033 -0.017650401 -0.002972294   6.135062e-03</span>
+<span class="co">#&gt; D_11           -0.087007575 -0.019735153  0.008224516   1.819205e-03</span>
+<span class="co">#&gt; D_12            0.016236314  0.003858827 -0.001718795  -4.392390e-04</span>
+<span class="co">#&gt; D_22           -0.079200977 -0.017940962  0.009916866   2.096816e-05</span>
+<span class="co">#&gt;                        D_11         D_12          D_22</span>
+<span class="co">#&gt; (Intercept)    -0.087007575  0.016236314 -7.920098e-02</span>
+<span class="co">#&gt; sexfemale      -0.019735153  0.003858827 -1.794096e-02</span>
+<span class="co">#&gt; time            0.008224516 -0.001718795  9.916866e-03</span>
+<span class="co">#&gt; sexfemale:time  0.001819205 -0.000439239  2.096816e-05</span>
+<span class="co">#&gt; D_11            0.418197131 -0.096714633  4.527130e-01</span>
+<span class="co">#&gt; D_12           -0.096714633  0.036173908 -1.914378e-01</span>
+<span class="co">#&gt; D_22            0.452713003 -0.191437786  1.149900e+00</span></code></pre></div>
 <p>The elements of this covariance matrix that correspond to the elements of the covariance matrix of the random effects (i.e., the elements <code>D_xx</code>) are on the log-Cholesky scale.</p>
 <p>Robust standard errors using the sandwich estimator can be obtained by setting the logical argument <code>sandwich</code> to <code>TRUE</code>, i.e.,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/vcov">vcov</a></span>(fm, <span class="dt">sandwich =</span> <span class="ot">TRUE</span>)
 <span class="co">#&gt;                 (Intercept)    sexfemale         time sexfemale:time</span>
-<span class="co">#&gt; (Intercept)     0.102418097 -0.071241071 -0.005419992   0.0024030085</span>
-<span class="co">#&gt; sexfemale      -0.071241071  0.212868103  0.003134063  -0.0182105302</span>
-<span class="co">#&gt; time           -0.005419992  0.003134063  0.002924403  -0.0026765185</span>
-<span class="co">#&gt; sexfemale:time  0.002403009 -0.018210530 -0.002676518   0.0061625682</span>
-<span class="co">#&gt; D_11           -0.081855017 -0.011363376  0.006077928   0.0033262733</span>
-<span class="co">#&gt; D_12            0.019792719 -0.005750868 -0.001627422  -0.0002357469</span>
-<span class="co">#&gt; D_22           -0.081744077  0.029722759  0.005611241   0.0019722542</span>
+<span class="co">#&gt; (Intercept)     0.100278434 -0.070436571 -0.005288313   0.0024185176</span>
+<span class="co">#&gt; sexfemale      -0.070436571  0.214069755  0.003085020  -0.0183693751</span>
+<span class="co">#&gt; time           -0.005288313  0.003085020  0.002916768  -0.0026797203</span>
+<span class="co">#&gt; sexfemale:time  0.002418518 -0.018369375 -0.002679720   0.0061809671</span>
+<span class="co">#&gt; D_11           -0.081476067 -0.015090247  0.006093385   0.0035072465</span>
+<span class="co">#&gt; D_12            0.017548703 -0.005059183 -0.001442925  -0.0002417531</span>
+<span class="co">#&gt; D_22           -0.076955896  0.030038777  0.005076549   0.0023195503</span>
 <span class="co">#&gt;                        D_11          D_12         D_22</span>
-<span class="co">#&gt; (Intercept)    -0.081855017  0.0197927190 -0.081744077</span>
-<span class="co">#&gt; sexfemale      -0.011363376 -0.0057508677  0.029722759</span>
-<span class="co">#&gt; time            0.006077928 -0.0016274224  0.005611241</span>
-<span class="co">#&gt; sexfemale:time  0.003326273 -0.0002357469  0.001972254</span>
-<span class="co">#&gt; D_11            0.239528966 -0.0610612337  0.242396252</span>
-<span class="co">#&gt; D_12           -0.061061234  0.0270685885 -0.131741984</span>
-<span class="co">#&gt; D_22            0.242396252 -0.1317419843  0.747947498</span></code></pre></div>
+<span class="co">#&gt; (Intercept)    -0.081476067  0.0175487031 -0.076955896</span>
+<span class="co">#&gt; sexfemale      -0.015090247 -0.0050591832  0.030038777</span>
+<span class="co">#&gt; time            0.006093385 -0.0014429253  0.005076549</span>
+<span class="co">#&gt; sexfemale:time  0.003507247 -0.0002417531  0.002319550</span>
+<span class="co">#&gt; D_11            0.254098511 -0.0547543185  0.219658619</span>
+<span class="co">#&gt; D_12           -0.054754318  0.0220875599 -0.115753100</span>
+<span class="co">#&gt; D_22            0.219658619 -0.1157531000  0.735133882</span></code></pre></div>
 <p>The use of robust standard errors via the <code>sandwich</code> argument is also available in the <code><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary()</a></code>, <code><a href="../reference/methods.html">confint()</a></code>, <code><a href="../reference/methods.html">anova()</a></code>, <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>, <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code>, <code><a href="../reference/methods.html">predict()</a></code>, and <code><a href="../reference/methods.html">simulate()</a></code> methods.</p>
 </div>
 <div id="fixed-and-random-effects-estimates" class="section level2">
@@ -268,23 +271,23 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <p>To extract the estimated fixed effects coefficients from a fitted mixed model, we can use the <code><a href="../reference/methods.html">fixef()</a></code> method. Similarly, the empirical Bayes estimates of the random effects are extracted using the <code><a href="../reference/methods.html">ranef()</a></code> method, and finally the <code><a href="../reference/methods.html">coef()</a></code> method returns the subject-specific coefficients, i.e., the sum of the fixed and random effects coefficients:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">fixef</a></span>(fm)
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;  -2.0643694133  -1.1665530279   0.2620691955   0.0007707252</span></code></pre></div>
+<span class="co">#&gt;   -2.057131526   -1.169617288    0.261562222    0.001962038</span></code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">ranef</a></span>(fm))
 <span class="co">#&gt;   (Intercept)         time</span>
-<span class="co">#&gt; 1  -0.3982406 -0.119833786</span>
-<span class="co">#&gt; 2   0.6886526  0.286262025</span>
-<span class="co">#&gt; 3   0.4983007  0.213135740</span>
-<span class="co">#&gt; 4  -0.2326160 -0.004260322</span>
-<span class="co">#&gt; 5   0.2334275  0.162907597</span>
-<span class="co">#&gt; 6  -0.3758447 -0.183325415</span></code></pre></div>
+<span class="co">#&gt; 1  -0.3732164 -0.122430730</span>
+<span class="co">#&gt; 2   0.6667839  0.289302901</span>
+<span class="co">#&gt; 3   0.4844353  0.215098185</span>
+<span class="co">#&gt; 4  -0.2020809 -0.007465283</span>
+<span class="co">#&gt; 5   0.2410307  0.161494770</span>
+<span class="co">#&gt; 6  -0.3710567 -0.184012351</span></code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">coef</a></span>(fm))
 <span class="co">#&gt;   (Intercept) sexfemale       time sexfemale:time</span>
-<span class="co">#&gt; 1   -2.462610 -1.166553 0.14223541   0.0007707252</span>
-<span class="co">#&gt; 2   -1.375717 -1.166553 0.54833122   0.0007707252</span>
-<span class="co">#&gt; 3   -1.566069 -1.166553 0.47520494   0.0007707252</span>
-<span class="co">#&gt; 4   -2.296985 -1.166553 0.25780887   0.0007707252</span>
-<span class="co">#&gt; 5   -1.830942 -1.166553 0.42497679   0.0007707252</span>
-<span class="co">#&gt; 6   -2.440214 -1.166553 0.07874378   0.0007707252</span></code></pre></div>
+<span class="co">#&gt; 1   -2.430348 -1.169617 0.13913149    0.001962038</span>
+<span class="co">#&gt; 2   -1.390348 -1.169617 0.55086512    0.001962038</span>
+<span class="co">#&gt; 3   -1.572696 -1.169617 0.47666041    0.001962038</span>
+<span class="co">#&gt; 4   -2.259212 -1.169617 0.25409694    0.001962038</span>
+<span class="co">#&gt; 5   -1.816101 -1.169617 0.42305699    0.001962038</span>
+<span class="co">#&gt; 6   -2.428188 -1.169617 0.07754987    0.001962038</span></code></pre></div>
 </div>
 <div id="marginalized-coefficients" class="section level2">
 <h2 class="hasAnchor">
@@ -292,7 +295,7 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <p>The fixed effects estimates in mixed models with nonlinear link functions have an interpretation conditional on the random effects. However, often we wish to obtain parameters with a marginal / population averaged interpretation, which leads many researchers to use generalized estimating equations, and dealing with potential issues with missing data. Nonetheless, recently <a href="https://dx.doi.org/10.1111/biom.12707">Hedeker et al.</a> have proposed a nice solution to this problem. Their approach is implemented in function <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>. For example, for model <code>fm</code> we obtain the marginalized coefficients using:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(fm)
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;        -1.5973        -1.0931         0.1758         0.0503</span></code></pre></div>
+<span class="co">#&gt;        -1.6017        -1.0999         0.1763         0.0513</span></code></pre></div>
 <p>The function calculates the marginal log odds ratios in our case (because we have a binary outcome) using a Monte Carlo procedure with number of samples determined by the <code>M</code> argument.</p>
 <p>Standard errors for the marginalized coefficients are obtained by setting <code>std_errors = TRUE</code> in the call to <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>, and require a double Monte Carlo procedure for which argument <code>K</code> comes also into play. To speed up computations, the outer Monte Carlo procedure is performed in parallel using package <strong>parallel</strong> and number of cores specified in the <code>cores</code> argument (results not shown):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(fm, <span class="dt">std_errors =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">5</span>)</code></pre></div>
@@ -303,11 +306,11 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <p>The <code><a href="../reference/methods.html">fitted()</a></code> method extracts fitted values from the fitted mixed model. These are always on the scale of the response variable. The <code>type</code> argument of <code><a href="../reference/methods.html">fitted()</a></code> specifies the type of fitted values computed. The default is <code>type = "mean_subject"</code> which corresponds to the fitted values calculated using only the fixed-effects part of the linear predictor; hence, for the subject who has random effects values equal to 0, i.e., the “mean subject”:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">fitted</a></span>(fm))
 <span class="co">#&gt;         1         2         3         4         5         6 </span>
-<span class="co">#&gt; 0.1126085 0.1163929 0.1655642 0.5819328 0.5943344 0.5953577</span></code></pre></div>
+<span class="co">#&gt; 0.1133338 0.1171319 0.1664465 0.5825663 0.5949384 0.5959592</span></code></pre></div>
 <p>Setting <code>type = "subject_specific"</code> will calculate the fitted values using both the fixed and random effects parts, where for the latter the empirical Bayes estimates of the random effects are used:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">fitted</a></span>(fm, <span class="dt">type =</span> <span class="st">"subject_specific"</span>))
 <span class="co">#&gt;          1          2          3          4          5          6 </span>
-<span class="co">#&gt; 0.07852128 0.07999975 0.09796702 0.23817642 0.24325523 0.24367966</span></code></pre></div>
+<span class="co">#&gt; 0.08088760 0.08237321 0.10037615 0.23888387 0.24386110 0.24427697</span></code></pre></div>
 <p>Finally, setting <code>type = "marginal"</code> will calculate the fitted values based on the multiplication of the fixed-effects design matrix with the marginalized coefficients described above (due to the required computing time, these fitted values are not displayed):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">fitted</a></span>(fm, <span class="dt">type =</span> <span class="st">"marginal"</span>))</code></pre></div>
 <p>The <code><a href="../reference/methods.html">residuals()</a></code> method simply calculates the residuals by subtracting the fitted values from the observed repeated measurements outcome. Hence, this method also has a <code>type</code> argument with exactly the same options as the <code><a href="../reference/methods.html">fitted()</a></code> method.</p>
@@ -395,11 +398,11 @@ pred_DF
         <span class="dt">type =</span> <span class="st">"mean_subject"</span>, <span class="dt">se.fit =</span> <span class="ot">TRUE</span>)
 <span class="co">#&gt; $pred</span>
 <span class="co">#&gt;         1         2         3         4 </span>
-<span class="co">#&gt; 0.1126085 0.1163929 0.1655642 0.5819328 </span>
+<span class="co">#&gt; 0.1133338 0.1171319 0.1664465 0.5825663 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $se.fit</span>
 <span class="co">#&gt;         1         2         3         4 </span>
-<span class="co">#&gt; 0.3180648 0.3143548 0.2855677 0.4605465</span></code></pre></div>
+<span class="co">#&gt; 0.3147952 0.3111153 0.2828039 0.4607340</span></code></pre></div>
 <p>Population averaged predictions can be obtained by first calculating the marginalized coefficients (using <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>) and multiplying them with the fixed effects design matrix; this is achieved using the option <code>type = "marginal"</code> (due to the required computing time, predictions not shown):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">predict</a></span>(fm, <span class="dt">newdata =</span> pred_DF, <span class="dt">type_pred =</span> <span class="st">"response"</span>,
         <span class="dt">type =</span> <span class="st">"marginal"</span>, <span class="dt">se.fit =</span> <span class="ot">FALSE</span>)</code></pre></div>
@@ -408,19 +411,19 @@ pred_DF
         <span class="dt">type =</span> <span class="st">"subject_specific"</span>, <span class="dt">se.fit =</span> <span class="ot">TRUE</span>)
 <span class="co">#&gt; $pred</span>
 <span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.07727837 0.07833684 0.09085213 0.17749656 </span>
+<span class="co">#&gt; 0.07899463 0.08004604 0.09244962 0.17734683 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $se.fit</span>
 <span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.02725509 0.02742101 0.03135254 0.11400527 </span>
+<span class="co">#&gt; 0.02716031 0.02732290 0.03126865 0.11395985 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $low</span>
 <span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.03992409 0.04049923 0.04680744 0.04801811 </span>
+<span class="co">#&gt; 0.04105683 0.04201066 0.04874002 0.04595105 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $upp</span>
 <span class="co">#&gt;         1         2         3         4 </span>
-<span class="co">#&gt; 0.1389237 0.1401464 0.1651270 0.4993639 </span>
+<span class="co">#&gt; 0.1410026 0.1422674 0.1666224 0.4983968 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $success_rate</span>
 <span class="co">#&gt; [1] 0.5033333</span></code></pre></div>
@@ -437,35 +440,35 @@ future_Times
         <span class="dt">type =</span> <span class="st">"subject_specific"</span>, <span class="dt">se.fit =</span> <span class="ot">TRUE</span>)
 <span class="co">#&gt; $pred</span>
 <span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.07727837 0.07833684 0.09085213 0.17749656 </span>
+<span class="co">#&gt; 0.07899463 0.08004604 0.09244962 0.17734683 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $pred2</span>
 <span class="co">#&gt;         1         2         3 </span>
-<span class="co">#&gt; 0.1025495 0.1124810 0.1908892 </span>
+<span class="co">#&gt; 0.1040006 0.1137803 0.1903697 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $se.fit</span>
 <span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.02725509 0.02742101 0.03135254 0.11400527 </span>
+<span class="co">#&gt; 0.02716031 0.02732290 0.03126865 0.11395985 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $se.fit2</span>
 <span class="co">#&gt;          1          2          3 </span>
-<span class="co">#&gt; 0.03810402 0.04570786 0.12864693 </span>
+<span class="co">#&gt; 0.03807958 0.04573240 0.12854015 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $low</span>
 <span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.03992409 0.04049923 0.04680744 0.04801811 </span>
+<span class="co">#&gt; 0.04105683 0.04201066 0.04874002 0.04595105 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $upp</span>
 <span class="co">#&gt;         1         2         3         4 </span>
-<span class="co">#&gt; 0.1389237 0.1401464 0.1651270 0.4993639 </span>
+<span class="co">#&gt; 0.1410026 0.1422674 0.1666224 0.4983968 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $low2</span>
 <span class="co">#&gt;          1          2          3 </span>
-<span class="co">#&gt; 0.04907732 0.04956497 0.04762421 </span>
+<span class="co">#&gt; 0.05014694 0.05123172 0.04478053 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $upp2</span>
 <span class="co">#&gt;         1         2         3 </span>
-<span class="co">#&gt; 0.1991197 0.2246484 0.5628776</span></code></pre></div>
+<span class="co">#&gt; 0.2018029 0.2273220 0.5619224</span></code></pre></div>
 </div>
 <div id="simulate" class="section level2">
 <h2 class="hasAnchor">
@@ -480,22 +483,22 @@ future_Times
 <span class="co">#&gt;  [5,]    1    1</span>
 <span class="co">#&gt;  [6,]    1    0</span>
 <span class="co">#&gt;  [7,]    1    1</span>
-<span class="co">#&gt;  [8,]    1    1</span>
+<span class="co">#&gt;  [8,]    1    0</span>
 <span class="co">#&gt;  [9,]    0    0</span>
 <span class="co">#&gt; [10,]    0    0</span></code></pre></div>
 <p>By setting <code>acount_MLEs_var = TRUE</code> in the call to <code><a href="../reference/methods.html">simulate()</a></code> we also account for the variability in the maximum likelihood estimates in the simulation of new responses. This is achieved by simulating each time a new response vector using a realization for the parameters from a multivariate normal distribution with mean the MLEs and covariance matrix the covariance matrix of the MLEs:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">simulate</a></span>(fm, <span class="dt">nsim =</span> <span class="dv">2</span>, <span class="dt">seed =</span> <span class="dv">123</span>, <span class="dt">acount_MLEs_var =</span> <span class="ot">TRUE</span>), <span class="dv">10</span>)
 <span class="co">#&gt;       [,1] [,2]</span>
 <span class="co">#&gt;  [1,]    0    0</span>
-<span class="co">#&gt;  [2,]    1    0</span>
-<span class="co">#&gt;  [3,]    1    0</span>
-<span class="co">#&gt;  [4,]    1    0</span>
-<span class="co">#&gt;  [5,]    1    0</span>
-<span class="co">#&gt;  [6,]    0    0</span>
-<span class="co">#&gt;  [7,]    1    0</span>
-<span class="co">#&gt;  [8,]    1    0</span>
+<span class="co">#&gt;  [2,]    1    1</span>
+<span class="co">#&gt;  [3,]    1    1</span>
+<span class="co">#&gt;  [4,]    1    1</span>
+<span class="co">#&gt;  [5,]    1    1</span>
+<span class="co">#&gt;  [6,]    0    1</span>
+<span class="co">#&gt;  [7,]    1    1</span>
+<span class="co">#&gt;  [8,]    1    1</span>
 <span class="co">#&gt;  [9,]    0    0</span>
-<span class="co">#&gt; [10,]    0    1</span></code></pre></div>
+<span class="co">#&gt; [10,]    0    0</span></code></pre></div>
 </div>
 </div>
   </div>
