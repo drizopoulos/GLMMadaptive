@@ -218,10 +218,14 @@
 <span class='co'>#################################################</span>
 
 <span class='co'># prepare the data</span>
+<span class='co'># If you want to fit the CR model under the backward formulation, you need to change</span>
+<span class='co'># `cr_vals &lt;- cr_setup(DF$y)` to `cr_vals &lt;- cr_setup(DF$y, "backward")`</span>
 <span class='no'>cr_vals</span> <span class='kw'>&lt;-</span> <span class='fu'>cr_setup</span>(<span class='no'>DF</span>$<span class='no'>y</span>)
 <span class='no'>cr_data</span> <span class='kw'>&lt;-</span> <span class='no'>DF</span>[<span class='no'>cr_vals</span>$<span class='no'>subs</span>, ]
 <span class='no'>cr_data</span>$<span class='no'>y_new</span> <span class='kw'>&lt;-</span> <span class='no'>cr_vals</span>$<span class='no'>y</span>
 <span class='no'>cr_data</span>$<span class='no'>cohort</span> <span class='kw'>&lt;-</span> <span class='no'>cr_vals</span>$<span class='no'>cohort</span>
+
+<span class='co'># fit the model</span>
 <span class='no'>fm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(<span class='no'>y_new</span> ~ <span class='no'>cohort</span> + <span class='no'>sex</span> * <span class='no'>time</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> <span class='kw'>|</span> <span class='no'>id</span>,
                   <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>cr_data</span>, <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/family'>binomial</a></span>())
 
@@ -261,10 +265,7 @@
 #&gt; 
 #&gt; Optimization:
 #&gt; method: EM
-#&gt; converged: TRUE </div><div class='input'>
-# If you want to fit the CR model under backward formulation, you need to change
-# `cr_vals <- cr_setup(DF$y)` to `cr_vals <- cr_setup(DF$y, "backward")`
-</div></pre>
+#&gt; converged: TRUE </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
