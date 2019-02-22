@@ -101,6 +101,7 @@ eta_y <- outer(eta_y, thrs, "+")
 mprobs <- cr_marg_probs(eta_y)
 # we simulate ordinal longitudinal data
 DF$y <- unname(apply(mprobs, 1, sample, x = ncol(mprobs), size = 1, replace = TRUE))
+DF$y <- factor(DF$y, levels = 1:4, labels = c("none", "mild", "moderate", "severe"))
 ```
 
 **Note:** If we wanted to simulate from the backward formulation of continuation ratio model, we need to reverse the ordering of the thresholds, namely the line `eta_y <- outer(eta_y, thrs, "+")` of the code above should be replaced by `eta_y <- outer(eta_y, rev(thrs), "+")`, and also specify in the call to `cr_marg_probs()` that `direction = "backward"`.
@@ -113,6 +114,8 @@ cr_data <- DF[cr_vals$subs, ]
 cr_data$y_new <- cr_vals$y
 cr_data$cohort <- cr_vals$cohort
 ```
+
+By default `cr_setup()` works under the forward formulation (i.e., the one we have simulated from). To fit the continuation ratio model under the bacward formulation, we would need to set `direction = "backward"` in the call to `cr_setup()`.
 
 Hence, to fit the model we will use the outcome `y_new` in the new dataset `cr_data`.
 
@@ -152,7 +155,7 @@ nDF <- with(cr_data, expand.grid(cohort = levels(cohort), sex = levels(sex),
 plot_data <- effectPlotData(fm, nDF)
 ```
 
-The we produce the plot with the following call to the `xyplot()` function from the **lattice** package:
+Then we produce the plot with the following call to the `xyplot()` function from the **lattice** package:
 ```{r, CR_probs_plot, eval = TRUE, fig.align = "center", fig.width = 8.5, fig.height = 7.5}
 expit <- function (x) exp(x) / (1 + exp(x))
 my_panel_bands <- function(x, y, upper, lower, fill, col, subscripts, ..., font, 
@@ -178,13 +181,34 @@ The effect plot of the previous section depicts the conditional probabilities ac
 plot_data_m <- effectPlotData(fm, nDF, CR_cohort_varname = "cohort")
 ```
 
-To plot these probabilities we use an analogous call to `xyplot()`:
+The dataset produced by `effectPlotData()` contains a new variable named `ordinal_response` that specifies the different categories of the ordinal outcome. To plot these probabilities we use an analogous call to `xyplot()`:
 ```{r, CR_probs_plot_marg, eval = TRUE, fig.align = "center", fig.width = 8.5, fig.height = 7.5}
+key <- list(space = "top", rep = FALSE,
+            text = list(levels(DF$y)[1:2]),
+            lines = list(lty = c(1, 1), lwd = c(2, 2), col = c("#0080ff", "#ff00ff")),
+            text = list(levels(DF$y)[3:4]),
+            lines = list(lty = c(1, 1), lwd = c(2, 2), col = c("darkgreen", "#ff0000")))
+
 xyplot(expit(pred) ~ time | sex, group = ordinal_response, data = plot_data_m, 
        upper = expit(plot_data_m$upp), low = expit(plot_data_m$low), type = "l",
        panel = function (x, y, ...) {
            panel.superpose(x, y, panel.groups = my_panel_bands, ...)
-           panel.xyplot(x, y, lwd = 2,  ...)
-       }, xlab = "Follow-up time", ylab = "Marginal Probabilities")
+           panel.xyplot(x, y, lwd = 2, ...)
+       }, xlab = "Follow-up time", ylab = "Marginal Probabilities", key = key)
 ```
 
+To marginalize over the random effects as well you will need to set the `marginal` argument of effectPlotData to `TRUE`, e.g.,
+```{r, effect_plot_data_marg2, eval = TRUE}
+plot_data_m2 <- effectPlotData(fm, nDF, CR_cohort_varname = "cohort", marginal = TRUE)
+```
+
+To plot these probabilities we use an analogous call to `xyplot()`:
+```{r, CR_probs_plot_marg2, eval = TRUE, fig.align = "center", fig.width = 8.5, fig.height = 7.5}
+xyplot(expit(pred) ~ time | sex, group = ordinal_response, data = plot_data_m2, 
+       upper = expit(plot_data_m2$upp), low = expit(plot_data_m2$low), type = "l",
+       panel = function (x, y, ...) {
+           panel.superpose(x, y, panel.groups = my_panel_bands, ...)
+           panel.xyplot(x, y, lwd = 2,  ...)
+       }, xlab = "Follow-up time", ylab = "Marginal Probabilities\nalso w.r.t Random Effects", 
+       key = key)
+```

@@ -71,15 +71,16 @@ DF$y <- unname(apply(mprobs, 1, sample, x = ncol(mprobs), size = 1, replace = TR
 #################################################
 
 # prepare the data
+# If you want to fit the CR model under the backward formulation, you need to change
+# `cr_vals <- cr_setup(DF$y)` to `cr_vals <- cr_setup(DF$y, "backward")`
 cr_vals <- cr_setup(DF$y)
 cr_data <- DF[cr_vals$subs, ]
 cr_data$y_new <- cr_vals$y
 cr_data$cohort <- cr_vals$cohort
+
+# fit the model
 fm <- mixed_model(y_new ~ cohort + sex * time, random = ~ 1 | id, 
                   data = cr_data, family = binomial())
 
 summary(fm)
-
-# If you want to fit the CR model under backward formulation, you need to change
-# `cr_vals <- cr_setup(DF$y)` to `cr_vals <- cr_setup(DF$y, "backward")`
 }
