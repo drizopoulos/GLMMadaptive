@@ -108,7 +108,7 @@
       <h1>Mixed Models for Ordinal Data</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-02-21</h4>
+            <h4 class="date">2019-02-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Ordinal_Mixed_Models.Rmd"><code>vignettes/Ordinal_Mixed_Models.Rmd</code></a></small>
       <div class="hidden name"><code>Ordinal_Mixed_Models.Rmd</code></div>
@@ -124,9 +124,9 @@
 <h3 class="hasAnchor">
 <a href="#definition" class="anchor"></a>Definition</h3>
 <p>In many applications the outcome of interest is an ordinal variable, i.e., a categorical variable with a natural ordering of its levels. For example, an ordinal response may represent levels of a standard measurement scale, such as pain severity (none, mild, moderate, severe) or economic status, with three categories (low, medium and high). A variety of statistical models, namely, proportional odds, adjacent category, stereotype logit, and continuation ratio can be used for an ordinal response. Here we focus on the continuation ratio model. Let <span class="math inline">\(y_i\)</span> denote a vector of grouped/clustered outcome for the <span class="math inline">\(i\)</span>-th sample unit (<span class="math inline">\(i = 1, \ldots, n\)</span>). We assume that each measurement in <span class="math inline">\(y_{ij}\)</span>, <span class="math inline">\((j = 1, \ldots, n_i)\)</span> can take values <span class="math inline">\(K + 1\)</span> possible values in the ordered set <span class="math inline">\(\{0, 1, \ldots, K\}\)</span>. The continuation ratio mixed effects model is based on conditional probabilities for this outcome <span class="math inline">\(y_i\)</span>. Namely, the <em>backward</em> formulation of the model postulates: <span class="math display">\[
-\log \{ \Pr(y_{ij} = k \mid y_{ij} \leq k) \} = \alpha_k + x_{ij}^\top \beta + z_{ij}^\top b_i,
+\log \left \{ \frac{\Pr(y_{ij} = k \mid y_{ij} \leq k)}{1 - \Pr(y_{ij} = k \mid y_{ij} \leq k)} \right \} = \alpha_k + x_{ij}^\top \beta + z_{ij}^\top b_i,
 \]</span> whereas the forward formulation is: <span class="math display">\[
-\log \{ \Pr(y_{ij} = k \mid y_{ij} \geq k) \} = \alpha_k + x_{ij}^\top \beta + z_{ij}^\top b_i,
+\log \left \{ \frac{\Pr(y_{ij} = k \mid y_{ij} \geq k)}{1 - \Pr(y_{ij} = k \mid y_{ij} \geq k)} \right \} = \alpha_k + x_{ij}^\top \beta + z_{ij}^\top b_i,
 \]</span> where <span class="math inline">\(x_{ij}\)</span> denotes the <span class="math inline">\(j\)</span>-th row of the fixed effects design matrix <span class="math inline">\(X_i\)</span>, with the corresponding fixed effects coefficients denoted by <span class="math inline">\(\beta\)</span>, <span class="math inline">\(z_{ij}\)</span> denotes the <span class="math inline">\(j\)</span>-th row of the random effects design matrix <span class="math inline">\(Z_i\)</span> with corresponding random effects <span class="math inline">\(b_i\)</span>, which follow a normal distribution with mean zero and variance-covariance matrix <span class="math inline">\(D\)</span>. The coefficients <span class="math inline">\(\alpha_k\)</span> denote the threshold parameters for each category. For identification reasons, <span class="math inline">\(K\)</span> threshold parameters are estimated.</p>
 <p>The backward formulation is commonly used when progression through disease states from none, mild, moderate,severe is represented by increasing integer values, and interest lies in estimating the odds of more severe disease compared to less severe disease. The forward formulation specifies that subjects have to ‘pass through’ one category to get to the next one. The forward formulation is a equivalent to a discrete version of Cox proportional hazards models.</p>
 </div>
