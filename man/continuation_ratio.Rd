@@ -64,6 +64,10 @@ mprobs <- cr_marg_probs(eta_y)
 # we simulate ordinal longitudinal data
 DF$y <- unname(apply(mprobs, 1, sample, x = ncol(mprobs), size = 1, replace = TRUE))
 
+# If you want to simulate from the backward formulation of the CR model, you need to
+# change `eta_y <- outer(eta_y, thrs, "+")` to `eta_y <- outer(eta_y, rev(thrs), "+")`,
+# and `mprobs <- cr_marg_probs(eta_y)` to `mprobs <- cr_marg_probs(eta_y, "backward")`
+
 #################################################
 
 # prepare the data
@@ -75,4 +79,7 @@ fm <- mixed_model(y_new ~ cohort + sex * time, random = ~ 1 | id,
                   data = cr_data, family = binomial())
 
 summary(fm)
+
+# If you want to fit the CR model under backward formulation, you need to change
+# `cr_vals <- cr_setup(DF$y)` to `cr_vals <- cr_setup(DF$y, "backward")`
 }

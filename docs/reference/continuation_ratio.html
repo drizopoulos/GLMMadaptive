@@ -211,6 +211,10 @@
 <span class='co'># we simulate ordinal longitudinal data</span>
 <span class='no'>DF</span>$<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/unname'>unname</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/apply'>apply</a></span>(<span class='no'>mprobs</span>, <span class='fl'>1</span>, <span class='no'>sample</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>ncol</a></span>(<span class='no'>mprobs</span>), <span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))
 
+<span class='co'># If you want to simulate from the backward formulation of the CR model, you need to</span>
+<span class='co'># change `eta_y &lt;- outer(eta_y, thrs, "+")` to `eta_y &lt;- outer(eta_y, rev(thrs), "+")`,</span>
+<span class='co'># and `mprobs &lt;- cr_marg_probs(eta_y)` to `mprobs &lt;- cr_marg_probs(eta_y, "backward")`</span>
+
 <span class='co'>#################################################</span>
 
 <span class='co'># prepare the data</span>
@@ -257,7 +261,10 @@
 #&gt; 
 #&gt; Optimization:
 #&gt; method: EM
-#&gt; converged: TRUE </div></pre>
+#&gt; converged: TRUE </div><div class='input'>
+# If you want to fit the CR model under backward formulation, you need to change
+# `cr_vals <- cr_setup(DF$y)` to `cr_vals <- cr_setup(DF$y, "backward")`
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
