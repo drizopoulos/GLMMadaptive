@@ -108,7 +108,7 @@
       <h1>Mixed Models for Ordinal Data</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-02-22</h4>
+            <h4 class="date">2019-02-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Ordinal_Mixed_Models.Rmd"><code>vignettes/Ordinal_Mixed_Models.Rmd</code></a></small>
       <div class="hidden name"><code>Ordinal_Mixed_Models.Rmd</code></div>
@@ -127,7 +127,7 @@
 \log \left \{ \frac{\Pr(y_{ij} = k \mid y_{ij} \leq k)}{1 - \Pr(y_{ij} = k \mid y_{ij} \leq k)} \right \} = \alpha_k + x_{ij}^\top \beta + z_{ij}^\top b_i,
 \]</span> whereas the forward formulation is: <span class="math display">\[
 \log \left \{ \frac{\Pr(y_{ij} = k \mid y_{ij} \geq k)}{1 - \Pr(y_{ij} = k \mid y_{ij} \geq k)} \right \} = \alpha_k + x_{ij}^\top \beta + z_{ij}^\top b_i,
-\]</span> where <span class="math inline">\(x_{ij}\)</span> denotes the <span class="math inline">\(j\)</span>-th row of the fixed effects design matrix <span class="math inline">\(X_i\)</span>, with the corresponding fixed effects coefficients denoted by <span class="math inline">\(\beta\)</span>, <span class="math inline">\(z_{ij}\)</span> denotes the <span class="math inline">\(j\)</span>-th row of the random effects design matrix <span class="math inline">\(Z_i\)</span> with corresponding random effects <span class="math inline">\(b_i\)</span>, which follow a normal distribution with mean zero and variance-covariance matrix <span class="math inline">\(D\)</span>. The coefficients <span class="math inline">\(\alpha_k\)</span> denote the threshold parameters for each category. For identification reasons, <span class="math inline">\(K\)</span> threshold parameters are estimated.</p>
+\]</span> where $k {0, 1, , K} $, <span class="math inline">\(x_{ij}\)</span> denotes the <span class="math inline">\(j\)</span>-th row of the fixed effects design matrix <span class="math inline">\(X_i\)</span>, with the corresponding fixed effects coefficients denoted by <span class="math inline">\(\beta\)</span>, <span class="math inline">\(z_{ij}\)</span> denotes the <span class="math inline">\(j\)</span>-th row of the random effects design matrix <span class="math inline">\(Z_i\)</span> with corresponding random effects <span class="math inline">\(b_i\)</span>, which follow a normal distribution with mean zero and variance-covariance matrix <span class="math inline">\(D\)</span>. The coefficients <span class="math inline">\(\alpha_k\)</span> denote the threshold parameters for each category. The design matrix for the fixed effects <span class="math inline">\(X\)</span> does not contain an intercept term because the separate threshold coefficients <span class="math inline">\(\alpha_k\)</span> are estimated. The design matrix for the random effects <span class="math inline">\(Z\)</span> contains the intercept, implicitly assuming the same random intercept for all categories of the ordinal response variable. For identification reasons, <span class="math inline">\(K\)</span> threshold parameters are estimated.</p>
 <p>The backward formulation is commonly used when progression through disease states from none, mild, moderate,severe is represented by increasing integer values, and interest lies in estimating the odds of more severe disease compared to less severe disease. The forward formulation specifies that subjects have to ‘pass through’ one category to get to the next one. The forward formulation is a equivalent to a discrete version of Cox proportional hazards models.</p>
 </div>
 <div id="marginal-probabilities" class="section level3">
@@ -211,7 +211,7 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 cr_data &lt;-<span class="st"> </span>DF[cr_vals<span class="op">$</span>subs, ]
 cr_data<span class="op">$</span>y_new &lt;-<span class="st"> </span>cr_vals<span class="op">$</span>y
 cr_data<span class="op">$</span>cohort &lt;-<span class="st"> </span>cr_vals<span class="op">$</span>cohort</code></pre></div>
-<p>By default <code><a href="../reference/continuation_ratio.html">cr_setup()</a></code> works under the forward formulation (i.e., the one we have simulated from). To fit the continuation ratio model under the bacward formulation, we would need to set <code>direction = "backward"</code> in the call to <code><a href="../reference/continuation_ratio.html">cr_setup()</a></code>.</p>
+<p>By default <code><a href="../reference/continuation_ratio.html">cr_setup()</a></code> works under the forward formulation (i.e., the one we have simulated from). To fit the continuation ratio model under the backward formulation, we would need to set <code>direction = "backward"</code> in the call to <code><a href="../reference/continuation_ratio.html">cr_setup()</a></code>.</p>
 <p>Hence, to fit the model we will use the outcome <code>y_new</code> in the new dataset <code>cr_data</code>.</p>
 </div>
 <div id="basic-continuation-ratio-model" class="section level3">
@@ -332,14 +332,16 @@ my_panel_bands &lt;-<span class="st"> </span><span class="cf">function</span>(x,
        }, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Marginal Probabilities"</span>, <span class="dt">key =</span> key)</code></pre></div>
 <p><img src="Ordinal_Mixed_Models_files/figure-html/CR_probs_plot_marg-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>To marginalize over the random effects as well you will need to set the <code>marginal</code> argument of effectPlotData to <code>TRUE</code>, e.g.,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data_m2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">CR_cohort_varname =</span> <span class="st">"cohort"</span>, <span class="dt">marginal =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data_m2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">CR_cohort_varname =</span> <span class="st">"cohort"</span>, 
+                               <span class="dt">marginal =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p>To plot these probabilities we use an analogous call to <code>xyplot()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">group =</span> ordinal_response, <span class="dt">data =</span> plot_data_m2, 
        <span class="dt">upper =</span> <span class="kw">expit</span>(plot_data_m2<span class="op">$</span>upp), <span class="dt">low =</span> <span class="kw">expit</span>(plot_data_m2<span class="op">$</span>low), <span class="dt">type =</span> <span class="st">"l"</span>,
        <span class="dt">panel =</span> <span class="cf">function</span> (x, y, ...) {
            <span class="kw">panel.superpose</span>(x, y, <span class="dt">panel.groups =</span> my_panel_bands, ...)
            <span class="kw">panel.xyplot</span>(x, y, <span class="dt">lwd =</span> <span class="dv">2</span>,  ...)
-       }, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Marginal Probabilities</span><span class="ch">\n</span><span class="st">also w.r.t Random Effects"</span>, 
+       }, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, 
+       <span class="dt">ylab =</span> <span class="st">"Marginal Probabilities</span><span class="ch">\n</span><span class="st">also w.r.t Random Effects"</span>, 
        <span class="dt">key =</span> key)</code></pre></div>
 <p><img src="Ordinal_Mixed_Models_files/figure-html/CR_probs_plot_marg2-1.png" width="816" style="display: block; margin: auto;"></p>
 </div>
