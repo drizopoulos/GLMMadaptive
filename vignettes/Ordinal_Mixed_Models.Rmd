@@ -31,7 +31,7 @@ whereas the forward formulation is:
 \[
 \log \left \{ \frac{\Pr(y_{ij} = k \mid y_{ij} \geq k)}{1 - \Pr(y_{ij} = k \mid y_{ij} \geq k)} \right \} = \alpha_k + x_{ij}^\top \beta + z_{ij}^\top b_i,
 \]
-where $x_{ij}$ denotes the $j$-th row of the fixed effects design matrix $X_i$, with the corresponding fixed effects coefficients denoted by $\beta$, $z_{ij}$ denotes the $j$-th row of the random effects design matrix $Z_i$ with corresponding random effects $b_i$, which follow a normal distribution with mean zero and variance-covariance matrix $D$. The coefficients $\alpha_k$ denote the threshold parameters for each category. For identification reasons, $K$ threshold parameters are estimated.
+where $k \in\{0, 1, \ldots, K\} $, $x_{ij}$ denotes the $j$-th row of the fixed effects design matrix $X_i$, with the corresponding fixed effects coefficients denoted by $\beta$, $z_{ij}$ denotes the $j$-th row of the random effects design matrix $Z_i$ with corresponding random effects $b_i$, which follow a normal distribution with mean zero and variance-covariance matrix $D$. The coefficients $\alpha_k$ denote the threshold parameters for each category. The design matrix for the fixed effects $X$ does not contain an intercept term because the separate threshold coefficients $\alpha_k$ are estimated. The design matrix for the random effects $Z$ contains the intercept, implicitly assuming the same random intercept for all categories of the ordinal response variable. For identification reasons, $K$ threshold parameters are estimated.
 
 The backward formulation is commonly used when progression through disease states from none, mild, moderate,severe is represented by increasing integer values, and interest lies in estimating the odds of more severe disease compared to less severe disease. The forward formulation specifies that subjects have to 'pass through' one category to get to the next one. The forward formulation is a equivalent to a discrete version of Cox proportional hazards models.
 
@@ -115,7 +115,7 @@ cr_data$y_new <- cr_vals$y
 cr_data$cohort <- cr_vals$cohort
 ```
 
-By default `cr_setup()` works under the forward formulation (i.e., the one we have simulated from). To fit the continuation ratio model under the bacward formulation, we would need to set `direction = "backward"` in the call to `cr_setup()`.
+By default `cr_setup()` works under the forward formulation (i.e., the one we have simulated from). To fit the continuation ratio model under the backward formulation, we would need to set `direction = "backward"` in the call to `cr_setup()`.
 
 Hence, to fit the model we will use the outcome `y_new` in the new dataset `cr_data`.
 
@@ -199,7 +199,8 @@ xyplot(expit(pred) ~ time | sex, group = ordinal_response, data = plot_data_m,
 
 To marginalize over the random effects as well you will need to set the `marginal` argument of effectPlotData to `TRUE`, e.g.,
 ```{r, effect_plot_data_marg2, eval = TRUE}
-plot_data_m2 <- effectPlotData(fm, nDF, CR_cohort_varname = "cohort", marginal = TRUE)
+plot_data_m2 <- effectPlotData(fm, nDF, CR_cohort_varname = "cohort", 
+                               marginal = TRUE)
 ```
 
 To plot these probabilities we use an analogous call to `xyplot()`:
@@ -209,6 +210,7 @@ xyplot(expit(pred) ~ time | sex, group = ordinal_response, data = plot_data_m2,
        panel = function (x, y, ...) {
            panel.superpose(x, y, panel.groups = my_panel_bands, ...)
            panel.xyplot(x, y, lwd = 2,  ...)
-       }, xlab = "Follow-up time", ylab = "Marginal Probabilities\nalso w.r.t Random Effects", 
+       }, xlab = "Follow-up time", 
+       ylab = "Marginal Probabilities\nalso w.r.t Random Effects", 
        key = key)
 ```
