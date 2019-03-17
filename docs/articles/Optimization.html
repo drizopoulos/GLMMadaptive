@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.19999</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
       <h1>Optimization and Numerical Integration in GLMMadaptive</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-02-23</h4>
+            <h4 class="date">2019-03-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Optimization.Rmd"><code>vignettes/Optimization.Rmd</code></a></small>
       <div class="hidden name"><code>Optimization.Rmd</code></div>
@@ -120,20 +120,20 @@
 <div id="estimation-procedure" class="section level1">
 <h1 class="hasAnchor">
 <a href="#estimation-procedure" class="anchor"></a>Estimation Procedure</h1>
-<p>As described in vignette GLMMadaptive basics (<code><a href="../articles/GLMMadaptive_basics.html">vignette("GLMMadaptive_basics", package = "GLMMadaptive")</a></code>), the log-likelihood function behind the mixed models fitted by <strong>GLMMadaptive</strong> contains an intractable integral over the random effects. In addition, the mode of the log-likelhood function cannot be calculated analytically. Therefore, maximum likelihood estimation requires a combination of numerical integration and optimization.</p>
-<p>For the numerical optimization two, interlinked by default, algorithms are implemented. An EM algorithm in which the random effects are treated as ‘missing data’, and a quasi-Newton algorithm for direct optimization. The EM algorithm is often a more stable algorithm, especially when the initial values are far from the mode of the log-likelihood; however, because it has a linear convergence rate it can be slow reaching the mode. On the other hand, quasi-Newton algorithms typically have a super-linear convergene rate, but they may have trouble if they are initiated far from the mode. For this reason, optimization procedure in <strong>GLMMadaptive</strong> starts with the EM algorithm for a fixed number of iterations that are used as a refinement of the initial values before switching to the quasi-Newton algorithm.</p>
+<p>As described in vignette GLMMadaptive basics (<code><a href="../articles/GLMMadaptive_basics.html">vignette("GLMMadaptive_basics", package = "GLMMadaptive")</a></code>), the log-likelihood function behind the mixed models fitted by <strong>GLMMadaptive</strong> contains an intractable integral over the random effects. In addition, the mode of the log-likelihood function cannot be calculated analytically. Therefore, maximum likelihood estimation requires a combination of numerical integration and optimization.</p>
+<p>For the numerical optimization two, interlinked by default, algorithms are implemented. An EM algorithm in which the random effects are treated as ‘missing data’, and a quasi-Newton algorithm for direct optimization. The EM algorithm is often a more stable algorithm, especially when the initial values are far from the mode of the log-likelihood; however, because it has a linear convergence rate it can be slow reaching the mode. On the other hand, quasi-Newton algorithms typically have a super-linear convergence rate, but they may have trouble if they are initiated far from the mode. For this reason, optimization procedure in <strong>GLMMadaptive</strong> starts with the EM algorithm for a fixed number of iterations that are used as a refinement of the initial values before switching to the quasi-Newton algorithm.</p>
 <p>The numerical integration over the random effects is done using the adaptive Gauss-Hermite quadrature rule. This also requires an optimization step of finding the modes of the complete-data (= observed response variable and unobserved random effects) log-likelihood with respect to the random effects, <em>for each sample unit</em>. To decrease the computational cost, the optimization procedure in <strong>GLMMadaptive</strong> does not locate these modes of the random effects in every iteration but every few iterations of the optimization procedure.</p>
 <p>The <code>control</code> argument of function <code><a href="../reference/mixed_model.html">mixed_model()</a></code> has a number of arguments that enable the user to determine how the numerical integration and optimization procedure are performed. The relevant arguments are:</p>
 <ul>
 <li><p><code>nAGQ</code> the number of quadrature points; default is 11 for one and two-dimensional random effects vectors, and 7 otherwise.</p></li>
-<li><p><code>iter_EM</code> the number of the firt-phase EM iterations; default is 30.</p></li>
+<li><p><code>iter_EM</code> the number of the first-phase EM iterations; default is 30.</p></li>
 <li><p><code>update_GH_every</code> every how many EM iterations the modes of the random effects conditional distribution will be located for the adaptive Gauss-Hermite rule; default is 10.</p></li>
 <li><p><code>optimizer</code> sets the optimizer, options are <code>"optim"</code> (default) and <code>"nlminb"</code>.</p></li>
 <li><p><code>optim_method</code> if the optimizer is <code>"optim"</code>, you can set here the algorithm to be used, from the available options of the <code><a href="https://www.rdocumentation.org/packages/stats/topics/optim">optim()</a></code> function.</p></li>
 <li><p><code>iter_qN_outer</code> the number of outer quasi-Newton iterations; every outer quasi-Newton iteration the modes of the random effects conditional distribution are located (i.e., this is the analogous argument for the quasi-Newton phase as the <code>update_GH_every</code> was described above for the EM-phase).</p></li>
-<li><p><code>iter_qN</code> the number of iterations the quasi-Newton algoritm runs for each out iteration; default is 10, but see also the following argument.</p></li>
+<li><p><code>iter_qN</code> the number of iterations the quasi-Newton algorithm runs for each out iteration; default is 10, but see also the following argument.</p></li>
 <li><p><code>iter_qN_incr</code> the increment in the <code>iter_qN</code> iterations after each outer iteration; default is 10.</p></li>
-<li><p><code>parscale_betas</code>, <code>parscale_D</code>, <code>parscale_phis</code> and <code>parscale_phis</code> vectors of scaling values for the diffirent sets of parameters, with ‘betas’ corresponding to the fixed effects, ‘D’ the unique elements of the covariance matrix of the random effects, ‘phis’ extra dispersion/scale parameters, and ‘gammas’ the fixed effects for the extra zeros-part, relevant for zero-inflated and hurdle models.</p></li>
+<li><p><code>parscale_betas</code>, <code>parscale_D</code>, <code>parscale_phis</code> and <code>parscale_phis</code> vectors of scaling values for the different sets of parameters, with ‘betas’ corresponding to the fixed effects, ‘D’ the unique elements of the covariance matrix of the random effects, ‘phis’ extra dispersion/scale parameters, and ‘gammas’ the fixed effects for the extra zeros-part, relevant for zero-inflated and hurdle models.</p></li>
 </ul>
 <div id="controlling-the-optimization-and-integration" class="section level2">
 <h2 class="hasAnchor">
@@ -165,7 +165,7 @@ eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
 DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dv">1</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Logistic">plogis</a></span>(eta_y))</code></pre></div>
 <p>We fit a mixed effects logistic regression for <code>y</code> assuming random intercepts for the random-effects part, and the main effects of <code>sex</code> and <code>time</code> for the fixed-effects part. In the call to <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, we are using the default values for the control arguments:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</code></pre></div>
-<p>In the following example we do not use any EM iterations, and we specify as optimizer the <code>nlimnb()</code> function. In addition, during each iteration of the outer loop in which the modes of the modes of the conditional distribution of the random effects are relocated, we icrease the number of the quasi-Newton iterations by 5:</p>
+<p>In the following example we do not use any EM iterations, and we specify as optimizer the <code>nlimnb()</code> function. In addition, during each iteration of the outer loop in which the modes of the modes of the conditional distribution of the random effects are relocated, we increase the number of the quasi-Newton iterations by 5:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>(), 
             <span class="dt">iter_EM =</span> <span class="dv">0</span>, <span class="dt">optimizer =</span> <span class="st">"nlminb"</span>, <span class="dt">iter_qN_incr =</span> <span class="dv">5</span>)</code></pre></div>
 <p>In the following call, we allow again for EM iterations, but we set the number of the iterations to 1000 giving the option to achieve convergence only during the EM-phase. In addition, we set to update the modes of the conditional distribution of the random effects every 5 iterations, and we also set the number of quadrature points to 21:</p>
@@ -174,6 +174,15 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <p>To not run the optimization procedure at all, we need to also to set <code>iter_qN_outer</code> to 0, e.g.,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>(), 
             <span class="dt">iter_EM =</span> <span class="dv">0</span>, <span class="dt">iter_qN_outer =</span> <span class="dv">0</span>)</code></pre></div>
+</div>
+<div id="advice-on-optimization-and-numerical-integration-control" class="section level2">
+<h2 class="hasAnchor">
+<a href="#advice-on-optimization-and-numerical-integration-control" class="anchor"></a>Advice on optimization and numerical integration control</h2>
+<ul>
+<li><p>Even though, as mentioned above, the EM algorithm is a more stable algorithm than the quasi-Newton, it can happen in some occasions that it can overshoot and fail to bring the parameters into the neighborhood of the (local) maximum. In these cases you can set to <code>iter_EM = 0</code> to only use the quasi-Newton part of the optimization procedure.</p></li>
+<li><p>For dichotomous and count data (complete) separation issues may be encountered. In such cases you can invoke the <code>penalized</code> argument of <code><a href="../reference/mixed_model.html">mixed_model()</a></code> that places a Student’s t penalty on the fixed effects coefficients. The default mean is zero, the default scale is one, and the degrees of freedom are three.</p></li>
+<li><p>With regard to the number of quadrature points, a general advice is to increase them until the coefficients and log-likelihood value seem to be stabilized. However, if you too many quadrature points are put these may also lead to overflow problems. In the majority of the cases, 11 to 15 quadrature points suffice.</p></li>
+</ul>
 </div>
 </div>
   </div>
@@ -186,6 +195,7 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <li>
 <a href="#estimation-procedure">Estimation Procedure</a><ul class="nav nav-pills nav-stacked">
 <li><a href="#controlling-the-optimization-and-integration">Controlling the Optimization and Integration</a></li>
+      <li><a href="#advice-on-optimization-and-numerical-integration-control">Advice on optimization and numerical integration control</a></li>
       </ul>
 </li>
       </ul>

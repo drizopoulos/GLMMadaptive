@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.19999</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
       <h1>Mixed Models for Ordinal Data</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-02-23</h4>
+            <h4 class="date">2019-03-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Ordinal_Mixed_Models.Rmd"><code>vignettes/Ordinal_Mixed_Models.Rmd</code></a></small>
       <div class="hidden name"><code>Ordinal_Mixed_Models.Rmd</code></div>
@@ -331,7 +331,7 @@ my_panel_bands &lt;-<span class="st"> </span><span class="cf">function</span>(x,
            <span class="kw">panel.xyplot</span>(x, y, <span class="dt">lwd =</span> <span class="dv">2</span>, ...)
        }, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Marginal Probabilities"</span>, <span class="dt">key =</span> key)</code></pre></div>
 <p><img src="Ordinal_Mixed_Models_files/figure-html/CR_probs_plot_marg-1.png" width="816" style="display: block; margin: auto;"></p>
-<p>To marginalize over the random effects as well you will need to set the <code>marginal</code> argument of effectPlotData to <code>TRUE</code>, e.g.,</p>
+<p>To marginalize over the random effects as well you will need to set the <code>marginal</code> argument of <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> to <code>TRUE</code>, e.g.,</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data_m2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">CR_cohort_varname =</span> <span class="st">"cohort"</span>, 
                                <span class="dt">marginal =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p>To plot these probabilities we use an analogous call to <code>xyplot()</code>:</p>
