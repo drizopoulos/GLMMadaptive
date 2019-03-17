@@ -22,8 +22,7 @@ library("GLMMadaptive")
 # Mixed Models with an Extra Zero Part
 Function `mixed_model()` of **GLMMadaptive** can also be used to fit zero-inflated and 
 two-part mixed effects models. For both types of models, a suitable `family` object needs 
-to be specified as outlined in the vignette 
-[Custom Models](http://www.drizopoulos.com/vignettes/Custom_Models.html), and also 
+to be specified as outlined in `vignette("Custom_Models", package = "GLMMadaptive")`, and also 
 arguments `zi_fixed` and `zi_random` of `mixed_model()` come into play. In these 
 arguments, the user can specify the fixed and random effects `formulas` of the logistic 
 regression for the zero-part of the distribution of the outcome. We should note that the 

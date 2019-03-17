@@ -197,7 +197,7 @@ xyplot(expit(pred) ~ time | sex, group = ordinal_response, data = plot_data_m,
        }, xlab = "Follow-up time", ylab = "Marginal Probabilities", key = key)
 ```
 
-To marginalize over the random effects as well you will need to set the `marginal` argument of effectPlotData to `TRUE`, e.g.,
+To marginalize over the random effects as well you will need to set the `marginal` argument of `effectPlotData()` to `TRUE`, e.g.,
 ```{r, effect_plot_data_marg2, eval = TRUE}
 plot_data_m2 <- effectPlotData(fm, nDF, CR_cohort_varname = "cohort", 
                                marginal = TRUE)
