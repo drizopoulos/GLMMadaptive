@@ -108,7 +108,7 @@
       <h1>Zero-Inflated and Two-Part Mixed Effects Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-03-17</h4>
+            <h4 class="date">2019-03-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/ZeroInflated_and_TwoPart_Models.Rmd"><code>vignettes/ZeroInflated_and_TwoPart_Models.Rmd</code></a></small>
       <div class="hidden name"><code>ZeroInflated_and_TwoPart_Models.Rmd</code></div>
@@ -534,25 +534,25 @@ dm2
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;                 StdDev    Corr        </span>
-<span class="co">#&gt; (Intercept)     0.8227  (Intr)    time</span>
-<span class="co">#&gt; time            0.3636 -0.3135        </span>
-<span class="co">#&gt; zi_(Intercept)  0.6601 -0.0089  0.0698</span>
+<span class="co">#&gt; (Intercept)     0.8226  (Intr)    time</span>
+<span class="co">#&gt; time            0.3644 -0.3125        </span>
+<span class="co">#&gt; zi_(Intercept)  0.6584 -0.0065  0.0636</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;     1.52752248     0.08381132     0.09213789    -0.08032932 </span>
+<span class="co">#&gt;     1.52792269     0.08389745     0.09206185    -0.08020395 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Zero-part coefficients:</span>
 <span class="co">#&gt; (Intercept)   sexfemale </span>
-<span class="co">#&gt;  -1.5386156   0.5177395 </span>
+<span class="co">#&gt;  -1.5398382   0.5175922 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2797.308</span></code></pre></div>
+<span class="co">#&gt; log-Lik: -2797.307</span></code></pre></div>
 <p>The likelihood ratio test between the two models is computed with the <code><a href="../reference/methods.html">anova()</a></code> method:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(dm1, dm2)
 <span class="co">#&gt; </span>
 <span class="co">#&gt;         AIC     BIC  log.Lik  LRT df p.value</span>
 <span class="co">#&gt; dm1 5622.60 5646.05 -2802.30                </span>
-<span class="co">#&gt; dm2 5618.62 5618.62 -2797.31 9.98  3  0.0187</span></code></pre></div>
+<span class="co">#&gt; dm2 5618.61 5618.61 -2797.31 9.99  3  0.0187</span></code></pre></div>
 <p>The result indicates that the extra random effect for the zero-part improves the fit of the model.</p>
 </div>
 <div id="two-parthurdle-negative-binomial-mixed-effects-model" class="section level2">
@@ -608,28 +608,28 @@ hm2
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;                 StdDev    Corr        </span>
-<span class="co">#&gt; (Intercept)     0.7313  (Intr)    time</span>
-<span class="co">#&gt; time            0.3258 -0.1161        </span>
-<span class="co">#&gt; zi_(Intercept)  0.6610 -0.0522  0.1420</span>
+<span class="co">#&gt; (Intercept)     0.7315  (Intr)    time</span>
+<span class="co">#&gt; time            0.3258 -0.1155        </span>
+<span class="co">#&gt; zi_(Intercept)  0.6598 -0.0517  0.1412</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;     1.47626158     0.07041272     0.10539676    -0.08613159 </span>
+<span class="co">#&gt;     1.47627667     0.07040678     0.10535938    -0.08613120 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Zero-part coefficients:</span>
 <span class="co">#&gt; (Intercept)   sexfemale </span>
-<span class="co">#&gt;  -1.5425483   0.5193066 </span>
+<span class="co">#&gt;  -1.5420047   0.5197229 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  0.6759281 </span>
+<span class="co">#&gt;  0.6759598 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2176.313</span></code></pre></div>
+<span class="co">#&gt; log-Lik: -2176.312</span></code></pre></div>
 <p>The likelihood ratio test between the two models is computed with the <code><a href="../reference/methods.html">anova()</a></code> method:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(hm1, hm2)
 <span class="co">#&gt; </span>
 <span class="co">#&gt;         AIC     BIC  log.Lik   LRT df p.value</span>
 <span class="co">#&gt; hm1 4382.94 4408.99 -2181.47                 </span>
-<span class="co">#&gt; hm2 4378.63 4378.63 -2176.31 10.31  3  0.0161</span></code></pre></div>
+<span class="co">#&gt; hm2 4378.62 4378.62 -2176.31 10.31  3  0.0161</span></code></pre></div>
 <p>The result again indicates that the extra random effect for the zero-part improves the fit of the model.</p>
 </div>
 </div>
