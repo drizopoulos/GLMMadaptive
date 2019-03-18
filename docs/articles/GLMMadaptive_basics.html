@@ -108,7 +108,7 @@
       <h1>GLMMadaptive Basics</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-03-17</h4>
+            <h4 class="date">2019-03-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/GLMMadaptive_basics.Rmd"><code>vignettes/GLMMadaptive_basics.Rmd</code></a></small>
       <div class="hidden name"><code>GLMMadaptive_basics.Rmd</code></div>
@@ -251,7 +251,11 @@ models &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocu
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
                    <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</code></pre></div>
 <p>And again the likelihood ratio test is performed by a call to <code><a href="../reference/methods.html">anova()</a></code> (results not shown):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(fm2, fm3)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(fm2, fm3)
+<span class="co">#&gt; </span>
+<span class="co">#&gt;        AIC    BIC log.Lik  LRT df p.value</span>
+<span class="co">#&gt; fm2 730.94 746.57 -359.47                </span>
+<span class="co">#&gt; fm3 731.63 731.63 -358.81 1.32  1  0.2514</span></code></pre></div>
 <p>The results now suggest that indeed the covariance between the two random effects terms is not statistically different from zero.</p>
 </div>
 <div id="penalized-mixed-effects-poisson-regression" class="section level2">
@@ -301,18 +305,18 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fit statistics:</span>
 <span class="co">#&gt;    log.Lik      AIC      BIC</span>
-<span class="co">#&gt;  -2782.331 5574.663 5587.689</span>
+<span class="co">#&gt;  -2782.306 5574.611 5587.637</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Random effects covariance matrix:</span>
 <span class="co">#&gt;                StdDev</span>
-<span class="co">#&gt; (Intercept) 0.9785518</span>
+<span class="co">#&gt; (Intercept) 0.9781393</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Fixed effects:</span>
 <span class="co">#&gt;                Estimate Std.Err  z-value   p-value</span>
-<span class="co">#&gt; (Intercept)      2.9461  0.3091   9.5316   &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale       -0.8651  0.2711  -3.1913 0.0014162</span>
-<span class="co">#&gt; time             0.2404  0.0016 151.3470   &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale:time  -0.0511  0.0028 -18.3994   &lt; 1e-04</span>
+<span class="co">#&gt; (Intercept)      2.9447  0.3082   9.5545   &lt; 1e-04</span>
+<span class="co">#&gt; sexfemale       -0.8611  0.2699  -3.1906 0.0014199</span>
+<span class="co">#&gt; time             0.2404  0.0016 151.3464   &lt; 1e-04</span>
+<span class="co">#&gt; sexfemale:time  -0.0511  0.0028 -18.3982   &lt; 1e-04</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Integration:</span>
 <span class="co">#&gt; method: adaptive Gauss-Hermite quadrature rule</span>
@@ -326,10 +330,10 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
                    <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>(), <span class="dt">penalized =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="st">'unpenalized'</span> =<span class="st"> </span><span class="kw"><a href="../reference/methods.html">fixef</a></span>(gm1), <span class="st">'penalized'</span> =<span class="st"> </span><span class="kw"><a href="../reference/methods.html">fixef</a></span>(gm2))
 <span class="co">#&gt;                unpenalized   penalized</span>
-<span class="co">#&gt; (Intercept)     2.94614349  2.94238986</span>
-<span class="co">#&gt; sexfemale      -0.86510298 -0.82073289</span>
-<span class="co">#&gt; time            0.24039622  0.24043929</span>
-<span class="co">#&gt; sexfemale:time -0.05106264 -0.05118503</span></code></pre></div>
+<span class="co">#&gt; (Intercept)     2.94471507  2.94339254</span>
+<span class="co">#&gt; sexfemale      -0.86111224 -0.85993767</span>
+<span class="co">#&gt; time            0.24039444  0.24045925</span>
+<span class="co">#&gt; sexfemale:time -0.05105926 -0.05115046</span></code></pre></div>
 <p>In this example we observe small differences between the penalized and unpenalized models. The users have the option to alter the specification of the Student’s t penalty by directly specifying the mean, scale and degrees of freedom arguments of the distribution. For example, a ridge penalty could be placed by setting the degrees of freedom to a high value. The call in this case should be:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gm3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
                    <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>(), 

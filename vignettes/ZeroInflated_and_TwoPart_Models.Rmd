@@ -407,7 +407,7 @@ hm2
 ```
 
 The likelihood ratio test between the two models is computed with the `anova()` method:
-```{r, eval = true}
+```{r, eval = TRUE}
 anova(hm1, hm2)
 ```
 
