@@ -34,7 +34,7 @@ logLik_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi,
     p_y <- c(p_yb %*% wGH) * dets
     out <- - sum(log(p_y), na.rm = TRUE)
     if (penalized)
-        out <- out - dmvt(betas[-1L], mu = pen_mu, invSigma = pen_invSigma, df = pen_df)
+        out <- out - dmvt(betas, mu = pen_mu, invSigma = pen_invSigma, df = pen_df)
     out
 }
 
@@ -147,9 +147,9 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
         }
     }
     if (penalized) {
-        pen_invSigma_betas <- betas[-1L] * diag(pen_invSigma) / pen_df
-        fact <- (pen_df + ncx) / c(1 + crossprod(betas[-1L], pen_invSigma_betas))
-        score.betas <- score.betas + c(0, pen_invSigma_betas * fact)
+        pen_invSigma_betas <- betas * diag(pen_invSigma) / pen_df
+        fact <- (pen_df + ncx) / c(1 + crossprod(betas, pen_invSigma_betas))
+        score.betas <- score.betas + pen_invSigma_betas * fact
     }
     ###
     score.phis <- if (!is.null(phis)) {
@@ -305,9 +305,9 @@ score_betas <- function (betas, y, N, X, id, offset, phis, Ztb, eta_zi, p_by, wG
         }
     }
     if (penalized) {
-        pen_invSigma_betas <- betas[-1L] * diag(pen_invSigma) / pen_df
-        fact <- (pen_df + ncx) / c(1 + crossprod(betas[-1L], pen_invSigma_betas))
-        out <- out + c(0, pen_invSigma_betas * fact)
+        pen_invSigma_betas <- betas * diag(pen_invSigma) / pen_df
+        fact <- (pen_df + ncx) / c(1 + crossprod(betas, pen_invSigma_betas))
+        out <- out + pen_invSigma_betas * fact
     }
     out
 }
