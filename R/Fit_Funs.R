@@ -430,6 +430,7 @@ negative.binomial <- function () {
     }
     structure(list(family = "negative binomial", link = stats$name, 
                    linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,
+                   variance = function (mu, theta) mu + mu^2 / theta,
                    score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun),
               class = "family")
 }
@@ -606,6 +607,7 @@ hurdle.poisson <- function () {
     }
     structure(list(family = "hurdle poisson", link = stats$name, 
                    linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,
+                   variance = function (mu) (mu + mu^2)/(1 - exp(-mu)) - mu^2/((1 - exp(-mu))^2),
                    score_eta_fun = score_eta_fun, score_eta_zi_fun = score_eta_zi_fun,
                    simulate = simulate),
               class = "family")
@@ -784,7 +786,8 @@ beta.fam <- function () {
         rbeta(n, shape1 = mu * phi, shape2 = phi * (1 - mu))
     }
     structure(list(family = "beta", link = stats$name, linkfun = stats$linkfun,
-                   linkinv = stats$linkinv, log_dens = log_dens, 
+                   linkinv = stats$linkinv, variance = function (mu) mu * (1 - mu), 
+                   log_dens = log_dens, 
                    score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun),
               class = "family")
 }
@@ -894,6 +897,7 @@ students.t <- function (df = stop("'df' must be specified"), link = "identity") 
     environment(score_phis_fun) <- environment(simulate) <- env
     structure(list(family = "Student's-t", link = stats$name, linkfun = stats$linkfun,
                    linkinv = stats$linkinv, log_dens = log_dens, 
+                   variance = function (mu) rep.int(1, length(mu)),
                    score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun,
                    simulate = simulate),
               class = "family")

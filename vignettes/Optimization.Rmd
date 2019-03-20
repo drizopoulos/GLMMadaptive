@@ -103,6 +103,10 @@ mixed_model(fixed = y ~ sex + time, random = ~ 1 | id, data = DF, family = binom
 
 - Even though, as mentioned above, the EM algorithm is a more stable algorithm than the quasi-Newton, it can happen in some occasions that it can overshoot and fail to bring the parameters into the neighborhood of the (local) maximum. In these cases you can set to `iter_EM = 0` to only use the quasi-Newton part of the optimization procedure.
 
+- Convergence problems may sometimes be attributed to initial values. The `initial_values` argument of `mixed_model()` can be used to override the default algorithm that calculate these values. For example, in the case of a random intercepts and random slopes model, we could set the initial values for the fixed effects to zero, the variance of the intercepts to 0.5, the variance of the slopes to 0.1 and their covariance to zero by `mixed_model(..., initial_values = list(betas = rep(0, n_fixed_effects), D = matrix(c(0.5, 0, 0, 0.1), 2, 2)))`.
+
+- Coefficients that are several orders of the magnitude different in absolute value can also lead to convergence issues. In such cases it helps to scale variable such that the coefficients are on the same magnitude.
+
 - For dichotomous and count data (complete) separation issues may be encountered. In such cases you can invoke the `penalized` argument of `mixed_model()` that places a Student's t penalty on the fixed effects coefficients. The default mean is zero, the default scale is one, and the degrees of freedom are three.
 
 - With regard to the number of quadrature points, a general advice is to increase them until the coefficients and log-likelihood value seem to be stabilized. However, if you too many quadrature points are put these may also lead to overflow problems. In the majority of the cases, 11 to 15 quadrature points suffice.
