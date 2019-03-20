@@ -75,6 +75,12 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
         stop("you have defined a family with an extra zero-part;\nat least argument ",
              "'zi_fixed' needs to be defined, and potentially also argument 'zi_random'.")
     }
+    if (family$family %in% c("binomial", "poisson", "negative binomial", "beta") && 
+        !is.null(zi_fixed)) {
+        stop("\nyou have defined a family object *without* an extra zero-part but\n ",
+             "you have also specified the 'zi_fixed' argument; use instead a family\n ", 
+             "object with an extra zero-part.")
+    }
     if (!is.null(zi_fixed)) {
         termsX_zi <- terms(mfX_zi)
         X_zi <- model.matrix(termsX_zi, mfX_zi)
