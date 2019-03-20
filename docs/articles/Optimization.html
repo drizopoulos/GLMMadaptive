@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.19999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
       <h1>Optimization and Numerical Integration in GLMMadaptive</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-03-18</h4>
+            <h4 class="date">2019-03-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Optimization.Rmd"><code>vignettes/Optimization.Rmd</code></a></small>
       <div class="hidden name"><code>Optimization.Rmd</code></div>
@@ -180,6 +180,8 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <a href="#advice-on-optimization-and-numerical-integration-control" class="anchor"></a>Advice on optimization and numerical integration control</h2>
 <ul>
 <li><p>Even though, as mentioned above, the EM algorithm is a more stable algorithm than the quasi-Newton, it can happen in some occasions that it can overshoot and fail to bring the parameters into the neighborhood of the (local) maximum. In these cases you can set to <code>iter_EM = 0</code> to only use the quasi-Newton part of the optimization procedure.</p></li>
+<li><p>Convergence problems may sometimes be attributed to initial values. The <code>initial_values</code> argument of <code><a href="../reference/mixed_model.html">mixed_model()</a></code> can be used to override the default algorithm that calculate these values. For example, in the case of a random intercepts and random slopes model, we could set the initial values for the fixed effects to zero, the variance of the intercepts to 0.5, the variance of the slopes to 0.1 and their covariance to zero by <code><a href="../reference/mixed_model.html">mixed_model(..., initial_values = list(betas = rep(0, n_fixed_effects), D = matrix(c(0.5, 0, 0, 0.1), 2, 2)))</a></code>.</p></li>
+<li><p>Coefficients that are several orders of the magnitude different in absolute value can also lead to convergence issues. In such cases it helps to scale variable such that the coefficients are on the same magnitude.</p></li>
 <li><p>For dichotomous and count data (complete) separation issues may be encountered. In such cases you can invoke the <code>penalized</code> argument of <code><a href="../reference/mixed_model.html">mixed_model()</a></code> that places a Student’s t penalty on the fixed effects coefficients. The default mean is zero, the default scale is one, and the degrees of freedom are three.</p></li>
 <li><p>With regard to the number of quadrature points, a general advice is to increase them until the coefficients and log-likelihood value seem to be stabilized. However, if you too many quadrature points are put these may also lead to overflow problems. In the majority of the cases, 11 to 15 quadrature points suffice.</p></li>
 </ul>
