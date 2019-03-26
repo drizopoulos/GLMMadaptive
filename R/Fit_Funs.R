@@ -26,7 +26,6 @@ logLik_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi,
     log_p_yb <- rowsum(log_dens(y, eta_y, mu_fun, phis, eta_zi), id, reorder = FALSE)
     log_p_b <- matrix(dmvnorm(b, rep(0, nRE), D, TRUE),
                       nrow(log_p_yb), ncol(log_p_yb), byrow = TRUE)
-    # log penalty include here dmvt(betas, pen_mean, invSigma = pen_invsds, df = pen_df)
     p_yb <- exp(log_p_yb + log_p_b)
     if (any(zero_ind <- p_yb == 0.0)) {
         p_yb[zero_ind] <- 1e-300

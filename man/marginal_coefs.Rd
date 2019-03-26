@@ -15,7 +15,7 @@ mixed models.
 marginal_coefs(object, \dots)
 
 \method{marginal_coefs}{MixMod}(object, std_errors = FALSE, 
-   link_fun = NULL, M = 3000, K = 100, seed = 1, 
+   link_fun = NULL, M = 5000, K = 100, seed = 1, 
    cores = max(parallel::detectCores() - 1, 1), 
    sandwich = FALSE, \dots)
 }

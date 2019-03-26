@@ -373,8 +373,8 @@ respect to the parameters are internally programmed.</p>
 #&gt;     family = binomial())
 #&gt; 
 #&gt; Data Descriptives:
-#&gt; Number of Observations: 7500
-#&gt; Number of Groups: 500 
+#&gt; Number of Observations: 1
+#&gt; Number of Groups: 1 
 #&gt; 
 #&gt; Model:
 #&gt;  family: binomial
@@ -382,7 +382,7 @@ respect to the parameters are internally programmed.</p>
 #&gt; 
 #&gt; Fit statistics:
 #&gt;    log.Lik      AIC      BIC
-#&gt;  -2970.592 5951.184 5972.257
+#&gt;  -2970.592 5951.184 5941.184
 #&gt; 
 #&gt; Random effects covariance matrix:
 #&gt;               StdDev
@@ -416,7 +416,7 @@ respect to the parameters are internally programmed.</p>
 <span class='co'># likelihood ratio test between the two models</span>
 <span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>fm2</span>, <span class='no'>fm1</span>)</div><div class='output co'>#&gt; 
 #&gt;         AIC     BIC  log.Lik  LRT df p.value
-#&gt; fm2 5949.84 5962.48 -2971.92                
+#&gt; fm2 5949.84 5943.84 -2971.92                
 #&gt; fm1 5951.18 5951.18 -2970.59 2.65  2  0.2657
 #&gt; </div><div class='input'>
 <span class='co'># the same hypothesis but with a Wald test</span>
@@ -467,7 +467,7 @@ respect to the parameters are internally programmed.</p>
 
 <span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>fm1_slp_diag</span>, <span class='no'>fm1_slp</span>)</div><div class='output co'>#&gt; 
 #&gt;                  AIC     BIC  log.Lik  LRT df p.value
-#&gt; fm1_slp_diag 5010.28 5035.57 -2499.14                
+#&gt; fm1_slp_diag 5010.28 4998.28 -2499.14                
 #&gt; fm1_slp      5012.35 5012.35 -2499.17 0.06  1  0.8043
 #&gt; </div></pre>
   </div>

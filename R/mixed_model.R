@@ -20,55 +20,6 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
              "  use 'family = GLMMadaptive::negative.binomial(xx)' with 'xx' ", 
              "denoting a value for the\n  'theta' parameter of the family.")
     }
-    known_families <- c("binomial", "poisson", "negative binomial")
-    # extract response vector, design matrices, offset
-    data <- as.data.frame(data) # in case 'data' is a tibble
-    mfX <- model.frame(terms(fixed, data = data), data = data, na.action = na.action)
-    na_exclude <- attr(mfX, "na.action")
-    form_random <- getRE_Formula(random)
-    mfZ <- model.frame(terms(form_random, data = data), data = data)
-    na_exclude_z <- attr(mfZ, "na.action")
-    if (!is.null(zi_fixed)) { 
-        mfX_zi <- model.frame(terms(zi_fixed, data = data), data = data, 
-                              na.action = na.action)
-        na_exclude_zi <- attr(mfX_zi, "na.action")
-    } else {
-        na_exclude_zi <- NULL
-    }
-    ind <- !unique(names(c(na_exclude_z, na_exclude_zi))) %in% names(na_exclude)
-    if (length(ind) && any(ind)) {
-        keep <- !row.names(mfX) %in% unique(names(c(na_exclude_z, na_exclude_zi)))[ind]
-        mfX <- mfX[keep, , drop = FALSE]
-    }
-    ind <- !unique(names(c(na_exclude, na_exclude_zi))) %in% names(na_exclude_z)
-    if (length(ind) && any(ind)) {
-        keep <- !row.names(mfZ) %in% unique(names(c(na_exclude, na_exclude_zi)))[ind]
-        mfZ <- mfZ[keep, , drop = FALSE]
-    }
-    ind <- !unique(names(c(na_exclude, na_exclude_z))) %in% names(na_exclude_zi)
-    if (length(ind) && any(ind) && !is.null(zi_fixed)) {
-        keep <- !row.names(mfX_zi) %in% unique(names(c(na_exclude, na_exclude_z)))[ind]
-        mfX_zi <- mfX_zi[keep, , drop = FALSE]
-    }
-    termsX <- terms(mfX)
-    y <- model.response(mfX)
-    if (is.factor(y)) {
-        if (family$family == "binomial")
-            y <- as.numeric(y != levels(y)[1L])
-        else
-            stop("the response variable should not be a factor.\n")
-    }
-    X <- model.matrix(termsX, mfX)
-    offset <- model.offset(mfX)
-    termsZ <- terms(mfZ)
-    Z <- model.matrix(termsZ, mfZ)
-    id_nam <- all.vars(getID_Formula(random))
-    id_orig <- model.frame(terms(getID_Formula(random)), data)[[1L]]
-    if (!is.null(na_exclude))
-        id_orig <- id_orig[-unique(c(na_exclude, na_exclude_z, na_exclude_zi))]
-    id <- match(id_orig, unique(id_orig))
-    ###########################
-    # Zero inflation part
     if (family$family %in% c("zero-inflated poisson", "zero-inflated negative binomial",
                              "hurdle poisson", "hurdle negative binomial", "hurdle beta") && 
         is.null(zi_fixed)) {
@@ -81,27 +32,96 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
              "you have also specified the 'zi_fixed' argument; use instead a family\n ", 
              "object with an extra zero-part.")
     }
+    known_families <- c("binomial", "poisson", "negative binomial")
+    data <- as.data.frame(data) # in case 'data' is a tibble
+    groups <- unique(c(all.vars(getID_Formula(random)), 
+                       if (!is.null(zi_random)) all.vars(getID_Formula(zi_random))))
+    data[groups] <- lapply(data[groups], function (x) if (!is.factor(x)) factor(x) else x)
+    # construct model frames
+    # fixed effects
+    mfX <- model.frame(terms(fixed, data = data), data = data, na.action = na.pass)
+    termsX <- terms(mfX)
+    # random effects
+    form_random <- constructor_form_random(random, data)
+    mfZ <- lapply(form_random, function (form, data) 
+        model.frame(terms(form, data = data), data = data, na.action = na.pass), 
+        data = data)
+    termsZ <- lapply(mfZ, terms)
+    # fixed effects ZI part
     if (!is.null(zi_fixed)) {
+        mfX_zi <- model.frame(terms(zi_fixed, data = data), data = data, 
+                              na.action = na.pass)
         termsX_zi <- terms(mfX_zi)
-        X_zi <- model.matrix(termsX_zi, mfX_zi)
-        offset_zi <- model.offset(mfX_zi)
     } else {
-        X_zi <- offset_zi <- termsX_zi <- mfX_zi <- NULL
+        mfX_zi <- termsX_zi <- NULL
     }
+    # random effects ZI part
     if (!is.null(zi_random)) {
-        form_random_zi <- getRE_Formula(zi_random)
-        mfZ_zi <- model.frame(terms(form_random_zi, data = data), data = data)
-        if (!is.null(na_exclude)) 
-            mfZ_zi <- mfZ_zi[-na_exclude, ]
-        termsZ_zi <- terms(mfZ_zi)
-        Z_zi <- model.matrix(termsZ_zi, mfZ_zi)
+        form_zi_random <- constructor_form_random(zi_random, data)
+        mfZ_zi <- lapply(form_zi_random, function (form, data) 
+            model.frame(terms(form, data = data), data = data, na.action = na.pass),
+            data = data)
+        termsZ_zi <- lapply(mfZ_zi, terms)
+    } else {
+        mfZ_zi <- termsZ_zi <- NULL
+    }
+    # delete missing data if na.action is na.fail or na.omit
+    chr_na_action <- as.character(body(na.action))[2]
+    if (chr_na_action == "na.exclude" || chr_na_action == "na.omit") {
+        complete_cases <- cbind(complete.cases(mfX), sapply(mfZ, complete.cases))
+        if (!is.null(zi_fixed))
+            complete_cases <- cbind(complete_cases, complete.cases(mfX_zi))
+        if (!is.null(zi_random))
+            complete_cases <- cbind(complete_cases, complete.cases(mfZ_zi))
+        keep <- apply(complete_cases, 1, all)
+        mfX <- mfX[keep, , drop = FALSE]
+        mfZ[] <- lapply(mfZ, function (mf) mf[keep, , drop = FALSE])
+        if (!is.null(zi_fixed))
+            mfX_zi <- mfX_zi[keep, , drop = FALSE]
+        if (!is.null(zi_random))
+            mfZ_zi[] <- lapply(mfZ_zi, function (mf) mf[keep, , drop = FALSE])
+    }
+    # id variable
+    id_nam <- all.vars(getID_Formula(random))
+    id_orig <- model.frame(terms(getID_Formula(random), data = data), 
+                           data = data, na.action = na.pass)
+    if (chr_na_action == "na.exclude" || chr_na_action == "na.omit")
+        id_orig <- id_orig[keep, , drop = FALSE]
+    id <- match(id_orig[[1L]], unique(id_orig[[1L]]))
+    # model response
+    y <- model.response(mfX)
+    if (is.factor(y)) {
+        if (family$family == "binomial")
+            y <- as.numeric(y != levels(y)[1L])
+        else
+            stop("the response variable should not be a factor.\n")
+    }
+    # construct model matrices
+    # fixed effects
+    offset <- model.offset(mfX)
+    X <- model.matrix(termsX, mfX)
+    # random effects
+    Z <- mapply(constructor_Z, termsZ, mfZ, MoreArgs = list(id = id), SIMPLIFY = FALSE)
+    Z <- do.call("cbind", Z)
+    # fixed effects ZI part
+    if (!is.null(zi_fixed)) {
+        offset_zi <- model.offset(mfX_zi)
+        X_zi <- model.matrix(termsX_zi, mfX_zi)
+    } else {
+        offset_zi <- X_zi <- NULL
+    }
+    # random effects ZI part
+    if (!is.null(zi_random)) {
         id_nam_zi <- all.vars(getID_Formula(zi_random))
-        if (id_nam_zi != id_nam) {
+        if (id_nam_zi[1L] != id_nam[1L]) {
             stop("the 'random' and 'zi_random' formulas for the random effects ",
                  "should have the same grouping variable.")
         }
+        Z_zi <- mapply(constructor_Z, termsZ_zi, mfZ_zi, MoreArgs = list (id = id), 
+                       SIMPLIFY = FALSE)
+        Z_zi <- do.call("cbind", Z_zi)
     } else {
-        Z_zi <- termsZ_zi <- mfZ_zi <- NULL
+        Z_zi <- NULL
     }
     nRE <- ncol(Z) + if (!is.null(Z_zi)) ncol(Z_zi) else 0
     ###########################
@@ -121,7 +141,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     # initial values
     diag_D <- (random[[length(random)]])[[1]] == as.name("||")
     inits <- if (family$family %in% known_families || (is.list(initial_values) &&
-                 inherits(initial_values$betas, 'family'))) {
+                                                       inherits(initial_values$betas, 'family'))) {
         betas <- if (family$family %in% known_families) {
             if (family$family == "negative binomial")
                 glm.fit(X, y, family = poisson())$coefficients
@@ -166,9 +186,9 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     )
     if (family$family %in% known_families && is.null(family$log_dens)) {
         Funs$log_dens <- switch(family$family,
-               'binomial' = binomial_log_dens,
-               'poisson' = poisson_log_dens,
-               'negative binomial' = negative.binomial_log_dens)
+                                'binomial' = binomial_log_dens,
+                                'poisson' = poisson_log_dens,
+                                'negative binomial' = negative.binomial_log_dens)
     } else if (family$family %in% known_families && !is.null(family$log_dens)) {
         Funs$log_dens <- family$log_dens
     } else if (!family$family %in% known_families && !is.null(family$log_dens)) {
@@ -253,7 +273,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     out$id <- id_orig
     out$id_name <- id_nam 
     out$offset <- offset
-    dimnames(out$post_modes) <- list(unique(id_orig), RE_nams)
+    dimnames(out$post_modes) <- list(unique(id_orig[[1L]]), RE_nams)
     names(out$post_vars) <- unique(id_orig)
     out$post_vars[] <- lapply(out$post_vars, function (v) {
         dimnames(v) <- list(RE_nams, RE_nams)
@@ -265,6 +285,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     out$control <- con
     out$Funs <- Funs
     out$family <- family
+    out$penalized <- penalized
     out$na.action <- na.action
     out$contrasts <- attr(X, "contrasts")
     out$call <- call

@@ -222,7 +222,7 @@ The `effectPlotData()` function also allows to compute marginal predictions usin
 marginalized coefficients described above. This is achieved by setting `marginal = TRUE`
 in  the respective call (results not shown):
 ```{r, fig.align = "center", fig.width = 8.5, fig.height = 7.5, eval = TRUE}
-plot_data_m <- effectPlotData(fm, nDF, marginal = TRUE)
+plot_data_m <- effectPlotData(fm, nDF, marginal = TRUE, cores = 2)
 
 # we put the two groups in the same panel
 my.panel.bands <- function(x, y, upper, lower, fill, col, subscripts, ..., font, 
