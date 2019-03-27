@@ -9,7 +9,6 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     if (is.function(family))
         family <- family()
     if (is.null(family$family)) {
-        print(family)
         stop("'family' not recognized.\n")
     }
     if (family$family == "gaussian")
@@ -156,7 +155,8 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     }
     if (!is.null(zi_fixed)) {
         inits <- c(inits, 
-                   list(gammas = glm.fit(X_zi, as.numeric(y == 0), 
+                   list(gammas = glm.fit(X_zi, 
+                                         as.numeric(if (NCOL(y) == 2) y[, 1] == 0 else y == 0), 
                                          family = binomial())$coefficients))
         if (family$family %in% c("zero-inflated poisson", "zero-inflated negative binomial",
                                  "hurdle poisson", "hurdle negative binomial", 

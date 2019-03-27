@@ -507,7 +507,7 @@ residuals.MixMod <- function (object, type = c("mean_subject", "subject_specific
 marginal_coefs <- function (object, ...) UseMethod("marginal_coefs")
 
 marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL, 
-                                   M = 5000, K = 100,
+                                   M = 3000, K = 100,
                                    seed = 1, cores = max(parallel::detectCores() - 1, 1), 
                                    sandwich = FALSE, ...) {
     offset <- object$offset
