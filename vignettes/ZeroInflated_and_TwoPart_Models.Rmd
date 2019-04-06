@@ -272,6 +272,11 @@ km2 <- update(km1, random = ~ 1 || id, zi_random = ~ 1 | id)
 km2
 ```
 
+For zero-inflated or hurdle models the `marginal_coefs()` functions provides the marginalized coefficients corresponding the average mixture response variable, i.e., $$(1 - \pi) \times E(Y),$$ where $\pi$ denotes the probability of being zero, and $Y$ the response random variable for the noz-zero part. For example, in the case of the hurdle log-normal family, we get the marginalized coefficients for $(1 - \pi) \times E\{\log(Y)\}$, e.g.,
+```{r}
+marginal_coefs(km2)
+```
+
 Finally, we show how the `simulate()` method can be used to perform a replication / 
 posterior predictive check. In particular, in the following code we compare the empirical
 distribution function estimated in the observed data with estimates of the empirical

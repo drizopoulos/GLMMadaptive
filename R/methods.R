@@ -556,7 +556,7 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
             }
         }
         id <- match(object$id[[1]], unique(object$id[[1]]))
-        nRE <- ncol(Z)
+        nRE <- ncol(D)
         N <- nrow(X)
         n <- length(unique(id))
         eS <- eigen(D, symmetric = TRUE)
@@ -566,14 +566,14 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
         for (i in seq_len(n)) {
             set.seed(seed + i)
             id_i <- id == i
-            b <- V %*% t(matrix(rnorm(M * nRE), M, nRE))
-            Zb <- Z[id_i, , drop = FALSE] %*% b[, seq_len(ncol(Z)), drop = FALSE]
+            b <- V %*% matrix(rnorm(M * nRE), nRE, M)
+            Zb <- Z[id_i, , drop = FALSE] %*% b[seq_len(ncol(Z)), , drop = FALSE]
             mu <- mu_fun(Xbetas[id_i] + Zb)
             if (!is.null(gammas)) {
                 eta_zi_id_i <- eta_zi[id_i]
                 if (!is.null(object$Terms$termsZ_zi)) {
                     eta_zi_id_i <- eta_zi_id_i + Z_zi[id_i, , drop = FALSE] %*% 
-                        b[, -seq_len(ncol(Z)), drop = FALSE]
+                        b[-seq_len(ncol(Z)), , drop = FALSE]
                 }
                 mu <- plogis(eta_zi_id_i, lower.tail = FALSE) * mu
             }
@@ -1536,14 +1536,14 @@ scoring_rules <- function (object, newdata, newdata2 = NULL, max_count = 2000,
     } else if (object$family$family == "zero-inflated poisson") {
         function (x, mean, pis, N) {
             ind0 <- x == 0
-            out <- (1 - pis) * dpois(x, lambda = mean)
+            out <- (1 - pis) * dpois(x, lambda = mean / (1 - pis))
             out[ind0] <- pis + out[ind0]
             out
         }
     } else if (object$family$family == "zero-inflated negative binomial") {
         function (x, mean, pis, N) {
             ind0 <- x == 0
-            out <- (1 - pis) * dnbinom(x, mu = mean, size = exp(object$phis))
+            out <- (1 - pis) * dnbinom(x, mu = mean / (1 - pis), size = exp(object$phis))
             out[ind0] <- pis + out[ind0]
             out
         }
