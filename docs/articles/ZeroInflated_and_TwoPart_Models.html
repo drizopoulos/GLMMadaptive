@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.26</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
       <h1>Zero-Inflated and Two-Part Mixed Effects Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-03-20</h4>
+            <h4 class="date">2019-04-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/ZeroInflated_and_TwoPart_Models.Rmd"><code>vignettes/ZeroInflated_and_TwoPart_Models.Rmd</code></a></small>
       <div class="hidden name"><code>ZeroInflated_and_TwoPart_Models.Rmd</code></div>
@@ -429,6 +429,10 @@ km2
 <span class="co">#&gt;  -0.3349759 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; log-Lik: -1210.313</span></code></pre></div>
+<p>For zero-inflated or hurdle models the <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code> functions provides the marginalized coefficients corresponding the average mixture response variable, i.e., <span class="math display">\[(1 - \pi) \times E(Y),\]</span> where <span class="math inline">\(\pi\)</span> denotes the probability of being zero, and <span class="math inline">\(Y\)</span> the response random variable for the noz-zero part. For example, in the case of the hurdle log-normal family, we get the marginalized coefficients for <span class="math inline">\((1 - \pi) \times E\{\log(Y)\}\)</span>, e.g.,</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(km2)
+<span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
+<span class="co">#&gt;        -1.7311         0.0626         0.1852        -0.0661</span></code></pre></div>
 <p>Finally, we show how the <code><a href="../reference/methods.html">simulate()</a></code> method can be used to perform a replication / posterior predictive check. In particular, in the following code we compare the empirical distribution function estimated in the observed data with estimates of the empirical distribution function obtained from simulated/replicated data from the model. In the call to <code><a href="../reference/methods.html">simulate()</a></code> below we also specify to account for the variability in the maximum likelihood estimates by setting <code>acount_MLEs_var = TRUE</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/par">par</a></span>(<span class="dt">mar =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">2.5</span>, <span class="fl">2.5</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">mgp =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">1.1</span>, <span class="fl">0.5</span>, <span class="dv">0</span>), <span class="dt">cex.axis =</span> <span class="fl">0.7</span>, <span class="dt">cex.lab =</span> <span class="fl">0.8</span>)
 y &lt;-<span class="st"> </span>DF<span class="op">$</span>y
@@ -443,7 +447,7 @@ rep_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
 <span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/lines">lines</a></span>(x_vals, <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/ecdf">ecdf</a></span>(y)(x_vals))
 <span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/legend">legend</a></span>(<span class="st">"bottomright"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"log replicated data"</span>, <span class="st">"log observed data"</span>), <span class="dt">lty =</span> <span class="dv">1</span>, 
        <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"lightgrey"</span>, <span class="st">"black"</span>), <span class="dt">bty =</span> <span class="st">"n"</span>, <span class="dt">cex =</span> <span class="fl">0.8</span>)</code></pre></div>
-<p><img src="ZeroInflated_and_TwoPart_Models_files/figure-html/unnamed-chunk-11-1.png" width="816" style="display: block; margin: auto;"></p>
+<p><img src="ZeroInflated_and_TwoPart_Models_files/figure-html/unnamed-chunk-12-1.png" width="816" style="display: block; margin: auto;"></p>
 </div>
 <div id="two-parthurdle-poisson-mixed-effects-model" class="section level2">
 <h2 class="hasAnchor">

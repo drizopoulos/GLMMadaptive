@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.26</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
       <h1>Methods for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-03-20</h4>
+            <h4 class="date">2019-04-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Methods_MixMod.Rmd"><code>vignettes/Methods_MixMod.Rmd</code></a></small>
       <div class="hidden name"><code>Methods_MixMod.Rmd</code></div>
@@ -295,7 +295,7 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <p>The fixed effects estimates in mixed models with nonlinear link functions have an interpretation conditional on the random effects. However, often we wish to obtain parameters with a marginal / population averaged interpretation, which leads many researchers to use generalized estimating equations, and dealing with potential issues with missing data. Nonetheless, recently <a href="https://dx.doi.org/10.1111/biom.12707">Hedeker et al.</a> have proposed a nice solution to this problem. Their approach is implemented in function <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>. For example, for model <code>fm</code> we obtain the marginalized coefficients using:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(fm)
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;        -1.6017        -1.0999         0.1763         0.0513</span></code></pre></div>
+<span class="co">#&gt;        -1.6022        -1.0981         0.1766         0.0509</span></code></pre></div>
 <p>The function calculates the marginal log odds ratios in our case (because we have a binary outcome) using a Monte Carlo procedure with number of samples determined by the <code>M</code> argument.</p>
 <p>Standard errors for the marginalized coefficients are obtained by setting <code>std_errors = TRUE</code> in the call to <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>, and require a double Monte Carlo procedure for which argument <code>K</code> comes also into play. To speed up computations, the outer Monte Carlo procedure is performed in parallel using package <strong>parallel</strong> and number of cores specified in the <code>cores</code> argument (results not shown):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(fm, <span class="dt">std_errors =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">5</span>)</code></pre></div>
@@ -336,7 +336,7 @@ expit &lt;-<span class="st"> </span><span class="cf">function</span> (x) <span c
        <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Subject-Specific Probabilities"</span>)</code></pre></div>
 <p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-19-1.png" width="816" style="display: block; margin: auto;"><img src="Methods_MixMod_files/figure-html/unnamed-chunk-19-2.png" width="816" style="display: block; margin: auto;"></p>
 <p>The <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function also allows to compute marginal predictions using the marginalized coefficients described above. This is achieved by setting <code>marginal = TRUE</code> in the respective call (results not shown):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">marginal =</span> <span class="ot">TRUE</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">marginal =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">2</span>)
 
 <span class="co"># we put the two groups in the same panel</span>
 my.panel.bands &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, upper, lower, fill, col, subscripts, ..., font, 

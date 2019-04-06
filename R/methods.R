@@ -661,6 +661,14 @@ coef.m_coefs <- function (object, ...) {
     }
 }
 
+vcov.m_coefs <- function (object) {
+    if (is.null(object$coef_table)) {
+        NULL
+    } else {
+        object$var_betas
+    }
+}
+
 effectPlotData <- function (object, newdata, level, ...) UseMethod("effectPlotData")
 
 effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FALSE,

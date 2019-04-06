@@ -66,7 +66,7 @@ mixed models." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.26</span>
       </span>
     </div>
 
@@ -157,7 +157,7 @@ mixed models.</p>
 
 # S3 method for MixMod
 marginal_coefs(object, std_errors = FALSE, 
-   link_fun = NULL, M = 3000, K = 100, seed = 1, 
+   link_fun = NULL, M = 5000, K = 100, seed = 1, 
    cores = max(parallel::detectCores() - 1, 1), 
    sandwich = FALSE, &#8230;)</pre>
     
@@ -270,11 +270,11 @@ marginalization of regression parameters from mixed models of binary outcomes.
 
 <span class='fu'><a href='methods.html'>fixef</a></span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt;  (Intercept)         year       group1  year:group1 
 #&gt; -2.888701065  0.193737928 -0.536198170  0.009911002 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; (Intercept)        year      group1 year:group1 
-#&gt;     -2.9759      0.1986     -0.2184      0.0056 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='no'>fm1</span>, <span class='kw'>std_errors</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;             Estimate Std.Err  z-value p-value
-#&gt; (Intercept)  -2.9759  0.2694 -11.0449 &lt; 1e-04
-#&gt; year          0.1986  0.0111  17.9637 &lt; 1e-04
-#&gt; group1       -0.2184  0.4354  -0.5016 0.61598
-#&gt; year:group1   0.0056  0.0153   0.3694 0.71187
+#&gt;     -1.3206      0.0884     -0.2525      0.0052 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='no'>fm1</span>, <span class='kw'>std_errors</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;             Estimate Std.Err  z-value p-value
+#&gt; (Intercept)  -1.3206  0.1132 -11.6621 &lt; 1e-04
+#&gt; year          0.0884  0.0048  18.5716 &lt; 1e-04
+#&gt; group1       -0.2525  0.1590  -1.5875 0.11239
+#&gt; year:group1   0.0052  0.0060   0.8716 0.38345
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -70,7 +70,7 @@ mixed_model()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.26</span>
       </span>
     </div>
 
@@ -208,8 +208,8 @@ log-normal model.</p>
 #&gt;     family = zi.poisson(), zi_fixed = ~1)
 #&gt; 
 #&gt; Data Descriptives:
-#&gt; Number of Observations: 1
-#&gt; Number of Groups: 1 
+#&gt; Number of Observations: 2700
+#&gt; Number of Groups: 30 
 #&gt; 
 #&gt; Model:
 #&gt;  family: zero-inflated poisson
@@ -217,7 +217,7 @@ log-normal model.</p>
 #&gt; 
 #&gt; Fit statistics:
 #&gt;    log.Lik      AIC      BIC
-#&gt;  -20761.88 41539.76 41523.76
+#&gt;  -20761.88 41539.76 41550.97
 #&gt; 
 #&gt; Random effects covariance matrix:
 #&gt;                StdDev
@@ -251,7 +251,7 @@ log-normal model.</p>
 <span class='co'># We do a likelihood ratio test between the two models</span>
 <span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>fm1</span>, <span class='no'>fm2</span>)</div><div class='output co'>#&gt; 
 #&gt;          AIC      BIC   log.Lik   LRT df p.value
-#&gt; fm1 41539.76 41523.76 -20761.88                 
+#&gt; fm1 41539.76 41550.97 -20761.88                 
 #&gt; fm2 41475.50 41475.50 -20727.75 68.25  2 &lt;0.0001
 #&gt; </div><div class='input'>
 <span class='co'>#############################################################################</span>
@@ -267,16 +267,16 @@ log-normal model.</p>
 #&gt;     family = zi.negative.binomial(), zi_fixed = ~1)
 #&gt; 
 #&gt; Data Descriptives:
-#&gt; Number of Observations: 1
-#&gt; Number of Groups: 1 
+#&gt; Number of Observations: 2700
+#&gt; Number of Groups: 30 
 #&gt; 
 #&gt; Model:
 #&gt;  family: zero-inflated negative binomial
 #&gt;  link: log 
 #&gt; 
 #&gt; Fit statistics:
-#&gt;   log.Lik   AIC   BIC
-#&gt;  -10041.5 20101 20083
+#&gt;   log.Lik   AIC      BIC
+#&gt;  -10041.5 20101 20113.61
 #&gt; 
 #&gt; Random effects covariance matrix:
 #&gt;                StdDev
@@ -309,7 +309,7 @@ log-normal model.</p>
 <span class='co'># We do a likelihood ratio test between the Poisson and negative binomial models</span>
 <span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>fm1</span>, <span class='no'>gm1</span>)</div><div class='output co'>#&gt; 
 #&gt;          AIC      BIC   log.Lik      LRT df p.value
-#&gt; fm1 41539.76 41523.76 -20761.88                    
+#&gt; fm1 41539.76 41550.97 -20761.88                    
 #&gt; gm1 20101.00 20101.00 -10041.50 21440.75  1 &lt;0.0001
 #&gt; </div></pre>
   </div>

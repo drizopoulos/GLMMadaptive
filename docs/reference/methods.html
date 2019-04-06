@@ -65,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.26</span>
       </span>
     </div>
 
@@ -502,14 +502,14 @@ residuals.</p>
 #&gt; var.year         0.17235913 1.958232e-01 -0.68848502</div><div class='input'>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'>fitted</span>(<span class='no'>fm1</span>, <span class='st'>"subject_specific"</span>))</div><div class='output co'>#&gt;          1          2          3          4          5          6 
 #&gt; 0.05498808 0.07318531 0.28562644 0.47424881 0.54839516 0.55383431 </div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='fu'>residuals</span>(<span class='no'>fm1</span>, <span class='st'>"marginal"</span>))</div><div class='output co'>#&gt;          1          2          3          4          5          6 
-#&gt; -0.1034642 -0.1198637 -0.2471241 -0.3378834 -0.3748399 -0.3776384 </div><div class='input'>
+#&gt; -0.1734134 -0.1895302 -0.2939384 -0.3573145 -0.3819366 -0.3837837 </div><div class='input'>
 <span class='no'>fm2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(<span class='kw'>fixed</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>year</span> * <span class='no'>group</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='no'>year</span> <span class='kw'>|</span> <span class='no'>id</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>,
                    <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/family'>binomial</a></span>())
 
 <span class='co'># likelihood ratio test between fm1 and fm2</span>
 <span class='fu'>anova</span>(<span class='no'>fm1</span>, <span class='no'>fm2</span>)</div><div class='output co'>#&gt; 
 #&gt;         AIC     BIC  log.Lik  LRT df p.value
-#&gt; fm1 5010.41 4998.41 -2499.20                
+#&gt; fm1 5010.41 5035.69 -2499.20                
 #&gt; fm2 5012.35 5012.35 -2499.17 0.06  1  0.8067
 #&gt; </div><div class='input'>
 <span class='co'># the same but with a Wald test</span>

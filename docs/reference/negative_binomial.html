@@ -66,7 +66,7 @@ model, using mixed_model()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.26</span>
       </span>
     </div>
 
@@ -177,8 +177,8 @@ model, using <code><a href='mixed_model.html'>mixed_model()</a></code>.</p>
 #&gt;     family = negative.binomial())
 #&gt; 
 #&gt; Data Descriptives:
-#&gt; Number of Observations: 1
-#&gt; Number of Groups: 1 
+#&gt; Number of Observations: 2700
+#&gt; Number of Groups: 30 
 #&gt; 
 #&gt; Model:
 #&gt;  family: negative binomial
@@ -186,7 +186,7 @@ model, using <code><a href='mixed_model.html'>mixed_model()</a></code>.</p>
 #&gt; 
 #&gt; Fit statistics:
 #&gt;    log.Lik      AIC      BIC
-#&gt;  -10043.07 20102.15 20086.15
+#&gt;  -10043.07 20102.15 20113.36
 #&gt; 
 #&gt; Random effects covariance matrix:
 #&gt;                StdDev
@@ -218,7 +218,7 @@ model, using <code><a href='mixed_model.html'>mixed_model()</a></code>.</p>
 
 <span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>gm0</span>, <span class='no'>gm1</span>)</div><div class='output co'>#&gt; 
 #&gt;          AIC      BIC   log.Lik      LRT df p.value
-#&gt; gm0 41537.56 41523.56 -20761.78                    
+#&gt; gm0 41537.56 41547.37 -20761.78                    
 #&gt; gm1 20102.15 20102.15 -10043.07 21437.41  1 &lt;0.0001
 #&gt; </div><div class='input'>
 <span class='co'># Define a cutom-made family function to be used with mixed_model()</span>
@@ -276,8 +276,8 @@ model, using <code><a href='mixed_model.html'>mixed_model()</a></code>.</p>
 #&gt;     family = my_negBinom(), n_phis = 1, initial_values = list(betas = poisson()))
 #&gt; 
 #&gt; Data Descriptives:
-#&gt; Number of Observations: 1
-#&gt; Number of Groups: 1 
+#&gt; Number of Observations: 2700
+#&gt; Number of Groups: 30 
 #&gt; 
 #&gt; Model:
 #&gt;  family: user Neg Binom
@@ -285,7 +285,7 @@ model, using <code><a href='mixed_model.html'>mixed_model()</a></code>.</p>
 #&gt; 
 #&gt; Fit statistics:
 #&gt;    log.Lik      AIC      BIC
-#&gt;  -10042.74 20101.47 20085.47
+#&gt;  -10042.74 20101.47 20112.68
 #&gt; 
 #&gt; Random effects covariance matrix:
 #&gt;               StdDev
