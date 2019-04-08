@@ -71,7 +71,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
         if (!is.null(zi_fixed))
             complete_cases <- cbind(complete_cases, complete.cases(mfX_zi))
         if (!is.null(zi_random))
-            complete_cases <- cbind(complete_cases, complete.cases(mfZ_zi))
+            complete_cases <- cbind(complete_cases, sapply(mfZ_zi, complete.cases))
         keep <- apply(complete_cases, 1, all)
         mfX <- mfX[keep, , drop = FALSE]
         mfZ[] <- lapply(mfZ, function (mf) mf[keep, , drop = FALSE])
