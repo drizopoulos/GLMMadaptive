@@ -730,6 +730,7 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
         RNGstate <- structure(seed, kind = as.list(RNGkind()))
         on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
         mu_fun <- object$Funs$mu_fun
+        link_fun <- object$family$linkfun
         betas <- fixef(object)
         gammas <- fixef(object, sub_model = "zero_part")
         termsX_zi <- object$Terms$termsX_zi
@@ -758,7 +759,7 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
         } else {
             eta_y <- c(X %*% betas)
             eta_zi <- c(X_zi %*% gammas)
-            pred <- mu_fun(eta_y) / (1 + exp(eta_zi))
+            pred <- link_fun(mu_fun(eta_y) / (1 + exp(eta_zi)))
             Preds <- matrix(0.0, length(pred), K)
             for (k in seq_len(K)) {
                 thetas_k <- relist(new_tht[k, ], skeleton = list_thetas)
@@ -766,7 +767,7 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
                 gammas_k <- thetas_k$gammas
                 eta_y <- c(X %*% betas_k)
                 eta_zi <- c(X_zi %*% gammas_k)
-                Preds[, k] <- mu_fun(eta_y) / (1 + exp(eta_zi))
+                Preds[, k] <- link_fun(mu_fun(eta_y) / (1 + exp(eta_zi)))
             }
             newdata$pred <- pred
             Qs <- apply(Preds, 1, quantile, probs = c((1 - level) / 2, (1 + level) / 2))
