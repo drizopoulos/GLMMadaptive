@@ -744,18 +744,14 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
         V <- V[ind, ind, drop = FALSE]
         new_tht <- MASS::mvrnorm(K, tht, V)
         if (marginal) {
-            stop("the 'marginal = TRUE' option of effectPlotData() is not yet ", 
-                 "implemented for models with an extra zero-part.")
-            termsZ <- delete.response(object$Terms$termsZ)
-            mfZ <- model.frame(termsZ, newdata, 
-                               xlev = .getXlevels(termsZ, object$model_frames$mfZ))
-            Z <- model.matrix(termsZ, mfZ)
-            if (!is.null(object$Terms$termsZ_zi)) {
-                termsZ_zi <- object$Terms$termsZ_zi
-                mfZ_zi <- model.frame(termsZ_zi, newdata, 
-                                      xlev = .getXlevels(termsZ_zi, object$model_frames$mfZ_zi))
-                Z_zi <- model.matrix(termsZ_zi, mfZ_zi)
-            }
+            mcoefs <- marginal_coefs(object, std_errors = TRUE, ...)
+            betas <- mcoefs$betas
+            var_betas <- mcoefs$var_betas
+            pred <- c(X %*% betas)
+            ses <- sqrt(diag(X %*% var_betas %*% t(X)))
+            newdata$pred <- pred
+            newdata$low <- pred + qnorm((1 - level) / 2) * ses
+            newdata$upp <- pred + qnorm((1 + level) / 2) * ses
         } else {
             eta_y <- c(X %*% betas)
             eta_zi <- c(X_zi %*% gammas)
