@@ -1596,6 +1596,7 @@ scoring_rules <- function (object, newdata, newdata2 = NULL, max_count = 2000,
 VIF <- function (object, ...) UseMethod("VIF")
 
 VIF.MixMod <- function (object, type = c("fixed", "zi_fixed"), ...) {
+    type <- match.arg(type)
     if (any(is.na(fixef(object, sub_model = if (type == "fixed") "main" else "zero_part")))) 
         stop ("there are aliased coefficients in the model.")
     v <- vcov(object, parm = if (type == "fixed") "fixed-effects" else "zero_part")
@@ -1617,7 +1618,8 @@ VIF.MixMod <- function (object, type = c("fixed", "zi_fixed"), ...) {
     colnames(result) <- c("GVIF", "Df", "GVIF^(1/(2*Df))")
     for (term in seq_len(n.terms)) {
         subs <- which(assign == term)
-        result[term, 1] <- det(R[subs, subs]) * det(R[-subs, -subs]) / detR
+        result[term, 1] <- det(R[subs, subs, drop = FALSE]) * 
+            det(R[-subs, -subs, drop = FALSE]) / detR
         result[term, 2] <- length(subs)
     }
     if (all(result[, 2] == 1)) {
