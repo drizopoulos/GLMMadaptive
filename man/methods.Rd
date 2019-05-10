@@ -28,7 +28,8 @@
 \alias{model.frame.MixMod}
 \alias{nobs}
 \alias{nobs.MixMod}
-
+\alias{VIF}
+\alias{VIF.MixMod}
 
 \title{
 Various Methods for Standard Generics
@@ -112,6 +113,10 @@ nobs(object, \dots)
 
 \method{nobs}{MixMod}(object, level = 1, \dots)
 
+VIF(object, \dots)
+
+\method{VIF}{MixMod}(object, type = c("fixed", "zi_fixed"), \dots)
+
 }
 
 \arguments{
@@ -139,8 +144,8 @@ nobs(object, \dots)
   effects. When \code{L} is used, a Wald test is performed.}
 \item{sandwich}{logical; if \code{TRUE} the sandwich estimator is used in the calculation
   of standard errors.}
-\item{type}{character string indicating the type of fitted values / residuals / predictions
-    to calculate. Option \code{"mean_subject"} corresponds to only using the fixed-effects
+\item{type}{character string indicating the type of fitted values / residuals / predictions 
+    / variance inflation factors to calculate. Option \code{"mean_subject"} corresponds to only using the fixed-effects
     part; option \code{"subject_specific"} corresponds to using both the fixed- and 
     random-effects parts; option \code{"marginal"} is based in multiplying the fixed 
     effects design matrix with the marginal coefficients obtained by 

@@ -661,7 +661,7 @@ coef.m_coefs <- function (object, ...) {
     }
 }
 
-vcov.m_coefs <- function (object) {
+vcov.m_coefs <- function (object, ...) {
     if (is.null(object$coef_table)) {
         NULL
     } else {
@@ -1592,3 +1592,41 @@ scoring_rules <- function (object, newdata, newdata2 = NULL, max_count = 2000,
                          spherical = spherical)
     if (return_newdata) cbind(ND, result) else result
 }
+
+VIF <- function (object, ...) UseMethod("VIF")
+
+VIF.MixMod <- function (object, type = c("fixed", "zi_fixed"), ...) {
+    if (any(is.na(fixef(object, sub_model = if (type == "fixed") "main" else "zero_part")))) 
+        stop ("there are aliased coefficients in the model.")
+    v <- vcov(object, parm = if (type == "fixed") "fixed-effects" else "zero_part")
+    assign <- attr(model.matrix(object, type = type), "assign")
+    if (names(fixef(object)[1L]) == "(Intercept)") {
+        v <- v[-1, -1]
+        assign <- assign[-1]
+    } else {
+        warning("No intercept: VIFs may not be sensible.")
+    }
+    terms <- labels(terms(object, type = type))
+    n.terms <- length(terms)
+    if (n.terms < 2) 
+        stop("model contains fewer than 2 terms")
+    R <- cov2cor(v)
+    detR <- det(R)
+    result <- matrix(0.0, n.terms, 3)
+    rownames(result) <- terms
+    colnames(result) <- c("GVIF", "Df", "GVIF^(1/(2*Df))")
+    for (term in seq_len(n.terms)) {
+        subs <- which(assign == term)
+        result[term, 1] <- det(R[subs, subs]) * det(R[-subs, -subs]) / detR
+        result[term, 2] <- length(subs)
+    }
+    if (all(result[, 2] == 1)) {
+        result <- result[, 1]
+    } else {
+        result[, 3] <- result[, 1]^(1/(2 * result[, 2]))
+    }
+    result
+}
+
+
+
