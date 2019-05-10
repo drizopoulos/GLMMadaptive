@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.27</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.30</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
       <h1>Goodness of Fit for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-04-08</h4>
+            <h4 class="date">2019-05-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Goodness_of_Fit.Rmd"><code>vignettes/Goodness_of_Fit.Rmd</code></a></small>
       <div class="hidden name"><code>Goodness_of_Fit.Rmd</code></div>
@@ -125,72 +125,72 @@
 <h2 class="hasAnchor">
 <a href="#zero-inflated-negative-binomial-longitudinal-data" class="anchor"></a>Zero-Inflated Negative Binomial Longitudinal Data</h2>
 <p>We start by simulating a longitudinal outcome from a zero-inflated negative binomial distribution:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">123</span>)
-n &lt;-<span class="st"> </span><span class="dv">300</span> <span class="co"># number of subjects</span>
-K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span>
-t_max &lt;-<span class="st"> </span><span class="dv">5</span> <span class="co"># maximum follow-up time</span>
-
-<span class="co"># we constuct a data frame with the design: </span>
-<span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span>
-DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),
-                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">replicate</a></span>(n, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),
-                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))
-
-<span class="co"># design matrices for the fixed and random effects non-zero part</span>
-X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)
-Z &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> DF)
-<span class="co"># design matrices for the fixed and random effects zero part</span>
-X_zi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex, <span class="dt">data =</span> DF)
-Z_zi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> DF)
-
-betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">1.5</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="op">-</span><span class="fl">0.03</span>) <span class="co"># fixed effects coefficients non-zero part</span>
-shape &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># shape/size parameter of the negative binomial distribution</span>
-gammas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0.5</span>) <span class="co"># fixed effects coefficients zero part</span>
-D11 &lt;-<span class="st"> </span><span class="fl">0.5</span> <span class="co"># variance of random intercepts non-zero part</span>
-D22 &lt;-<span class="st"> </span><span class="fl">0.4</span> <span class="co"># variance of random intercepts zero part</span>
-
-<span class="co"># we simulate random effects</span>
-b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11)), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D22)))
-<span class="co"># linear predictor non-zero part</span>
-eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, <span class="dv">1</span>, <span class="dt">drop =</span> <span class="ot">FALSE</span>]))
-<span class="co"># linear predictor zero part</span>
-eta_zi &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X_zi <span class="op">%*%</span><span class="st"> </span>gammas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z_zi <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, <span class="dv">2</span>, <span class="dt">drop =</span> <span class="ot">FALSE</span>]))
-<span class="co"># we simulate negative binomial longitudinal data</span>
-DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/NegBinomial">rnbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">size =</span> shape, <span class="dt">mu =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(eta_y))
-<span class="co"># we set the extra zeros</span>
-DF<span class="op">$</span>y[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/logical">as.logical</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Logistic">plogis</a></span>(eta_zi)))] &lt;-<span class="st"> </span><span class="dv">0</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">123</span>)</a>
+<a class="sourceLine" id="cb1-2" title="2">n &lt;-<span class="st"> </span><span class="dv">300</span> <span class="co"># number of subjects</span></a>
+<a class="sourceLine" id="cb1-3" title="3">K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span></a>
+<a class="sourceLine" id="cb1-4" title="4">t_max &lt;-<span class="st"> </span><span class="dv">5</span> <span class="co"># maximum follow-up time</span></a>
+<a class="sourceLine" id="cb1-5" title="5"></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="co"># we constuct a data frame with the design: </span></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span></a>
+<a class="sourceLine" id="cb1-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
+<a class="sourceLine" id="cb1-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">replicate</a></span>(n, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),</a>
+<a class="sourceLine" id="cb1-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
+<a class="sourceLine" id="cb1-11" title="11"></a>
+<a class="sourceLine" id="cb1-12" title="12"><span class="co"># design matrices for the fixed and random effects non-zero part</span></a>
+<a class="sourceLine" id="cb1-13" title="13">X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)</a>
+<a class="sourceLine" id="cb1-14" title="14">Z &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> DF)</a>
+<a class="sourceLine" id="cb1-15" title="15"><span class="co"># design matrices for the fixed and random effects zero part</span></a>
+<a class="sourceLine" id="cb1-16" title="16">X_zi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex, <span class="dt">data =</span> DF)</a>
+<a class="sourceLine" id="cb1-17" title="17">Z_zi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> DF)</a>
+<a class="sourceLine" id="cb1-18" title="18"></a>
+<a class="sourceLine" id="cb1-19" title="19">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">1.5</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">-0.03</span>) <span class="co"># fixed effects coefficients non-zero part</span></a>
+<a class="sourceLine" id="cb1-20" title="20">shape &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># shape/size parameter of the negative binomial distribution</span></a>
+<a class="sourceLine" id="cb1-21" title="21">gammas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0.5</span>) <span class="co"># fixed effects coefficients zero part</span></a>
+<a class="sourceLine" id="cb1-22" title="22">D11 &lt;-<span class="st"> </span><span class="fl">0.5</span> <span class="co"># variance of random intercepts non-zero part</span></a>
+<a class="sourceLine" id="cb1-23" title="23">D22 &lt;-<span class="st"> </span><span class="fl">0.4</span> <span class="co"># variance of random intercepts zero part</span></a>
+<a class="sourceLine" id="cb1-24" title="24"></a>
+<a class="sourceLine" id="cb1-25" title="25"><span class="co"># we simulate random effects</span></a>
+<a class="sourceLine" id="cb1-26" title="26">b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11)), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D22)))</a>
+<a class="sourceLine" id="cb1-27" title="27"><span class="co"># linear predictor non-zero part</span></a>
+<a class="sourceLine" id="cb1-28" title="28">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, <span class="dv">1</span>, <span class="dt">drop =</span> <span class="ot">FALSE</span>]))</a>
+<a class="sourceLine" id="cb1-29" title="29"><span class="co"># linear predictor zero part</span></a>
+<a class="sourceLine" id="cb1-30" title="30">eta_zi &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X_zi <span class="op">%*%</span><span class="st"> </span>gammas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z_zi <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, <span class="dv">2</span>, <span class="dt">drop =</span> <span class="ot">FALSE</span>]))</a>
+<a class="sourceLine" id="cb1-31" title="31"><span class="co"># we simulate negative binomial longitudinal data</span></a>
+<a class="sourceLine" id="cb1-32" title="32">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/NegBinomial">rnbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">size =</span> shape, <span class="dt">mu =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(eta_y))</a>
+<a class="sourceLine" id="cb1-33" title="33"><span class="co"># we set the extra zeros</span></a>
+<a class="sourceLine" id="cb1-34" title="34">DF<span class="op">$</span>y[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/logical">as.logical</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Logistic">plogis</a></span>(eta_zi)))] &lt;-<span class="st"> </span><span class="dv">0</span></a></code></pre></div>
 </div>
 <div id="function-for-scaled-simulated-residuals" class="section level2">
 <h2 class="hasAnchor">
 <a href="#function-for-scaled-simulated-residuals" class="anchor"></a>Function for Scaled Simulated Residuals</h2>
 <p>Because <strong>DHARMa</strong> does not yet support objects of class <code>MixMod</code> (see <a href="https://github.com/florianhartig/DHARMa/issues/96">here</a> for current plants), we provide a wrapper function to enable the use of the procedures of the package:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">resids_plot &lt;-<span class="st"> </span><span class="cf">function</span> (object, y, <span class="dt">nsim =</span> <span class="dv">1000</span>,
-                         <span class="dt">type =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"subject_specific"</span>, <span class="st">"mean_subject"</span>),
-                         <span class="dt">integerResponse =</span> <span class="ot">NULL</span>) {
-    <span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/class">inherits</a></span>(object, <span class="st">"MixMod"</span>))
-        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/stop">stop</a></span>(<span class="st">"this function works for 'MixMod' objects.</span><span class="ch">\n</span><span class="st">"</span>)
-    type &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match.arg">match.arg</a></span>(type)
-    <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">is.null</a></span>(integerResponse)) {
-        integer_families &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"binomial"</span>, <span class="st">"poisson"</span>, <span class="st">"negative binomial"</span>,
-                              <span class="st">"zero-inflated poisson"</span>, <span class="st">"zero-inflated negative binomial"</span>, 
-                              <span class="st">"hurdle poisson"</span>, <span class="st">"hurdle negative binomial"</span>)
-        numeric_families &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"hurdle log-normal"</span>, <span class="st">"beta"</span>, <span class="st">"hurdle beta"</span>)
-        <span class="cf">if</span> (object<span class="op">$</span>family<span class="op">$</span>family <span class="op">%in%</span><span class="st"> </span>integer_families) {
-            integerResponse &lt;-<span class="st"> </span><span class="ot">TRUE</span>
-        } <span class="cf">else</span> <span class="cf">if</span> (object<span class="op">$</span>family<span class="op">$</span>family <span class="op">%in%</span><span class="st"> </span>numeric_families) {
-            integerResponse &lt;-<span class="st"> </span><span class="ot">FALSE</span>
-        } <span class="cf">else</span> {
-            <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/stop">stop</a></span>(<span class="st">"non build-in family object; you need to specify the 'integerResponse',</span><span class="ch">\n</span><span class="st">"</span>,
-                 <span class="st">"</span><span class="ch">\t</span><span class="st">argument indicating whether the outcome variable is integer or not.</span><span class="ch">\n</span><span class="st">"</span>)
-        }
-    }
-    sims &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">simulate</a></span>(object, <span class="dt">nsim =</span> nsim, <span class="dt">type =</span> type)
-    fits &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">fitted</a></span>(object, <span class="dt">type =</span> type)
-    dharmaRes &lt;-<span class="st"> </span>DHARMa<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DHARMa/topics/createDHARMa">createDHARMa</a></span>(<span class="dt">simulatedResponse =</span> sims, <span class="dt">observedResponse =</span> y, 
-                              <span class="dt">fittedPredictedResponse =</span> fits, 
-                              <span class="dt">integerResponse =</span> integerResponse)
-    DHARMa<span class="op">:::</span><span class="kw">plot.DHARMa</span>(dharmaRes, <span class="dt">quantreg =</span> <span class="ot">FALSE</span>)
-}</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">resids_plot &lt;-<span class="st"> </span><span class="cf">function</span> (object, y, <span class="dt">nsim =</span> <span class="dv">1000</span>,</a>
+<a class="sourceLine" id="cb2-2" title="2">                         <span class="dt">type =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"subject_specific"</span>, <span class="st">"mean_subject"</span>),</a>
+<a class="sourceLine" id="cb2-3" title="3">                         <span class="dt">integerResponse =</span> <span class="ot">NULL</span>) {</a>
+<a class="sourceLine" id="cb2-4" title="4">    <span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/class">inherits</a></span>(object, <span class="st">"MixMod"</span>))</a>
+<a class="sourceLine" id="cb2-5" title="5">        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/stop">stop</a></span>(<span class="st">"this function works for 'MixMod' objects.</span><span class="ch">\n</span><span class="st">"</span>)</a>
+<a class="sourceLine" id="cb2-6" title="6">    type &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match.arg">match.arg</a></span>(type)</a>
+<a class="sourceLine" id="cb2-7" title="7">    <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">is.null</a></span>(integerResponse)) {</a>
+<a class="sourceLine" id="cb2-8" title="8">        integer_families &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"binomial"</span>, <span class="st">"poisson"</span>, <span class="st">"negative binomial"</span>,</a>
+<a class="sourceLine" id="cb2-9" title="9">                              <span class="st">"zero-inflated poisson"</span>, <span class="st">"zero-inflated negative binomial"</span>, </a>
+<a class="sourceLine" id="cb2-10" title="10">                              <span class="st">"hurdle poisson"</span>, <span class="st">"hurdle negative binomial"</span>)</a>
+<a class="sourceLine" id="cb2-11" title="11">        numeric_families &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"hurdle log-normal"</span>, <span class="st">"beta"</span>, <span class="st">"hurdle beta"</span>)</a>
+<a class="sourceLine" id="cb2-12" title="12">        <span class="cf">if</span> (object<span class="op">$</span>family<span class="op">$</span>family <span class="op">%in%</span><span class="st"> </span>integer_families) {</a>
+<a class="sourceLine" id="cb2-13" title="13">            integerResponse &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb2-14" title="14">        } <span class="cf">else</span> <span class="cf">if</span> (object<span class="op">$</span>family<span class="op">$</span>family <span class="op">%in%</span><span class="st"> </span>numeric_families) {</a>
+<a class="sourceLine" id="cb2-15" title="15">            integerResponse &lt;-<span class="st"> </span><span class="ot">FALSE</span></a>
+<a class="sourceLine" id="cb2-16" title="16">        } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb2-17" title="17">            <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/stop">stop</a></span>(<span class="st">"non build-in family object; you need to specify the 'integerResponse',</span><span class="ch">\n</span><span class="st">"</span>,</a>
+<a class="sourceLine" id="cb2-18" title="18">                 <span class="st">"</span><span class="ch">\t</span><span class="st">argument indicating whether the outcome variable is integer or not.</span><span class="ch">\n</span><span class="st">"</span>)</a>
+<a class="sourceLine" id="cb2-19" title="19">        }</a>
+<a class="sourceLine" id="cb2-20" title="20">    }</a>
+<a class="sourceLine" id="cb2-21" title="21">    sims &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">simulate</a></span>(object, <span class="dt">nsim =</span> nsim, <span class="dt">type =</span> type)</a>
+<a class="sourceLine" id="cb2-22" title="22">    fits &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">fitted</a></span>(object, <span class="dt">type =</span> type)</a>
+<a class="sourceLine" id="cb2-23" title="23">    dharmaRes &lt;-<span class="st"> </span>DHARMa<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DHARMa/topics/createDHARMa">createDHARMa</a></span>(<span class="dt">simulatedResponse =</span> sims, <span class="dt">observedResponse =</span> y, </a>
+<a class="sourceLine" id="cb2-24" title="24">                              <span class="dt">fittedPredictedResponse =</span> fits, </a>
+<a class="sourceLine" id="cb2-25" title="25">                              <span class="dt">integerResponse =</span> integerResponse)</a>
+<a class="sourceLine" id="cb2-26" title="26">    DHARMa<span class="op">:::</span><span class="kw">plot.DHARMa</span>(dharmaRes, <span class="dt">quantreg =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb2-27" title="27">}</a></code></pre></div>
 <p>This function has the following arguments:</p>
 <ul>
 <li>
@@ -209,10 +209,10 @@ DF<span class="op">$</span>y[<span class="kw"><a href="https://www.rdocumentatio
 <h2 class="hasAnchor">
 <a href="#poisson-mixed-model" class="anchor"></a>Poisson Mixed Model</h2>
 <p>We start by fitting a Poisson mixed model to the data using the following call to <code><a href="../reference/mixed_model.html">mixed_model()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
-                   <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>())</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">fm1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
+<a class="sourceLine" id="cb3-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>())</a></code></pre></div>
 <p>We expect that this model will not fit the data well because it does not account for the overdispersion and the extra zeros we have simulated. To evaluate the fit we compare the simulated outcome data from the model versus the observed outcome data. If the model fits the data well, we would expect the observed outcome data to have the same empirical distribution as the empirical distribution of the simulated data. The following call to <code>resids_plot()</code> performs this comparison:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">resids_plot</span>(fm1, DF<span class="op">$</span>y)</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">resids_plot</span>(fm1, DF<span class="op">$</span>y)</a></code></pre></div>
 <p><img src="Goodness_of_Fit_files/figure-html/poisson_mixed_model_GoF-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>The left panel shows the QQ-plot of the observed versus expected residuals. According to the manner the scaled residuals are calculated in <strong>DHARMa</strong>, we expect these residuals to have a uniform distribution in the interval <span class="math inline">\((0, 1)\)</span> for a well-specified model. The <span class="math inline">\(p\)</span>-value reported in the plot is the one obtained from the Kolmogorov-Smirnov test for testing uniformity. The right panel shows the scatterplot of the residuals against the fitted values. To provide a visual aid in detecting deviations from uniformity in the y-direction, the plot of the residuals against the predicted values also performs a quantile regression, which provides 0.25, 0.5 and 0.75 quantile lines across the plots. These lines should be straight, horizontal, and at y-values of 0.25, 0.5 and 0.75. Note, however, that some deviations from this are to be expected by chance, even for a perfect model, especially if the sample size is small.</p>
 <p>It is evident from these two plots that the Poisson model does not fit the data satisfactorily.</p>
@@ -221,11 +221,11 @@ DF<span class="op">$</span>y[<span class="kw"><a href="https://www.rdocumentatio
 <h2 class="hasAnchor">
 <a href="#zero-inflated-poisson-mixed-model" class="anchor"></a>Zero-Inflated Poisson Mixed Model</h2>
 <p>To improve the simple Poisson model, allow for extra zeros using the zero-inflated Poisson mixed model. First, here we only include fixed effects in the linear predictor of the logistic regression for the extra zeros:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
-                   <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">zi.poisson</a></span>(), 
-                   <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">fm2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
+<a class="sourceLine" id="cb5-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">zi.poisson</a></span>(), </a>
+<a class="sourceLine" id="cb5-3" title="3">                   <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex)</a></code></pre></div>
 <p>Using <code>resids_plot()</code> again we evaluate the fit this model:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">resids_plot</span>(fm2, DF<span class="op">$</span>y)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">resids_plot</span>(fm2, DF<span class="op">$</span>y)</a></code></pre></div>
 <p><img src="Goodness_of_Fit_files/figure-html/zi_poisson_mixed_model_GoF-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>We observe that the fit has improved, but still we have evident deviations from uniformity.</p>
 </div>
@@ -233,11 +233,11 @@ DF<span class="op">$</span>y[<span class="kw"><a href="https://www.rdocumentatio
 <h2 class="hasAnchor">
 <a href="#zero-inflated-poisson-mixed-model-extra-random-effects" class="anchor"></a>Zero-Inflated Poisson Mixed Model Extra Random Effects</h2>
 <p>We further extend the zero-inflated Poisson mixed model by also allowing for a random intercept in the linear predictor of the logistic regression for the extra zeros:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
-                   <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">zi.poisson</a></span>(), 
-                   <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex, <span class="dt">zi_random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id)</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">fm3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
+<a class="sourceLine" id="cb7-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">zi.poisson</a></span>(), </a>
+<a class="sourceLine" id="cb7-3" title="3">                   <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex, <span class="dt">zi_random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id)</a></code></pre></div>
 <p>We check the fit with the simulated residuals:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">resids_plot</span>(fm3, DF<span class="op">$</span>y)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">resids_plot</span>(fm3, DF<span class="op">$</span>y)</a></code></pre></div>
 <p><img src="Goodness_of_Fit_files/figure-html/zi_poisson_mixed_model2_GoF-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>There are still deviations from uniformity, indicating that the fit of the last model to the data is not optimal.</p>
 </div>
@@ -245,11 +245,11 @@ DF<span class="op">$</span>y[<span class="kw"><a href="https://www.rdocumentatio
 <h2 class="hasAnchor">
 <a href="#zero-inflated-negative-binomial-mixed-model-extra-random-effects" class="anchor"></a>Zero-Inflated Negative Binomial Mixed Model Extra Random Effects</h2>
 <p>As a final attempt, we allow of overspersion by changing the Poisson distribution to the negative binomial distribution. The rest of the components remain the same:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
-                   <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">zi.negative.binomial</a></span>(), 
-                   <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex, <span class="dt">zi_random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id)</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">fm4 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
+<a class="sourceLine" id="cb9-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">zi.negative.binomial</a></span>(), </a>
+<a class="sourceLine" id="cb9-3" title="3">                   <span class="dt">zi_fixed =</span> <span class="op">~</span><span class="st"> </span>sex, <span class="dt">zi_random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id)</a></code></pre></div>
 <p>We check the fit with the simulated residuals:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">resids_plot</span>(fm4, DF<span class="op">$</span>y)</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">resids_plot</span>(fm4, DF<span class="op">$</span>y)</a></code></pre></div>
 <p><img src="Goodness_of_Fit_files/figure-html/zi_NB_mixed_model_GoF-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>We now observe that the fit of the zero-inflated model seems to be acceptable. The right panel still shows that the lines from the quantile regression are not horizontal, but as previously explained, these may potentially show deviations even for the correct model.</p>
 </div>

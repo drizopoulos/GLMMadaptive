@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.27</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.30</span>
       </span>
     </div>
 
@@ -130,7 +130,7 @@
 <li><p>Two-part/hurdle mixed models for semi-continuous normal data using the <code><a href="reference/extra_fams.html">hurdle.lognormal()</a></code> family objects.</p></li>
 <li><p>Beta and hurdle Beta mixed effects models using <code><a href="reference/extra_fams.html">beta.fam()</a></code> and <code><a href="reference/extra_fams.html">hurdle.beta.fam()</a></code> family objects.</p></li>
 <li><p>Users may also specify their own log-density function for the repeated measurements response variable, and the internal algorithms will take care of the optimization.</p></li>
-<li><p>Calculates the marginalized coefficients using the idea of Hedeker et al. (2017) using function <code><a href="reference/marginal_coefs.html">marginal_coefs()</a></code>.</p></li>
+<li><p>Calculates the marginalized coefficients using the idea of Hedeker et al. (2017) using function <code><a href="reference/marginal_coefs.html">marginal_coefs()</a></code>.</p></li>
 <li><p>Predictions with confidence interval for constructing effects plots are provided by function <code><a href="reference/effectPlotData.html">effectPlotData()</a></code>.</p></li>
 </ul>
 </div>
@@ -138,23 +138,23 @@
 <h2 class="hasAnchor">
 <a href="#basic-use" class="anchor"></a>Basic Use</h2>
 <p>Let <code>y</code> denote a grouped/clustered outcome, <code>g</code> denote the grouping factor, and <code>x1</code> and <code>x2</code> covariates. A mixed effects model with <code>y</code> as outcome, <code>x1</code> and <code>x2</code> as fixed effects, and random intercepts is fitted with the code:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm &lt;-<span class="st"> </span><span class="kw"><a href="reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>x2, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>g, <span class="dt">data =</span> DF,
-                  <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>())
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(fm)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">fm &lt;-<span class="st"> </span><span class="kw"><a href="reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>x2, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>g, <span class="dt">data =</span> DF,</a>
+<a class="sourceLine" id="cb1-2" title="2">                  <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>())</a>
+<a class="sourceLine" id="cb1-3" title="3"></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(fm)</a></code></pre></div>
 <p>In the <code>data</code> argument we provide the data frame <code>DF</code>, which contains the aforementioned variables. In the family argument we specify the distribution of the grouped/clustered outcome conditional on the random effects. To include in the random-effects part intercepts and <code>x1</code>, we update the call to <code><a href="reference/mixed_model.html">mixed_model()</a></code> as</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gm &lt;-<span class="st"> </span><span class="kw"><a href="reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>x2, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>x1 <span class="op">|</span><span class="st"> </span>g, <span class="dt">data =</span> DF,
-                  <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>())
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(gm)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">gm &lt;-<span class="st"> </span><span class="kw"><a href="reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>x2, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>x1 <span class="op">|</span><span class="st"> </span>g, <span class="dt">data =</span> DF,</a>
+<a class="sourceLine" id="cb2-2" title="2">                  <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>())</a>
+<a class="sourceLine" id="cb2-3" title="3"></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(gm)</a></code></pre></div>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>The development version of the package can be installed from GitHub using the <strong>devtools</strong> package:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"drizopoulos/GLMMadaptive"</span>)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"drizopoulos/GLMMadaptive"</span>)</a></code></pre></div>
 <p>and with vignettes</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"drizopoulos/GLMMadaptive"</span>, <span class="dt">build_opts =</span> <span class="ot">NULL</span>)</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"drizopoulos/GLMMadaptive"</span>, <span class="dt">build_opts =</span> <span class="ot">NULL</span>)</a></code></pre></div>
 <p>Hex-sticker courtesy of Greg Papageorgiou <a href="https://twitter.com/gr_papageorgiou">@gr_papageorgiou</a>.</p>
 </div>
 </div>

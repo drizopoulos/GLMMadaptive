@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.27</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.30</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
       <h1>Custom Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-04-08</h4>
+            <h4 class="date">2019-05-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Custom_Models.Rmd"><code>vignettes/Custom_Models.Rmd</code></a></small>
       <div class="hidden name"><code>Custom_Models.Rmd</code></div>
@@ -133,317 +133,317 @@
 <h2 class="hasAnchor">
 <a href="#negative-binomial-mixed-effects-model" class="anchor"></a>Negative Binomial Mixed Effects Model</h2>
 <p>We first illustrate the use of a custom-made family object in the case of a negative binomial repeated measurements outcome. We should note however that a family object <code><a href="../reference/negative_binomial.html">negative.binomial()</a></code> is already defined in the package and users could invoke this instead - for more info see the relative online help page for <code><a href="../reference/negative_binomial.html">negative.binomial()</a></code>. We start by simulating some data:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">101</span>)
-dd &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/expand.grid">expand.grid</a></span>(<span class="dt">f1 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">factor</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>), <span class="dt">f2 =</span> LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">g =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">30</span>, <span class="dt">rep =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">15</span>,
-                  <span class="dt">KEEP.OUT.ATTRS =</span> <span class="ot">FALSE</span>)
-mu &lt;-<span class="st"> </span><span class="dv">5</span><span class="op">*</span>(<span class="op">-</span><span class="dv">4</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(dd, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/integer">as.integer</a></span>(f1) <span class="op">+</span><span class="st"> </span><span class="dv">4</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(f2)))
-dd<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/NegBinomial">rnbinom</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(dd), <span class="dt">mu =</span> mu, <span class="dt">size =</span> <span class="fl">0.5</span>)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">101</span>)</a>
+<a class="sourceLine" id="cb1-2" title="2">dd &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/expand.grid">expand.grid</a></span>(<span class="dt">f1 =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">factor</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>), <span class="dt">f2 =</span> LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">g =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">30</span>, <span class="dt">rep =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">15</span>,</a>
+<a class="sourceLine" id="cb1-3" title="3">                  <span class="dt">KEEP.OUT.ATTRS =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb1-4" title="4">mu &lt;-<span class="st"> </span><span class="dv">5</span><span class="op">*</span>(<span class="op">-</span><span class="dv">4</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(dd, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/integer">as.integer</a></span>(f1) <span class="op">+</span><span class="st"> </span><span class="dv">4</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(f2)))</a>
+<a class="sourceLine" id="cb1-5" title="5">dd<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/NegBinomial">rnbinom</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(dd), <span class="dt">mu =</span> mu, <span class="dt">size =</span> <span class="fl">0.5</span>)</a></code></pre></div>
 <p>Next we define a new family object for negative binomial data</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_negBinom &lt;-<span class="st"> </span><span class="cf">function</span> (<span class="dt">link =</span> <span class="st">"log"</span>) {
-    stats &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/make.link">make.link</a></span>(link)
-    log_dens &lt;-<span class="st"> </span><span class="cf">function</span> (y, eta, mu_fun, phis, eta_zi) {
-        <span class="co"># the log density function</span>
-        phis &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis) <span class="co"># unconstrained optimization of 'phis'</span>
-        mu &lt;-<span class="st"> </span><span class="kw">mu_fun</span>(eta)
-        log_mu_phis &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(mu <span class="op">+</span><span class="st"> </span>phis)
-        comp1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(y <span class="op">+</span><span class="st"> </span>phis) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(phis) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(y <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)
-        comp2 &lt;-<span class="st"> </span>phis <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(phis) <span class="op">-</span><span class="st"> </span>phis <span class="op">*</span><span class="st"> </span>log_mu_phis
-        comp3 &lt;-<span class="st"> </span>y <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(mu) <span class="op">-</span><span class="st"> </span>y <span class="op">*</span><span class="st"> </span>log_mu_phis
-        out &lt;-<span class="st"> </span>comp1 <span class="op">+</span><span class="st"> </span>comp2 <span class="op">+</span><span class="st"> </span>comp3
-        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(out, <span class="st">"mu_y"</span>) &lt;-<span class="st"> </span>mu
-        out
-    }
-    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/structure">structure</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">family =</span> <span class="st">"user Neg Binom"</span>, <span class="dt">link =</span> stats<span class="op">$</span>name, <span class="dt">linkfun =</span> stats<span class="op">$</span>linkfun,
-                   <span class="dt">linkinv =</span> stats<span class="op">$</span>linkinv, <span class="dt">log_dens =</span> log_dens),
-              <span class="dt">class =</span> <span class="st">"family"</span>)
-}</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">my_negBinom &lt;-<span class="st"> </span><span class="cf">function</span> (<span class="dt">link =</span> <span class="st">"log"</span>) {</a>
+<a class="sourceLine" id="cb2-2" title="2">    stats &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/make.link">make.link</a></span>(link)</a>
+<a class="sourceLine" id="cb2-3" title="3">    log_dens &lt;-<span class="st"> </span><span class="cf">function</span> (y, eta, mu_fun, phis, eta_zi) {</a>
+<a class="sourceLine" id="cb2-4" title="4">        <span class="co"># the log density function</span></a>
+<a class="sourceLine" id="cb2-5" title="5">        phis &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis) <span class="co"># unconstrained optimization of 'phis'</span></a>
+<a class="sourceLine" id="cb2-6" title="6">        mu &lt;-<span class="st"> </span><span class="kw">mu_fun</span>(eta)</a>
+<a class="sourceLine" id="cb2-7" title="7">        log_mu_phis &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(mu <span class="op">+</span><span class="st"> </span>phis)</a>
+<a class="sourceLine" id="cb2-8" title="8">        comp1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(y <span class="op">+</span><span class="st"> </span>phis) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(phis) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(y <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb2-9" title="9">        comp2 &lt;-<span class="st"> </span>phis <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(phis) <span class="op">-</span><span class="st"> </span>phis <span class="op">*</span><span class="st"> </span>log_mu_phis</a>
+<a class="sourceLine" id="cb2-10" title="10">        comp3 &lt;-<span class="st"> </span>y <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(mu) <span class="op">-</span><span class="st"> </span>y <span class="op">*</span><span class="st"> </span>log_mu_phis</a>
+<a class="sourceLine" id="cb2-11" title="11">        out &lt;-<span class="st"> </span>comp1 <span class="op">+</span><span class="st"> </span>comp2 <span class="op">+</span><span class="st"> </span>comp3</a>
+<a class="sourceLine" id="cb2-12" title="12">        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(out, <span class="st">"mu_y"</span>) &lt;-<span class="st"> </span>mu</a>
+<a class="sourceLine" id="cb2-13" title="13">        out</a>
+<a class="sourceLine" id="cb2-14" title="14">    }</a>
+<a class="sourceLine" id="cb2-15" title="15">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/structure">structure</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">family =</span> <span class="st">"user Neg Binom"</span>, <span class="dt">link =</span> stats<span class="op">$</span>name, <span class="dt">linkfun =</span> stats<span class="op">$</span>linkfun,</a>
+<a class="sourceLine" id="cb2-16" title="16">                   <span class="dt">linkinv =</span> stats<span class="op">$</span>linkinv, <span class="dt">log_dens =</span> log_dens),</a>
+<a class="sourceLine" id="cb2-17" title="17">              <span class="dt">class =</span> <span class="st">"family"</span>)</a>
+<a class="sourceLine" id="cb2-18" title="18">}</a></code></pre></div>
 <p>And we fit the model</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.time">system.time</a></span>(
-    fm1 &lt;-<span class="st">  </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>f1 <span class="op">*</span><span class="st"> </span>f2, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>g, <span class="dt">data =</span> dd, 
-                        <span class="dt">family =</span> <span class="kw">my_negBinom</span>(), <span class="dt">n_phis =</span> <span class="dv">1</span>, 
-                        <span class="dt">initial_values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>()))
-)
-<span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;    6.53    0.02    6.55</span>
-
-fm1
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y ~ f1 * f2, random = ~1 | g, data = dd, </span>
-<span class="co">#&gt;     family = my_negBinom(), n_phis = 1, initial_values = list(betas = poisson()))</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: user Neg Binom</span>
-<span class="co">#&gt;  link: log </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;                StdDev</span>
-<span class="co">#&gt; (Intercept) 0.2324253</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt; (Intercept)         f12         f13         f2B     f12:f2B     f13:f2B </span>
-<span class="co">#&gt;   1.6304869   0.6029562   1.0152191   1.5443873  -0.4410025  -0.5854637 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  -0.6549776 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -10018.89</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.time">system.time</a></span>(</a>
+<a class="sourceLine" id="cb3-2" title="2">    fm1 &lt;-<span class="st">  </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>f1 <span class="op">*</span><span class="st"> </span>f2, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>g, <span class="dt">data =</span> dd, </a>
+<a class="sourceLine" id="cb3-3" title="3">                        <span class="dt">family =</span> <span class="kw">my_negBinom</span>(), <span class="dt">n_phis =</span> <span class="dv">1</span>, </a>
+<a class="sourceLine" id="cb3-4" title="4">                        <span class="dt">initial_values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>()))</a>
+<a class="sourceLine" id="cb3-5" title="5">)</a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt;    4.58    0.03    4.61</span></a>
+<a class="sourceLine" id="cb3-8" title="8"></a>
+<a class="sourceLine" id="cb3-9" title="9">fm1</a>
+<a class="sourceLine" id="cb3-10" title="10"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-11" title="11"><span class="co">#&gt; Call:</span></a>
+<a class="sourceLine" id="cb3-12" title="12"><span class="co">#&gt; mixed_model(fixed = y ~ f1 * f2, random = ~1 | g, data = dd, </span></a>
+<a class="sourceLine" id="cb3-13" title="13"><span class="co">#&gt;     family = my_negBinom(), n_phis = 1, initial_values = list(betas = poisson()))</span></a>
+<a class="sourceLine" id="cb3-14" title="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-15" title="15"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-16" title="16"><span class="co">#&gt; Model:</span></a>
+<a class="sourceLine" id="cb3-17" title="17"><span class="co">#&gt;  family: user Neg Binom</span></a>
+<a class="sourceLine" id="cb3-18" title="18"><span class="co">#&gt;  link: log </span></a>
+<a class="sourceLine" id="cb3-19" title="19"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-20" title="20"><span class="co">#&gt; Random effects covariance matrix:</span></a>
+<a class="sourceLine" id="cb3-21" title="21"><span class="co">#&gt;                StdDev</span></a>
+<a class="sourceLine" id="cb3-22" title="22"><span class="co">#&gt; (Intercept) 0.2324253</span></a>
+<a class="sourceLine" id="cb3-23" title="23"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-24" title="24"><span class="co">#&gt; Fixed effects:</span></a>
+<a class="sourceLine" id="cb3-25" title="25"><span class="co">#&gt; (Intercept)         f12         f13         f2B     f12:f2B     f13:f2B </span></a>
+<a class="sourceLine" id="cb3-26" title="26"><span class="co">#&gt;   1.6304869   0.6029562   1.0152191   1.5443873  -0.4410025  -0.5854637 </span></a>
+<a class="sourceLine" id="cb3-27" title="27"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-28" title="28"><span class="co">#&gt; phi parameters:</span></a>
+<a class="sourceLine" id="cb3-29" title="29"><span class="co">#&gt;  -0.6549776 </span></a>
+<a class="sourceLine" id="cb3-30" title="30"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-31" title="31"><span class="co">#&gt; log-Lik: -10018.89</span></a></code></pre></div>
 <p>In the call to <code><a href="../reference/mixed_model.html">mixed_model()</a></code> we specify the argument <code>n_phis</code> which lets the function know how many extra parameters does the distribution of the outcome have. In addition, we also specify that better quality initial values for the fixed effects <code>betas</code> can be obtained by fitting a Poisson regression model to the repeated measurements outcome (ignoring the correlations) with the same design matrix as the fixed-effects design matrix. For the unique elements of the random effects covariance matrix and for the extra parameters <code>phis</code> the default initial values are used.</p>
 <p>In the output, the reported phi parameters is on the log scale, because in the definition of <code>log_dens</code> we specified that <code>phis &lt;- exp(phis)</code>.</p>
 <p>As mentioned above, the internal computations are facilitated if the user also specifies the derivatives of the log density with respect to the linear predictor <code>eta</code> and the extra parameters <code>phis</code>. Hence, in the following we define a new negative binomial family object with these functions also defined:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_negBinom2 &lt;-<span class="st"> </span><span class="cf">function</span> () {
-    stats &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/make.link">make.link</a></span>(<span class="dt">link =</span> <span class="st">"log"</span>)
-    log_dens &lt;-<span class="st"> </span><span class="cf">function</span> (y, eta, mu_fun, phis, eta_zi) {
-        <span class="co"># the log density function</span>
-        phis &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)
-        mu &lt;-<span class="st"> </span><span class="kw">mu_fun</span>(eta)
-        log_mu_phis &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(mu <span class="op">+</span><span class="st"> </span>phis)
-        comp1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(y <span class="op">+</span><span class="st"> </span>phis) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(phis) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(y <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)
-        comp2 &lt;-<span class="st"> </span>phis <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(phis) <span class="op">-</span><span class="st"> </span>phis <span class="op">*</span><span class="st"> </span>log_mu_phis
-        comp3 &lt;-<span class="st"> </span>y <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(mu) <span class="op">-</span><span class="st"> </span>y <span class="op">*</span><span class="st"> </span>log_mu_phis
-        out &lt;-<span class="st"> </span>comp1 <span class="op">+</span><span class="st"> </span>comp2 <span class="op">+</span><span class="st"> </span>comp3
-        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(out, <span class="st">"mu_y"</span>) &lt;-<span class="st"> </span>mu
-        out
-    }
-    score_eta_fun &lt;-<span class="st"> </span><span class="cf">function</span> (y, mu, phis, eta_zi) {
-        <span class="co"># the derivative of the log density w.r.t. mu</span>
-        phis &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)
-        mu_phis &lt;-<span class="st"> </span>mu <span class="op">+</span><span class="st"> </span>phis
-        comp2 &lt;-<span class="st"> </span><span class="op">-</span><span class="st"> </span>phis <span class="op">/</span><span class="st"> </span>mu_phis
-        comp3 &lt;-<span class="st"> </span>y <span class="op">/</span><span class="st"> </span>mu <span class="op">-</span><span class="st"> </span>y <span class="op">/</span><span class="st"> </span>mu_phis
-        <span class="co"># the derivative of mu w.r.t. eta (this depends on the chosen link function)</span>
-        mu.eta &lt;-<span class="st"> </span>mu
-        (comp2 <span class="op">+</span><span class="st"> </span>comp3) <span class="op">*</span><span class="st"> </span>mu.eta
-    }
-    score_phis_fun &lt;-<span class="st"> </span><span class="cf">function</span> (y, mu, phis, eta_zi) {
-        <span class="co"># the derivative of the log density w.r.t. phis</span>
-        phis &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)
-        mu_phis &lt;-<span class="st"> </span>mu <span class="op">+</span><span class="st"> </span>phis
-        comp1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">digamma</a></span>(y <span class="op">+</span><span class="st"> </span>phis) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">digamma</a></span>(phis)
-        comp2 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(phis) <span class="op">+</span><span class="st"> </span><span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(mu_phis) <span class="op">-</span><span class="st"> </span>phis <span class="op">/</span><span class="st"> </span>mu_phis
-        comp3 &lt;-<span class="st"> </span><span class="op">-</span><span class="st"> </span>y <span class="op">/</span><span class="st"> </span>mu_phis
-        (comp1 <span class="op">+</span><span class="st"> </span>comp2 <span class="op">+</span><span class="st"> </span>comp3) <span class="op">*</span><span class="st"> </span>phis
-    }
-    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/structure">structure</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">family =</span> <span class="st">"user Neg Binom"</span>, <span class="dt">link =</span> stats<span class="op">$</span>name, <span class="dt">linkfun =</span> stats<span class="op">$</span>linkfun,
-                   <span class="dt">linkinv =</span> stats<span class="op">$</span>linkinv, <span class="dt">log_dens =</span> log_dens,
-                   <span class="dt">score_eta_fun =</span> score_eta_fun, <span class="dt">score_phis_fun =</span> score_phis_fun),
-              <span class="dt">class =</span> <span class="st">"family"</span>)
-}</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">my_negBinom2 &lt;-<span class="st"> </span><span class="cf">function</span> () {</a>
+<a class="sourceLine" id="cb4-2" title="2">    stats &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/make.link">make.link</a></span>(<span class="dt">link =</span> <span class="st">"log"</span>)</a>
+<a class="sourceLine" id="cb4-3" title="3">    log_dens &lt;-<span class="st"> </span><span class="cf">function</span> (y, eta, mu_fun, phis, eta_zi) {</a>
+<a class="sourceLine" id="cb4-4" title="4">        <span class="co"># the log density function</span></a>
+<a class="sourceLine" id="cb4-5" title="5">        phis &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)</a>
+<a class="sourceLine" id="cb4-6" title="6">        mu &lt;-<span class="st"> </span><span class="kw">mu_fun</span>(eta)</a>
+<a class="sourceLine" id="cb4-7" title="7">        log_mu_phis &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(mu <span class="op">+</span><span class="st"> </span>phis)</a>
+<a class="sourceLine" id="cb4-8" title="8">        comp1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(y <span class="op">+</span><span class="st"> </span>phis) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(phis) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(y <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb4-9" title="9">        comp2 &lt;-<span class="st"> </span>phis <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(phis) <span class="op">-</span><span class="st"> </span>phis <span class="op">*</span><span class="st"> </span>log_mu_phis</a>
+<a class="sourceLine" id="cb4-10" title="10">        comp3 &lt;-<span class="st"> </span>y <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(mu) <span class="op">-</span><span class="st"> </span>y <span class="op">*</span><span class="st"> </span>log_mu_phis</a>
+<a class="sourceLine" id="cb4-11" title="11">        out &lt;-<span class="st"> </span>comp1 <span class="op">+</span><span class="st"> </span>comp2 <span class="op">+</span><span class="st"> </span>comp3</a>
+<a class="sourceLine" id="cb4-12" title="12">        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(out, <span class="st">"mu_y"</span>) &lt;-<span class="st"> </span>mu</a>
+<a class="sourceLine" id="cb4-13" title="13">        out</a>
+<a class="sourceLine" id="cb4-14" title="14">    }</a>
+<a class="sourceLine" id="cb4-15" title="15">    score_eta_fun &lt;-<span class="st"> </span><span class="cf">function</span> (y, mu, phis, eta_zi) {</a>
+<a class="sourceLine" id="cb4-16" title="16">        <span class="co"># the derivative of the log density w.r.t. mu</span></a>
+<a class="sourceLine" id="cb4-17" title="17">        phis &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)</a>
+<a class="sourceLine" id="cb4-18" title="18">        mu_phis &lt;-<span class="st"> </span>mu <span class="op">+</span><span class="st"> </span>phis</a>
+<a class="sourceLine" id="cb4-19" title="19">        comp2 &lt;-<span class="st"> </span><span class="op">-</span><span class="st"> </span>phis <span class="op">/</span><span class="st"> </span>mu_phis</a>
+<a class="sourceLine" id="cb4-20" title="20">        comp3 &lt;-<span class="st"> </span>y <span class="op">/</span><span class="st"> </span>mu <span class="op">-</span><span class="st"> </span>y <span class="op">/</span><span class="st"> </span>mu_phis</a>
+<a class="sourceLine" id="cb4-21" title="21">        <span class="co"># the derivative of mu w.r.t. eta (this depends on the chosen link function)</span></a>
+<a class="sourceLine" id="cb4-22" title="22">        mu.eta &lt;-<span class="st"> </span>mu</a>
+<a class="sourceLine" id="cb4-23" title="23">        (comp2 <span class="op">+</span><span class="st"> </span>comp3) <span class="op">*</span><span class="st"> </span>mu.eta</a>
+<a class="sourceLine" id="cb4-24" title="24">    }</a>
+<a class="sourceLine" id="cb4-25" title="25">    score_phis_fun &lt;-<span class="st"> </span><span class="cf">function</span> (y, mu, phis, eta_zi) {</a>
+<a class="sourceLine" id="cb4-26" title="26">        <span class="co"># the derivative of the log density w.r.t. phis</span></a>
+<a class="sourceLine" id="cb4-27" title="27">        phis &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)</a>
+<a class="sourceLine" id="cb4-28" title="28">        mu_phis &lt;-<span class="st"> </span>mu <span class="op">+</span><span class="st"> </span>phis</a>
+<a class="sourceLine" id="cb4-29" title="29">        comp1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">digamma</a></span>(y <span class="op">+</span><span class="st"> </span>phis) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">digamma</a></span>(phis)</a>
+<a class="sourceLine" id="cb4-30" title="30">        comp2 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(phis) <span class="op">+</span><span class="st"> </span><span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(mu_phis) <span class="op">-</span><span class="st"> </span>phis <span class="op">/</span><span class="st"> </span>mu_phis</a>
+<a class="sourceLine" id="cb4-31" title="31">        comp3 &lt;-<span class="st"> </span><span class="op">-</span><span class="st"> </span>y <span class="op">/</span><span class="st"> </span>mu_phis</a>
+<a class="sourceLine" id="cb4-32" title="32">        (comp1 <span class="op">+</span><span class="st"> </span>comp2 <span class="op">+</span><span class="st"> </span>comp3) <span class="op">*</span><span class="st"> </span>phis</a>
+<a class="sourceLine" id="cb4-33" title="33">    }</a>
+<a class="sourceLine" id="cb4-34" title="34">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/structure">structure</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">family =</span> <span class="st">"user Neg Binom"</span>, <span class="dt">link =</span> stats<span class="op">$</span>name, <span class="dt">linkfun =</span> stats<span class="op">$</span>linkfun,</a>
+<a class="sourceLine" id="cb4-35" title="35">                   <span class="dt">linkinv =</span> stats<span class="op">$</span>linkinv, <span class="dt">log_dens =</span> log_dens,</a>
+<a class="sourceLine" id="cb4-36" title="36">                   <span class="dt">score_eta_fun =</span> score_eta_fun, <span class="dt">score_phis_fun =</span> score_phis_fun),</a>
+<a class="sourceLine" id="cb4-37" title="37">              <span class="dt">class =</span> <span class="st">"family"</span>)</a>
+<a class="sourceLine" id="cb4-38" title="38">}</a></code></pre></div>
 <p>And we fit the model</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.time">system.time</a></span>(
-    fm2 &lt;-<span class="st">  </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>f1 <span class="op">*</span><span class="st"> </span>f2, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>g, <span class="dt">data =</span> dd, 
-                        <span class="dt">family =</span> <span class="kw">my_negBinom2</span>(), <span class="dt">n_phis =</span> <span class="dv">1</span>, 
-                        <span class="dt">initial_values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>()))
-)
-<span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;    2.56    0.00    2.57</span>
-
-fm2
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y ~ f1 * f2, random = ~1 | g, data = dd, </span>
-<span class="co">#&gt;     family = my_negBinom2(), n_phis = 1, initial_values = list(betas = poisson()))</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: user Neg Binom</span>
-<span class="co">#&gt;  link: log </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;                StdDev</span>
-<span class="co">#&gt; (Intercept) 0.2324254</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt; (Intercept)         f12         f13         f2B     f12:f2B     f13:f2B </span>
-<span class="co">#&gt;   1.6304869   0.6029562   1.0152191   1.5443873  -0.4410025  -0.5854637 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  -0.6549775 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -10018.89</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.time">system.time</a></span>(</a>
+<a class="sourceLine" id="cb5-2" title="2">    fm2 &lt;-<span class="st">  </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>f1 <span class="op">*</span><span class="st"> </span>f2, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>g, <span class="dt">data =</span> dd, </a>
+<a class="sourceLine" id="cb5-3" title="3">                        <span class="dt">family =</span> <span class="kw">my_negBinom2</span>(), <span class="dt">n_phis =</span> <span class="dv">1</span>, </a>
+<a class="sourceLine" id="cb5-4" title="4">                        <span class="dt">initial_values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>()))</a>
+<a class="sourceLine" id="cb5-5" title="5">)</a>
+<a class="sourceLine" id="cb5-6" title="6"><span class="co">#&gt;    user  system elapsed </span></a>
+<a class="sourceLine" id="cb5-7" title="7"><span class="co">#&gt;    1.65    0.00    1.65</span></a>
+<a class="sourceLine" id="cb5-8" title="8"></a>
+<a class="sourceLine" id="cb5-9" title="9">fm2</a>
+<a class="sourceLine" id="cb5-10" title="10"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-11" title="11"><span class="co">#&gt; Call:</span></a>
+<a class="sourceLine" id="cb5-12" title="12"><span class="co">#&gt; mixed_model(fixed = y ~ f1 * f2, random = ~1 | g, data = dd, </span></a>
+<a class="sourceLine" id="cb5-13" title="13"><span class="co">#&gt;     family = my_negBinom2(), n_phis = 1, initial_values = list(betas = poisson()))</span></a>
+<a class="sourceLine" id="cb5-14" title="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-15" title="15"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-16" title="16"><span class="co">#&gt; Model:</span></a>
+<a class="sourceLine" id="cb5-17" title="17"><span class="co">#&gt;  family: user Neg Binom</span></a>
+<a class="sourceLine" id="cb5-18" title="18"><span class="co">#&gt;  link: log </span></a>
+<a class="sourceLine" id="cb5-19" title="19"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-20" title="20"><span class="co">#&gt; Random effects covariance matrix:</span></a>
+<a class="sourceLine" id="cb5-21" title="21"><span class="co">#&gt;                StdDev</span></a>
+<a class="sourceLine" id="cb5-22" title="22"><span class="co">#&gt; (Intercept) 0.2324254</span></a>
+<a class="sourceLine" id="cb5-23" title="23"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-24" title="24"><span class="co">#&gt; Fixed effects:</span></a>
+<a class="sourceLine" id="cb5-25" title="25"><span class="co">#&gt; (Intercept)         f12         f13         f2B     f12:f2B     f13:f2B </span></a>
+<a class="sourceLine" id="cb5-26" title="26"><span class="co">#&gt;   1.6304869   0.6029562   1.0152191   1.5443873  -0.4410025  -0.5854637 </span></a>
+<a class="sourceLine" id="cb5-27" title="27"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-28" title="28"><span class="co">#&gt; phi parameters:</span></a>
+<a class="sourceLine" id="cb5-29" title="29"><span class="co">#&gt;  -0.6549775 </span></a>
+<a class="sourceLine" id="cb5-30" title="30"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-31" title="31"><span class="co">#&gt; log-Lik: -10018.89</span></a></code></pre></div>
 <p>We obtain almost identical results, but in half of the computing time in this example. Depending on the size of the data set, the gain in computing time when the derivatives for <code>eta</code> and <code>phis</code> are provided can be much more substantial.</p>
 </div>
 <div id="students-t-mixed-effects-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#students-t-mixed-effects-model" class="anchor"></a>Student’s t Mixed Effects Model</h2>
 <p>We further illustrate the use of custom-made family objects by fitting a linear mixed model but with Student’s t distributed error terms. We start by simulating some data</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)
-n &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># number of subjects</span>
-K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span>
-t_max &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># maximum follow-up time</span>
-
-<span class="co"># we constuct a data frame with the design: </span>
-<span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span>
-DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),
-                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">replicate</a></span>(n, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),
-                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))
-
-<span class="co"># design matrices for the fixed and random effects</span>
-X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)
-Z &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>time, <span class="dt">data =</span> DF)
-
-betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">20.1</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span>) <span class="co"># fixed effects coefficients</span>
-sigma &lt;-<span class="st"> </span><span class="fl">1.2</span> <span class="co"># scale parameter for the Student's t errors</span>
-D11 &lt;-<span class="st"> </span><span class="fl">1.5</span> <span class="co"># variance of random intercepts</span>
-D22 &lt;-<span class="st"> </span><span class="fl">1.2</span> <span class="co"># variance of random slopes</span>
-
-<span class="co"># we simulate random effects</span>
-b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11)), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D22)))
-<span class="co"># linear predictor</span>
-eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, ]))
-<span class="co"># we simulate Student's t longitudinal data</span>
-DF<span class="op">$</span>y &lt;-<span class="st"> </span>eta_y <span class="op">+</span><span class="st"> </span>sigma <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/TDist">rt</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">df =</span> <span class="dv">4</span>)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb6-2" title="2">n &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># number of subjects</span></a>
+<a class="sourceLine" id="cb6-3" title="3">K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span></a>
+<a class="sourceLine" id="cb6-4" title="4">t_max &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># maximum follow-up time</span></a>
+<a class="sourceLine" id="cb6-5" title="5"></a>
+<a class="sourceLine" id="cb6-6" title="6"><span class="co"># we constuct a data frame with the design: </span></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span></a>
+<a class="sourceLine" id="cb6-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
+<a class="sourceLine" id="cb6-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">replicate</a></span>(n, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),</a>
+<a class="sourceLine" id="cb6-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
+<a class="sourceLine" id="cb6-11" title="11"></a>
+<a class="sourceLine" id="cb6-12" title="12"><span class="co"># design matrices for the fixed and random effects</span></a>
+<a class="sourceLine" id="cb6-13" title="13">X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)</a>
+<a class="sourceLine" id="cb6-14" title="14">Z &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>time, <span class="dt">data =</span> DF)</a>
+<a class="sourceLine" id="cb6-15" title="15"></a>
+<a class="sourceLine" id="cb6-16" title="16">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">20.1</span>, <span class="fl">-0.5</span>, <span class="fl">0.24</span>, <span class="fl">-0.05</span>) <span class="co"># fixed effects coefficients</span></a>
+<a class="sourceLine" id="cb6-17" title="17">sigma &lt;-<span class="st"> </span><span class="fl">1.2</span> <span class="co"># scale parameter for the Student's t errors</span></a>
+<a class="sourceLine" id="cb6-18" title="18">D11 &lt;-<span class="st"> </span><span class="fl">1.5</span> <span class="co"># variance of random intercepts</span></a>
+<a class="sourceLine" id="cb6-19" title="19">D22 &lt;-<span class="st"> </span><span class="fl">1.2</span> <span class="co"># variance of random slopes</span></a>
+<a class="sourceLine" id="cb6-20" title="20"></a>
+<a class="sourceLine" id="cb6-21" title="21"><span class="co"># we simulate random effects</span></a>
+<a class="sourceLine" id="cb6-22" title="22">b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11)), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D22)))</a>
+<a class="sourceLine" id="cb6-23" title="23"><span class="co"># linear predictor</span></a>
+<a class="sourceLine" id="cb6-24" title="24">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, ]))</a>
+<a class="sourceLine" id="cb6-25" title="25"><span class="co"># we simulate Student's t longitudinal data</span></a>
+<a class="sourceLine" id="cb6-26" title="26">DF<span class="op">$</span>y &lt;-<span class="st"> </span>eta_y <span class="op">+</span><span class="st"> </span>sigma <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/TDist">rt</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">df =</span> <span class="dv">4</span>)</a></code></pre></div>
 <p>Following we define the custom-made family object for the Student’s t distribution:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">students.t &lt;-<span class="st"> </span><span class="cf">function</span> (<span class="dt">df =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/stop">stop</a></span>(<span class="st">"'df' must be specified"</span>), <span class="dt">link =</span> <span class="st">"identity"</span>) {
-    .df &lt;-<span class="st"> </span>df
-    env &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/environment">new.env</a></span>(<span class="dt">parent =</span> .GlobalEnv)
-    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/assign">assign</a></span>(<span class="st">".df"</span>, df, <span class="dt">envir =</span> env)
-    stats &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/make.link">make.link</a></span>(link)
-    log_dens &lt;-<span class="st"> </span><span class="cf">function</span> (y, eta, mu_fun, phis, eta_zi) {
-        <span class="co"># the log density function</span>
-        sigma &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)
-        out &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/TDist">dt</a></span>(<span class="dt">x =</span> (y <span class="op">-</span><span class="st"> </span>eta) <span class="op">/</span><span class="st"> </span>sigma, <span class="dt">df =</span> .df, <span class="dt">log =</span> <span class="ot">TRUE</span>) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(sigma)
-        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(out, <span class="st">"mu_y"</span>) &lt;-<span class="st"> </span>eta
-        out
-    }
-    score_eta_fun &lt;-<span class="st"> </span><span class="cf">function</span> (y, mu, phis, eta_zi) {
-        <span class="co"># the derivative of the log density w.r.t. mu</span>
-        sigma2 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)<span class="op">^</span><span class="dv">2</span>
-        y_mu &lt;-<span class="st"> </span>y <span class="op">-</span><span class="st"> </span>mu
-        (y_mu <span class="op">*</span><span class="st"> </span>(.df <span class="op">+</span><span class="st"> </span><span class="dv">1</span>) <span class="op">/</span><span class="st"> </span>(.df <span class="op">*</span><span class="st"> </span>sigma2)) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>y_mu<span class="op">^</span><span class="dv">2</span> <span class="op">/</span><span class="st"> </span>(.df <span class="op">*</span><span class="st"> </span>sigma2))
-    }
-    score_phis_fun &lt;-<span class="st"> </span><span class="cf">function</span> (y, mu, phis, eta_zi) {
-        sigma &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)
-        y_mu2_df &lt;-<span class="st"> </span>(y <span class="op">-</span><span class="st"> </span>mu)<span class="op">^</span><span class="dv">2</span> <span class="op">/</span><span class="st"> </span>.df
-        (.df <span class="op">+</span><span class="st"> </span><span class="dv">1</span>) <span class="op">*</span><span class="st"> </span>y_mu2_df <span class="op">*</span><span class="st"> </span>sigma<span class="op">^</span>{<span class="op">-</span><span class="dv">2</span>} <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>y_mu2_df <span class="op">/</span><span class="st"> </span>sigma<span class="op">^</span><span class="dv">2</span>) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>
-    }
-    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/environment">environment</a></span>(log_dens) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/environment">environment</a></span>(score_eta_fun) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/environment">environment</a></span>(score_phis_fun) &lt;-<span class="st"> </span>env
-    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/structure">structure</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">family =</span> <span class="st">"Student's-t"</span>, <span class="dt">link =</span> stats<span class="op">$</span>name, <span class="dt">linkfun =</span> stats<span class="op">$</span>linkfun,
-                   <span class="dt">linkinv =</span> stats<span class="op">$</span>linkinv, <span class="dt">log_dens =</span> log_dens, 
-                   <span class="dt">score_eta_fun =</span> score_eta_fun, <span class="dt">score_phis_fun =</span> score_phis_fun),
-              <span class="dt">class =</span> <span class="st">"family"</span>)
-}</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">students.t &lt;-<span class="st"> </span><span class="cf">function</span> (<span class="dt">df =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/stop">stop</a></span>(<span class="st">"'df' must be specified"</span>), <span class="dt">link =</span> <span class="st">"identity"</span>) {</a>
+<a class="sourceLine" id="cb7-2" title="2">    .df &lt;-<span class="st"> </span>df</a>
+<a class="sourceLine" id="cb7-3" title="3">    env &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/environment">new.env</a></span>(<span class="dt">parent =</span> .GlobalEnv)</a>
+<a class="sourceLine" id="cb7-4" title="4">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/assign">assign</a></span>(<span class="st">".df"</span>, df, <span class="dt">envir =</span> env)</a>
+<a class="sourceLine" id="cb7-5" title="5">    stats &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/make.link">make.link</a></span>(link)</a>
+<a class="sourceLine" id="cb7-6" title="6">    log_dens &lt;-<span class="st"> </span><span class="cf">function</span> (y, eta, mu_fun, phis, eta_zi) {</a>
+<a class="sourceLine" id="cb7-7" title="7">        <span class="co"># the log density function</span></a>
+<a class="sourceLine" id="cb7-8" title="8">        sigma &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)</a>
+<a class="sourceLine" id="cb7-9" title="9">        out &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/TDist">dt</a></span>(<span class="dt">x =</span> (y <span class="op">-</span><span class="st"> </span>eta) <span class="op">/</span><span class="st"> </span>sigma, <span class="dt">df =</span> .df, <span class="dt">log =</span> <span class="ot">TRUE</span>) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(sigma)</a>
+<a class="sourceLine" id="cb7-10" title="10">        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(out, <span class="st">"mu_y"</span>) &lt;-<span class="st"> </span>eta</a>
+<a class="sourceLine" id="cb7-11" title="11">        out</a>
+<a class="sourceLine" id="cb7-12" title="12">    }</a>
+<a class="sourceLine" id="cb7-13" title="13">    score_eta_fun &lt;-<span class="st"> </span><span class="cf">function</span> (y, mu, phis, eta_zi) {</a>
+<a class="sourceLine" id="cb7-14" title="14">        <span class="co"># the derivative of the log density w.r.t. mu</span></a>
+<a class="sourceLine" id="cb7-15" title="15">        sigma2 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb7-16" title="16">        y_mu &lt;-<span class="st"> </span>y <span class="op">-</span><span class="st"> </span>mu</a>
+<a class="sourceLine" id="cb7-17" title="17">        (y_mu <span class="op">*</span><span class="st"> </span>(.df <span class="op">+</span><span class="st"> </span><span class="dv">1</span>) <span class="op">/</span><span class="st"> </span>(.df <span class="op">*</span><span class="st"> </span>sigma2)) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>y_mu<span class="op">^</span><span class="dv">2</span> <span class="op">/</span><span class="st"> </span>(.df <span class="op">*</span><span class="st"> </span>sigma2))</a>
+<a class="sourceLine" id="cb7-18" title="18">    }</a>
+<a class="sourceLine" id="cb7-19" title="19">    score_phis_fun &lt;-<span class="st"> </span><span class="cf">function</span> (y, mu, phis, eta_zi) {</a>
+<a class="sourceLine" id="cb7-20" title="20">        sigma &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)</a>
+<a class="sourceLine" id="cb7-21" title="21">        y_mu2_df &lt;-<span class="st"> </span>(y <span class="op">-</span><span class="st"> </span>mu)<span class="op">^</span><span class="dv">2</span> <span class="op">/</span><span class="st"> </span>.df</a>
+<a class="sourceLine" id="cb7-22" title="22">        (.df <span class="op">+</span><span class="st"> </span><span class="dv">1</span>) <span class="op">*</span><span class="st"> </span>y_mu2_df <span class="op">*</span><span class="st"> </span>sigma<span class="op">^</span>{<span class="op">-</span><span class="dv">2</span>} <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>y_mu2_df <span class="op">/</span><span class="st"> </span>sigma<span class="op">^</span><span class="dv">2</span>) <span class="op">-</span><span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb7-23" title="23">    }</a>
+<a class="sourceLine" id="cb7-24" title="24">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/environment">environment</a></span>(log_dens) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/environment">environment</a></span>(score_eta_fun) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/environment">environment</a></span>(score_phis_fun) &lt;-<span class="st"> </span>env</a>
+<a class="sourceLine" id="cb7-25" title="25">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/structure">structure</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">family =</span> <span class="st">"Student's-t"</span>, <span class="dt">link =</span> stats<span class="op">$</span>name, <span class="dt">linkfun =</span> stats<span class="op">$</span>linkfun,</a>
+<a class="sourceLine" id="cb7-26" title="26">                   <span class="dt">linkinv =</span> stats<span class="op">$</span>linkinv, <span class="dt">log_dens =</span> log_dens, </a>
+<a class="sourceLine" id="cb7-27" title="27">                   <span class="dt">score_eta_fun =</span> score_eta_fun, <span class="dt">score_phis_fun =</span> score_phis_fun),</a>
+<a class="sourceLine" id="cb7-28" title="28">              <span class="dt">class =</span> <span class="st">"family"</span>)</a>
+<a class="sourceLine" id="cb7-29" title="29">}</a></code></pre></div>
 <p>And we fit the model (results not shown)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm &lt;-<span class="st">  </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, 
-                   <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">students.t</a></span>(<span class="dv">4</span>), <span class="dt">n_phis =</span> <span class="dv">1</span>, 
-                   <span class="dt">initial_values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">gaussian</a></span>()))</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">fm &lt;-<span class="st">  </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF, </a>
+<a class="sourceLine" id="cb8-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">students.t</a></span>(<span class="dv">4</span>), <span class="dt">n_phis =</span> <span class="dv">1</span>, </a>
+<a class="sourceLine" id="cb8-3" title="3">                   <span class="dt">initial_values =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"betas"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">gaussian</a></span>()))</a></code></pre></div>
 <p>As was the case also for the negative binomial model, the extra <code>phis</code> parameter has been appropriately transformed to have an unconstrained optimization of the likelihood. Hence, the estimated <code>sigma</code> parameter is given by <code><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp(fm$phis)</a></code>.</p>
 </div>
 <div id="beta-mixed-effects-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#beta-mixed-effects-model" class="anchor"></a>Beta Mixed-Effects Model</h2>
 <p>As a final illustration we show how a beta mixed effects model can be fitted, i.e., applicable in case of bounded repeated measurements outcomes. We start again by simulating some data:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)
-n &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># number of subjects</span>
-K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span>
-t_max &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># maximum follow-up time</span>
-
-<span class="co"># we constuct a data frame with the design: </span>
-<span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span>
-DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),
-                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">replicate</a></span>(n, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),
-                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))
-
-<span class="co"># design matrices for the fixed and random effects</span>
-X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)
-
-betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">2.2</span>, <span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span>) <span class="co"># fixed effects coefficients</span>
-phi &lt;-<span class="st"> </span><span class="dv">5</span> <span class="co"># precision parameter of the Beta distribution</span>
-D11 &lt;-<span class="st"> </span><span class="fl">0.9</span> <span class="co"># variance of random intercepts</span>
-
-<span class="co"># we simulate random effects</span>
-b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11))
-<span class="co"># linear predictor</span>
-eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span>b[DF<span class="op">$</span>id])
-<span class="co"># mean</span>
-mu &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Logistic">plogis</a></span>(eta_y)
-<span class="co"># we simulate beta longitudinal data</span>
-DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Beta">rbeta</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">shape1 =</span> mu <span class="op">*</span><span class="st"> </span>phi, <span class="dt">shape2 =</span> phi <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mu))
-<span class="co"># we transform to (0, 1)</span>
-DF<span class="op">$</span>y &lt;-<span class="st"> </span>(DF<span class="op">$</span>y <span class="op">*</span><span class="st"> </span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(DF) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">+</span><span class="st"> </span><span class="fl">0.5</span>) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(DF)</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb9-2" title="2">n &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># number of subjects</span></a>
+<a class="sourceLine" id="cb9-3" title="3">K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span></a>
+<a class="sourceLine" id="cb9-4" title="4">t_max &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># maximum follow-up time</span></a>
+<a class="sourceLine" id="cb9-5" title="5"></a>
+<a class="sourceLine" id="cb9-6" title="6"><span class="co"># we constuct a data frame with the design: </span></a>
+<a class="sourceLine" id="cb9-7" title="7"><span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span></a>
+<a class="sourceLine" id="cb9-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
+<a class="sourceLine" id="cb9-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">replicate</a></span>(n, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),</a>
+<a class="sourceLine" id="cb9-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
+<a class="sourceLine" id="cb9-11" title="11"></a>
+<a class="sourceLine" id="cb9-12" title="12"><span class="co"># design matrices for the fixed and random effects</span></a>
+<a class="sourceLine" id="cb9-13" title="13">X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)</a>
+<a class="sourceLine" id="cb9-14" title="14"></a>
+<a class="sourceLine" id="cb9-15" title="15">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">2.2</span>, <span class="fl">-0.25</span>, <span class="fl">0.24</span>, <span class="fl">-0.05</span>) <span class="co"># fixed effects coefficients</span></a>
+<a class="sourceLine" id="cb9-16" title="16">phi &lt;-<span class="st"> </span><span class="dv">5</span> <span class="co"># precision parameter of the Beta distribution</span></a>
+<a class="sourceLine" id="cb9-17" title="17">D11 &lt;-<span class="st"> </span><span class="fl">0.9</span> <span class="co"># variance of random intercepts</span></a>
+<a class="sourceLine" id="cb9-18" title="18"></a>
+<a class="sourceLine" id="cb9-19" title="19"><span class="co"># we simulate random effects</span></a>
+<a class="sourceLine" id="cb9-20" title="20">b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11))</a>
+<a class="sourceLine" id="cb9-21" title="21"><span class="co"># linear predictor</span></a>
+<a class="sourceLine" id="cb9-22" title="22">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span>b[DF<span class="op">$</span>id])</a>
+<a class="sourceLine" id="cb9-23" title="23"><span class="co"># mean</span></a>
+<a class="sourceLine" id="cb9-24" title="24">mu &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Logistic">plogis</a></span>(eta_y)</a>
+<a class="sourceLine" id="cb9-25" title="25"><span class="co"># we simulate beta longitudinal data</span></a>
+<a class="sourceLine" id="cb9-26" title="26">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Beta">rbeta</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">shape1 =</span> mu <span class="op">*</span><span class="st"> </span>phi, <span class="dt">shape2 =</span> phi <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mu))</a>
+<a class="sourceLine" id="cb9-27" title="27"><span class="co"># we transform to (0, 1)</span></a>
+<a class="sourceLine" id="cb9-28" title="28">DF<span class="op">$</span>y &lt;-<span class="st"> </span>(DF<span class="op">$</span>y <span class="op">*</span><span class="st"> </span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(DF) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">+</span><span class="st"> </span><span class="fl">0.5</span>) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(DF)</a></code></pre></div>
 <p>Next we define the custom-made family object as in the case of the Student’s t distribution:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">beta.fam &lt;-<span class="st"> </span><span class="cf">function</span> () {
-    stats &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/make.link">make.link</a></span>(<span class="st">"logit"</span>)
-    log_dens &lt;-<span class="st"> </span><span class="cf">function</span> (y, eta, mu_fun, phis, eta_zi) {
-        <span class="co"># the log density function</span>
-        phi &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)
-        mu &lt;-<span class="st"> </span><span class="kw">mu_fun</span>(eta)
-        mu_phi &lt;-<span class="st"> </span>mu <span class="op">*</span><span class="st"> </span>phi
-        comp1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(phi) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(mu_phi)
-        comp2 &lt;-<span class="st"> </span>(mu_phi <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(y) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(phi <span class="op">-</span><span class="st"> </span>mu_phi)
-        comp3 &lt;-<span class="st"> </span>(phi <span class="op">-</span><span class="st"> </span>mu_phi <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>y)
-        out &lt;-<span class="st"> </span>comp1 <span class="op">+</span><span class="st"> </span>comp2 <span class="op">+</span><span class="st"> </span>comp3
-        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(out, <span class="st">"mu_y"</span>) &lt;-<span class="st"> </span>mu
-        out
-    }
-    score_eta_fun &lt;-<span class="st"> </span><span class="cf">function</span> (y, mu, phis, eta_zi) {
-        <span class="co"># the derivative of the log density w.r.t. mu</span>
-        phi &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)
-        mu_phi &lt;-<span class="st"> </span>mu <span class="op">*</span><span class="st"> </span>phi
-        comp1 &lt;-<span class="st"> </span><span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">digamma</a></span>(mu_phi) <span class="op">*</span><span class="st"> </span>phi
-        comp2 &lt;-<span class="st"> </span>phi <span class="op">*</span><span class="st"> </span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(y) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">digamma</a></span>(phi <span class="op">-</span><span class="st"> </span>mu_phi))
-        comp3 &lt;-<span class="st"> </span><span class="op">-</span><span class="st"> </span>phi <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>y)
-        <span class="co"># the derivative of mu w.r.t. eta (this depends on the chosen link function)</span>
-        mu.eta &lt;-<span class="st"> </span>mu <span class="op">-</span><span class="st"> </span>mu <span class="op">*</span><span class="st"> </span>mu
-        (comp1 <span class="op">+</span><span class="st"> </span>comp2 <span class="op">+</span><span class="st"> </span>comp3) <span class="op">*</span><span class="st"> </span>mu.eta
-    }
-    score_phis_fun &lt;-<span class="st"> </span><span class="cf">function</span> (y, mu, phis, eta_zi) {
-        phi &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)
-        mu_phi &lt;-<span class="st"> </span>mu <span class="op">*</span><span class="st"> </span>phi
-        mu1 &lt;-<span class="st"> </span><span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mu
-        comp1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">digamma</a></span>(phi) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">digamma</a></span>(mu_phi) <span class="op">*</span><span class="st"> </span>mu
-        comp2 &lt;-<span class="st"> </span>mu <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(y) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">digamma</a></span>(phi <span class="op">-</span><span class="st"> </span>mu_phi) <span class="op">*</span><span class="st"> </span>mu1
-        comp3 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>y) <span class="op">*</span><span class="st"> </span>mu1
-        (comp1 <span class="op">+</span><span class="st"> </span>comp2 <span class="op">+</span><span class="st"> </span>comp3) <span class="op">*</span><span class="st"> </span>phi
-    }
-    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/structure">structure</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">family =</span> <span class="st">"beta"</span>, <span class="dt">link =</span> stats<span class="op">$</span>name, <span class="dt">linkfun =</span> stats<span class="op">$</span>linkfun,
-                   <span class="dt">linkinv =</span> stats<span class="op">$</span>linkinv, <span class="dt">log_dens =</span> log_dens, 
-                   <span class="dt">score_eta_fun =</span> score_eta_fun, <span class="dt">score_phis_fun =</span> score_phis_fun),
-              <span class="dt">class =</span> <span class="st">"family"</span>)
-}</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">beta.fam &lt;-<span class="st"> </span><span class="cf">function</span> () {</a>
+<a class="sourceLine" id="cb10-2" title="2">    stats &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/make.link">make.link</a></span>(<span class="st">"logit"</span>)</a>
+<a class="sourceLine" id="cb10-3" title="3">    log_dens &lt;-<span class="st"> </span><span class="cf">function</span> (y, eta, mu_fun, phis, eta_zi) {</a>
+<a class="sourceLine" id="cb10-4" title="4">        <span class="co"># the log density function</span></a>
+<a class="sourceLine" id="cb10-5" title="5">        phi &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)</a>
+<a class="sourceLine" id="cb10-6" title="6">        mu &lt;-<span class="st"> </span><span class="kw">mu_fun</span>(eta)</a>
+<a class="sourceLine" id="cb10-7" title="7">        mu_phi &lt;-<span class="st"> </span>mu <span class="op">*</span><span class="st"> </span>phi</a>
+<a class="sourceLine" id="cb10-8" title="8">        comp1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(phi) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(mu_phi)</a>
+<a class="sourceLine" id="cb10-9" title="9">        comp2 &lt;-<span class="st"> </span>(mu_phi <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(y) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">lgamma</a></span>(phi <span class="op">-</span><span class="st"> </span>mu_phi)</a>
+<a class="sourceLine" id="cb10-10" title="10">        comp3 &lt;-<span class="st"> </span>(phi <span class="op">-</span><span class="st"> </span>mu_phi <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>y)</a>
+<a class="sourceLine" id="cb10-11" title="11">        out &lt;-<span class="st"> </span>comp1 <span class="op">+</span><span class="st"> </span>comp2 <span class="op">+</span><span class="st"> </span>comp3</a>
+<a class="sourceLine" id="cb10-12" title="12">        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(out, <span class="st">"mu_y"</span>) &lt;-<span class="st"> </span>mu</a>
+<a class="sourceLine" id="cb10-13" title="13">        out</a>
+<a class="sourceLine" id="cb10-14" title="14">    }</a>
+<a class="sourceLine" id="cb10-15" title="15">    score_eta_fun &lt;-<span class="st"> </span><span class="cf">function</span> (y, mu, phis, eta_zi) {</a>
+<a class="sourceLine" id="cb10-16" title="16">        <span class="co"># the derivative of the log density w.r.t. mu</span></a>
+<a class="sourceLine" id="cb10-17" title="17">        phi &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)</a>
+<a class="sourceLine" id="cb10-18" title="18">        mu_phi &lt;-<span class="st"> </span>mu <span class="op">*</span><span class="st"> </span>phi</a>
+<a class="sourceLine" id="cb10-19" title="19">        comp1 &lt;-<span class="st"> </span><span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">digamma</a></span>(mu_phi) <span class="op">*</span><span class="st"> </span>phi</a>
+<a class="sourceLine" id="cb10-20" title="20">        comp2 &lt;-<span class="st"> </span>phi <span class="op">*</span><span class="st"> </span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(y) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">digamma</a></span>(phi <span class="op">-</span><span class="st"> </span>mu_phi))</a>
+<a class="sourceLine" id="cb10-21" title="21">        comp3 &lt;-<span class="st"> </span><span class="op">-</span><span class="st"> </span>phi <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>y)</a>
+<a class="sourceLine" id="cb10-22" title="22">        <span class="co"># the derivative of mu w.r.t. eta (this depends on the chosen link function)</span></a>
+<a class="sourceLine" id="cb10-23" title="23">        mu.eta &lt;-<span class="st"> </span>mu <span class="op">-</span><span class="st"> </span>mu <span class="op">*</span><span class="st"> </span>mu</a>
+<a class="sourceLine" id="cb10-24" title="24">        (comp1 <span class="op">+</span><span class="st"> </span>comp2 <span class="op">+</span><span class="st"> </span>comp3) <span class="op">*</span><span class="st"> </span>mu.eta</a>
+<a class="sourceLine" id="cb10-25" title="25">    }</a>
+<a class="sourceLine" id="cb10-26" title="26">    score_phis_fun &lt;-<span class="st"> </span><span class="cf">function</span> (y, mu, phis, eta_zi) {</a>
+<a class="sourceLine" id="cb10-27" title="27">        phi &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(phis)</a>
+<a class="sourceLine" id="cb10-28" title="28">        mu_phi &lt;-<span class="st"> </span>mu <span class="op">*</span><span class="st"> </span>phi</a>
+<a class="sourceLine" id="cb10-29" title="29">        mu1 &lt;-<span class="st"> </span><span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mu</a>
+<a class="sourceLine" id="cb10-30" title="30">        comp1 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">digamma</a></span>(phi) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">digamma</a></span>(mu_phi) <span class="op">*</span><span class="st"> </span>mu</a>
+<a class="sourceLine" id="cb10-31" title="31">        comp2 &lt;-<span class="st"> </span>mu <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(y) <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Special">digamma</a></span>(phi <span class="op">-</span><span class="st"> </span>mu_phi) <span class="op">*</span><span class="st"> </span>mu1</a>
+<a class="sourceLine" id="cb10-32" title="32">        comp3 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>y) <span class="op">*</span><span class="st"> </span>mu1</a>
+<a class="sourceLine" id="cb10-33" title="33">        (comp1 <span class="op">+</span><span class="st"> </span>comp2 <span class="op">+</span><span class="st"> </span>comp3) <span class="op">*</span><span class="st"> </span>phi</a>
+<a class="sourceLine" id="cb10-34" title="34">    }</a>
+<a class="sourceLine" id="cb10-35" title="35">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/structure">structure</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">family =</span> <span class="st">"beta"</span>, <span class="dt">link =</span> stats<span class="op">$</span>name, <span class="dt">linkfun =</span> stats<span class="op">$</span>linkfun,</a>
+<a class="sourceLine" id="cb10-36" title="36">                   <span class="dt">linkinv =</span> stats<span class="op">$</span>linkinv, <span class="dt">log_dens =</span> log_dens, </a>
+<a class="sourceLine" id="cb10-37" title="37">                   <span class="dt">score_eta_fun =</span> score_eta_fun, <span class="dt">score_phis_fun =</span> score_phis_fun),</a>
+<a class="sourceLine" id="cb10-38" title="38">              <span class="dt">class =</span> <span class="st">"family"</span>)</a>
+<a class="sourceLine" id="cb10-39" title="39">}</a></code></pre></div>
 <p>And we fit the model</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
-                  <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">beta.fam</a></span>(), <span class="dt">n_phis =</span> <span class="dv">1</span>)
-
-gm
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 | id, data = DF, </span>
-<span class="co">#&gt;     family = beta.fam(), n_phis = 1)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: beta</span>
-<span class="co">#&gt;  link: logit </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;                StdDev</span>
-<span class="co">#&gt; (Intercept) 0.9143138</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;    -2.04379396    -0.29655232     0.21844820    -0.05949062 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  1.69036 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: 581.2972</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">gm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
+<a class="sourceLine" id="cb11-2" title="2">                  <span class="dt">family =</span> <span class="kw"><a href="../reference/extra_fams.html">beta.fam</a></span>(), <span class="dt">n_phis =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb11-3" title="3"></a>
+<a class="sourceLine" id="cb11-4" title="4">gm</a>
+<a class="sourceLine" id="cb11-5" title="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb11-6" title="6"><span class="co">#&gt; Call:</span></a>
+<a class="sourceLine" id="cb11-7" title="7"><span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 | id, data = DF, </span></a>
+<a class="sourceLine" id="cb11-8" title="8"><span class="co">#&gt;     family = beta.fam(), n_phis = 1)</span></a>
+<a class="sourceLine" id="cb11-9" title="9"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb11-10" title="10"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb11-11" title="11"><span class="co">#&gt; Model:</span></a>
+<a class="sourceLine" id="cb11-12" title="12"><span class="co">#&gt;  family: beta</span></a>
+<a class="sourceLine" id="cb11-13" title="13"><span class="co">#&gt;  link: logit </span></a>
+<a class="sourceLine" id="cb11-14" title="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb11-15" title="15"><span class="co">#&gt; Random effects covariance matrix:</span></a>
+<a class="sourceLine" id="cb11-16" title="16"><span class="co">#&gt;                StdDev</span></a>
+<a class="sourceLine" id="cb11-17" title="17"><span class="co">#&gt; (Intercept) 0.9143138</span></a>
+<a class="sourceLine" id="cb11-18" title="18"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb11-19" title="19"><span class="co">#&gt; Fixed effects:</span></a>
+<a class="sourceLine" id="cb11-20" title="20"><span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span></a>
+<a class="sourceLine" id="cb11-21" title="21"><span class="co">#&gt;    -2.04379396    -0.29655232     0.21844820    -0.05949062 </span></a>
+<a class="sourceLine" id="cb11-22" title="22"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb11-23" title="23"><span class="co">#&gt; phi parameters:</span></a>
+<a class="sourceLine" id="cb11-24" title="24"><span class="co">#&gt;  1.69036 </span></a>
+<a class="sourceLine" id="cb11-25" title="25"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb11-26" title="26"><span class="co">#&gt; log-Lik: 581.2972</span></a></code></pre></div>
 <p>To depict the results of the model we create an effects plot, showing the longitudinal evolution of the average/median male and female. We start by constructing the data frame that contains the values we want to depict, and using it in the <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function; just for illustration, sandwich/robust standard errors are used in the calculation of the 95% poinwise cofidence intervals:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nDF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(DF, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/expand.grid">expand.grid</a></span>(<span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">min</a></span>(time), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">max</a></span>(time), <span class="dt">length =</span> <span class="dv">25</span>),
-                            <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(sex)))
-
-plot_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(gm, nDF, <span class="dt">sandwich =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">nDF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(DF, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/expand.grid">expand.grid</a></span>(<span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">min</a></span>(time), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">max</a></span>(time), <span class="dt">length =</span> <span class="dv">25</span>),</a>
+<a class="sourceLine" id="cb12-2" title="2">                            <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(sex)))</a>
+<a class="sourceLine" id="cb12-3" title="3"></a>
+<a class="sourceLine" id="cb12-4" title="4">plot_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(gm, nDF, <span class="dt">sandwich =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>The figure is created with a call to <code>xyplot()</code> from the <a href="https://cran.r-project.org/package=lattice"><strong>lattice</strong></a> package:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"lattice"</span>)
-<span class="kw">xyplot</span>(pred <span class="op">+</span><span class="st"> </span>low <span class="op">+</span><span class="st"> </span>upp <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">data =</span> plot_data,
-       <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="dv">2</span>,
-       <span class="dt">xlab =</span> <span class="st">"Follow-up Time"</span>, <span class="dt">ylab =</span> <span class="st">"Logit Scale"</span>)
-
-expit &lt;-<span class="st"> </span><span class="cf">function</span> (x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(x) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(x))
-<span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">+</span><span class="st"> </span><span class="kw">expit</span>(low) <span class="op">+</span><span class="st"> </span><span class="kw">expit</span>(upp) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">data =</span> plot_data,
-       <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="dv">2</span>,
-       <span class="dt">xlab =</span> <span class="st">"Follow-up Time"</span>, <span class="dt">ylab =</span> <span class="st">"Original Scale"</span>)</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"lattice"</span>)</a>
+<a class="sourceLine" id="cb13-2" title="2"><span class="kw">xyplot</span>(pred <span class="op">+</span><span class="st"> </span>low <span class="op">+</span><span class="st"> </span>upp <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">data =</span> plot_data,</a>
+<a class="sourceLine" id="cb13-3" title="3">       <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb13-4" title="4">       <span class="dt">xlab =</span> <span class="st">"Follow-up Time"</span>, <span class="dt">ylab =</span> <span class="st">"Logit Scale"</span>)</a>
+<a class="sourceLine" id="cb13-5" title="5"></a>
+<a class="sourceLine" id="cb13-6" title="6">expit &lt;-<span class="st"> </span><span class="cf">function</span> (x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(x) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(x))</a>
+<a class="sourceLine" id="cb13-7" title="7"><span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">+</span><span class="st"> </span><span class="kw">expit</span>(low) <span class="op">+</span><span class="st"> </span><span class="kw">expit</span>(upp) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">data =</span> plot_data,</a>
+<a class="sourceLine" id="cb13-8" title="8">       <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb13-9" title="9">       <span class="dt">xlab =</span> <span class="st">"Follow-up Time"</span>, <span class="dt">ylab =</span> <span class="st">"Original Scale"</span>)</a></code></pre></div>
 <p><img src="Custom_Models_files/figure-html/unnamed-chunk-13-1.png" width="816" style="display: block; margin: auto;"><img src="Custom_Models_files/figure-html/unnamed-chunk-13-2.png" width="816" style="display: block; margin: auto;"></p>
 </div>
 </div>

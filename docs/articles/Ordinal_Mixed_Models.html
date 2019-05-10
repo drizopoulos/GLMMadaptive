@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.27</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.30</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
       <h1>Mixed Models for Ordinal Data</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-04-08</h4>
+            <h4 class="date">2019-05-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Ordinal_Mixed_Models.Rmd"><code>vignettes/Ordinal_Mixed_Models.Rmd</code></a></small>
       <div class="hidden name"><code>Ordinal_Mixed_Models.Rmd</code></div>
@@ -167,50 +167,50 @@
 <h3 class="hasAnchor">
 <a href="#simulated-data" class="anchor"></a>Simulated Data</h3>
 <p>In this section we will illustrate how the continuation ratio model can be fitted with the <code><a href="../reference/mixed_model.html">mixed_model()</a></code> function of the <strong>GLMMadaptive</strong> package. We start by simulating some data for an ordinal longitudinal outcome under the forward formulation of the continuation ratio model:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)
-n &lt;-<span class="st"> </span><span class="dv">300</span> <span class="co"># number of subjects</span>
-K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span>
-t_max &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># maximum follow-up time</span>
-
-<span class="co"># we constuct a data frame with the design: </span>
-<span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span>
-DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),
-                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">replicate</a></span>(n, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),
-                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))
-
-<span class="co"># design matrices for the fixed and random effects</span>
-<span class="co"># we exclude the intercept from the design matrix of the fixed effects because in the</span>
-<span class="co"># CR model we have K intercepts (the alpha_k coefficients in the formulation above)</span>
-X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)[, <span class="op">-</span><span class="dv">1</span>]
-Z &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>time, <span class="dt">data =</span> DF)
-
-thrs &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="dv">0</span>, <span class="fl">0.9</span>) <span class="co"># thresholds for the different ordinal categories</span>
-betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span>) <span class="co"># fixed effects coefficients</span>
-D11 &lt;-<span class="st"> </span><span class="fl">0.48</span> <span class="co"># variance of random intercepts</span>
-D22 &lt;-<span class="st"> </span><span class="fl">0.1</span> <span class="co"># variance of random slopes</span>
-
-<span class="co"># we simulate random effects</span>
-b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11)), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D22)))
-<span class="co"># linear predictor</span>
-eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/drop">drop</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, , <span class="dt">drop =</span> <span class="ot">FALSE</span>]))
-<span class="co"># linear predictor for each category under forward CR formulation</span>
-<span class="co"># for the backward formulation, check the note below</span>
-eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/outer">outer</a></span>(eta_y, thrs, <span class="st">"+"</span>)
-<span class="co"># marginal probabilities per category</span>
-mprobs &lt;-<span class="st"> </span><span class="kw"><a href="../reference/continuation_ratio.html">cr_marg_probs</a></span>(eta_y)
-<span class="co"># we simulate ordinal longitudinal data</span>
-DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unname">unname</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(mprobs, <span class="dv">1</span>, sample, <span class="dt">x =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">ncol</a></span>(mprobs), <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>))
-DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">factor</a></span>(DF<span class="op">$</span>y, <span class="dt">levels =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"none"</span>, <span class="st">"mild"</span>, <span class="st">"moderate"</span>, <span class="st">"severe"</span>))</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb1-2" title="2">n &lt;-<span class="st"> </span><span class="dv">300</span> <span class="co"># number of subjects</span></a>
+<a class="sourceLine" id="cb1-3" title="3">K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span></a>
+<a class="sourceLine" id="cb1-4" title="4">t_max &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># maximum follow-up time</span></a>
+<a class="sourceLine" id="cb1-5" title="5"></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="co"># we constuct a data frame with the design: </span></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span></a>
+<a class="sourceLine" id="cb1-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
+<a class="sourceLine" id="cb1-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">replicate</a></span>(n, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),</a>
+<a class="sourceLine" id="cb1-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
+<a class="sourceLine" id="cb1-11" title="11"></a>
+<a class="sourceLine" id="cb1-12" title="12"><span class="co"># design matrices for the fixed and random effects</span></a>
+<a class="sourceLine" id="cb1-13" title="13"><span class="co"># we exclude the intercept from the design matrix of the fixed effects because in the</span></a>
+<a class="sourceLine" id="cb1-14" title="14"><span class="co"># CR model we have K intercepts (the alpha_k coefficients in the formulation above)</span></a>
+<a class="sourceLine" id="cb1-15" title="15">X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)[, <span class="dv">-1</span>]</a>
+<a class="sourceLine" id="cb1-16" title="16">Z &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>time, <span class="dt">data =</span> DF)</a>
+<a class="sourceLine" id="cb1-17" title="17"></a>
+<a class="sourceLine" id="cb1-18" title="18">thrs &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="dv">0</span>, <span class="fl">0.9</span>) <span class="co"># thresholds for the different ordinal categories</span></a>
+<a class="sourceLine" id="cb1-19" title="19">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="fl">-0.05</span>) <span class="co"># fixed effects coefficients</span></a>
+<a class="sourceLine" id="cb1-20" title="20">D11 &lt;-<span class="st"> </span><span class="fl">0.48</span> <span class="co"># variance of random intercepts</span></a>
+<a class="sourceLine" id="cb1-21" title="21">D22 &lt;-<span class="st"> </span><span class="fl">0.1</span> <span class="co"># variance of random slopes</span></a>
+<a class="sourceLine" id="cb1-22" title="22"></a>
+<a class="sourceLine" id="cb1-23" title="23"><span class="co"># we simulate random effects</span></a>
+<a class="sourceLine" id="cb1-24" title="24">b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11)), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D22)))</a>
+<a class="sourceLine" id="cb1-25" title="25"><span class="co"># linear predictor</span></a>
+<a class="sourceLine" id="cb1-26" title="26">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/drop">drop</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, , <span class="dt">drop =</span> <span class="ot">FALSE</span>]))</a>
+<a class="sourceLine" id="cb1-27" title="27"><span class="co"># linear predictor for each category under forward CR formulation</span></a>
+<a class="sourceLine" id="cb1-28" title="28"><span class="co"># for the backward formulation, check the note below</span></a>
+<a class="sourceLine" id="cb1-29" title="29">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/outer">outer</a></span>(eta_y, thrs, <span class="st">"+"</span>)</a>
+<a class="sourceLine" id="cb1-30" title="30"><span class="co"># marginal probabilities per category</span></a>
+<a class="sourceLine" id="cb1-31" title="31">mprobs &lt;-<span class="st"> </span><span class="kw"><a href="../reference/continuation_ratio.html">cr_marg_probs</a></span>(eta_y)</a>
+<a class="sourceLine" id="cb1-32" title="32"><span class="co"># we simulate ordinal longitudinal data</span></a>
+<a class="sourceLine" id="cb1-33" title="33">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unname">unname</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(mprobs, <span class="dv">1</span>, sample, <span class="dt">x =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">ncol</a></span>(mprobs), <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb1-34" title="34">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">factor</a></span>(DF<span class="op">$</span>y, <span class="dt">levels =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"none"</span>, <span class="st">"mild"</span>, <span class="st">"moderate"</span>, <span class="st">"severe"</span>))</a></code></pre></div>
 <p><strong>Note:</strong> If we wanted to simulate from the backward formulation of continuation ratio model, we need to reverse the ordering of the thresholds, namely the line <code>eta_y &lt;- outer(eta_y, thrs, "+")</code> of the code above should be replaced by <code>eta_y &lt;- outer(eta_y, rev(thrs), "+")</code>, and also specify in the call to <code><a href="../reference/continuation_ratio.html">cr_marg_probs()</a></code> that <code>direction = "backward"</code>.</p>
 </div>
 <div id="data-preparation-forward-formulation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-preparation-forward-formulation" class="anchor"></a>Data Preparation Forward Formulation</h3>
 <p>As explained in the Estimation Section above, before proceeding in fitting the model we need to reconstruct the database by creating extra records for each longitudinal measurement, a new dichotomous outcome and a ‘cohort’ variable denoting the record at which the original measurement corresponded. These variables are created with the <code><a href="../reference/continuation_ratio.html">cr_setup()</a></code> function. The underlying code in this function is based on the code of the <code>cr.setup()</code> function of the <a href="https://cran.r-project.org/package=rms"><strong>rms</strong></a> package, but allowing for both the forward and backward formulation of the continuation ratio model. The specific steps are:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cr_vals &lt;-<span class="st"> </span><span class="kw"><a href="../reference/continuation_ratio.html">cr_setup</a></span>(DF<span class="op">$</span>y)
-cr_data &lt;-<span class="st"> </span>DF[cr_vals<span class="op">$</span>subs, ]
-cr_data<span class="op">$</span>y_new &lt;-<span class="st"> </span>cr_vals<span class="op">$</span>y
-cr_data<span class="op">$</span>cohort &lt;-<span class="st"> </span>cr_vals<span class="op">$</span>cohort</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">cr_vals &lt;-<span class="st"> </span><span class="kw"><a href="../reference/continuation_ratio.html">cr_setup</a></span>(DF<span class="op">$</span>y)</a>
+<a class="sourceLine" id="cb2-2" title="2">cr_data &lt;-<span class="st"> </span>DF[cr_vals<span class="op">$</span>subs, ]</a>
+<a class="sourceLine" id="cb2-3" title="3">cr_data<span class="op">$</span>y_new &lt;-<span class="st"> </span>cr_vals<span class="op">$</span>y</a>
+<a class="sourceLine" id="cb2-4" title="4">cr_data<span class="op">$</span>cohort &lt;-<span class="st"> </span>cr_vals<span class="op">$</span>cohort</a></code></pre></div>
 <p>By default <code><a href="../reference/continuation_ratio.html">cr_setup()</a></code> works under the forward formulation (i.e., the one we have simulated from). To fit the continuation ratio model under the backward formulation, we would need to set <code>direction = "backward"</code> in the call to <code><a href="../reference/continuation_ratio.html">cr_setup()</a></code>.</p>
 <p>Hence, to fit the model we will use the outcome <code>y_new</code> in the new dataset <code>cr_data</code>.</p>
 </div>
@@ -218,97 +218,97 @@ cr_data<span class="op">$</span>cohort &lt;-<span class="st"> </span>cr_vals<spa
 <h3 class="hasAnchor">
 <a href="#basic-continuation-ratio-model" class="anchor"></a>Basic Continuation Ratio Model</h3>
 <p>We begin with a random intercepts model, with fixed effects <code>sex</code> and <code>time</code>. Note that the <code>cohort</code> variable needs also to be included into the model:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y_new <span class="op">~</span><span class="st"> </span>cohort <span class="op">+</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, 
-                  <span class="dt">data =</span> cr_data, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())
-
-fm
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y_new ~ cohort + sex + time, random = ~1 | </span>
-<span class="co">#&gt;     id, data = cr_data, family = binomial())</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: binomial</span>
-<span class="co">#&gt;  link: logit </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;               StdDev</span>
-<span class="co">#&gt; (Intercept) 1.346031</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt;       (Intercept)     cohorty&gt;=mild cohorty&gt;=moderate         sexfemale </span>
-<span class="co">#&gt;        -0.9269543         1.0520746         1.5450799        -0.4591298 </span>
-<span class="co">#&gt;              time </span>
-<span class="co">#&gt;         0.1143118 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2712.608</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">fm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y_new <span class="op">~</span><span class="st"> </span>cohort <span class="op">+</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, </a>
+<a class="sourceLine" id="cb3-2" title="2">                  <span class="dt">data =</span> cr_data, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</a>
+<a class="sourceLine" id="cb3-3" title="3"></a>
+<a class="sourceLine" id="cb3-4" title="4">fm</a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; Call:</span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; mixed_model(fixed = y_new ~ cohort + sex + time, random = ~1 | </span></a>
+<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt;     id, data = cr_data, family = binomial())</span></a>
+<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-10" title="10"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-11" title="11"><span class="co">#&gt; Model:</span></a>
+<a class="sourceLine" id="cb3-12" title="12"><span class="co">#&gt;  family: binomial</span></a>
+<a class="sourceLine" id="cb3-13" title="13"><span class="co">#&gt;  link: logit </span></a>
+<a class="sourceLine" id="cb3-14" title="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-15" title="15"><span class="co">#&gt; Random effects covariance matrix:</span></a>
+<a class="sourceLine" id="cb3-16" title="16"><span class="co">#&gt;               StdDev</span></a>
+<a class="sourceLine" id="cb3-17" title="17"><span class="co">#&gt; (Intercept) 1.346031</span></a>
+<a class="sourceLine" id="cb3-18" title="18"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-19" title="19"><span class="co">#&gt; Fixed effects:</span></a>
+<a class="sourceLine" id="cb3-20" title="20"><span class="co">#&gt;       (Intercept)     cohorty&gt;=mild cohorty&gt;=moderate         sexfemale </span></a>
+<a class="sourceLine" id="cb3-21" title="21"><span class="co">#&gt;        -0.9269543         1.0520746         1.5450799        -0.4591298 </span></a>
+<a class="sourceLine" id="cb3-22" title="22"><span class="co">#&gt;              time </span></a>
+<a class="sourceLine" id="cb3-23" title="23"><span class="co">#&gt;         0.1143118 </span></a>
+<a class="sourceLine" id="cb3-24" title="24"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-25" title="25"><span class="co">#&gt; log-Lik: -2712.608</span></a></code></pre></div>
 <p>According to the definition of the model, the coefficients have a log odds ratio interpretation for a unit increase of the corresponding covariate. For example, <code>exp(fixef(fm)['sexfemale']) =</code> 0.63 is the odds ratio for females versus males for <span class="math inline">\(y = k\)</span>, whatever the conditioning event <span class="math inline">\(y \geq k\)</span>.</p>
 </div>
 <div id="relaxing-the-cr-assumption" class="section level3">
 <h3 class="hasAnchor">
 <a href="#relaxing-the-cr-assumption" class="anchor"></a>Relaxing the CR Assumption</h3>
 <p>As an illustration, we show how we can relax the ordinality assumption for the <code>sex</code> variable, namely, allowing that the effect of <code>sex</code> is different for each of the response categories of our ordinal outcome <span class="math inline">\(y\)</span>. As explained earlier, this can be achieved by simply including the interaction term between the <code>sex</code> and <code>cohort</code> variables, i.e.:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y_new <span class="op">~</span><span class="st"> </span>cohort <span class="op">*</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, 
-                  <span class="dt">data =</span> cr_data, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())
-
-gm
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y_new ~ cohort * sex + time, random = ~1 | </span>
-<span class="co">#&gt;     id, data = cr_data, family = binomial())</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: binomial</span>
-<span class="co">#&gt;  link: logit </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;             StdDev</span>
-<span class="co">#&gt; (Intercept) 1.3446</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt;                 (Intercept)               cohorty&gt;=mild </span>
-<span class="co">#&gt;                  -0.9247568                   1.0967165 </span>
-<span class="co">#&gt;           cohorty&gt;=moderate                   sexfemale </span>
-<span class="co">#&gt;                   1.4406591                  -0.4605628 </span>
-<span class="co">#&gt;                        time     cohorty&gt;=mild:sexfemale </span>
-<span class="co">#&gt;                   0.1140999                  -0.0843883 </span>
-<span class="co">#&gt; cohorty&gt;=moderate:sexfemale </span>
-<span class="co">#&gt;                   0.1790653 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2711.869</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">gm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y_new <span class="op">~</span><span class="st"> </span>cohort <span class="op">*</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, </a>
+<a class="sourceLine" id="cb4-2" title="2">                  <span class="dt">data =</span> cr_data, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</a>
+<a class="sourceLine" id="cb4-3" title="3"></a>
+<a class="sourceLine" id="cb4-4" title="4">gm</a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt; Call:</span></a>
+<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; mixed_model(fixed = y_new ~ cohort * sex + time, random = ~1 | </span></a>
+<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt;     id, data = cr_data, family = binomial())</span></a>
+<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-10" title="10"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-11" title="11"><span class="co">#&gt; Model:</span></a>
+<a class="sourceLine" id="cb4-12" title="12"><span class="co">#&gt;  family: binomial</span></a>
+<a class="sourceLine" id="cb4-13" title="13"><span class="co">#&gt;  link: logit </span></a>
+<a class="sourceLine" id="cb4-14" title="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-15" title="15"><span class="co">#&gt; Random effects covariance matrix:</span></a>
+<a class="sourceLine" id="cb4-16" title="16"><span class="co">#&gt;             StdDev</span></a>
+<a class="sourceLine" id="cb4-17" title="17"><span class="co">#&gt; (Intercept) 1.3446</span></a>
+<a class="sourceLine" id="cb4-18" title="18"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-19" title="19"><span class="co">#&gt; Fixed effects:</span></a>
+<a class="sourceLine" id="cb4-20" title="20"><span class="co">#&gt;                 (Intercept)               cohorty&gt;=mild </span></a>
+<a class="sourceLine" id="cb4-21" title="21"><span class="co">#&gt;                  -0.9247568                   1.0967165 </span></a>
+<a class="sourceLine" id="cb4-22" title="22"><span class="co">#&gt;           cohorty&gt;=moderate                   sexfemale </span></a>
+<a class="sourceLine" id="cb4-23" title="23"><span class="co">#&gt;                   1.4406591                  -0.4605628 </span></a>
+<a class="sourceLine" id="cb4-24" title="24"><span class="co">#&gt;                        time     cohorty&gt;=mild:sexfemale </span></a>
+<a class="sourceLine" id="cb4-25" title="25"><span class="co">#&gt;                   0.1140999                  -0.0843883 </span></a>
+<a class="sourceLine" id="cb4-26" title="26"><span class="co">#&gt; cohorty&gt;=moderate:sexfemale </span></a>
+<a class="sourceLine" id="cb4-27" title="27"><span class="co">#&gt;                   0.1790653 </span></a>
+<a class="sourceLine" id="cb4-28" title="28"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-29" title="29"><span class="co">#&gt; log-Lik: -2711.869</span></a></code></pre></div>
 <p>To test whether this extension is required we can perform a likelihood ratio test using the <code><a href="../reference/methods.html">anova()</a></code> method:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">anova</a></span>(fm, gm)
-<span class="co">#&gt; </span>
-<span class="co">#&gt;        AIC     BIC  log.Lik  LRT df p.value</span>
-<span class="co">#&gt; fm 5437.22 5459.44 -2712.61                </span>
-<span class="co">#&gt; gm 5439.74 5439.74 -2711.87 1.48  2  0.4775</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="../reference/methods.html">anova</a></span>(fm, gm)</a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="co">#&gt;        AIC     BIC  log.Lik  LRT df p.value</span></a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="co">#&gt; fm 5437.22 5459.44 -2712.61                </span></a>
+<a class="sourceLine" id="cb5-5" title="5"><span class="co">#&gt; gm 5439.74 5439.74 -2711.87 1.48  2  0.4775</span></a></code></pre></div>
 <p>As we expected the test suggests that <code>sex</code> satisfies the ordinality / continuation ratio assumption.</p>
 </div>
 <div id="effect-plots-of-conditional-probabilities" class="section level3">
 <h3 class="hasAnchor">
 <a href="#effect-plots-of-conditional-probabilities" class="anchor"></a>Effect Plots of Conditional Probabilities</h3>
 <p>Finally, we produce effect plots based on our final model <code>fm</code>. The required data for these plots are calculated from the <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function. Note that because we would like to obtain the predicted values and confidence intervals for all categories of our ordinal outcome, we also need to include the <code>cohort</code> variable in the specification of the data frame based on which <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> will calculate the predicted values. The following code calculates the data for the plot for both sexes and follow-up times in the interval from 0 to 10:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nDF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(cr_data, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/expand.grid">expand.grid</a></span>(<span class="dt">cohort =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(cohort), <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(sex), 
-                                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dt">length.out =</span> <span class="dv">55</span>)))
-
-plot_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">nDF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(cr_data, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/expand.grid">expand.grid</a></span>(<span class="dt">cohort =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(cohort), <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(sex), </a>
+<a class="sourceLine" id="cb6-2" title="2">                                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dt">length.out =</span> <span class="dv">55</span>)))</a>
+<a class="sourceLine" id="cb6-3" title="3"></a>
+<a class="sourceLine" id="cb6-4" title="4">plot_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF)</a></code></pre></div>
 <p>Then we produce the plot with the following call to the <code>xyplot()</code> function from the <strong>lattice</strong> package:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">expit &lt;-<span class="st"> </span><span class="cf">function</span> (x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(x) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(x))
-my_panel_bands &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, upper, lower, fill, col, subscripts, ..., font, 
-                           fontface) {
-    upper &lt;-<span class="st"> </span>upper[subscripts]
-    lower &lt;-<span class="st"> </span>lower[subscripts]
-    <span class="kw">panel.polygon</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(x, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rev">rev</a></span>(x)), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(upper, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rev">rev</a></span>(lower)), <span class="dt">col =</span> fill, <span class="dt">border =</span> <span class="ot">FALSE</span>, ...)
-}
-
-<span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">group =</span> cohort, <span class="dt">data =</span> plot_data, 
-       <span class="dt">upper =</span> <span class="kw">expit</span>(plot_data<span class="op">$</span>upp), <span class="dt">low =</span> <span class="kw">expit</span>(plot_data<span class="op">$</span>low), <span class="dt">type =</span> <span class="st">"l"</span>,
-       <span class="dt">panel =</span> <span class="cf">function</span> (x, y, ...) {
-           <span class="kw">panel.superpose</span>(x, y, <span class="dt">panel.groups =</span> my_panel_bands, ...)
-           <span class="kw">panel.xyplot</span>(x, y, <span class="dt">lwd =</span> <span class="dv">2</span>,  ...)
-       }, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Continuation Ratio Probabilities"</span>)</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">expit &lt;-<span class="st"> </span><span class="cf">function</span> (x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(x) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(x))</a>
+<a class="sourceLine" id="cb7-2" title="2">my_panel_bands &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, upper, lower, fill, col, subscripts, ..., font, </a>
+<a class="sourceLine" id="cb7-3" title="3">                           fontface) {</a>
+<a class="sourceLine" id="cb7-4" title="4">    upper &lt;-<span class="st"> </span>upper[subscripts]</a>
+<a class="sourceLine" id="cb7-5" title="5">    lower &lt;-<span class="st"> </span>lower[subscripts]</a>
+<a class="sourceLine" id="cb7-6" title="6">    <span class="kw">panel.polygon</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(x, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rev">rev</a></span>(x)), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(upper, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rev">rev</a></span>(lower)), <span class="dt">col =</span> fill, <span class="dt">border =</span> <span class="ot">FALSE</span>, ...)</a>
+<a class="sourceLine" id="cb7-7" title="7">}</a>
+<a class="sourceLine" id="cb7-8" title="8"></a>
+<a class="sourceLine" id="cb7-9" title="9"><span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">group =</span> cohort, <span class="dt">data =</span> plot_data, </a>
+<a class="sourceLine" id="cb7-10" title="10">       <span class="dt">upper =</span> <span class="kw">expit</span>(plot_data<span class="op">$</span>upp), <span class="dt">low =</span> <span class="kw">expit</span>(plot_data<span class="op">$</span>low), <span class="dt">type =</span> <span class="st">"l"</span>,</a>
+<a class="sourceLine" id="cb7-11" title="11">       <span class="dt">panel =</span> <span class="cf">function</span> (x, y, ...) {</a>
+<a class="sourceLine" id="cb7-12" title="12">           <span class="kw">panel.superpose</span>(x, y, <span class="dt">panel.groups =</span> my_panel_bands, ...)</a>
+<a class="sourceLine" id="cb7-13" title="13">           <span class="kw">panel.xyplot</span>(x, y, <span class="dt">lwd =</span> <span class="dv">2</span>,  ...)</a>
+<a class="sourceLine" id="cb7-14" title="14">       }, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Continuation Ratio Probabilities"</span>)</a></code></pre></div>
 <p><img src="Ordinal_Mixed_Models_files/figure-html/CR_probs_plot-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>The <code>my_panel_bands()</code> is used to put the different curves for the response categories in the same plot.</p>
 </div>
@@ -316,33 +316,33 @@ my_panel_bands &lt;-<span class="st"> </span><span class="cf">function</span>(x,
 <h3 class="hasAnchor">
 <a href="#effect-plots-of-marginal-probabilities" class="anchor"></a>Effect Plots of Marginal Probabilities</h3>
 <p>The effect plot of the previous section depicts the conditional probabilities according to the forward formulation of the continuation ratio model. However, it is easier to understand the marginal probabilities of each category, calculated according to the formulas presented in the first section and the <code><a href="../reference/continuation_ratio.html">cr_marg_probs()</a></code> function. The <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> can calculate these marginal probabilities by invoking its <code>CR_cohort_varname</code> argument in which the name of the cohort variable needs to be provided. The following call calculates the plot data for the marginal probabilities based on model <code>fm</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">CR_cohort_varname =</span> <span class="st">"cohort"</span>)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">plot_data_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">CR_cohort_varname =</span> <span class="st">"cohort"</span>)</a></code></pre></div>
 <p>The dataset produced by <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> contains a new variable named <code>ordinal_response</code> that specifies the different categories of the ordinal outcome. To plot these probabilities we use an analogous call to <code>xyplot()</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">key &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">space =</span> <span class="st">"top"</span>, <span class="dt">rep =</span> <span class="ot">FALSE</span>,
-            <span class="dt">text =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(DF<span class="op">$</span>y)[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]),
-            <span class="dt">lines =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"#0080ff"</span>, <span class="st">"#ff00ff"</span>)),
-            <span class="dt">text =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(DF<span class="op">$</span>y)[<span class="dv">3</span><span class="op">:</span><span class="dv">4</span>]),
-            <span class="dt">lines =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"darkgreen"</span>, <span class="st">"#ff0000"</span>)))
-
-<span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">group =</span> ordinal_response, <span class="dt">data =</span> plot_data_m, 
-       <span class="dt">upper =</span> <span class="kw">expit</span>(plot_data_m<span class="op">$</span>upp), <span class="dt">low =</span> <span class="kw">expit</span>(plot_data_m<span class="op">$</span>low), <span class="dt">type =</span> <span class="st">"l"</span>,
-       <span class="dt">panel =</span> <span class="cf">function</span> (x, y, ...) {
-           <span class="kw">panel.superpose</span>(x, y, <span class="dt">panel.groups =</span> my_panel_bands, ...)
-           <span class="kw">panel.xyplot</span>(x, y, <span class="dt">lwd =</span> <span class="dv">2</span>, ...)
-       }, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Marginal Probabilities"</span>, <span class="dt">key =</span> key)</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">key &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">space =</span> <span class="st">"top"</span>, <span class="dt">rep =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb9-2" title="2">            <span class="dt">text =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(DF<span class="op">$</span>y)[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]),</a>
+<a class="sourceLine" id="cb9-3" title="3">            <span class="dt">lines =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"#0080ff"</span>, <span class="st">"#ff00ff"</span>)),</a>
+<a class="sourceLine" id="cb9-4" title="4">            <span class="dt">text =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(DF<span class="op">$</span>y)[<span class="dv">3</span><span class="op">:</span><span class="dv">4</span>]),</a>
+<a class="sourceLine" id="cb9-5" title="5">            <span class="dt">lines =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"darkgreen"</span>, <span class="st">"#ff0000"</span>)))</a>
+<a class="sourceLine" id="cb9-6" title="6"></a>
+<a class="sourceLine" id="cb9-7" title="7"><span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">group =</span> ordinal_response, <span class="dt">data =</span> plot_data_m, </a>
+<a class="sourceLine" id="cb9-8" title="8">       <span class="dt">upper =</span> <span class="kw">expit</span>(plot_data_m<span class="op">$</span>upp), <span class="dt">low =</span> <span class="kw">expit</span>(plot_data_m<span class="op">$</span>low), <span class="dt">type =</span> <span class="st">"l"</span>,</a>
+<a class="sourceLine" id="cb9-9" title="9">       <span class="dt">panel =</span> <span class="cf">function</span> (x, y, ...) {</a>
+<a class="sourceLine" id="cb9-10" title="10">           <span class="kw">panel.superpose</span>(x, y, <span class="dt">panel.groups =</span> my_panel_bands, ...)</a>
+<a class="sourceLine" id="cb9-11" title="11">           <span class="kw">panel.xyplot</span>(x, y, <span class="dt">lwd =</span> <span class="dv">2</span>, ...)</a>
+<a class="sourceLine" id="cb9-12" title="12">       }, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Marginal Probabilities"</span>, <span class="dt">key =</span> key)</a></code></pre></div>
 <p><img src="Ordinal_Mixed_Models_files/figure-html/CR_probs_plot_marg-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>To marginalize over the random effects as well you will need to set the <code>marginal</code> argument of <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> to <code>TRUE</code>, e.g.,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data_m2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">CR_cohort_varname =</span> <span class="st">"cohort"</span>, 
-                               <span class="dt">marginal =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">plot_data_m2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">CR_cohort_varname =</span> <span class="st">"cohort"</span>, </a>
+<a class="sourceLine" id="cb10-2" title="2">                               <span class="dt">marginal =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">3</span>)</a></code></pre></div>
 <p>To plot these probabilities we use an analogous call to <code>xyplot()</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">group =</span> ordinal_response, <span class="dt">data =</span> plot_data_m2, 
-       <span class="dt">upper =</span> <span class="kw">expit</span>(plot_data_m2<span class="op">$</span>upp), <span class="dt">low =</span> <span class="kw">expit</span>(plot_data_m2<span class="op">$</span>low), <span class="dt">type =</span> <span class="st">"l"</span>,
-       <span class="dt">panel =</span> <span class="cf">function</span> (x, y, ...) {
-           <span class="kw">panel.superpose</span>(x, y, <span class="dt">panel.groups =</span> my_panel_bands, ...)
-           <span class="kw">panel.xyplot</span>(x, y, <span class="dt">lwd =</span> <span class="dv">2</span>,  ...)
-       }, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, 
-       <span class="dt">ylab =</span> <span class="st">"Marginal Probabilities</span><span class="ch">\n</span><span class="st">also w.r.t Random Effects"</span>, 
-       <span class="dt">key =</span> key)</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">group =</span> ordinal_response, <span class="dt">data =</span> plot_data_m2, </a>
+<a class="sourceLine" id="cb11-2" title="2">       <span class="dt">upper =</span> <span class="kw">expit</span>(plot_data_m2<span class="op">$</span>upp), <span class="dt">low =</span> <span class="kw">expit</span>(plot_data_m2<span class="op">$</span>low), <span class="dt">type =</span> <span class="st">"l"</span>,</a>
+<a class="sourceLine" id="cb11-3" title="3">       <span class="dt">panel =</span> <span class="cf">function</span> (x, y, ...) {</a>
+<a class="sourceLine" id="cb11-4" title="4">           <span class="kw">panel.superpose</span>(x, y, <span class="dt">panel.groups =</span> my_panel_bands, ...)</a>
+<a class="sourceLine" id="cb11-5" title="5">           <span class="kw">panel.xyplot</span>(x, y, <span class="dt">lwd =</span> <span class="dv">2</span>,  ...)</a>
+<a class="sourceLine" id="cb11-6" title="6">       }, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, </a>
+<a class="sourceLine" id="cb11-7" title="7">       <span class="dt">ylab =</span> <span class="st">"Marginal Probabilities</span><span class="ch">\n</span><span class="st">also w.r.t Random Effects"</span>, </a>
+<a class="sourceLine" id="cb11-8" title="8">       <span class="dt">key =</span> key)</a></code></pre></div>
 <p><img src="Ordinal_Mixed_Models_files/figure-html/CR_probs_plot_marg2-1.png" width="816" style="display: block; margin: auto;"></p>
 </div>
 </div>

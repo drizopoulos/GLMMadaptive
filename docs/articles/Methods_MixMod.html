@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.27</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.30</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
       <h1>Methods for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-04-08</h4>
+            <h4 class="date">2019-05-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Methods_MixMod.Rmd"><code>vignettes/Methods_MixMod.Rmd</code></a></small>
       <div class="hidden name"><code>Methods_MixMod.Rmd</code></div>
@@ -122,197 +122,197 @@
 <a href="#mixmod-objects" class="anchor"></a>MixMod Objects</h1>
 <p>In this vignette we illustrate the use of a number of basic generic functions for models fitted by the <code><a href="../reference/mixed_model.html">mixed_model()</a></code> function of package <strong>GLMMadaptive</strong>.</p>
 <p>We start by simulating some data for a binary longitudinal outcome:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)
-n &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># number of subjects</span>
-K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span>
-t_max &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># maximum follow-up time</span>
-
-<span class="co"># we constuct a data frame with the design: </span>
-<span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span>
-DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),
-                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">replicate</a></span>(n, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),
-                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))
-
-<span class="co"># design matrices for the fixed and random effects</span>
-X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)
-Z &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>time, <span class="dt">data =</span> DF)
-
-betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">2.13</span>, <span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span>) <span class="co"># fixed effects coefficients</span>
-D11 &lt;-<span class="st"> </span><span class="fl">0.48</span> <span class="co"># variance of random intercepts</span>
-D22 &lt;-<span class="st"> </span><span class="fl">0.1</span> <span class="co"># variance of random slopes</span>
-
-<span class="co"># we simulate random effects</span>
-b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11)), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D22)))
-<span class="co"># linear predictor</span>
-eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, ]))
-<span class="co"># we simulate binary longitudinal data</span>
-DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dv">1</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Logistic">plogis</a></span>(eta_y))</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb1-2" title="2">n &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># number of subjects</span></a>
+<a class="sourceLine" id="cb1-3" title="3">K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span></a>
+<a class="sourceLine" id="cb1-4" title="4">t_max &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># maximum follow-up time</span></a>
+<a class="sourceLine" id="cb1-5" title="5"></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="co"># we constuct a data frame with the design: </span></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span></a>
+<a class="sourceLine" id="cb1-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
+<a class="sourceLine" id="cb1-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">replicate</a></span>(n, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),</a>
+<a class="sourceLine" id="cb1-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
+<a class="sourceLine" id="cb1-11" title="11"></a>
+<a class="sourceLine" id="cb1-12" title="12"><span class="co"># design matrices for the fixed and random effects</span></a>
+<a class="sourceLine" id="cb1-13" title="13">X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)</a>
+<a class="sourceLine" id="cb1-14" title="14">Z &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>time, <span class="dt">data =</span> DF)</a>
+<a class="sourceLine" id="cb1-15" title="15"></a>
+<a class="sourceLine" id="cb1-16" title="16">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">2.13</span>, <span class="fl">-0.25</span>, <span class="fl">0.24</span>, <span class="fl">-0.05</span>) <span class="co"># fixed effects coefficients</span></a>
+<a class="sourceLine" id="cb1-17" title="17">D11 &lt;-<span class="st"> </span><span class="fl">0.48</span> <span class="co"># variance of random intercepts</span></a>
+<a class="sourceLine" id="cb1-18" title="18">D22 &lt;-<span class="st"> </span><span class="fl">0.1</span> <span class="co"># variance of random slopes</span></a>
+<a class="sourceLine" id="cb1-19" title="19"></a>
+<a class="sourceLine" id="cb1-20" title="20"><span class="co"># we simulate random effects</span></a>
+<a class="sourceLine" id="cb1-21" title="21">b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11)), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D22)))</a>
+<a class="sourceLine" id="cb1-22" title="22"><span class="co"># linear predictor</span></a>
+<a class="sourceLine" id="cb1-23" title="23">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, ]))</a>
+<a class="sourceLine" id="cb1-24" title="24"><span class="co"># we simulate binary longitudinal data</span></a>
+<a class="sourceLine" id="cb1-25" title="25">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dv">1</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Logistic">plogis</a></span>(eta_y))</a></code></pre></div>
 <p>We continue by fitting the mixed effects logistic regression for <code>y</code> assuming random intercepts and random slopes for the random-effects part.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
-                  <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">fm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
+<a class="sourceLine" id="cb2-2" title="2">                  <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</a></code></pre></div>
 <div id="detailed-output-confidence-intervals-covariance-matrix-of-the-mles-and-robust-standard-errors" class="section level2">
 <h2 class="hasAnchor">
 <a href="#detailed-output-confidence-intervals-covariance-matrix-of-the-mles-and-robust-standard-errors" class="anchor"></a>Detailed Output, Confidence Intervals, Covariance Matrix of the MLEs and Robust Standard Errors</h2>
 <p>As in the majority of model-fitting functions in R, the <code><a href="https://www.rdocumentation.org/packages/base/topics/print">print()</a></code> and <code><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary()</a></code> methods display a short and a detailed output of the fitted model, respectively. For <code>'MixMod'</code> objects we obtain</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~time | id, data = DF, </span>
-<span class="co">#&gt;     family = binomial())</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: binomial</span>
-<span class="co">#&gt;  link: logit </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;              StdDev    Corr</span>
-<span class="co">#&gt; (Intercept)  0.6808        </span>
-<span class="co">#&gt; time         0.2510  0.6544</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;   -2.057131526   -1.169617288    0.261562222    0.001962038 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -358.8142</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">fm</a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt; Call:</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~time | id, data = DF, </span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt;     family = binomial())</span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; Model:</span></a>
+<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt;  family: binomial</span></a>
+<a class="sourceLine" id="cb3-10" title="10"><span class="co">#&gt;  link: logit </span></a>
+<a class="sourceLine" id="cb3-11" title="11"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-12" title="12"><span class="co">#&gt; Random effects covariance matrix:</span></a>
+<a class="sourceLine" id="cb3-13" title="13"><span class="co">#&gt;              StdDev    Corr</span></a>
+<a class="sourceLine" id="cb3-14" title="14"><span class="co">#&gt; (Intercept)  0.6808        </span></a>
+<a class="sourceLine" id="cb3-15" title="15"><span class="co">#&gt; time         0.2510  0.6544</span></a>
+<a class="sourceLine" id="cb3-16" title="16"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-17" title="17"><span class="co">#&gt; Fixed effects:</span></a>
+<a class="sourceLine" id="cb3-18" title="18"><span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span></a>
+<a class="sourceLine" id="cb3-19" title="19"><span class="co">#&gt;   -2.057131526   -1.169617288    0.261562222    0.001962038 </span></a>
+<a class="sourceLine" id="cb3-20" title="20"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-21" title="21"><span class="co">#&gt; log-Lik: -358.8142</span></a></code></pre></div>
 <p>and</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(fm)
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~time | id, data = DF, </span>
-<span class="co">#&gt;     family = binomial())</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Data Descriptives:</span>
-<span class="co">#&gt; Number of Observations: 800</span>
-<span class="co">#&gt; Number of Groups: 100 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: binomial</span>
-<span class="co">#&gt;  link: logit </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fit statistics:</span>
-<span class="co">#&gt;    log.Lik      AIC      BIC</span>
-<span class="co">#&gt;  -358.8142 731.6283 749.8645</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;              StdDev    Corr</span>
-<span class="co">#&gt; (Intercept)  0.6808        </span>
-<span class="co">#&gt; time         0.2510  0.6544</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt;                Estimate Std.Err z-value  p-value</span>
-<span class="co">#&gt; (Intercept)     -2.0571  0.3148 -6.5348  &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale       -1.1696  0.4683 -2.4974 0.012509</span>
-<span class="co">#&gt; time             0.2616  0.0563  4.6428  &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale:time   0.0020  0.0783  0.0250 0.980016</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Integration:</span>
-<span class="co">#&gt; method: adaptive Gauss-Hermite quadrature rule</span>
-<span class="co">#&gt; quadrature points: 11</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Optimization:</span>
-<span class="co">#&gt; method: hybrid EM and quasi-Newton</span>
-<span class="co">#&gt; converged: TRUE</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(fm)</a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt; Call:</span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~time | id, data = DF, </span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt;     family = binomial())</span></a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; Data Descriptives:</span></a>
+<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; Number of Observations: 800</span></a>
+<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt; Number of Groups: 100 </span></a>
+<a class="sourceLine" id="cb4-10" title="10"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-11" title="11"><span class="co">#&gt; Model:</span></a>
+<a class="sourceLine" id="cb4-12" title="12"><span class="co">#&gt;  family: binomial</span></a>
+<a class="sourceLine" id="cb4-13" title="13"><span class="co">#&gt;  link: logit </span></a>
+<a class="sourceLine" id="cb4-14" title="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-15" title="15"><span class="co">#&gt; Fit statistics:</span></a>
+<a class="sourceLine" id="cb4-16" title="16"><span class="co">#&gt;    log.Lik      AIC      BIC</span></a>
+<a class="sourceLine" id="cb4-17" title="17"><span class="co">#&gt;  -358.8142 731.6283 749.8645</span></a>
+<a class="sourceLine" id="cb4-18" title="18"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-19" title="19"><span class="co">#&gt; Random effects covariance matrix:</span></a>
+<a class="sourceLine" id="cb4-20" title="20"><span class="co">#&gt;              StdDev    Corr</span></a>
+<a class="sourceLine" id="cb4-21" title="21"><span class="co">#&gt; (Intercept)  0.6808        </span></a>
+<a class="sourceLine" id="cb4-22" title="22"><span class="co">#&gt; time         0.2510  0.6544</span></a>
+<a class="sourceLine" id="cb4-23" title="23"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-24" title="24"><span class="co">#&gt; Fixed effects:</span></a>
+<a class="sourceLine" id="cb4-25" title="25"><span class="co">#&gt;                Estimate Std.Err z-value  p-value</span></a>
+<a class="sourceLine" id="cb4-26" title="26"><span class="co">#&gt; (Intercept)     -2.0571  0.3148 -6.5348  &lt; 1e-04</span></a>
+<a class="sourceLine" id="cb4-27" title="27"><span class="co">#&gt; sexfemale       -1.1696  0.4683 -2.4974 0.012509</span></a>
+<a class="sourceLine" id="cb4-28" title="28"><span class="co">#&gt; time             0.2616  0.0563  4.6428  &lt; 1e-04</span></a>
+<a class="sourceLine" id="cb4-29" title="29"><span class="co">#&gt; sexfemale:time   0.0020  0.0783  0.0250 0.980016</span></a>
+<a class="sourceLine" id="cb4-30" title="30"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-31" title="31"><span class="co">#&gt; Integration:</span></a>
+<a class="sourceLine" id="cb4-32" title="32"><span class="co">#&gt; method: adaptive Gauss-Hermite quadrature rule</span></a>
+<a class="sourceLine" id="cb4-33" title="33"><span class="co">#&gt; quadrature points: 11</span></a>
+<a class="sourceLine" id="cb4-34" title="34"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-35" title="35"><span class="co">#&gt; Optimization:</span></a>
+<a class="sourceLine" id="cb4-36" title="36"><span class="co">#&gt; method: hybrid EM and quasi-Newton</span></a>
+<a class="sourceLine" id="cb4-37" title="37"><span class="co">#&gt; converged: TRUE</span></a></code></pre></div>
 <p>The output is rather self-explanatory. However, just note that the fixed-effects coefficients are on the linear predictor scale, and hence are the corresponding log-odds for the intercept and log-odds ratios for the rest of the parameters. The <code><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary()</a></code> only shows the estimated coefficients, standard errors and p-values, but no confidence intervals. These can be separately obtained using the <code><a href="../reference/methods.html">confint()</a></code> method, i.e.,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(<span class="kw"><a href="../reference/methods.html">confint</a></span>(fm))
-<span class="co">#&gt;                     2.5 %  Estimate    97.5 %</span>
-<span class="co">#&gt; (Intercept)    0.06896758 0.1278201 0.2368936</span>
-<span class="co">#&gt; sexfemale      0.12399421 0.3104857 0.7774669</span>
-<span class="co">#&gt; time           1.16316314 1.2989578 1.4506059</span>
-<span class="co">#&gt; sexfemale:time 0.85937032 1.0019640 1.1682179</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(<span class="kw"><a href="../reference/methods.html">confint</a></span>(fm))</a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="co">#&gt;                     2.5 %  Estimate    97.5 %</span></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="co">#&gt; (Intercept)    0.06896758 0.1278201 0.2368936</span></a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="co">#&gt; sexfemale      0.12399421 0.3104857 0.7774669</span></a>
+<a class="sourceLine" id="cb5-5" title="5"><span class="co">#&gt; time           1.16316314 1.2989578 1.4506059</span></a>
+<a class="sourceLine" id="cb5-6" title="6"><span class="co">#&gt; sexfemale:time 0.85937032 1.0019640 1.1682179</span></a></code></pre></div>
 <p>By default the confidence intervals are produced for the fixed effects. Hence, taking the exp we obtain the confidence intervals for the corresponding odds-ratios. In addition, by default, the level of the confidence intervals is 95%. The following piece of code produces 90% confidence intervals for the variances of the random intercepts and slopes, and for their covariance:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">confint</a></span>(fm, <span class="dt">parm =</span> <span class="st">"var-cov"</span>, <span class="dt">level =</span> <span class="fl">0.90</span>)
-<span class="co">#&gt;                         5 %  Estimate      95 %</span>
-<span class="co">#&gt; var.(Intercept)  0.05522952 0.4635392 0.6792644</span>
-<span class="co">#&gt; cov.(Int)_time  -0.03492156 0.1118245 0.4770876</span>
-<span class="co">#&gt; var.time         0.02313902 0.0630008 0.1020497</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="../reference/methods.html">confint</a></span>(fm, <span class="dt">parm =</span> <span class="st">"var-cov"</span>, <span class="dt">level =</span> <span class="fl">0.90</span>)</a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="co">#&gt;                         5 %  Estimate      95 %</span></a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="co">#&gt; var.(Intercept)  0.05522952 0.4635392 0.6792644</span></a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="co">#&gt; cov.(Int)_time  -0.03492156 0.1118245 0.4770876</span></a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="co">#&gt; var.time         0.02313902 0.0630008 0.1020497</span></a></code></pre></div>
 <p>The estimated variance-covariance matrix of the maximum likelihood estimates of all parameters is returned using the <code><a href="https://www.rdocumentation.org/packages/stats/topics/vcov">vcov()</a></code> method, e.g.,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/vcov">vcov</a></span>(fm)
-<span class="co">#&gt;                 (Intercept)    sexfemale         time sexfemale:time</span>
-<span class="co">#&gt; (Intercept)     0.099095998 -0.074740425 -0.008311235   6.167033e-03</span>
-<span class="co">#&gt; sexfemale      -0.074740425  0.219329721  0.005954510  -1.765040e-02</span>
-<span class="co">#&gt; time           -0.008311235  0.005954510  0.003173891  -2.972294e-03</span>
-<span class="co">#&gt; sexfemale:time  0.006167033 -0.017650401 -0.002972294   6.135062e-03</span>
-<span class="co">#&gt; D_11           -0.087007575 -0.019735153  0.008224516   1.819205e-03</span>
-<span class="co">#&gt; D_12            0.016236314  0.003858827 -0.001718795  -4.392390e-04</span>
-<span class="co">#&gt; D_22           -0.079200977 -0.017940962  0.009916866   2.096816e-05</span>
-<span class="co">#&gt;                        D_11         D_12          D_22</span>
-<span class="co">#&gt; (Intercept)    -0.087007575  0.016236314 -7.920098e-02</span>
-<span class="co">#&gt; sexfemale      -0.019735153  0.003858827 -1.794096e-02</span>
-<span class="co">#&gt; time            0.008224516 -0.001718795  9.916866e-03</span>
-<span class="co">#&gt; sexfemale:time  0.001819205 -0.000439239  2.096816e-05</span>
-<span class="co">#&gt; D_11            0.418197131 -0.096714633  4.527130e-01</span>
-<span class="co">#&gt; D_12           -0.096714633  0.036173908 -1.914378e-01</span>
-<span class="co">#&gt; D_22            0.452713003 -0.191437786  1.149900e+00</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/vcov">vcov</a></span>(fm)</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="co">#&gt;                 (Intercept)    sexfemale         time sexfemale:time</span></a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="co">#&gt; (Intercept)     0.099095998 -0.074740425 -0.008311235   6.167033e-03</span></a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="co">#&gt; sexfemale      -0.074740425  0.219329721  0.005954510  -1.765040e-02</span></a>
+<a class="sourceLine" id="cb7-5" title="5"><span class="co">#&gt; time           -0.008311235  0.005954510  0.003173891  -2.972294e-03</span></a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="co">#&gt; sexfemale:time  0.006167033 -0.017650401 -0.002972294   6.135062e-03</span></a>
+<a class="sourceLine" id="cb7-7" title="7"><span class="co">#&gt; D_11           -0.087007575 -0.019735153  0.008224516   1.819205e-03</span></a>
+<a class="sourceLine" id="cb7-8" title="8"><span class="co">#&gt; D_12            0.016236314  0.003858827 -0.001718795  -4.392390e-04</span></a>
+<a class="sourceLine" id="cb7-9" title="9"><span class="co">#&gt; D_22           -0.079200977 -0.017940962  0.009916866   2.096816e-05</span></a>
+<a class="sourceLine" id="cb7-10" title="10"><span class="co">#&gt;                        D_11         D_12          D_22</span></a>
+<a class="sourceLine" id="cb7-11" title="11"><span class="co">#&gt; (Intercept)    -0.087007575  0.016236314 -7.920098e-02</span></a>
+<a class="sourceLine" id="cb7-12" title="12"><span class="co">#&gt; sexfemale      -0.019735153  0.003858827 -1.794096e-02</span></a>
+<a class="sourceLine" id="cb7-13" title="13"><span class="co">#&gt; time            0.008224516 -0.001718795  9.916866e-03</span></a>
+<a class="sourceLine" id="cb7-14" title="14"><span class="co">#&gt; sexfemale:time  0.001819205 -0.000439239  2.096816e-05</span></a>
+<a class="sourceLine" id="cb7-15" title="15"><span class="co">#&gt; D_11            0.418197131 -0.096714633  4.527130e-01</span></a>
+<a class="sourceLine" id="cb7-16" title="16"><span class="co">#&gt; D_12           -0.096714633  0.036173908 -1.914378e-01</span></a>
+<a class="sourceLine" id="cb7-17" title="17"><span class="co">#&gt; D_22            0.452713003 -0.191437786  1.149900e+00</span></a></code></pre></div>
 <p>The elements of this covariance matrix that correspond to the elements of the covariance matrix of the random effects (i.e., the elements <code>D_xx</code>) are on the log-Cholesky scale.</p>
 <p>Robust standard errors using the sandwich estimator can be obtained by setting the logical argument <code>sandwich</code> to <code>TRUE</code>, i.e.,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/vcov">vcov</a></span>(fm, <span class="dt">sandwich =</span> <span class="ot">TRUE</span>)
-<span class="co">#&gt;                 (Intercept)    sexfemale         time sexfemale:time</span>
-<span class="co">#&gt; (Intercept)     0.100278434 -0.070436571 -0.005288313   0.0024185176</span>
-<span class="co">#&gt; sexfemale      -0.070436571  0.214069755  0.003085020  -0.0183693751</span>
-<span class="co">#&gt; time           -0.005288313  0.003085020  0.002916768  -0.0026797203</span>
-<span class="co">#&gt; sexfemale:time  0.002418518 -0.018369375 -0.002679720   0.0061809671</span>
-<span class="co">#&gt; D_11           -0.081476067 -0.015090247  0.006093385   0.0035072465</span>
-<span class="co">#&gt; D_12            0.017548703 -0.005059183 -0.001442925  -0.0002417531</span>
-<span class="co">#&gt; D_22           -0.076955896  0.030038777  0.005076549   0.0023195503</span>
-<span class="co">#&gt;                        D_11          D_12         D_22</span>
-<span class="co">#&gt; (Intercept)    -0.081476067  0.0175487031 -0.076955896</span>
-<span class="co">#&gt; sexfemale      -0.015090247 -0.0050591832  0.030038777</span>
-<span class="co">#&gt; time            0.006093385 -0.0014429253  0.005076549</span>
-<span class="co">#&gt; sexfemale:time  0.003507247 -0.0002417531  0.002319550</span>
-<span class="co">#&gt; D_11            0.254098511 -0.0547543185  0.219658619</span>
-<span class="co">#&gt; D_12           -0.054754318  0.0220875599 -0.115753100</span>
-<span class="co">#&gt; D_22            0.219658619 -0.1157531000  0.735133882</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/vcov">vcov</a></span>(fm, <span class="dt">sandwich =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="co">#&gt;                 (Intercept)    sexfemale         time sexfemale:time</span></a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt; (Intercept)     0.100278434 -0.070436571 -0.005288313   0.0024185176</span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; sexfemale      -0.070436571  0.214069755  0.003085020  -0.0183693751</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; time           -0.005288313  0.003085020  0.002916768  -0.0026797203</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; sexfemale:time  0.002418518 -0.018369375 -0.002679720   0.0061809671</span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; D_11           -0.081476067 -0.015090247  0.006093385   0.0035072465</span></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; D_12            0.017548703 -0.005059183 -0.001442925  -0.0002417531</span></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; D_22           -0.076955896  0.030038777  0.005076549   0.0023195503</span></a>
+<a class="sourceLine" id="cb8-10" title="10"><span class="co">#&gt;                        D_11          D_12         D_22</span></a>
+<a class="sourceLine" id="cb8-11" title="11"><span class="co">#&gt; (Intercept)    -0.081476067  0.0175487031 -0.076955896</span></a>
+<a class="sourceLine" id="cb8-12" title="12"><span class="co">#&gt; sexfemale      -0.015090247 -0.0050591832  0.030038777</span></a>
+<a class="sourceLine" id="cb8-13" title="13"><span class="co">#&gt; time            0.006093385 -0.0014429253  0.005076549</span></a>
+<a class="sourceLine" id="cb8-14" title="14"><span class="co">#&gt; sexfemale:time  0.003507247 -0.0002417531  0.002319550</span></a>
+<a class="sourceLine" id="cb8-15" title="15"><span class="co">#&gt; D_11            0.254098511 -0.0547543185  0.219658619</span></a>
+<a class="sourceLine" id="cb8-16" title="16"><span class="co">#&gt; D_12           -0.054754318  0.0220875599 -0.115753100</span></a>
+<a class="sourceLine" id="cb8-17" title="17"><span class="co">#&gt; D_22            0.219658619 -0.1157531000  0.735133882</span></a></code></pre></div>
 <p>The use of robust standard errors via the <code>sandwich</code> argument is also available in the <code><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary()</a></code>, <code><a href="../reference/methods.html">confint()</a></code>, <code><a href="../reference/methods.html">anova()</a></code>, <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>, <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code>, <code><a href="../reference/methods.html">predict()</a></code>, and <code><a href="../reference/methods.html">simulate()</a></code> methods.</p>
 </div>
 <div id="fixed-and-random-effects-estimates" class="section level2">
 <h2 class="hasAnchor">
 <a href="#fixed-and-random-effects-estimates" class="anchor"></a>Fixed and Random Effects Estimates</h2>
 <p>To extract the estimated fixed effects coefficients from a fitted mixed model, we can use the <code><a href="../reference/methods.html">fixef()</a></code> method. Similarly, the empirical Bayes estimates of the random effects are extracted using the <code><a href="../reference/methods.html">ranef()</a></code> method, and finally the <code><a href="../reference/methods.html">coef()</a></code> method returns the subject-specific coefficients, i.e., the sum of the fixed and random effects coefficients:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">fixef</a></span>(fm)
-<span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;   -2.057131526   -1.169617288    0.261562222    0.001962038</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">ranef</a></span>(fm))
-<span class="co">#&gt;   (Intercept)         time</span>
-<span class="co">#&gt; 1  -0.3732164 -0.122430730</span>
-<span class="co">#&gt; 2   0.6667839  0.289302901</span>
-<span class="co">#&gt; 3   0.4844353  0.215098185</span>
-<span class="co">#&gt; 4  -0.2020809 -0.007465283</span>
-<span class="co">#&gt; 5   0.2410307  0.161494770</span>
-<span class="co">#&gt; 6  -0.3710567 -0.184012351</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">coef</a></span>(fm))
-<span class="co">#&gt;   (Intercept) sexfemale       time sexfemale:time</span>
-<span class="co">#&gt; 1   -2.430348 -1.169617 0.13913149    0.001962038</span>
-<span class="co">#&gt; 2   -1.390348 -1.169617 0.55086512    0.001962038</span>
-<span class="co">#&gt; 3   -1.572696 -1.169617 0.47666041    0.001962038</span>
-<span class="co">#&gt; 4   -2.259212 -1.169617 0.25409694    0.001962038</span>
-<span class="co">#&gt; 5   -1.816101 -1.169617 0.42305699    0.001962038</span>
-<span class="co">#&gt; 6   -2.428188 -1.169617 0.07754987    0.001962038</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="../reference/methods.html">fixef</a></span>(fm)</a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="co">#&gt;   -2.057131526   -1.169617288    0.261562222    0.001962038</span></a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">ranef</a></span>(fm))</a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="co">#&gt;   (Intercept)         time</span></a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="co">#&gt; 1  -0.3732164 -0.122430730</span></a>
+<a class="sourceLine" id="cb10-4" title="4"><span class="co">#&gt; 2   0.6667839  0.289302901</span></a>
+<a class="sourceLine" id="cb10-5" title="5"><span class="co">#&gt; 3   0.4844353  0.215098185</span></a>
+<a class="sourceLine" id="cb10-6" title="6"><span class="co">#&gt; 4  -0.2020809 -0.007465283</span></a>
+<a class="sourceLine" id="cb10-7" title="7"><span class="co">#&gt; 5   0.2410307  0.161494770</span></a>
+<a class="sourceLine" id="cb10-8" title="8"><span class="co">#&gt; 6  -0.3710567 -0.184012351</span></a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">coef</a></span>(fm))</a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="co">#&gt;   (Intercept) sexfemale       time sexfemale:time</span></a>
+<a class="sourceLine" id="cb11-3" title="3"><span class="co">#&gt; 1   -2.430348 -1.169617 0.13913149    0.001962038</span></a>
+<a class="sourceLine" id="cb11-4" title="4"><span class="co">#&gt; 2   -1.390348 -1.169617 0.55086512    0.001962038</span></a>
+<a class="sourceLine" id="cb11-5" title="5"><span class="co">#&gt; 3   -1.572696 -1.169617 0.47666041    0.001962038</span></a>
+<a class="sourceLine" id="cb11-6" title="6"><span class="co">#&gt; 4   -2.259212 -1.169617 0.25409694    0.001962038</span></a>
+<a class="sourceLine" id="cb11-7" title="7"><span class="co">#&gt; 5   -1.816101 -1.169617 0.42305699    0.001962038</span></a>
+<a class="sourceLine" id="cb11-8" title="8"><span class="co">#&gt; 6   -2.428188 -1.169617 0.07754987    0.001962038</span></a></code></pre></div>
 </div>
 <div id="marginalized-coefficients" class="section level2">
 <h2 class="hasAnchor">
 <a href="#marginalized-coefficients" class="anchor"></a>Marginalized Coefficients</h2>
 <p>The fixed effects estimates in mixed models with nonlinear link functions have an interpretation conditional on the random effects. However, often we wish to obtain parameters with a marginal / population averaged interpretation, which leads many researchers to use generalized estimating equations, and dealing with potential issues with missing data. Nonetheless, recently <a href="https://dx.doi.org/10.1111/biom.12707">Hedeker et al.</a> have proposed a nice solution to this problem. Their approach is implemented in function <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>. For example, for model <code>fm</code> we obtain the marginalized coefficients using:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(fm)
-<span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;        -1.6022        -1.0981         0.1766         0.0509</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(fm)</a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span></a>
+<a class="sourceLine" id="cb12-3" title="3"><span class="co">#&gt;        -1.6022        -1.0981         0.1766         0.0509</span></a></code></pre></div>
 <p>The function calculates the marginal log odds ratios in our case (because we have a binary outcome) using a Monte Carlo procedure with number of samples determined by the <code>M</code> argument.</p>
 <p>Standard errors for the marginalized coefficients are obtained by setting <code>std_errors = TRUE</code> in the call to <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>, and require a double Monte Carlo procedure for which argument <code>K</code> comes also into play. To speed up computations, the outer Monte Carlo procedure is performed in parallel using package <strong>parallel</strong> and number of cores specified in the <code>cores</code> argument (results not shown):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(fm, <span class="dt">std_errors =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">5</span>)</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(fm, <span class="dt">std_errors =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">5</span>)</a></code></pre></div>
 </div>
 <div id="fitted-values-and-residuals" class="section level2">
 <h2 class="hasAnchor">
 <a href="#fitted-values-and-residuals" class="anchor"></a>Fitted Values and Residuals</h2>
 <p>The <code><a href="../reference/methods.html">fitted()</a></code> method extracts fitted values from the fitted mixed model. These are always on the scale of the response variable. The <code>type</code> argument of <code><a href="../reference/methods.html">fitted()</a></code> specifies the type of fitted values computed. The default is <code>type = "mean_subject"</code> which corresponds to the fitted values calculated using only the fixed-effects part of the linear predictor; hence, for the subject who has random effects values equal to 0, i.e., the “mean subject”:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">fitted</a></span>(fm))
-<span class="co">#&gt;         1         2         3         4         5         6 </span>
-<span class="co">#&gt; 0.1133338 0.1171319 0.1664465 0.5825663 0.5949384 0.5959592</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">fitted</a></span>(fm))</a>
+<a class="sourceLine" id="cb14-2" title="2"><span class="co">#&gt;         1         2         3         4         5         6 </span></a>
+<a class="sourceLine" id="cb14-3" title="3"><span class="co">#&gt; 0.1133338 0.1171319 0.1664465 0.5825663 0.5949384 0.5959592</span></a></code></pre></div>
 <p>Setting <code>type = "subject_specific"</code> will calculate the fitted values using both the fixed and random effects parts, where for the latter the empirical Bayes estimates of the random effects are used:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">fitted</a></span>(fm, <span class="dt">type =</span> <span class="st">"subject_specific"</span>))
-<span class="co">#&gt;          1          2          3          4          5          6 </span>
-<span class="co">#&gt; 0.08088760 0.08237321 0.10037615 0.23888387 0.24386110 0.24427697</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">fitted</a></span>(fm, <span class="dt">type =</span> <span class="st">"subject_specific"</span>))</a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="co">#&gt;          1          2          3          4          5          6 </span></a>
+<a class="sourceLine" id="cb15-3" title="3"><span class="co">#&gt; 0.08088760 0.08237321 0.10037615 0.23888387 0.24386110 0.24427697</span></a></code></pre></div>
 <p>Finally, setting <code>type = "marginal"</code> will calculate the fitted values based on the multiplication of the fixed-effects design matrix with the marginalized coefficients described above (due to the required computing time, these fitted values are not displayed):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">fitted</a></span>(fm, <span class="dt">type =</span> <span class="st">"marginal"</span>))</code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">fitted</a></span>(fm, <span class="dt">type =</span> <span class="st">"marginal"</span>))</a></code></pre></div>
 <p>The <code><a href="../reference/methods.html">residuals()</a></code> method simply calculates the residuals by subtracting the fitted values from the observed repeated measurements outcome. Hence, this method also has a <code>type</code> argument with exactly the same options as the <code><a href="../reference/methods.html">fitted()</a></code> method.</p>
 </div>
 <div id="effect-plots" class="section level2">
@@ -320,51 +320,51 @@ DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a h
 <a href="#effect-plots" class="anchor"></a>Effect Plots</h2>
 <p>To display the estimated longitudinal evolutions of the binary outcome we can use an effect plot. This is simply predictions from the models with the corresponding 95% pointwise confidence intervals.</p>
 <p>As a first step we create a data frame the provides the setting based on which the plot is to be produced; function <code><a href="https://www.rdocumentation.org/packages/base/topics/expand.grid">expand.grid()</a></code> is helpful in this regard:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nDF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(DF, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/expand.grid">expand.grid</a></span>(<span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">min</a></span>(time), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">max</a></span>(time), <span class="dt">length.out =</span> <span class="dv">15</span>),
-                            <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(sex)))</code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1">nDF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(DF, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/expand.grid">expand.grid</a></span>(<span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">min</a></span>(time), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">max</a></span>(time), <span class="dt">length.out =</span> <span class="dv">15</span>),</a>
+<a class="sourceLine" id="cb17-2" title="2">                            <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(sex)))</a></code></pre></div>
 <p>Next we use the <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function that does the heavy lifting, i.e., calculates the predictions and confidence intervals from a fitted mixed model for the data frame provided above, i.e.,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF)</code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1">plot_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF)</a></code></pre></div>
 <p>Then we can produce the plot using for example the <code>xyplot()</code> function from package <strong>lattice</strong>, e.g.,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"lattice"</span>)
-<span class="kw">xyplot</span>(pred <span class="op">+</span><span class="st"> </span>low <span class="op">+</span><span class="st"> </span>upp <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">data =</span> plot_data,
-       <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="dv">2</span>,
-       <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"log odds"</span>)
-
-expit &lt;-<span class="st"> </span><span class="cf">function</span> (x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(x) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(x))
-<span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">+</span><span class="st"> </span><span class="kw">expit</span>(low) <span class="op">+</span><span class="st"> </span><span class="kw">expit</span>(upp) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">data =</span> plot_data,
-       <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="dv">2</span>,
-       <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Subject-Specific Probabilities"</span>)</code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"lattice"</span>)</a>
+<a class="sourceLine" id="cb19-2" title="2"><span class="kw">xyplot</span>(pred <span class="op">+</span><span class="st"> </span>low <span class="op">+</span><span class="st"> </span>upp <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">data =</span> plot_data,</a>
+<a class="sourceLine" id="cb19-3" title="3">       <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb19-4" title="4">       <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"log odds"</span>)</a>
+<a class="sourceLine" id="cb19-5" title="5"></a>
+<a class="sourceLine" id="cb19-6" title="6">expit &lt;-<span class="st"> </span><span class="cf">function</span> (x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(x) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(x))</a>
+<a class="sourceLine" id="cb19-7" title="7"><span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">+</span><span class="st"> </span><span class="kw">expit</span>(low) <span class="op">+</span><span class="st"> </span><span class="kw">expit</span>(upp) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">data =</span> plot_data,</a>
+<a class="sourceLine" id="cb19-8" title="8">       <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb19-9" title="9">       <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Subject-Specific Probabilities"</span>)</a></code></pre></div>
 <p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-19-1.png" width="816" style="display: block; margin: auto;"><img src="Methods_MixMod_files/figure-html/unnamed-chunk-19-2.png" width="816" style="display: block; margin: auto;"></p>
 <p>The <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function also allows to compute marginal predictions using the marginalized coefficients described above. This is achieved by setting <code>marginal = TRUE</code> in the respective call (results not shown):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">marginal =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">2</span>)
-
-<span class="co"># we put the two groups in the same panel</span>
-my.panel.bands &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, upper, lower, fill, col, subscripts, ..., font, 
-                           fontface) {
-    upper &lt;-<span class="st"> </span>upper[subscripts]
-    lower &lt;-<span class="st"> </span>lower[subscripts]
-    <span class="kw">panel.polygon</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(x, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rev">rev</a></span>(x)), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(upper, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rev">rev</a></span>(lower)), <span class="dt">col =</span> fill, <span class="dt">border =</span> <span class="ot">FALSE</span>, ...)
-}
-
-<span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">~</span><span class="st"> </span>time, <span class="dt">group =</span> sex, <span class="dt">data =</span> plot_data_m, 
-       <span class="dt">upper =</span> <span class="kw">expit</span>(plot_data_m<span class="op">$</span>upp), <span class="dt">low =</span> <span class="kw">expit</span>(plot_data_m<span class="op">$</span>low), 
-       <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"blue"</span>, <span class="st">"red"</span>), 
-       <span class="dt">fill =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"#0000FF80"</span>, <span class="st">"#FF000080"</span>),
-       <span class="dt">panel =</span> <span class="cf">function</span> (x, y, ...) {
-           <span class="kw">panel.superpose</span>(x, y, <span class="dt">panel.groups =</span> my.panel.bands, ...)
-           <span class="kw">panel.xyplot</span>(x, y, <span class="dt">lwd =</span> <span class="dv">2</span>,  ...)
-}, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Marginal Probabilities"</span>)</code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1">plot_data_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">marginal =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb20-2" title="2"></a>
+<a class="sourceLine" id="cb20-3" title="3"><span class="co"># we put the two groups in the same panel</span></a>
+<a class="sourceLine" id="cb20-4" title="4">my.panel.bands &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, upper, lower, fill, col, subscripts, ..., font, </a>
+<a class="sourceLine" id="cb20-5" title="5">                           fontface) {</a>
+<a class="sourceLine" id="cb20-6" title="6">    upper &lt;-<span class="st"> </span>upper[subscripts]</a>
+<a class="sourceLine" id="cb20-7" title="7">    lower &lt;-<span class="st"> </span>lower[subscripts]</a>
+<a class="sourceLine" id="cb20-8" title="8">    <span class="kw">panel.polygon</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(x, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rev">rev</a></span>(x)), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(upper, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rev">rev</a></span>(lower)), <span class="dt">col =</span> fill, <span class="dt">border =</span> <span class="ot">FALSE</span>, ...)</a>
+<a class="sourceLine" id="cb20-9" title="9">}</a>
+<a class="sourceLine" id="cb20-10" title="10"></a>
+<a class="sourceLine" id="cb20-11" title="11"><span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">~</span><span class="st"> </span>time, <span class="dt">group =</span> sex, <span class="dt">data =</span> plot_data_m, </a>
+<a class="sourceLine" id="cb20-12" title="12">       <span class="dt">upper =</span> <span class="kw">expit</span>(plot_data_m<span class="op">$</span>upp), <span class="dt">low =</span> <span class="kw">expit</span>(plot_data_m<span class="op">$</span>low), </a>
+<a class="sourceLine" id="cb20-13" title="13">       <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"blue"</span>, <span class="st">"red"</span>), </a>
+<a class="sourceLine" id="cb20-14" title="14">       <span class="dt">fill =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"#0000FF80"</span>, <span class="st">"#FF000080"</span>),</a>
+<a class="sourceLine" id="cb20-15" title="15">       <span class="dt">panel =</span> <span class="cf">function</span> (x, y, ...) {</a>
+<a class="sourceLine" id="cb20-16" title="16">           <span class="kw">panel.superpose</span>(x, y, <span class="dt">panel.groups =</span> my.panel.bands, ...)</a>
+<a class="sourceLine" id="cb20-17" title="17">           <span class="kw">panel.xyplot</span>(x, y, <span class="dt">lwd =</span> <span class="dv">2</span>,  ...)</a>
+<a class="sourceLine" id="cb20-18" title="18">}, <span class="dt">xlab =</span> <span class="st">"Follow-up time"</span>, <span class="dt">ylab =</span> <span class="st">"Marginal Probabilities"</span>)</a></code></pre></div>
 <p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-20-1.png" width="816" style="display: block; margin: auto;"></p>
 </div>
 <div id="effect-plots-using-the-effects-package" class="section level2">
 <h2 class="hasAnchor">
 <a href="#effect-plots-using-the-effects-package" class="anchor"></a>Effect Plots using the effects package</h2>
 <p>In addition to using the <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function, the same type of effect plots can be produced by the <a href="https://cran.r-project.org/package=effects"><strong>effects</strong></a> package. For example, based on the <code>fm</code> model we produce the effect plot for <code>time</code> and for the two groups using the call to <code>predictorEffect()</code> and its <code><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot()</a></code> method:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"effects"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(<span class="kw">predictorEffect</span>(<span class="st">"time"</span>, fm), <span class="dt">type =</span> <span class="st">"link"</span>)</code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"effects"</span>)</a>
+<a class="sourceLine" id="cb21-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(<span class="kw">predictorEffect</span>(<span class="st">"time"</span>, fm), <span class="dt">type =</span> <span class="st">"link"</span>)</a></code></pre></div>
 <p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-21-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>The <code>type</code> argument controls the scale of the y-axis, namely, <code>type = "link"</code> corresponds to the log-odds scale. If we would like to obtain the figure in the probability scale, we should set <code>type = "response"</code>, i.e.,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(<span class="kw">predictorEffect</span>(<span class="st">"time"</span>, fm), <span class="dt">type =</span> <span class="st">"response"</span>)</code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(<span class="kw">predictorEffect</span>(<span class="st">"time"</span>, fm), <span class="dt">type =</span> <span class="st">"response"</span>)</a></code></pre></div>
 <p><img src="Methods_MixMod_files/figure-html/unnamed-chunk-22-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>For the additional functionality provided by the <a href="https://cran.r-project.org/package=effects"><strong>effects</strong></a> package, check the vignette: <code><a href="https://cran.rstudio.com/web/packages/effects/vignettes/predictor-effects-gallery.pdf">vignette("predictor-effects-gallery", package = "effects")</a></code>.</p>
 <p><strong>Note:</strong> Effects plots via the <strong>effects</strong> package are currently only supported for the <code><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial()</a></code> and <code><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson()</a></code> families.</p>
@@ -373,133 +373,133 @@ my.panel.bands &lt;-<span class="st"> </span><span class="cf">function</span>(x,
 <h2 class="hasAnchor">
 <a href="#comparing-two-models" class="anchor"></a>Comparing Two Models</h2>
 <p>The <code><a href="../reference/methods.html">anova()</a></code> method can be used to compare two fitted mixed models using a likelihood ratio test. For example, we test if we can test the null hypothesis that the covariance between the random intercepts and slopes is equal to zero using:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">||</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
-                  <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())
-
-<span class="kw"><a href="../reference/methods.html">anova</a></span>(gm, fm)
-<span class="co">#&gt; </span>
-<span class="co">#&gt;       AIC    BIC log.Lik  LRT df p.value</span>
-<span class="co">#&gt; gm 730.94 746.57 -359.47                </span>
-<span class="co">#&gt; fm 731.63 731.63 -358.81 1.32  1  0.2514</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1">gm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">||</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
+<a class="sourceLine" id="cb23-2" title="2">                  <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</a>
+<a class="sourceLine" id="cb23-3" title="3"></a>
+<a class="sourceLine" id="cb23-4" title="4"><span class="kw"><a href="../reference/methods.html">anova</a></span>(gm, fm)</a>
+<a class="sourceLine" id="cb23-5" title="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb23-6" title="6"><span class="co">#&gt;       AIC    BIC log.Lik  LRT df p.value</span></a>
+<a class="sourceLine" id="cb23-7" title="7"><span class="co">#&gt; gm 730.94 746.57 -359.47                </span></a>
+<a class="sourceLine" id="cb23-8" title="8"><span class="co">#&gt; fm 731.63 731.63 -358.81 1.32  1  0.2514</span></a></code></pre></div>
 </div>
 <div id="predictions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#predictions" class="anchor"></a>Predictions</h2>
 <p>Using the <code><a href="../reference/methods.html">predict()</a></code> method we can calculate predictions for new subjects. As an example, we treat subject 1 from the <code>DF</code> dataset as a new patient (in the code below we change his <code>id</code> variable):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pred_DF &lt;-<span class="st"> </span>DF[DF<span class="op">$</span>id <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, ][<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, ]
-pred_DF<span class="op">$</span>id &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"N"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">as.character</a></span>(pred_DF<span class="op">$</span>id))
-pred_DF
-<span class="co">#&gt;   id      time  sex y</span>
-<span class="co">#&gt; 1 N1 0.0000000 male 0</span>
-<span class="co">#&gt; 2 N1 0.1424363 male 0</span>
-<span class="co">#&gt; 3 N1 1.7055512 male 0</span>
-<span class="co">#&gt; 4 N1 9.1391210 male 0</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1">pred_DF &lt;-<span class="st"> </span>DF[DF<span class="op">$</span>id <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, ][<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, ]</a>
+<a class="sourceLine" id="cb24-2" title="2">pred_DF<span class="op">$</span>id &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"N"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">as.character</a></span>(pred_DF<span class="op">$</span>id))</a>
+<a class="sourceLine" id="cb24-3" title="3">pred_DF</a>
+<a class="sourceLine" id="cb24-4" title="4"><span class="co">#&gt;   id      time  sex y</span></a>
+<a class="sourceLine" id="cb24-5" title="5"><span class="co">#&gt; 1 N1 0.0000000 male 0</span></a>
+<a class="sourceLine" id="cb24-6" title="6"><span class="co">#&gt; 2 N1 0.1424363 male 0</span></a>
+<a class="sourceLine" id="cb24-7" title="7"><span class="co">#&gt; 3 N1 1.7055512 male 0</span></a>
+<a class="sourceLine" id="cb24-8" title="8"><span class="co">#&gt; 4 N1 9.1391210 male 0</span></a></code></pre></div>
 <p>We start by computing predictions based only on the fixed-effects part of the model; because of the nonlinear link function, these predictions are of subjects with random effects value equal to zero, which is not to the average predictions:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">predict</a></span>(fm, <span class="dt">newdata =</span> pred_DF, <span class="dt">type_pred =</span> <span class="st">"response"</span>,
-        <span class="dt">type =</span> <span class="st">"mean_subject"</span>, <span class="dt">se.fit =</span> <span class="ot">TRUE</span>)
-<span class="co">#&gt; $pred</span>
-<span class="co">#&gt;         1         2         3         4 </span>
-<span class="co">#&gt; 0.1133338 0.1171319 0.1664465 0.5825663 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $se.fit</span>
-<span class="co">#&gt;         1         2         3         4 </span>
-<span class="co">#&gt; 0.3147952 0.3111153 0.2828039 0.4607340</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1"><span class="kw"><a href="../reference/methods.html">predict</a></span>(fm, <span class="dt">newdata =</span> pred_DF, <span class="dt">type_pred =</span> <span class="st">"response"</span>,</a>
+<a class="sourceLine" id="cb25-2" title="2">        <span class="dt">type =</span> <span class="st">"mean_subject"</span>, <span class="dt">se.fit =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb25-3" title="3"><span class="co">#&gt; $pred</span></a>
+<a class="sourceLine" id="cb25-4" title="4"><span class="co">#&gt;         1         2         3         4 </span></a>
+<a class="sourceLine" id="cb25-5" title="5"><span class="co">#&gt; 0.1133338 0.1171319 0.1664465 0.5825663 </span></a>
+<a class="sourceLine" id="cb25-6" title="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb25-7" title="7"><span class="co">#&gt; $se.fit</span></a>
+<a class="sourceLine" id="cb25-8" title="8"><span class="co">#&gt;         1         2         3         4 </span></a>
+<a class="sourceLine" id="cb25-9" title="9"><span class="co">#&gt; 0.3147952 0.3111153 0.2828039 0.4607340</span></a></code></pre></div>
 <p>Population averaged predictions can be obtained by first calculating the marginalized coefficients (using <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code>) and multiplying them with the fixed effects design matrix; this is achieved using the option <code>type = "marginal"</code> (due to the required computing time, predictions not shown):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">predict</a></span>(fm, <span class="dt">newdata =</span> pred_DF, <span class="dt">type_pred =</span> <span class="st">"response"</span>,
-        <span class="dt">type =</span> <span class="st">"marginal"</span>, <span class="dt">se.fit =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1"><span class="kw"><a href="../reference/methods.html">predict</a></span>(fm, <span class="dt">newdata =</span> pred_DF, <span class="dt">type_pred =</span> <span class="st">"response"</span>,</a>
+<a class="sourceLine" id="cb26-2" title="2">        <span class="dt">type =</span> <span class="st">"marginal"</span>, <span class="dt">se.fit =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p>Finally, we calculate subject-specific predictions; the standard errors are calculated with a Monte Carlo scheme (for details check the online help file):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">predict</a></span>(fm, <span class="dt">newdata =</span> pred_DF, <span class="dt">type_pred =</span> <span class="st">"response"</span>,
-        <span class="dt">type =</span> <span class="st">"subject_specific"</span>, <span class="dt">se.fit =</span> <span class="ot">TRUE</span>)
-<span class="co">#&gt; $pred</span>
-<span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.07899463 0.08004604 0.09244962 0.17734683 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $se.fit</span>
-<span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.02716031 0.02732290 0.03126865 0.11395985 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $low</span>
-<span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.04105683 0.04201066 0.04874002 0.04595105 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $upp</span>
-<span class="co">#&gt;         1         2         3         4 </span>
-<span class="co">#&gt; 0.1410026 0.1422674 0.1666224 0.4983968 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $success_rate</span>
-<span class="co">#&gt; [1] 0.5033333</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="kw"><a href="../reference/methods.html">predict</a></span>(fm, <span class="dt">newdata =</span> pred_DF, <span class="dt">type_pred =</span> <span class="st">"response"</span>,</a>
+<a class="sourceLine" id="cb27-2" title="2">        <span class="dt">type =</span> <span class="st">"subject_specific"</span>, <span class="dt">se.fit =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb27-3" title="3"><span class="co">#&gt; $pred</span></a>
+<a class="sourceLine" id="cb27-4" title="4"><span class="co">#&gt;          1          2          3          4 </span></a>
+<a class="sourceLine" id="cb27-5" title="5"><span class="co">#&gt; 0.07899463 0.08004604 0.09244962 0.17734683 </span></a>
+<a class="sourceLine" id="cb27-6" title="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb27-7" title="7"><span class="co">#&gt; $se.fit</span></a>
+<a class="sourceLine" id="cb27-8" title="8"><span class="co">#&gt;          1          2          3          4 </span></a>
+<a class="sourceLine" id="cb27-9" title="9"><span class="co">#&gt; 0.02716031 0.02732290 0.03126865 0.11395985 </span></a>
+<a class="sourceLine" id="cb27-10" title="10"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb27-11" title="11"><span class="co">#&gt; $low</span></a>
+<a class="sourceLine" id="cb27-12" title="12"><span class="co">#&gt;          1          2          3          4 </span></a>
+<a class="sourceLine" id="cb27-13" title="13"><span class="co">#&gt; 0.04105683 0.04201066 0.04874002 0.04595105 </span></a>
+<a class="sourceLine" id="cb27-14" title="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb27-15" title="15"><span class="co">#&gt; $upp</span></a>
+<a class="sourceLine" id="cb27-16" title="16"><span class="co">#&gt;         1         2         3         4 </span></a>
+<a class="sourceLine" id="cb27-17" title="17"><span class="co">#&gt; 0.1410026 0.1422674 0.1666224 0.4983968 </span></a>
+<a class="sourceLine" id="cb27-18" title="18"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb27-19" title="19"><span class="co">#&gt; $success_rate</span></a>
+<a class="sourceLine" id="cb27-20" title="20"><span class="co">#&gt; [1] 0.5033333</span></a></code></pre></div>
 <p>Suppose now that we want predictions at time points at which no responses <code>y</code> have been recorded, e.g.,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">future_Times &lt;-<span class="st"> </span>pred_DF[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"id"</span>, <span class="st">"time"</span>, <span class="st">"sex"</span>)]
-future_Times<span class="op">$</span>time &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">10</span>)
-future_Times
-<span class="co">#&gt;   id time  sex</span>
-<span class="co">#&gt; 1 N1    3 male</span>
-<span class="co">#&gt; 2 N1    4 male</span>
-<span class="co">#&gt; 3 N1   10 male</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1">future_Times &lt;-<span class="st"> </span>pred_DF[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"id"</span>, <span class="st">"time"</span>, <span class="st">"sex"</span>)]</a>
+<a class="sourceLine" id="cb28-2" title="2">future_Times<span class="op">$</span>time &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb28-3" title="3">future_Times</a>
+<a class="sourceLine" id="cb28-4" title="4"><span class="co">#&gt;   id time  sex</span></a>
+<a class="sourceLine" id="cb28-5" title="5"><span class="co">#&gt; 1 N1    3 male</span></a>
+<a class="sourceLine" id="cb28-6" title="6"><span class="co">#&gt; 2 N1    4 male</span></a>
+<a class="sourceLine" id="cb28-7" title="7"><span class="co">#&gt; 3 N1   10 male</span></a></code></pre></div>
 <p>Predictions at these time points can be calculated by provide this data frame in the <code>newdata2</code> argument of <code><a href="../reference/methods.html">predict()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/methods.html">predict</a></span>(fm, <span class="dt">newdata =</span> pred_DF, <span class="dt">newdata2 =</span> future_Times, <span class="dt">type_pred =</span> <span class="st">"response"</span>,
-        <span class="dt">type =</span> <span class="st">"subject_specific"</span>, <span class="dt">se.fit =</span> <span class="ot">TRUE</span>)
-<span class="co">#&gt; $pred</span>
-<span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.07899463 0.08004604 0.09244962 0.17734683 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $pred2</span>
-<span class="co">#&gt;         1         2         3 </span>
-<span class="co">#&gt; 0.1040006 0.1137803 0.1903697 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $se.fit</span>
-<span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.02716031 0.02732290 0.03126865 0.11395985 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $se.fit2</span>
-<span class="co">#&gt;          1          2          3 </span>
-<span class="co">#&gt; 0.03807958 0.04573240 0.12854015 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $low</span>
-<span class="co">#&gt;          1          2          3          4 </span>
-<span class="co">#&gt; 0.04105683 0.04201066 0.04874002 0.04595105 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $upp</span>
-<span class="co">#&gt;         1         2         3         4 </span>
-<span class="co">#&gt; 0.1410026 0.1422674 0.1666224 0.4983968 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $low2</span>
-<span class="co">#&gt;          1          2          3 </span>
-<span class="co">#&gt; 0.05014694 0.05123172 0.04478053 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $upp2</span>
-<span class="co">#&gt;         1         2         3 </span>
-<span class="co">#&gt; 0.2018029 0.2273220 0.5619224</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1"><span class="kw"><a href="../reference/methods.html">predict</a></span>(fm, <span class="dt">newdata =</span> pred_DF, <span class="dt">newdata2 =</span> future_Times, <span class="dt">type_pred =</span> <span class="st">"response"</span>,</a>
+<a class="sourceLine" id="cb29-2" title="2">        <span class="dt">type =</span> <span class="st">"subject_specific"</span>, <span class="dt">se.fit =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb29-3" title="3"><span class="co">#&gt; $pred</span></a>
+<a class="sourceLine" id="cb29-4" title="4"><span class="co">#&gt;          1          2          3          4 </span></a>
+<a class="sourceLine" id="cb29-5" title="5"><span class="co">#&gt; 0.07899463 0.08004604 0.09244962 0.17734683 </span></a>
+<a class="sourceLine" id="cb29-6" title="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb29-7" title="7"><span class="co">#&gt; $pred2</span></a>
+<a class="sourceLine" id="cb29-8" title="8"><span class="co">#&gt;         1         2         3 </span></a>
+<a class="sourceLine" id="cb29-9" title="9"><span class="co">#&gt; 0.1040006 0.1137803 0.1903697 </span></a>
+<a class="sourceLine" id="cb29-10" title="10"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb29-11" title="11"><span class="co">#&gt; $se.fit</span></a>
+<a class="sourceLine" id="cb29-12" title="12"><span class="co">#&gt;          1          2          3          4 </span></a>
+<a class="sourceLine" id="cb29-13" title="13"><span class="co">#&gt; 0.02716031 0.02732290 0.03126865 0.11395985 </span></a>
+<a class="sourceLine" id="cb29-14" title="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb29-15" title="15"><span class="co">#&gt; $se.fit2</span></a>
+<a class="sourceLine" id="cb29-16" title="16"><span class="co">#&gt;          1          2          3 </span></a>
+<a class="sourceLine" id="cb29-17" title="17"><span class="co">#&gt; 0.03807958 0.04573240 0.12854015 </span></a>
+<a class="sourceLine" id="cb29-18" title="18"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb29-19" title="19"><span class="co">#&gt; $low</span></a>
+<a class="sourceLine" id="cb29-20" title="20"><span class="co">#&gt;          1          2          3          4 </span></a>
+<a class="sourceLine" id="cb29-21" title="21"><span class="co">#&gt; 0.04105683 0.04201066 0.04874002 0.04595105 </span></a>
+<a class="sourceLine" id="cb29-22" title="22"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb29-23" title="23"><span class="co">#&gt; $upp</span></a>
+<a class="sourceLine" id="cb29-24" title="24"><span class="co">#&gt;         1         2         3         4 </span></a>
+<a class="sourceLine" id="cb29-25" title="25"><span class="co">#&gt; 0.1410026 0.1422674 0.1666224 0.4983968 </span></a>
+<a class="sourceLine" id="cb29-26" title="26"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb29-27" title="27"><span class="co">#&gt; $low2</span></a>
+<a class="sourceLine" id="cb29-28" title="28"><span class="co">#&gt;          1          2          3 </span></a>
+<a class="sourceLine" id="cb29-29" title="29"><span class="co">#&gt; 0.05014694 0.05123172 0.04478053 </span></a>
+<a class="sourceLine" id="cb29-30" title="30"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb29-31" title="31"><span class="co">#&gt; $upp2</span></a>
+<a class="sourceLine" id="cb29-32" title="32"><span class="co">#&gt;         1         2         3 </span></a>
+<a class="sourceLine" id="cb29-33" title="33"><span class="co">#&gt; 0.2018029 0.2273220 0.5619224</span></a></code></pre></div>
 </div>
 <div id="simulate" class="section level2">
 <h2 class="hasAnchor">
 <a href="#simulate" class="anchor"></a>Simulate</h2>
 <p>The <code><a href="../reference/methods.html">simulate()</a></code> method can be used to simulate response outcome data from a fitted mixed model. For example, we simulate two realization of our dichotomous outcome:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">simulate</a></span>(fm, <span class="dt">nsim =</span> <span class="dv">2</span>, <span class="dt">seed =</span> <span class="dv">123</span>), <span class="dv">10</span>)
-<span class="co">#&gt;       [,1] [,2]</span>
-<span class="co">#&gt;  [1,]    1    0</span>
-<span class="co">#&gt;  [2,]    0    0</span>
-<span class="co">#&gt;  [3,]    1    0</span>
-<span class="co">#&gt;  [4,]    1    1</span>
-<span class="co">#&gt;  [5,]    1    1</span>
-<span class="co">#&gt;  [6,]    1    0</span>
-<span class="co">#&gt;  [7,]    1    1</span>
-<span class="co">#&gt;  [8,]    1    0</span>
-<span class="co">#&gt;  [9,]    0    0</span>
-<span class="co">#&gt; [10,]    0    0</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">simulate</a></span>(fm, <span class="dt">nsim =</span> <span class="dv">2</span>, <span class="dt">seed =</span> <span class="dv">123</span>), <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb30-2" title="2"><span class="co">#&gt;       [,1] [,2]</span></a>
+<a class="sourceLine" id="cb30-3" title="3"><span class="co">#&gt;  [1,]    1    0</span></a>
+<a class="sourceLine" id="cb30-4" title="4"><span class="co">#&gt;  [2,]    0    0</span></a>
+<a class="sourceLine" id="cb30-5" title="5"><span class="co">#&gt;  [3,]    1    0</span></a>
+<a class="sourceLine" id="cb30-6" title="6"><span class="co">#&gt;  [4,]    1    1</span></a>
+<a class="sourceLine" id="cb30-7" title="7"><span class="co">#&gt;  [5,]    1    1</span></a>
+<a class="sourceLine" id="cb30-8" title="8"><span class="co">#&gt;  [6,]    1    0</span></a>
+<a class="sourceLine" id="cb30-9" title="9"><span class="co">#&gt;  [7,]    1    1</span></a>
+<a class="sourceLine" id="cb30-10" title="10"><span class="co">#&gt;  [8,]    1    0</span></a>
+<a class="sourceLine" id="cb30-11" title="11"><span class="co">#&gt;  [9,]    0    0</span></a>
+<a class="sourceLine" id="cb30-12" title="12"><span class="co">#&gt; [10,]    0    0</span></a></code></pre></div>
 <p>By setting <code>acount_MLEs_var = TRUE</code> in the call to <code><a href="../reference/methods.html">simulate()</a></code> we also account for the variability in the maximum likelihood estimates in the simulation of new responses. This is achieved by simulating each time a new response vector using a realization for the parameters from a multivariate normal distribution with mean the MLEs and covariance matrix the covariance matrix of the MLEs:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">simulate</a></span>(fm, <span class="dt">nsim =</span> <span class="dv">2</span>, <span class="dt">seed =</span> <span class="dv">123</span>, <span class="dt">acount_MLEs_var =</span> <span class="ot">TRUE</span>), <span class="dv">10</span>)
-<span class="co">#&gt;       [,1] [,2]</span>
-<span class="co">#&gt;  [1,]    0    0</span>
-<span class="co">#&gt;  [2,]    1    1</span>
-<span class="co">#&gt;  [3,]    1    1</span>
-<span class="co">#&gt;  [4,]    1    1</span>
-<span class="co">#&gt;  [5,]    1    1</span>
-<span class="co">#&gt;  [6,]    0    1</span>
-<span class="co">#&gt;  [7,]    1    1</span>
-<span class="co">#&gt;  [8,]    1    1</span>
-<span class="co">#&gt;  [9,]    0    0</span>
-<span class="co">#&gt; [10,]    0    0</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">simulate</a></span>(fm, <span class="dt">nsim =</span> <span class="dv">2</span>, <span class="dt">seed =</span> <span class="dv">123</span>, <span class="dt">acount_MLEs_var =</span> <span class="ot">TRUE</span>), <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb31-2" title="2"><span class="co">#&gt;       [,1] [,2]</span></a>
+<a class="sourceLine" id="cb31-3" title="3"><span class="co">#&gt;  [1,]    0    0</span></a>
+<a class="sourceLine" id="cb31-4" title="4"><span class="co">#&gt;  [2,]    1    1</span></a>
+<a class="sourceLine" id="cb31-5" title="5"><span class="co">#&gt;  [3,]    1    1</span></a>
+<a class="sourceLine" id="cb31-6" title="6"><span class="co">#&gt;  [4,]    1    1</span></a>
+<a class="sourceLine" id="cb31-7" title="7"><span class="co">#&gt;  [5,]    1    1</span></a>
+<a class="sourceLine" id="cb31-8" title="8"><span class="co">#&gt;  [6,]    0    1</span></a>
+<a class="sourceLine" id="cb31-9" title="9"><span class="co">#&gt;  [7,]    1    1</span></a>
+<a class="sourceLine" id="cb31-10" title="10"><span class="co">#&gt;  [8,]    1    1</span></a>
+<a class="sourceLine" id="cb31-11" title="11"><span class="co">#&gt;  [9,]    0    0</span></a>
+<a class="sourceLine" id="cb31-12" title="12"><span class="co">#&gt; [10,]    0    0</span></a></code></pre></div>
 </div>
 </div>
   </div>

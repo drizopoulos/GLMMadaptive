@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.27</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.30</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
       <h1>Multiple Comparisons for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-04-08</h4>
+            <h4 class="date">2019-05-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Multiple_Comparisons.Rmd"><code>vignettes/Multiple_Comparisons.Rmd</code></a></small>
       <div class="hidden name"><code>Multiple_Comparisons.Rmd</code></div>
@@ -125,161 +125,161 @@
 <h2 class="hasAnchor">
 <a href="#additive-model" class="anchor"></a>Additive Model</h2>
 <p>We start by simulating some data for a binary longitudinal outcome:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)
-n &lt;-<span class="st"> </span><span class="dv">300</span> <span class="co"># number of subjects</span>
-K &lt;-<span class="st"> </span><span class="dv">4</span> <span class="co"># number of measurements per subject</span>
-t_max &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># maximum follow-up time</span>
-
-<span class="co"># we constuct a data frame with the design: </span>
-<span class="co"># everyone has a baseline measurment, and then measurements at K time points</span>
-DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),
-                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(K, <span class="dv">1</span>, n<span class="op">*</span>K, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"Time"</span>, <span class="dv">1</span><span class="op">:</span>K)),
-                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))
-
-<span class="co"># design matrices for the fixed and random effects</span>
-X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)
-Z &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> DF)
-
-betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">2.13</span>, <span class="dv">1</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">1.2</span>, <span class="op">-</span><span class="fl">1.2</span>), K<span class="op">-</span><span class="dv">1</span>)) <span class="co"># fixed effects coefficients</span>
-D11 &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># variance of random intercepts</span>
-
-<span class="co"># we simulate random effects</span>
-b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11)))
-<span class="co"># linear predictor</span>
-eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, ]))
-<span class="co"># we simulate binary longitudinal data</span>
-DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dv">1</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Logistic">plogis</a></span>(eta_y))</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)</a>
+<a class="sourceLine" id="cb1-2" title="2">n &lt;-<span class="st"> </span><span class="dv">300</span> <span class="co"># number of subjects</span></a>
+<a class="sourceLine" id="cb1-3" title="3">K &lt;-<span class="st"> </span><span class="dv">4</span> <span class="co"># number of measurements per subject</span></a>
+<a class="sourceLine" id="cb1-4" title="4">t_max &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># maximum follow-up time</span></a>
+<a class="sourceLine" id="cb1-5" title="5"></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="co"># we constuct a data frame with the design: </span></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="co"># everyone has a baseline measurment, and then measurements at K time points</span></a>
+<a class="sourceLine" id="cb1-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
+<a class="sourceLine" id="cb1-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(K, <span class="dv">1</span>, n<span class="op">*</span>K, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"Time"</span>, <span class="dv">1</span><span class="op">:</span>K)),</a>
+<a class="sourceLine" id="cb1-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
+<a class="sourceLine" id="cb1-11" title="11"></a>
+<a class="sourceLine" id="cb1-12" title="12"><span class="co"># design matrices for the fixed and random effects</span></a>
+<a class="sourceLine" id="cb1-13" title="13">X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)</a>
+<a class="sourceLine" id="cb1-14" title="14">Z &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> DF)</a>
+<a class="sourceLine" id="cb1-15" title="15"></a>
+<a class="sourceLine" id="cb1-16" title="16">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">2.13</span>, <span class="dv">1</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">1.2</span>, <span class="fl">-1.2</span>), K<span class="dv">-1</span>)) <span class="co"># fixed effects coefficients</span></a>
+<a class="sourceLine" id="cb1-17" title="17">D11 &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># variance of random intercepts</span></a>
+<a class="sourceLine" id="cb1-18" title="18"></a>
+<a class="sourceLine" id="cb1-19" title="19"><span class="co"># we simulate random effects</span></a>
+<a class="sourceLine" id="cb1-20" title="20">b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11)))</a>
+<a class="sourceLine" id="cb1-21" title="21"><span class="co"># linear predictor</span></a>
+<a class="sourceLine" id="cb1-22" title="22">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, ]))</a>
+<a class="sourceLine" id="cb1-23" title="23"><span class="co"># we simulate binary longitudinal data</span></a>
+<a class="sourceLine" id="cb1-24" title="24">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dv">1</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Logistic">plogis</a></span>(eta_y))</a></code></pre></div>
 <p>We fit a mixed effects logistic regression for <code>y</code> assuming random intercepts for the random-effects part, and the main effects of <code>sex</code> and <code>time</code> for the fixed-effects part.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
-                  <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">fm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
+<a class="sourceLine" id="cb2-2" title="2">                  <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</a></code></pre></div>
 <p>The uncorrected p-values for the 4 time points are give by the <code><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary()</a></code> method:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(fm)
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y ~ sex + time, random = ~1 | id, data = DF, </span>
-<span class="co">#&gt;     family = binomial())</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Data Descriptives:</span>
-<span class="co">#&gt; Number of Observations: 1200</span>
-<span class="co">#&gt; Number of Groups: 300 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: binomial</span>
-<span class="co">#&gt;  link: logit </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fit statistics:</span>
-<span class="co">#&gt;    log.Lik      AIC      BIC</span>
-<span class="co">#&gt;  -583.4797 1178.959 1201.182</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;               StdDev</span>
-<span class="co">#&gt; (Intercept) 1.447826</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt;             Estimate Std.Err z-value    p-value</span>
-<span class="co">#&gt; (Intercept)  -2.2865  0.2496 -9.1601    &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale     0.8860  0.2447  3.6200 0.00029455</span>
-<span class="co">#&gt; timeTime2     0.3066  0.2266  1.3534 0.17592327</span>
-<span class="co">#&gt; timeTime3    -0.5053  0.2463 -2.0516 0.04020481</span>
-<span class="co">#&gt; timeTime4     0.5632  0.2237  2.5181 0.01179888</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Integration:</span>
-<span class="co">#&gt; method: adaptive Gauss-Hermite quadrature rule</span>
-<span class="co">#&gt; quadrature points: 11</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Optimization:</span>
-<span class="co">#&gt; method: hybrid EM and quasi-Newton</span>
-<span class="co">#&gt; converged: TRUE</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(fm)</a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt; Call:</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; mixed_model(fixed = y ~ sex + time, random = ~1 | id, data = DF, </span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt;     family = binomial())</span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; Data Descriptives:</span></a>
+<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; Number of Observations: 1200</span></a>
+<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt; Number of Groups: 300 </span></a>
+<a class="sourceLine" id="cb3-10" title="10"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-11" title="11"><span class="co">#&gt; Model:</span></a>
+<a class="sourceLine" id="cb3-12" title="12"><span class="co">#&gt;  family: binomial</span></a>
+<a class="sourceLine" id="cb3-13" title="13"><span class="co">#&gt;  link: logit </span></a>
+<a class="sourceLine" id="cb3-14" title="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-15" title="15"><span class="co">#&gt; Fit statistics:</span></a>
+<a class="sourceLine" id="cb3-16" title="16"><span class="co">#&gt;    log.Lik      AIC      BIC</span></a>
+<a class="sourceLine" id="cb3-17" title="17"><span class="co">#&gt;  -583.4797 1178.959 1201.182</span></a>
+<a class="sourceLine" id="cb3-18" title="18"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-19" title="19"><span class="co">#&gt; Random effects covariance matrix:</span></a>
+<a class="sourceLine" id="cb3-20" title="20"><span class="co">#&gt;               StdDev</span></a>
+<a class="sourceLine" id="cb3-21" title="21"><span class="co">#&gt; (Intercept) 1.447826</span></a>
+<a class="sourceLine" id="cb3-22" title="22"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-23" title="23"><span class="co">#&gt; Fixed effects:</span></a>
+<a class="sourceLine" id="cb3-24" title="24"><span class="co">#&gt;             Estimate Std.Err z-value    p-value</span></a>
+<a class="sourceLine" id="cb3-25" title="25"><span class="co">#&gt; (Intercept)  -2.2865  0.2496 -9.1601    &lt; 1e-04</span></a>
+<a class="sourceLine" id="cb3-26" title="26"><span class="co">#&gt; sexfemale     0.8860  0.2447  3.6200 0.00029455</span></a>
+<a class="sourceLine" id="cb3-27" title="27"><span class="co">#&gt; timeTime2     0.3066  0.2266  1.3534 0.17592327</span></a>
+<a class="sourceLine" id="cb3-28" title="28"><span class="co">#&gt; timeTime3    -0.5053  0.2463 -2.0516 0.04020481</span></a>
+<a class="sourceLine" id="cb3-29" title="29"><span class="co">#&gt; timeTime4     0.5632  0.2237  2.5181 0.01179888</span></a>
+<a class="sourceLine" id="cb3-30" title="30"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-31" title="31"><span class="co">#&gt; Integration:</span></a>
+<a class="sourceLine" id="cb3-32" title="32"><span class="co">#&gt; method: adaptive Gauss-Hermite quadrature rule</span></a>
+<a class="sourceLine" id="cb3-33" title="33"><span class="co">#&gt; quadrature points: 11</span></a>
+<a class="sourceLine" id="cb3-34" title="34"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-35" title="35"><span class="co">#&gt; Optimization:</span></a>
+<a class="sourceLine" id="cb3-36" title="36"><span class="co">#&gt; method: hybrid EM and quasi-Newton</span></a>
+<a class="sourceLine" id="cb3-37" title="37"><span class="co">#&gt; converged: TRUE</span></a></code></pre></div>
 <p>To perform the pairwise comparisons and obtain corrected p-values, we load the <strong>multcomp</strong> package and use the <code>glht()</code> function. Because no specific methods exist for <code>MixMod</code> object returned by <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, we need to specify the <code>vcov.</code> and <code>coef.</code> arguments of <code>glht()</code>, i.e.,</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"multcomp"</span>)
-<span class="co">#&gt; Loading required package: mvtnorm</span>
-<span class="co">#&gt; Loading required package: survival</span>
-<span class="co">#&gt; Loading required package: TH.data</span>
-<span class="co">#&gt; Loading required package: MASS</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'MASS'</span>
-<span class="co">#&gt; The following object is masked from 'package:GLMMadaptive':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     negative.binomial</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'TH.data'</span>
-<span class="co">#&gt; The following object is masked from 'package:MASS':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     geyser</span>
-fm_mc &lt;-<span class="st"> </span><span class="kw">glht</span>(fm, <span class="dt">linfct =</span> <span class="kw">mcp</span>(<span class="dt">time =</span> <span class="st">"Tukey"</span>),
-           <span class="dt">vcov. =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/vcov">vcov</a></span>(fm, <span class="st">"fixed"</span>), <span class="dt">coef. =</span> fixef)
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(fm_mc)
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Simultaneous Tests for General Linear Hypotheses</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Multiple Comparisons of Means: Tukey Contrasts</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fit: mixed_model(fixed = y ~ sex + time, random = ~1 | id, data = DF, </span>
-<span class="co">#&gt;     family = binomial())</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Linear Hypotheses:</span>
-<span class="co">#&gt;                    Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; Time2 - Time1 == 0   0.3066     0.2266   1.353  0.52807    </span>
-<span class="co">#&gt; Time3 - Time1 == 0  -0.5053     0.2463  -2.052  0.16892    </span>
-<span class="co">#&gt; Time4 - Time1 == 0   0.5632     0.2237   2.518  0.05695 .  </span>
-<span class="co">#&gt; Time3 - Time2 == 0  -0.8119     0.2423  -3.351  0.00463 ** </span>
-<span class="co">#&gt; Time4 - Time2 == 0   0.2566     0.2165   1.185  0.63542    </span>
-<span class="co">#&gt; Time4 - Time3 == 0   1.0685     0.2406   4.441  &lt; 0.001 ***</span>
-<span class="co">#&gt; ---</span>
-<span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
-<span class="co">#&gt; (Adjusted p values reported -- single-step method)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"multcomp"</span>)</a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="co">#&gt; Loading required package: mvtnorm</span></a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt; Loading required package: survival</span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; Loading required package: TH.data</span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt; Loading required package: MASS</span></a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; Attaching package: 'MASS'</span></a>
+<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; The following object is masked from 'package:GLMMadaptive':</span></a>
+<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-10" title="10"><span class="co">#&gt;     negative.binomial</span></a>
+<a class="sourceLine" id="cb4-11" title="11"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-12" title="12"><span class="co">#&gt; Attaching package: 'TH.data'</span></a>
+<a class="sourceLine" id="cb4-13" title="13"><span class="co">#&gt; The following object is masked from 'package:MASS':</span></a>
+<a class="sourceLine" id="cb4-14" title="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-15" title="15"><span class="co">#&gt;     geyser</span></a>
+<a class="sourceLine" id="cb4-16" title="16">fm_mc &lt;-<span class="st"> </span><span class="kw">glht</span>(fm, <span class="dt">linfct =</span> <span class="kw">mcp</span>(<span class="dt">time =</span> <span class="st">"Tukey"</span>),</a>
+<a class="sourceLine" id="cb4-17" title="17">           <span class="dt">vcov. =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/vcov">vcov</a></span>(fm, <span class="st">"fixed"</span>), <span class="dt">coef. =</span> fixef)</a>
+<a class="sourceLine" id="cb4-18" title="18"></a>
+<a class="sourceLine" id="cb4-19" title="19"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(fm_mc)</a>
+<a class="sourceLine" id="cb4-20" title="20"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-21" title="21"><span class="co">#&gt;   Simultaneous Tests for General Linear Hypotheses</span></a>
+<a class="sourceLine" id="cb4-22" title="22"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-23" title="23"><span class="co">#&gt; Multiple Comparisons of Means: Tukey Contrasts</span></a>
+<a class="sourceLine" id="cb4-24" title="24"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-25" title="25"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-26" title="26"><span class="co">#&gt; Fit: mixed_model(fixed = y ~ sex + time, random = ~1 | id, data = DF, </span></a>
+<a class="sourceLine" id="cb4-27" title="27"><span class="co">#&gt;     family = binomial())</span></a>
+<a class="sourceLine" id="cb4-28" title="28"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-29" title="29"><span class="co">#&gt; Linear Hypotheses:</span></a>
+<a class="sourceLine" id="cb4-30" title="30"><span class="co">#&gt;                    Estimate Std. Error z value Pr(&gt;|z|)    </span></a>
+<a class="sourceLine" id="cb4-31" title="31"><span class="co">#&gt; Time2 - Time1 == 0   0.3066     0.2266   1.353  0.52807    </span></a>
+<a class="sourceLine" id="cb4-32" title="32"><span class="co">#&gt; Time3 - Time1 == 0  -0.5053     0.2463  -2.052  0.16892    </span></a>
+<a class="sourceLine" id="cb4-33" title="33"><span class="co">#&gt; Time4 - Time1 == 0   0.5632     0.2237   2.518  0.05695 .  </span></a>
+<a class="sourceLine" id="cb4-34" title="34"><span class="co">#&gt; Time3 - Time2 == 0  -0.8119     0.2423  -3.351  0.00463 ** </span></a>
+<a class="sourceLine" id="cb4-35" title="35"><span class="co">#&gt; Time4 - Time2 == 0   0.2566     0.2165   1.185  0.63542    </span></a>
+<a class="sourceLine" id="cb4-36" title="36"><span class="co">#&gt; Time4 - Time3 == 0   1.0685     0.2406   4.441  &lt; 0.001 ***</span></a>
+<a class="sourceLine" id="cb4-37" title="37"><span class="co">#&gt; ---</span></a>
+<a class="sourceLine" id="cb4-38" title="38"><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></a>
+<a class="sourceLine" id="cb4-39" title="39"><span class="co">#&gt; (Adjusted p values reported -- single-step method)</span></a></code></pre></div>
 </div>
 <div id="interaction-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#interaction-model" class="anchor"></a>Interaction Model</h2>
 <p>We continue our illustration by including the interaction term between <code>sex</code> and <code>time</code>, and we focus on the difference between males and females for the various time points. We start by fitting the model:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,
-                  <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">gm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
+<a class="sourceLine" id="cb5-2" title="2">                  <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</a></code></pre></div>
 <p>To compute the estimated log odds for males and females at the different time points we use the <code>emmeans()</code> functions from the <strong>emmeans</strong> package:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"emmeans"</span>)
-gm_mc &lt;-<span class="st"> </span><span class="kw">emmeans</span>(gm, <span class="op">~</span><span class="st"> </span>sex <span class="op">|</span><span class="st"> </span>time)
-
-gm_mc
-<span class="co">#&gt; time = Time1:</span>
-<span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male    -2.74 0.342 Inf     -3.41    -2.067</span>
-<span class="co">#&gt;  female  -1.21 0.255 Inf     -1.71    -0.707</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; time = Time2:</span>
-<span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male    -1.68 0.275 Inf     -2.21    -1.135</span>
-<span class="co">#&gt;  female  -1.44 0.263 Inf     -1.95    -0.920</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; time = Time3:</span>
-<span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male    -4.40 0.546 Inf     -5.47    -3.331</span>
-<span class="co">#&gt;  female  -1.39 0.261 Inf     -1.90    -0.876</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; time = Time4:</span>
-<span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male    -1.34 0.261 Inf     -1.85    -0.825</span>
-<span class="co">#&gt;  female  -1.25 0.256 Inf     -1.75    -0.749</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Confidence level used: 0.95</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"emmeans"</span>)</a>
+<a class="sourceLine" id="cb6-2" title="2">gm_mc &lt;-<span class="st"> </span><span class="kw">emmeans</span>(gm, <span class="op">~</span><span class="st"> </span>sex <span class="op">|</span><span class="st"> </span>time)</a>
+<a class="sourceLine" id="cb6-3" title="3"></a>
+<a class="sourceLine" id="cb6-4" title="4">gm_mc</a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="co">#&gt; time = Time1:</span></a>
+<a class="sourceLine" id="cb6-6" title="6"><span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="co">#&gt;  male    -2.74 0.342 Inf     -3.41    -2.067</span></a>
+<a class="sourceLine" id="cb6-8" title="8"><span class="co">#&gt;  female  -1.21 0.255 Inf     -1.71    -0.707</span></a>
+<a class="sourceLine" id="cb6-9" title="9"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-10" title="10"><span class="co">#&gt; time = Time2:</span></a>
+<a class="sourceLine" id="cb6-11" title="11"><span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span></a>
+<a class="sourceLine" id="cb6-12" title="12"><span class="co">#&gt;  male    -1.68 0.275 Inf     -2.21    -1.135</span></a>
+<a class="sourceLine" id="cb6-13" title="13"><span class="co">#&gt;  female  -1.44 0.263 Inf     -1.95    -0.920</span></a>
+<a class="sourceLine" id="cb6-14" title="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-15" title="15"><span class="co">#&gt; time = Time3:</span></a>
+<a class="sourceLine" id="cb6-16" title="16"><span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span></a>
+<a class="sourceLine" id="cb6-17" title="17"><span class="co">#&gt;  male    -4.40 0.546 Inf     -5.47    -3.331</span></a>
+<a class="sourceLine" id="cb6-18" title="18"><span class="co">#&gt;  female  -1.39 0.261 Inf     -1.90    -0.876</span></a>
+<a class="sourceLine" id="cb6-19" title="19"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-20" title="20"><span class="co">#&gt; time = Time4:</span></a>
+<a class="sourceLine" id="cb6-21" title="21"><span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span></a>
+<a class="sourceLine" id="cb6-22" title="22"><span class="co">#&gt;  male    -1.34 0.261 Inf     -1.85    -0.825</span></a>
+<a class="sourceLine" id="cb6-23" title="23"><span class="co">#&gt;  female  -1.25 0.256 Inf     -1.75    -0.749</span></a>
+<a class="sourceLine" id="cb6-24" title="24"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-25" title="25"><span class="co">#&gt; Confidence level used: 0.95</span></a></code></pre></div>
 <p>The corresponding pairwise comparisons are performed by the <code><a href="https://www.rdocumentation.org/packages/graphics/topics/pairs">pairs()</a></code> function:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/pairs">pairs</a></span>(gm_mc)
-<span class="co">#&gt; time = Time1:</span>
-<span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female  -1.5305 0.410 Inf -3.735  0.0002 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; time = Time2:</span>
-<span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female  -0.2400 0.366 Inf -0.655  0.5125 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; time = Time3:</span>
-<span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female  -3.0126 0.586 Inf -5.145  &lt;.0001 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; time = Time4:</span>
-<span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female  -0.0851 0.355 Inf -0.240  0.8106</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/pairs">pairs</a></span>(gm_mc)</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="co">#&gt; time = Time1:</span></a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span></a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="co">#&gt;  male - female  -1.5305 0.410 Inf -3.735  0.0002 </span></a>
+<a class="sourceLine" id="cb7-5" title="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="co">#&gt; time = Time2:</span></a>
+<a class="sourceLine" id="cb7-7" title="7"><span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span></a>
+<a class="sourceLine" id="cb7-8" title="8"><span class="co">#&gt;  male - female  -0.2400 0.366 Inf -0.655  0.5125 </span></a>
+<a class="sourceLine" id="cb7-9" title="9"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb7-10" title="10"><span class="co">#&gt; time = Time3:</span></a>
+<a class="sourceLine" id="cb7-11" title="11"><span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span></a>
+<a class="sourceLine" id="cb7-12" title="12"><span class="co">#&gt;  male - female  -3.0126 0.586 Inf -5.145  &lt;.0001 </span></a>
+<a class="sourceLine" id="cb7-13" title="13"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb7-14" title="14"><span class="co">#&gt; time = Time4:</span></a>
+<a class="sourceLine" id="cb7-15" title="15"><span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span></a>
+<a class="sourceLine" id="cb7-16" title="16"><span class="co">#&gt;  male - female  -0.0851 0.355 Inf -0.240  0.8106</span></a></code></pre></div>
 <p>For additional examples in testing interactions with the <strong>emmeans</strong> package check the vignette: <code><a href="https://cran.rstudio.com/web/packages/emmeans/vignettes/interactions.html">vignette("interactions", package = "emmeans")</a></code>.</p>
 </div>
 </div>
