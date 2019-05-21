@@ -672,8 +672,8 @@ vcov.m_coefs <- function (object, ...) {
 effectPlotData <- function (object, newdata, level, ...) UseMethod("effectPlotData")
 
 effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FALSE,
-                                   CR_cohort_varname = NULL, K = 200, seed = 1, 
-                                   sandwich = FALSE, ...) {
+                                   CR_cohort_varname = NULL, direction = NULL,
+                                   K = 200, seed = 1, sandwich = FALSE, ...) {
     termsX <- delete.response(object$Terms$termsX)
     mfX <- model.frame(termsX, newdata, 
                        xlev = .getXlevels(termsX, object$model_frames$mfX))
@@ -704,12 +704,12 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
             cohort_var <- newdata[[CR_cohort_varname]]
             nlvs <- nlevels(cohort_var)
             eta <- do.call("cbind", split(c(X %*% betas), cohort_var))
-            logit_marg_probs <- qlogis(cr_marg_probs(eta))
+            logit_marg_probs <- qlogis(cr_marg_probs(eta, direction = direction))
             new_betas <- MASS::mvrnorm(K, betas, var_betas)
             sim_marg_probs <- array(0.0, dim = c(dim(logit_marg_probs), K))
             for (k in seq_len(K)) {
                 eta_k <- do.call("cbind", split(c(X %*% new_betas[k, ]), cohort_var))
-                sim_marg_probs[, , k] <- qlogis(cr_marg_probs(eta_k))
+                sim_marg_probs[, , k] <- qlogis(cr_marg_probs(eta_k, direction = direction))
             }
             logit_marg_probs_low <- apply(sim_marg_probs, c(1, 2), quantile, 
                                           probs = (1 - level) / 2)

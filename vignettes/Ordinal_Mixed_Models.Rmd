@@ -178,7 +178,8 @@ The `my_panel_bands()` is used to put the different curves for the response cate
 ### Effect Plots of Marginal Probabilities
 The effect plot of the previous section depicts the conditional probabilities according to the forward formulation of the continuation ratio model. However, it is easier to understand the marginal probabilities of each category, calculated according to the formulas presented in the first section and the `cr_marg_probs()` function. The `effectPlotData()` can calculate these marginal probabilities by invoking its `CR_cohort_varname` argument in which the name of the cohort variable needs to be provided. The following call calculates the plot data for the marginal probabilities based on model `fm`:
 ```{r, effect_plot_data_marg, eval = TRUE}
-plot_data_m <- effectPlotData(fm, nDF, CR_cohort_varname = "cohort")
+plot_data_m <- effectPlotData(fm, nDF, CR_cohort_varname = "cohort", 
+                              direction = "forward")
 ```
 
 The dataset produced by `effectPlotData()` contains a new variable named `ordinal_response` that specifies the different categories of the ordinal outcome. To plot these probabilities we use an analogous call to `xyplot()`:
@@ -200,7 +201,7 @@ xyplot(expit(pred) ~ time | sex, group = ordinal_response, data = plot_data_m,
 To marginalize over the random effects as well you will need to set the `marginal` argument of `effectPlotData()` to `TRUE`, e.g.,
 ```{r, effect_plot_data_marg2, eval = TRUE}
 plot_data_m2 <- effectPlotData(fm, nDF, CR_cohort_varname = "cohort", 
-                               marginal = TRUE, cores = 3)
+                               direction = "forward", marginal = TRUE, cores = 2)
 ```
 
 To plot these probabilities we use an analogous call to `xyplot()`:
