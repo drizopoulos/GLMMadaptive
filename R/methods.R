@@ -1295,7 +1295,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
 
 simulate.MixMod <- function (object, nsim = 1, seed = NULL, 
                              type = c("subject_specific", "mean_subject"),
-                             acount_MLEs_var = FALSE, sim_fun = NULL, 
+                             new_RE = FALSE, acount_MLEs_var = FALSE, sim_fun = NULL, 
                              sandwich = FALSE, ...) {
     if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
         runif(1)
@@ -1392,7 +1392,7 @@ simulate.MixMod <- function (object, nsim = 1, seed = NULL,
             D <- if (diag_D) diag(exp(new_thetas_i$D), length(new_thetas_i$D)) 
             else chol_transf(new_thetas_i$D)
         }
-        b_i <- MASS::mvrnorm(n, rep(0, nRE), D)
+        b_i <- if (new_RE) MASS::mvrnorm(n, rep(0, nRE), D) else ranef(object)
         if (type == "mean_subject")
             b_i <- b_i * 0
         eta_y <- c(X %*% betas) + rowSums(Z * b_i[id, ind, drop = FALSE])

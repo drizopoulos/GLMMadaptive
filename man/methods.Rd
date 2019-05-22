@@ -88,7 +88,7 @@ predict(object, \dots)
 simulate(object, nsim = 1, seed = NULL, \dots)
 
 \method{simulate}{MixMod}(object, nsim = 1, seed = NULL, 
-    type = c("subject_specific", "mean_subject"),
+    type = c("subject_specific", "mean_subject"), new_RE = FALSE,
     acount_MLEs_var = FALSE, sim_fun = NULL, 
     sandwich = FALSE, \dots)
     
@@ -174,6 +174,9 @@ VIF(object, \dots)
     \code{NULL}, with extra columns the predictions, and the lower and upper limits of
     the cofidence intervals when \code{type = "subject_specific"}.}
 \item{nsim}{numeric scalar giving the number of times to simulate the response variable.}
+\item{new_RE}{logical; if \code{TRUE}, new random effects will be simulated, and new outcome
+    data will be simulated by \code{simulate()} using these new random effect. Otherwise,
+    the empirical Bayes estimates of the random effects from the fitted model will be used.}
 \item{acount_MLEs_var}{logical; if \code{TRUE} it accounts for the variability of the 
     maximum likelihood estimates (MLEs) by simulating a new value for the parameters from 
     a multivariate normal distribution with mean the MLEs and covariance matrix the 
