@@ -477,29 +477,29 @@
 <p>The <code><a href="../reference/methods.html">simulate()</a></code> method can be used to simulate response outcome data from a fitted mixed model. For example, we simulate two realization of our dichotomous outcome:</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">simulate</a></span>(fm, <span class="dt">nsim =</span> <span class="dv">2</span>, <span class="dt">seed =</span> <span class="dv">123</span>), <span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb30-2" title="2"><span class="co">#&gt;       [,1] [,2]</span></a>
-<a class="sourceLine" id="cb30-3" title="3"><span class="co">#&gt;  [1,]    1    0</span></a>
+<a class="sourceLine" id="cb30-3" title="3"><span class="co">#&gt;  [1,]    0    0</span></a>
 <a class="sourceLine" id="cb30-4" title="4"><span class="co">#&gt;  [2,]    0    0</span></a>
-<a class="sourceLine" id="cb30-5" title="5"><span class="co">#&gt;  [3,]    1    0</span></a>
-<a class="sourceLine" id="cb30-6" title="6"><span class="co">#&gt;  [4,]    1    1</span></a>
-<a class="sourceLine" id="cb30-7" title="7"><span class="co">#&gt;  [5,]    1    1</span></a>
-<a class="sourceLine" id="cb30-8" title="8"><span class="co">#&gt;  [6,]    1    0</span></a>
-<a class="sourceLine" id="cb30-9" title="9"><span class="co">#&gt;  [7,]    1    1</span></a>
+<a class="sourceLine" id="cb30-5" title="5"><span class="co">#&gt;  [3,]    0    0</span></a>
+<a class="sourceLine" id="cb30-6" title="6"><span class="co">#&gt;  [4,]    1    0</span></a>
+<a class="sourceLine" id="cb30-7" title="7"><span class="co">#&gt;  [5,]    1    0</span></a>
+<a class="sourceLine" id="cb30-8" title="8"><span class="co">#&gt;  [6,]    0    1</span></a>
+<a class="sourceLine" id="cb30-9" title="9"><span class="co">#&gt;  [7,]    0    0</span></a>
 <a class="sourceLine" id="cb30-10" title="10"><span class="co">#&gt;  [8,]    1    0</span></a>
 <a class="sourceLine" id="cb30-11" title="11"><span class="co">#&gt;  [9,]    0    0</span></a>
-<a class="sourceLine" id="cb30-12" title="12"><span class="co">#&gt; [10,]    0    0</span></a></code></pre></div>
+<a class="sourceLine" id="cb30-12" title="12"><span class="co">#&gt; [10,]    1    0</span></a></code></pre></div>
 <p>By setting <code>acount_MLEs_var = TRUE</code> in the call to <code><a href="../reference/methods.html">simulate()</a></code> we also account for the variability in the maximum likelihood estimates in the simulation of new responses. This is achieved by simulating each time a new response vector using a realization for the parameters from a multivariate normal distribution with mean the MLEs and covariance matrix the covariance matrix of the MLEs:</p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="../reference/methods.html">simulate</a></span>(fm, <span class="dt">nsim =</span> <span class="dv">2</span>, <span class="dt">seed =</span> <span class="dv">123</span>, <span class="dt">acount_MLEs_var =</span> <span class="ot">TRUE</span>), <span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb31-2" title="2"><span class="co">#&gt;       [,1] [,2]</span></a>
 <a class="sourceLine" id="cb31-3" title="3"><span class="co">#&gt;  [1,]    0    0</span></a>
-<a class="sourceLine" id="cb31-4" title="4"><span class="co">#&gt;  [2,]    1    1</span></a>
-<a class="sourceLine" id="cb31-5" title="5"><span class="co">#&gt;  [3,]    1    1</span></a>
+<a class="sourceLine" id="cb31-4" title="4"><span class="co">#&gt;  [2,]    0    0</span></a>
+<a class="sourceLine" id="cb31-5" title="5"><span class="co">#&gt;  [3,]    1    0</span></a>
 <a class="sourceLine" id="cb31-6" title="6"><span class="co">#&gt;  [4,]    1    1</span></a>
-<a class="sourceLine" id="cb31-7" title="7"><span class="co">#&gt;  [5,]    1    1</span></a>
-<a class="sourceLine" id="cb31-8" title="8"><span class="co">#&gt;  [6,]    0    1</span></a>
-<a class="sourceLine" id="cb31-9" title="9"><span class="co">#&gt;  [7,]    1    1</span></a>
-<a class="sourceLine" id="cb31-10" title="10"><span class="co">#&gt;  [8,]    1    1</span></a>
-<a class="sourceLine" id="cb31-11" title="11"><span class="co">#&gt;  [9,]    0    0</span></a>
-<a class="sourceLine" id="cb31-12" title="12"><span class="co">#&gt; [10,]    0    0</span></a></code></pre></div>
+<a class="sourceLine" id="cb31-7" title="7"><span class="co">#&gt;  [5,]    1    0</span></a>
+<a class="sourceLine" id="cb31-8" title="8"><span class="co">#&gt;  [6,]    1    1</span></a>
+<a class="sourceLine" id="cb31-9" title="9"><span class="co">#&gt;  [7,]    0    0</span></a>
+<a class="sourceLine" id="cb31-10" title="10"><span class="co">#&gt;  [8,]    0    0</span></a>
+<a class="sourceLine" id="cb31-11" title="11"><span class="co">#&gt;  [9,]    1    0</span></a>
+<a class="sourceLine" id="cb31-12" title="12"><span class="co">#&gt; [10,]    1    0</span></a></code></pre></div>
 </div>
 </div>
   </div>

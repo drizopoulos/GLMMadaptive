@@ -207,7 +207,7 @@ simulate(object, nsim = 1, seed = NULL, &#8230;)
 
 # S3 method for MixMod
 simulate(object, nsim = 1, seed = NULL, 
-    type = c("subject_specific", "mean_subject"),
+    type = c("subject_specific", "mean_subject"), new_RE = FALSE,
     acount_MLEs_var = FALSE, sim_fun = NULL, 
     sandwich = FALSE, &#8230;)
     
@@ -358,6 +358,12 @@ VIF(object, type = c("fixed", "zi_fixed"), &#8230;)</pre>
     <tr>
       <th>nsim</th>
       <td><p>numeric scalar giving the number of times to simulate the response variable.</p></td>
+    </tr>
+    <tr>
+      <th>new_RE</th>
+      <td><p>logical; if <code>TRUE</code>, new random effects will be simulated, and new outcome
+    data will be simulated by <code>simulate()</code> using these new random effect. Otherwise,
+    the empirical Bayes estimates of the random effects from the fitted model will be used.</p></td>
     </tr>
     <tr>
       <th>acount_MLEs_var</th>
