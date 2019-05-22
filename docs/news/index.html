@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.30</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.31</span>
       </span>
     </div>
 
@@ -212,7 +212,8 @@
 <ul>
 <li><p>Zero-inflated Poisson and negative binomial models are now implemented using the family objects <code><a href="../reference/extra_fams.html">zi.poisson()</a></code> and <code><a href="../reference/extra_fams.html">zi.negative.binomial()</a></code>, respectively. In addition, taking into advantage of the fact that users can specify their own log density functions for the outcome, two-part / hurdle model can also be implemented.</p></li>
 <li><p>A new vignette illustrates how the zero-inflated models can be fitted.</p></li>
-<li>The <code><a href="../reference/methods.html">predict()</a></code> method is now fully available. It calculates predictions, and standard errors for models returned by <code><a href="../reference/mixed_model.html">mixed_model()</a></code> at three levels:
+<li>
+<p>The <code><a href="../reference/methods.html">predict()</a></code> method is now fully available. It calculates predictions, and standard errors for models returned by <code><a href="../reference/mixed_model.html">mixed_model()</a></code> at three levels:</p>
 <ul>
 <li><p>“mean subject”: only the fixed effects part corresponding to predictions for the average subject (but not population averaged predictions in case of nonlinear link functions).</p></li>
 <li><p>“marginal”: predictions using the marginalized coefficients that correspond to population averaged predictions.</p></li>

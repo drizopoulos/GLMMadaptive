@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.30</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.31</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
       <h1>Mixed Models for Ordinal Data</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-05-10</h4>
+            <h4 class="date">2019-05-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Ordinal_Mixed_Models.Rmd"><code>vignettes/Ordinal_Mixed_Models.Rmd</code></a></small>
       <div class="hidden name"><code>Ordinal_Mixed_Models.Rmd</code></div>
@@ -316,7 +316,8 @@
 <h3 class="hasAnchor">
 <a href="#effect-plots-of-marginal-probabilities" class="anchor"></a>Effect Plots of Marginal Probabilities</h3>
 <p>The effect plot of the previous section depicts the conditional probabilities according to the forward formulation of the continuation ratio model. However, it is easier to understand the marginal probabilities of each category, calculated according to the formulas presented in the first section and the <code><a href="../reference/continuation_ratio.html">cr_marg_probs()</a></code> function. The <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> can calculate these marginal probabilities by invoking its <code>CR_cohort_varname</code> argument in which the name of the cohort variable needs to be provided. The following call calculates the plot data for the marginal probabilities based on model <code>fm</code>:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">plot_data_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">CR_cohort_varname =</span> <span class="st">"cohort"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">plot_data_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">CR_cohort_varname =</span> <span class="st">"cohort"</span>, </a>
+<a class="sourceLine" id="cb8-2" title="2">                              <span class="dt">direction =</span> <span class="st">"forward"</span>)</a></code></pre></div>
 <p>The dataset produced by <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> contains a new variable named <code>ordinal_response</code> that specifies the different categories of the ordinal outcome. To plot these probabilities we use an analogous call to <code>xyplot()</code>:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">key &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">space =</span> <span class="st">"top"</span>, <span class="dt">rep =</span> <span class="ot">FALSE</span>,</a>
 <a class="sourceLine" id="cb9-2" title="2">            <span class="dt">text =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(DF<span class="op">$</span>y)[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]),</a>
@@ -333,7 +334,7 @@
 <p><img src="Ordinal_Mixed_Models_files/figure-html/CR_probs_plot_marg-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>To marginalize over the random effects as well you will need to set the <code>marginal</code> argument of <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> to <code>TRUE</code>, e.g.,</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">plot_data_m2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">CR_cohort_varname =</span> <span class="st">"cohort"</span>, </a>
-<a class="sourceLine" id="cb10-2" title="2">                               <span class="dt">marginal =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">3</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb10-2" title="2">                               <span class="dt">direction =</span> <span class="st">"forward"</span>, <span class="dt">marginal =</span> <span class="ot">TRUE</span>, <span class="dt">cores =</span> <span class="dv">2</span>)</a></code></pre></div>
 <p>To plot these probabilities we use an analogous call to <code>xyplot()</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">group =</span> ordinal_response, <span class="dt">data =</span> plot_data_m2, </a>
 <a class="sourceLine" id="cb11-2" title="2">       <span class="dt">upper =</span> <span class="kw">expit</span>(plot_data_m2<span class="op">$</span>upp), <span class="dt">low =</span> <span class="kw">expit</span>(plot_data_m2<span class="op">$</span>low), <span class="dt">type =</span> <span class="st">"l"</span>,</a>
