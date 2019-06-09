@@ -525,12 +525,15 @@ constructor_Z <- function (termsZ_i, mfZ_i, id) {
     n <- length(unique(id))
     Zmats <- vector("list", n)
     for (i in seq_len(n)) {
-        mf <- model.frame(termsZ_i, mfZ_i[id == i, , drop = FALSE],
-                          drop.unused.levels = TRUE)
+        #mf <- model.frame(termsZ_i, mfZ_i[id == i, , drop = FALSE],
+        #                  drop.unused.levels = TRUE)
+        mf <- mfZ_i[id == i, , drop = FALSE]
         mm <- model.matrix(termsZ_i, mf)
         assign <- attr(mm, "assign")
-        Zmats[[i]] <- mm[, c(t(sapply(unique(assign), function (x) which(assign == x)))), 
-                         drop = FALSE]
+        assgn <- sapply(unique(assign), function (x) which(assign == x))
+        if (is.list(assgn))
+            assgn <- unlist(assgn, use.names = FALSE)
+        Zmats[[i]] <- mm[, c(t(assgn)), drop = FALSE]
     }
     do.call("rbind", Zmats)
 }

@@ -376,7 +376,7 @@ anova.MixMod <- function (object, object2, test = TRUE, L = NULL,
         out <- list(nam0 = deparse(substitute(object)), L0 = L0,
                     aic0 = AIC(object), bic0 = BIC(object),
                     nam1 = deparse(substitute(object2)), L1 = L1, aic1 = AIC(object2),
-                    bic1 = AIC(object2), df = df, test = test)
+                    bic1 = BIC(object2), df = df, test = test)
         if (test) {
             LRT <- abs(- 2 * (L0 - L1))
             attributes(LRT) <- NULL

@@ -143,11 +143,11 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
                                                        inherits(initial_values$betas, 'family'))) {
         betas <- if (family$family %in% known_families) {
             if (family$family == "negative binomial")
-                glm.fit(X, y, family = poisson())$coefficients
+                glm.fit(X, y, family = poisson(), offset = offset)$coefficients
             else 
-                glm.fit(X, y, family = family)$coefficients
+                glm.fit(X, y, family = family, offset = offset)$coefficients
         } else {
-            glm.fit(X, y, family = initial_values$betas)$coefficients
+            glm.fit(X, y, family = initial_values$betas, offset = offset)$coefficients
         }
         list(betas = betas * sqrt(1.346), D = if (diag_D) rep(1, nRE) else diag(nRE))
     } else {
@@ -157,7 +157,8 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
         inits <- c(inits, 
                    list(gammas = glm.fit(X_zi, 
                                          as.numeric(if (NCOL(y) == 2) y[, 1] == 0 else y == 0), 
-                                         family = binomial())$coefficients))
+                                         family = binomial(),
+                                         offset = offset_zi)$coefficients))
         if (family$family %in% c("zero-inflated poisson", "zero-inflated negative binomial",
                                  "hurdle poisson", "hurdle negative binomial", 
                                  "Conway Maxwell Poisson"))
