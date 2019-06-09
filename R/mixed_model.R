@@ -178,6 +178,9 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     } else {
         stop("argument 'penalized' must be a logical or a list.\n")
     }
+    if (penalized$penalized) {
+        inits$betas <- rep(0, ncol(X))
+    }
     ##########################
     # Functions
     Funs <- list(
