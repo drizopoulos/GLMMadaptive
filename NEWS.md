@@ -1,8 +1,16 @@
-# GLMMadaptive 0.7.0
+# GLMMadaptive 0.6.0
 
 ## General
-* Mixed models for ordinal clustered outcomes using the continuation ratio model.
+* Mixed models for ordinal clustered outcomes using the continuation ratio model, with forward and backward formulation.
 
+* The new function `VIF()` calculates variance inflation factors for mixed models fitted in the package.
+
+* The CRAN version of the package has now only three basic vignettes to conform with the time restrictions of CRAN checks. The whole list of available vignettes can be found in the website of the package [https://drizopoulos.github.io/GLMMadaptive/](https://drizopoulos.github.io/GLMMadaptive/).
+
+## Minor
+* Corrected a typo in `anova.MixMod()` that was reporting the AIC as the BIC of the fitted model.
+
+* The offset is now passed in the calculation of initial values.
 
 # GLMMadaptive 0.5.0
 

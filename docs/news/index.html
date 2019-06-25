@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.31</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -142,15 +142,25 @@
       <small>Source: <a href='https://github.com/drizopoulos/GLMMadaptive/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="glmmadaptive-070" class="section level1">
+    <div id="glmmadaptive-060" class="section level1">
 <h1 class="page-header">
-<a href="#glmmadaptive-070" class="anchor"></a>GLMMadaptive 0.7.0<small> Unreleased </small>
+<a href="#glmmadaptive-060" class="anchor"></a>GLMMadaptive 0.6.0<small> Unreleased </small>
 </h1>
 <div id="general" class="section level2">
 <h2 class="hasAnchor">
 <a href="#general" class="anchor"></a>General</h2>
 <ul>
-<li>Mixed models for ordinal clustered outcomes using the continuation ratio model.</li>
+<li><p>Mixed models for ordinal clustered outcomes using the continuation ratio model, with forward and backward formulation.</p></li>
+<li><p>The new function <code><a href="../reference/methods.html">VIF()</a></code> calculates variance inflation factors for mixed models fitted in the package.</p></li>
+<li><p>The CRAN version of the package has now only three basic vignettes to conform with the time restrictions of CRAN checks. The whole list of available vignettes can be found in the website of the package <a href="https://drizopoulos.github.io/GLMMadaptive/">https://drizopoulos.github.io/GLMMadaptive/</a>.</p></li>
+</ul>
+</div>
+<div id="minor" class="section level2">
+<h2 class="hasAnchor">
+<a href="#minor" class="anchor"></a>Minor</h2>
+<ul>
+<li><p>Corrected a typo in <code><a href="../reference/methods.html">anova.MixMod()</a></code> that was reporting the AIC as the BIC of the fitted model.</p></li>
+<li><p>The offset is now passed in the calculation of initial values.</p></li>
 </ul>
 </div>
 </div>
@@ -254,7 +264,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#glmmadaptive-070">0.7.0</a></li>
+        <li><a href="#glmmadaptive-060">0.6.0</a></li>
         <li><a href="#glmmadaptive-050">0.5.0</a></li>
         <li><a href="#glmmadaptive-040">0.4.0</a></li>
         <li><a href="#glmmadaptive-030">0.3.0</a></li>

@@ -2,7 +2,7 @@ export(mixed_model, marginal_coefs, coef, fixef, ranef, confint, anova, fitted, 
        effectPlotData, negative.binomial, predict, zi.poisson, zi.negative.binomial,
        simulate, model.matrix, model.frame, terms, formula, nobs, hurdle.poisson, 
        hurdle.negative.binomial, hurdle.lognormal, beta.fam, hurdle.beta.fam, students.t,
-       scoring_rules, cr_setup, cr_marg_probs, VIF)
+       scoring_rules, cr_setup, cr_marg_probs, VIF, unit.lindley)
 
 importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
              "dbinom", "dnorm", "dpois", "fitted", "glm.fit", "logLik",

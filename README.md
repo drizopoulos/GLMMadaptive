@@ -43,6 +43,8 @@ object.
 - Two-part/hurdle mixed models for semi-continuous normal data using the 
 `hurdle.lognormal()` family objects.
 
+- Continuation ratio mixed models for ordinal data using functions `cr_setup()` and `cr_marg_probs()`.
+
 - Beta and hurdle Beta mixed effects models using `beta.fam()` and `hurdle.beta.fam()` 
 family objects.
 

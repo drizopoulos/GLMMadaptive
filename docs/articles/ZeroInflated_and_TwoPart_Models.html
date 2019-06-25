@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.31</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
       <h1>Zero-Inflated and Two-Part Mixed Effects Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-05-22</h4>
+            <h4 class="date">2019-06-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/ZeroInflated_and_TwoPart_Models.Rmd"><code>vignettes/ZeroInflated_and_TwoPart_Models.Rmd</code></a></small>
       <div class="hidden name"><code>ZeroInflated_and_TwoPart_Models.Rmd</code></div>
@@ -222,7 +222,7 @@
 <a class="sourceLine" id="cb4-2" title="2"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt;         AIC     BIC  log.Lik   LRT df p.value</span></a>
 <a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; fm1 4461.87 4480.11 -2223.94                 </span></a>
-<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt; fm2 4446.55 4446.55 -2214.28 19.32  2   1e-04</span></a></code></pre></div>
+<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt; fm2 4446.55 4470.00 -2214.28 19.32  2   1e-04</span></a></code></pre></div>
 <p>The results suggest that the extra random effect improves the fit of the model.</p>
 </div>
 <div id="zero-inflated-negative-binomial-mixed-effects-model" class="section level2">
@@ -264,7 +264,7 @@
 <a class="sourceLine" id="cb6-2" title="2"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb6-3" title="3"><span class="co">#&gt;         AIC     BIC  log.Lik df</span></a>
 <a class="sourceLine" id="cb6-4" title="4"><span class="co">#&gt; gm1 3933.49 3954.33 -1958.75   </span></a>
-<a class="sourceLine" id="cb6-5" title="5"><span class="co">#&gt; fm2 4446.55 4446.55 -2214.28  1</span></a></code></pre></div>
+<a class="sourceLine" id="cb6-5" title="5"><span class="co">#&gt; fm2 4446.55 4470.00 -2214.28  1</span></a></code></pre></div>
 <p>We observe that accounting for the over-dispersion seems to better improve the fit than including the random intercepts term in the zero part.</p>
 </div>
 <div id="two-part-mixed-effects-model-for-semi-continuous-data" class="section level2">
@@ -556,7 +556,7 @@
 <a class="sourceLine" id="cb16-2" title="2"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb16-3" title="3"><span class="co">#&gt;         AIC     BIC  log.Lik  LRT df p.value</span></a>
 <a class="sourceLine" id="cb16-4" title="4"><span class="co">#&gt; dm1 5622.60 5646.05 -2802.30                </span></a>
-<a class="sourceLine" id="cb16-5" title="5"><span class="co">#&gt; dm2 5618.61 5618.61 -2797.31 9.99  3  0.0187</span></a></code></pre></div>
+<a class="sourceLine" id="cb16-5" title="5"><span class="co">#&gt; dm2 5618.61 5649.88 -2797.31 9.99  3  0.0187</span></a></code></pre></div>
 <p>The result indicates that the extra random effect for the zero-part improves the fit of the model.</p>
 </div>
 <div id="two-parthurdle-negative-binomial-mixed-effects-model" class="section level2">
@@ -633,7 +633,7 @@
 <a class="sourceLine" id="cb19-2" title="2"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb19-3" title="3"><span class="co">#&gt;         AIC     BIC  log.Lik   LRT df p.value</span></a>
 <a class="sourceLine" id="cb19-4" title="4"><span class="co">#&gt; hm1 4382.94 4408.99 -2181.47                 </span></a>
-<a class="sourceLine" id="cb19-5" title="5"><span class="co">#&gt; hm2 4378.62 4378.62 -2176.31 10.31  3  0.0161</span></a></code></pre></div>
+<a class="sourceLine" id="cb19-5" title="5"><span class="co">#&gt; hm2 4378.62 4412.49 -2176.31 10.31  3  0.0161</span></a></code></pre></div>
 <p>The result again indicates that the extra random effect for the zero-part improves the fit of the model.</p>
 </div>
 </div>

@@ -70,7 +70,7 @@ mixed_model()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.31</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -167,7 +167,8 @@ mixed-effects model, using
 <span class='fu'>hurdle.poisson</span>()
 <span class='fu'>hurdle.negative.binomial</span>()
 <span class='fu'>hurdle.lognormal</span>()
-<span class='fu'>hurdle.beta.fam</span>()</pre>
+<span class='fu'>hurdle.beta.fam</span>()
+<span class='fu'>unit.lindley</span>()</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -252,7 +253,7 @@ log-normal model.</p>
 <span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>fm1</span>, <span class='no'>fm2</span>)</div><div class='output co'>#&gt; 
 #&gt;          AIC      BIC   log.Lik   LRT df p.value
 #&gt; fm1 41539.76 41550.97 -20761.88                 
-#&gt; fm2 41475.50 41475.50 -20727.75 68.25  2 &lt;0.0001
+#&gt; fm2 41475.50 41489.52 -20727.75 68.25  2 &lt;0.0001
 #&gt; </div><div class='input'>
 <span class='co'>#############################################################################</span>
 <span class='co'>#############################################################################</span>
@@ -310,7 +311,7 @@ log-normal model.</p>
 <span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>fm1</span>, <span class='no'>gm1</span>)</div><div class='output co'>#&gt; 
 #&gt;          AIC      BIC   log.Lik      LRT df p.value
 #&gt; fm1 41539.76 41550.97 -20761.88                    
-#&gt; gm1 20101.00 20101.00 -10041.50 21440.75  1 &lt;0.0001
+#&gt; gm1 20101.00 20113.61 -10041.50 21440.75  1 &lt;0.0001
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

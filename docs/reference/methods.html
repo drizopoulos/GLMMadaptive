@@ -65,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.31</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -521,7 +521,7 @@ residuals.</p>
 <span class='fu'>anova</span>(<span class='no'>fm1</span>, <span class='no'>fm2</span>)</div><div class='output co'>#&gt; 
 #&gt;         AIC     BIC  log.Lik  LRT df p.value
 #&gt; fm1 5203.04 5228.33 -2595.52                
-#&gt; fm2 5201.62 5201.62 -2593.81 3.43  1  0.0642
+#&gt; fm2 5201.62 5231.12 -2593.81 3.43  1  0.0642
 #&gt; </div><div class='input'>
 <span class='co'># the same but with a Wald test</span>
 <span class='fu'>anova</span>(<span class='no'>fm2</span>, <span class='kw'>L</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>)))</div><div class='output co'>#&gt; 

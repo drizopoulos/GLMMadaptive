@@ -66,7 +66,7 @@ Gaussian quadrature." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.31</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -417,7 +417,7 @@ respect to the parameters are internally programmed.</p>
 <span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>fm2</span>, <span class='no'>fm1</span>)</div><div class='output co'>#&gt; 
 #&gt;         AIC     BIC  log.Lik  LRT df p.value
 #&gt; fm2 6137.21 6149.86 -3065.61                
-#&gt; fm1 6134.40 6134.40 -3062.20 6.81  2  0.0332
+#&gt; fm1 6134.40 6155.48 -3062.20 6.81  2  0.0332
 #&gt; </div><div class='input'>
 <span class='co'># the same hypothesis but with a Wald test</span>
 <span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>fm1</span>, <span class='kw'>L</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>), <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>)))</div><div class='output co'>#&gt; 
@@ -468,7 +468,7 @@ respect to the parameters are internally programmed.</p>
 <span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>fm1_slp_diag</span>, <span class='no'>fm1_slp</span>)</div><div class='output co'>#&gt; 
 #&gt;                  AIC     BIC  log.Lik  LRT df p.value
 #&gt; fm1_slp_diag 5200.27 5225.56 -2594.13                
-#&gt; fm1_slp      5201.62 5201.62 -2593.81 0.65  1   0.419
+#&gt; fm1_slp      5201.62 5231.12 -2593.81 0.65  1   0.419
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

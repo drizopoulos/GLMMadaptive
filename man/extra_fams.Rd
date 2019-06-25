@@ -7,6 +7,7 @@
 \alias{hurdle.negative.binomial}
 \alias{hurdle.lognormal}
 \alias{hurdle.beta.fam}
+\alias{unit.lindley}
 
 
 \title{
@@ -29,6 +30,7 @@ hurdle.poisson()
 hurdle.negative.binomial()
 hurdle.lognormal()
 hurdle.beta.fam()
+unit.lindley()
 }
 
 \arguments{

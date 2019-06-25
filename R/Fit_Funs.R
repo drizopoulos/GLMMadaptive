@@ -969,3 +969,43 @@ compoisson <- function (max = 100) {
                    score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun),
               class = "family")
 }
+
+unit.lindley <- function () {
+    stats <- make.link("logit")
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+        # the log density function
+        # you link logit(mu) to covariates
+        # where mu = (1 / (1 + theta))
+        mu <- as.matrix(mu_fun(eta))
+        theta <- 1 / mu - 1
+        comp1 <- 2 * log(theta) - log(1 + theta)
+        comp2 <- - 3 * log(1 - y) 
+        comp3 <- - (theta * y) / (1 - y)
+        out <- comp1 + comp2 + comp3
+        attr(out, "mu_y") <- mu
+        out
+    }
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
+        mu <- as.matrix(mu)
+        theta <- 1 / mu - 1
+        # the derivative of the log density w.r.t. theta
+        comp1 <- 2 / theta - 1 / (1 + theta)
+        comp3 <- - y / (1 - y)
+        # the derivative of theta w.r.t mu
+        tht_mu <- - 1 / mu^2
+        # the derivative of mu w.r.t. eta
+        mu_eta <- mu - mu * mu
+        (comp1 + comp3) * tht_mu * mu_eta
+    }
+    simulate <- function (n, mu, phis, eta_zi) {
+        NA
+    }
+    structure(list(family = "unit Lindley", link = stats$name, 
+                   linkfun = stats$linkfun, linkinv = stats$linkinv, 
+                   log_dens = log_dens, score_eta_fun = score_eta_fun,
+                   simulate = simulate,
+                   variance = function (mu) mu * (1 - mu)),
+              class = "family")
+}
+
+
