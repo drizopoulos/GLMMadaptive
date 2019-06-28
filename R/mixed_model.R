@@ -1,5 +1,5 @@
-mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
-                         zi_fixed = NULL, zi_random = NULL, 
+mixed_model <- function (fixed, random, data, family, weights = NULL,
+                         na.action = na.exclude, zi_fixed = NULL, zi_random = NULL, 
                          penalized = FALSE, n_phis = NULL, initial_values = NULL, 
                          control = list(), ...) {
     call <- match.call()
@@ -87,6 +87,13 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     if (chr_na_action == "na.exclude" || chr_na_action == "na.omit")
         id_orig <- id_orig[keep, , drop = FALSE]
     id <- match(id_orig[[1L]], unique(id_orig[[1L]]))
+    # weights
+    if (!is.null(weights)) {
+        if (!is.numeric(weights))
+            stop("'weights' must be a numeric vector.")
+        if (length(weights) != length(unique(id)))
+            stop("the length of 'weights' does not match with the number of groups in 'data'.")
+    }
     # model response
     y <- model.response(mfX)
     if (is.factor(y)) {
@@ -178,9 +185,6 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     } else {
         stop("argument 'penalized' must be a logical or a list.\n")
     }
-    #if (penalized$penalized) {
-    #    inits$betas <- rep(0, ncol(X))
-    #}
     ##########################
     # Functions
     Funs <- list(
@@ -244,7 +248,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     ###############
     # Fit the model
     out <- mixed_fit(y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family, inits, Funs, 
-                     con, penalized)
+                     con, penalized, weights)
     # check whether Hessian is positive definite at convergence
     H <- out$Hessian
     if (any(is.na(H) | !is.finite(H))) {
@@ -289,6 +293,7 @@ mixed_model <- function (fixed, random, data, family, na.action = na.exclude,
     out$control <- con
     out$Funs <- Funs
     out$family <- family
+    out$weights <- weights
     out$penalized <- penalized
     out$na.action <- na.action
     out$contrasts <- attr(X, "contrasts")

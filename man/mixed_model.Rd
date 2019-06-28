@@ -11,9 +11,10 @@ Gaussian quadrature.
 }
 
 \usage{
-mixed_model(fixed, random, data, family, na.action = na.exclude,
-  zi_fixed = NULL, zi_random = NULL, penalized = FALSE, 
-  n_phis = NULL, initial_values = NULL, control = list(), \dots)
+mixed_model(fixed, random, data, family, weights = NULL,
+  na.action = na.exclude, zi_fixed = NULL, zi_random = NULL, 
+  penalized = FALSE, n_phis = NULL, initial_values = NULL, 
+  control = list(), \dots)
 }
 
 \arguments{
@@ -34,7 +35,11 @@ mixed_model(fixed, random, data, family, na.action = na.exclude,
     family is \code{gaussian()}, in \code{mixed_model()} no default is provided. If the
     users wish to fit a mixed model for a Gaussian outcome, this could be done with 
     function \code{lme()} from the \bold{nlme} package or function \code{lmer()} from the
-    \bold{lme4} package. }
+    \bold{lme4} package.}
+\item{weights}{a numeric vector of weights. These are simple multipliers on the 
+  log-likelihood contributions of each group/cluster, i.e., we presume that there are multiple 
+  replicates of each group/cluster denoted by the weights. The length of `weights` need to
+  be equal to the number of independent groups/clusters in the data.}
 \item{na.action}{what to do with missing values in \code{data}.}
 \item{zi_fixed, zi_random}{formulas for the fixed and random effects of the zero inflated 
     part.}
