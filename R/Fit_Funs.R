@@ -475,20 +475,27 @@ negative.binomial <- function () {
     score_eta_fun <- function (y, mu, phis, eta_zi) {
         # the derivative of the log density w.r.t. mu
         phis <- exp(phis)
-        mu_phis <- mu + phis
-        comp2 <- - phis / mu_phis
-        comp3 <- y / mu - y / mu_phis
-        # the derivative of mu w.r.t. eta (this depends on the chosen link function)
-        mu.eta <- mu
-        (comp2 + comp3) * mu.eta
+        #mu_phis <- mu + phis
+        #comp2 <- - phis / mu_phis
+        #comp3 <- y / mu - y / mu_phis
+        ## the derivative of mu w.r.t. eta (this depends on the chosen link function)
+        #mu.eta <- mu
+        #(comp2 + comp3) * mu.eta
+        mu.mu_phis <- mu / (mu + phis)
+        - phis * mu.mu_phis + y * (1 - mu.mu_phis) 
     }
     score_phis_fun <- function (y, mu, phis, eta_zi) {
         # the derivative of the log density w.r.t. phis
         phis <- exp(phis)
         mu_phis <- mu + phis
-        comp1 <- digamma(y + phis) - digamma(phis)
-        comp2 <- log(phis) + 1 - log(mu_phis) - phis / mu_phis
-        comp3 <- - y / mu_phis
+        #comp1 <- digamma(y + phis) - digamma(phis)
+        #comp2 <- log(phis) + 1 - log(mu_phis) - phis / mu_phis
+        #comp3 <- - y / mu_phis
+        #(comp1 + comp2 + comp3) * phis
+        y_phis <- y + phis
+        comp1 <- log(phis) + 1 - digamma(phis)
+        comp2 <- digamma(y_phis)
+        comp3 <- - log(mu_phis) - y_phis / mu_phis
         (comp1 + comp2 + comp3) * phis
     }
     structure(list(family = "negative binomial", link = stats$name, 
@@ -509,7 +516,6 @@ zi.poisson <- function () {
         mu0 <- mu[ind_y0, ]
         lambda0 <- lambda[ind_y0, ]
         mu1 <- mu[ind_y1, ]
-        lambda1 <- lambda[ind_y1, ]
         out <- as.matrix(eta)
         out[ind_y0, ] <- log(lambda0 + exp(-mu0))
         out[ind_y1, ] <- y[ind_y1] * log(mu1) - mu1 - lgamma(y[ind_y1] + 1)
@@ -1035,6 +1041,7 @@ compoisson <- function (max = 100) {
 }
 
 unit.lindley <- function () {
+    stop("currently the 'unit.lindley()' family is unavailable.")
     stats <- make.link("logit")
     log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
         # the log density function
