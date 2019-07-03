@@ -581,17 +581,15 @@ zi.negative.binomial <- function () {
         # NB part
         phis <- exp(phis)
         mu <- as.matrix(mu)
-        mu_phis <- mu + phis
-        comp2 <- - phis / mu_phis
-        comp3 <- y / mu - y / mu_phis
-        mu.eta <- mu
-        out <- (comp2 + comp3) * mu.eta
+        mu.mu_phis <- mu / (mu + phis)
+        out <- - phis * mu.mu_phis + y * (1 - mu.mu_phis) 
         # ZI part
         ind_y0 <- y == 0
-        lambda <- as.matrix(exp(eta_zi))
-        t <- phis / (phis + mu[ind_y0, ])
-        den <- (lambda[ind_y0, ] + t^phis) * (mu_phis[ind_y0, ])^2
-        out[ind_y0, ] <- - phis^2 * t^(phis - 1) * mu[ind_y0, ] / den
+        lambda <- exp(as.matrix(eta_zi)[ind_y0, ])
+        mu0 <- mu[ind_y0, ]
+        t <- phis / (phis + mu0)
+        den <- (lambda + t^phis) * (mu0 + phis)^2
+        out[ind_y0, ] <- - phis^2 * t^(phis - 1) * mu0 / den
         out
     }
     score_eta_zi_fun <- function (y, mu, phis, eta_zi) {
