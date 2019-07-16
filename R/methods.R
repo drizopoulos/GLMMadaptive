@@ -1585,7 +1585,7 @@ scoring_rules <- function (object, newdata, newdata2 = NULL, max_count = 2000,
         quadrat_p <- sum(prob_fun(max_count_seq[[i]], mean = pred[i], 
                                   pis = pred_zi[i], N[i])^2)
         logarithmic[i] <- log(p_y)
-        quadratic[i] <- 2 * p_y + quadrat_p
+        quadratic[i] <- 2 * p_y - quadrat_p
         spherical[i] <- p_y / sqrt(quadrat_p)
     }
     result <- data.frame(logarithmic = logarithmic, quadratic = quadratic, 
