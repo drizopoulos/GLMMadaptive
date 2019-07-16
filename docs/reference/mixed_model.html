@@ -66,7 +66,7 @@ Gaussian quadrature." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.2</span>
       </span>
     </div>
 
@@ -153,9 +153,10 @@ Gaussian quadrature.</p>
     
     </div>
 
-    <pre class="usage">mixed_model(fixed, random, data, family, na.action = na.exclude,
-  zi_fixed = NULL, zi_random = NULL, penalized = FALSE, 
-  n_phis = NULL, initial_values = NULL, control = list(), &#8230;)</pre>
+    <pre class="usage">mixed_model(fixed, random, data, family, weights = NULL,
+  na.action = na.exclude, zi_fixed = NULL, zi_random = NULL, 
+  penalized = FALSE, n_phis = NULL, initial_values = NULL, 
+  control = list(), &#8230;)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -189,6 +190,13 @@ Gaussian quadrature.</p>
     users wish to fit a mixed model for a Gaussian outcome, this could be done with 
     function <code>lme()</code> from the <b>nlme</b> package or function <code>lmer()</code> from the
     <b>lme4</b> package.</p></td>
+    </tr>
+    <tr>
+      <th>weights</th>
+      <td><p>a numeric vector of weights. These are simple multipliers on the 
+  log-likelihood contributions of each group/cluster, i.e., we presume that there are multiple 
+  replicates of each group/cluster denoted by the weights. The length of `weights` need to
+  be equal to the number of independent groups/clusters in the data.</p></td>
     </tr>
     <tr>
       <th>na.action</th>
