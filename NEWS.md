@@ -5,6 +5,8 @@
 
 * The internal implementation of the `negative.binomial()` family is now considerably faster.
 
+* More stable and accurate calculations using the **matrixStats** package.
+
 
 # GLMMadaptive 0.6.0
 

@@ -82,7 +82,7 @@ mixed_model(fixed, random, data, family, weights = NULL,
             algorithm.}
         \item{parscale_betas}{the control argument \code{parscale} of \code{\link{optim}} for
             the fixed-effects; default is 0.1.}
-        \item{parscale_betas}{the control argument \code{parscale} of \code{\link{optim}} for
+        \item{parscale_D}{the control argument \code{parscale} of \code{\link{optim}} for
             the unique element of the covariance matrix of the random effects; default is 
             0.01.}
         \item{parscale_phis}{the control argument \code{parscale} of \code{\link{optim}} for

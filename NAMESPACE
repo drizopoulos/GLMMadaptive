@@ -18,6 +18,8 @@ importFrom("utils", "as.relistable", "relist")
 importFrom("MASS", "mvrnorm")
 importFrom("parallel", "makeCluster", "stopCluster", "detectCores", "parLapply")
 importFrom("nlme", "fixef", "ranef")
+importFrom("matrixStats", "rowLogSumExps")
+
 
 
 S3method(print, MixMod)

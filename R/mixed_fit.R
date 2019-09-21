@@ -94,7 +94,9 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
         Ztb <- GH$Ztb
         Z_zitb <- GH$Z_zitb
         wGH <- GH$wGH
-        dets <- GH$dets
+        log_wGH <- rep(log(wGH), each = n)
+        #dets <- GH$dets
+        log_dets <- GH$log_dets
         post_modes <- GH$post_modes
         lgLik <- numeric(iter_EM)
         for (it in seq_len(iter_EM)) {
@@ -110,7 +112,9 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                 Ztb <- GH$Ztb
                 Z_zitb <- GH$Z_zitb
                 wGH <- GH$wGH
-                dets <- GH$dets
+                log_wGH <- rep(log(wGH), each = n)
+                #dets <- GH$dets
+                log_dets <- GH$log_dets
                 post_modes <- GH$post_modes
             }
             # save parameters
@@ -126,15 +130,18 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                 eta_zi <- eta_zi + Z_zitb
             if (!is.null(offset_zi))
                 eta_zi <- eta_zi + offset_zi
-            log_p_yb <- rowsum(log_dens(y, eta_y, mu_fun, phis, eta_zi), 
-                               id, reorder = FALSE)
+            log_p_yb <- unname(rowsum(log_dens(y, eta_y, mu_fun, phis, eta_zi), 
+                                      id, reorder = FALSE))
             log_p_b <- matrix(dmvnorm(b, rep(0, nRE), D, TRUE), n, nAGQ^nRE, byrow = TRUE)
-            p_yb <- exp(log_p_yb + log_p_b)
-            if (any(zero_ind <- p_yb == 0.0)) {
-                p_yb[zero_ind] <- 1e-300
-            }
-            p_y <- c(p_yb %*% wGH)
-            p_by <- p_yb / p_y
+            #p_yb <- exp(log_p_yb + log_p_b)
+            #if (any(zero_ind <- p_yb == 0.0 | is.na(p_yb))) {
+            #    p_yb[zero_ind] <- 1e-300
+            #}
+            #p_y <- c(p_yb %*% wGH)
+            #p_by <- p_yb / p_y
+            log_p_yb_b <- log_p_yb + log_p_b
+            log_p_y <- matrixStats::rowLogSumExps(log_p_yb_b + log_wGH)
+            p_by <- exp(log_p_yb_b - log_p_y)
             t_p_by <- t(p_by)
             post_b <- apply(b, 2, function (b_k)
                 colSums(t_p_by * matrix(b_k, nAGQ_cartesian, n) * wGH))
@@ -145,7 +152,7 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                 post_b2 <- weights * post_b2
             }
             # calculate log-likelihood
-            log_p_y <- if (is.null(weights)) log(p_y * dets) else weights * log(p_y * dets)
+            log_p_y <- if (is.null(weights)) log_p_y + log_dets else weights * (log_p_y + log_dets)
             lgLik[it] <- sum(log_p_y[is.finite(log_p_y)], na.rm = TRUE)
             if (penalized) {
                 lgLik[it] <- lgLik[it] + dmvt(betas, mu = pen_mu, invSigma = pen_invSigma,

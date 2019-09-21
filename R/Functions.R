@@ -116,10 +116,11 @@ GHfun <- function (b, y_lis, N_lis, X_lis, Z_lis, offset_lis, X_zi_lis, Z_zi_lis
     b <- as.matrix(expand.grid(lapply(seq_len(q), function (k, u) u$x, u = GH)))
     n <- nrow(modes)
     b_new <- vector("list", n)
-    dets <- numeric(n)
+    log_dets <- numeric(n)
     for (i in seq_len(n)) {
         b_new[[i]] <- t(sqrt(2) * solve(chol_hessians[[i]], t(b)) + modes[i, ])
-        dets[i] <- 1 / determinant.matrix(chol_hessians[[i]], logarithm = FALSE)$modulus
+        #dets[i] <- 1 / determinant.matrix(chol_hessians[[i]], logarithm = FALSE)$modulus
+        log_dets[i] <- - determinant.matrix(chol_hessians[[i]], logarithm = TRUE)$modulus
     }
     wGH <- as.matrix(expand.grid(lapply(seq_len(q), function (k, u) u$w, u = GH)))
     wGH <- 2^(q/2) * apply(wGH, 1, prod) * exp(rowSums(b * b))
@@ -133,7 +134,7 @@ GHfun <- function (b, y_lis, N_lis, X_lis, Z_lis, offset_lis, X_zi_lis, Z_zi_lis
                                 Z_zi_lis, b_new, SIMPLIFY = FALSE))  
     } 
     list(b = do.call('rbind', b_new), b2 = do.call('rbind', b2), Ztb = Ztb, Z_zitb = Z_zitb,
-               wGH = wGH, dets = dets, post_modes = modes, 
+               wGH = wGH, dets = dets, log_dets = log_dets, post_modes = modes, 
          post_vars = lapply(aGH$post_hessian, solve))
 }
 

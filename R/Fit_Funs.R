@@ -14,7 +14,9 @@ logLik_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi,
     Ztb <- GH$Ztb
     Z_zitb <- GH$Z_zitb
     wGH <- GH$wGH
-    dets <- GH$dets
+    log_wGH <- rep(log(wGH), each = length(unique(id)))
+    #dets <- GH$dets
+    log_dets <- GH$log_dets
     ##
     eta_y <- as.vector(X %*% betas) + Ztb
     if (!is.null(offset))
@@ -25,15 +27,17 @@ logLik_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi,
     if (!is.null(offset_zi))
         eta_zi <- eta_zi + offset_zi
     log_Lik <- log_dens(y, eta_y, mu_fun, phis, eta_zi)
-    log_p_yb <- rowsum(log_Lik, id, reorder = FALSE)
+    log_p_yb <- unname(rowsum(log_Lik, id, reorder = FALSE))
     log_p_b <- matrix(dmvnorm(b, rep(0, nRE), D, TRUE),
                       nrow(log_p_yb), ncol(log_p_yb), byrow = TRUE)
-    p_yb <- exp(log_p_yb + log_p_b)
-    if (any(zero_ind <- p_yb == 0.0)) {
-        p_yb[zero_ind] <- 1e-300
-    }
-    p_y <- c(p_yb %*% wGH) * dets
-    out <- - sum(if (is.null(weights)) log(p_y) else weights * log(p_y), na.rm = TRUE)
+    #p_yb <- exp(log_p_yb + log_p_b)
+    #if (any(zero_ind <- p_yb == 0.0)) {
+    #    p_yb[zero_ind] <- 1e-300
+    #}
+    #p_y <- c(p_yb %*% wGH) * dets
+    log_p_yb_b <- log_p_yb + log_p_b
+    log_p_y <- matrixStats::rowLogSumExps(log_p_yb_b + log_wGH) + log_dets
+    out <- - sum(if (is.null(weights)) log_p_y else weights * log_p_y, na.rm = TRUE)
     if (penalized)
         out <- out - dmvt(betas, mu = pen_mu, invSigma = pen_invSigma, df = pen_df)
     out
@@ -56,6 +60,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
     Ztb <- GH$Ztb
     Z_zitb <- GH$Z_zitb
     wGH <- GH$wGH
+    log_wGH <- rep(log(wGH), each = length(unique(id)))
     ##
     eta_y <- as.vector(X %*% betas) + Ztb
     if (!is.null(offset))
@@ -66,18 +71,21 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
     if (!is.null(offset_zi))
         eta_zi <- eta_zi + offset_zi
     log_Lik <- log_dens(y, eta_y, mu_fun, phis, eta_zi)
-    log_p_yb <- rowsum(log_Lik, id, reorder = FALSE)
+    log_p_yb <- unname(rowsum(log_Lik, id, reorder = FALSE))
     log_p_b <- matrix(dmvnorm(b, rep(0, nRE), D, TRUE),
                       nrow(log_p_yb), ncol(log_p_yb), byrow = TRUE)
     # log penalty include here dmvt(betas, pen_mean, invSigma = pen_invsds, df = pen_df)
-    p_yb <- exp(log_p_yb + log_p_b)
-    if (any(zero_ind <- p_yb == 0.0)) {
-        p_yb[zero_ind] <- 1e-300
-    }
-    p_y <- c(p_yb %*% wGH)
-    p_by <- p_yb / p_y
+    #p_yb <- exp(log_p_yb + log_p_b)
+    #if (any(zero_ind <- p_yb == 0.0)) {
+    #    p_yb[zero_ind] <- 1e-300
+    #}
+    #p_y <- c(p_yb %*% wGH)
+    #p_by <- p_yb / p_y
+    log_p_yb_b <- log_p_yb + log_p_b
+    log_p_y <- matrixStats::rowLogSumExps(log_p_yb_b + log_wGH)
+    p_by <- exp(log_p_yb_b - log_p_y)
     t_p_by <- t(p_by)
-    n <- length(p_y)
+    n <- length(log_p_y)
     NN <- if (NCOL(y) == 2) nrow(y) else length(y)
     post_b <- apply(b, 2, function (b_k) colSums(t_p_by * matrix(b_k, ncol(Ztb), n) * wGH))
     post_b2 <- apply(b2, 2, function (b_k) colSums(t_p_by * matrix(b_k, ncol(Ztb), n) * wGH))
@@ -429,10 +437,10 @@ score_gammas <- function (gammas, y, X, betas, Ztb, offset, weights, X_zi, Z_zi,
 
 binomial_log_dens = function (y, eta, mu_fun, phis, eta_zi) {
     mu_y <- mu_fun(eta)
-    out <- if (NCOL(y) == 2) {
-        dbinom(y[, 1], y[, 1] + y[, 2], mu_y, TRUE)
+    out <- if (NCOL(y) == 2L) {
+        dbinom(y[, 1L], y[, 1L] + y[, 2L], mu_y, TRUE)
     } else {
-        dbinom(y, 1, mu_y, TRUE)
+        dbinom(y, 1L, mu_y, TRUE)
     }
     attr(out, "mu_y") <- mu_y
     out
