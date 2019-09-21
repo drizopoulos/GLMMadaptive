@@ -134,7 +134,7 @@ GHfun <- function (b, y_lis, N_lis, X_lis, Z_lis, offset_lis, X_zi_lis, Z_zi_lis
                                 Z_zi_lis, b_new, SIMPLIFY = FALSE))  
     } 
     list(b = do.call('rbind', b_new), b2 = do.call('rbind', b2), Ztb = Ztb, Z_zitb = Z_zitb,
-               wGH = wGH, dets = dets, log_dets = log_dets, post_modes = modes, 
+               wGH = wGH, log_dets = log_dets, post_modes = modes, 
          post_vars = lapply(aGH$post_hessian, solve))
 }
 

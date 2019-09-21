@@ -10,8 +10,8 @@ Description: Fits generalized linear mixed models for a single grouping factor u
     maximum likelihood approximating the integrals over the random effects with an 
     adaptive Gaussian quadrature rule; Jose C. Pinheiro and Douglas M. Bates (1995) 
     <doi:10.1080/10618600.1995.10474663>.  
-Imports: MASS, nlme, parallel
-Suggests: lattice, knitr, rmarkdown, pkgdown, matrixStats, multcomp, emmeans, estimability, effects, DHARMa, optimParallel
+Imports: MASS, nlme, parallel, matrixStats
+Suggests: lattice, knitr, rmarkdown, pkgdown, multcomp, emmeans, estimability, effects, DHARMa, optimParallel
 Encoding: UTF-8
 LazyLoad: yes
 LazyData: yes
