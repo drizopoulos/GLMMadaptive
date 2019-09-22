@@ -13,7 +13,7 @@ importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
            "sd", "predict", "binomial", "plogis", "poisson", "simulate", "rbinom", 
            "rnbinom", "rpois", "ppois", "qpois", "qnbinom", "pnbinom", "dnbinom", "rbeta",
            "rlnorm", "na.pass", "formula", "family", "optim", "nlminb", "nobs", "rt",
-           "as.formula", "qlogis", "complete.cases", "model.frame.default")
+           "as.formula", "qlogis", "complete.cases", "model.frame.default", "uniroot")
 importFrom("utils", "as.relistable", "relist")
 importFrom("MASS", "mvrnorm")
 importFrom("parallel", "makeCluster", "stopCluster", "detectCores", "parLapply")

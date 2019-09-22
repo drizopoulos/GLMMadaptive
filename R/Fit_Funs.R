@@ -35,8 +35,7 @@ logLik_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi,
     #    p_yb[zero_ind] <- 1e-300
     #}
     #p_y <- c(p_yb %*% wGH) * dets
-    log_p_yb_b <- log_p_yb + log_p_b
-    log_p_y <- matrixStats::rowLogSumExps(log_p_yb_b + log_wGH) + log_dets
+    log_p_y <- rowLogSumExps(log_p_yb + log_p_b + log_wGH) + log_dets
     out <- - sum(if (is.null(weights)) log_p_y else weights * log_p_y, na.rm = TRUE)
     if (penalized)
         out <- out - dmvt(betas, mu = pen_mu, invSigma = pen_invSigma, df = pen_df)
@@ -82,7 +81,7 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
     #p_y <- c(p_yb %*% wGH)
     #p_by <- p_yb / p_y
     log_p_yb_b <- log_p_yb + log_p_b
-    log_p_y <- matrixStats::rowLogSumExps(log_p_yb_b + log_wGH)
+    log_p_y <- rowLogSumExps(log_p_yb_b + log_wGH)
     p_by <- exp(log_p_yb_b - log_p_y)
     t_p_by <- t(p_by)
     n <- length(log_p_y)

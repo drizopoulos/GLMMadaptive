@@ -95,7 +95,6 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
         Z_zitb <- GH$Z_zitb
         wGH <- GH$wGH
         log_wGH <- rep(log(wGH), each = n)
-        #dets <- GH$dets
         log_dets <- GH$log_dets
         post_modes <- GH$post_modes
         lgLik <- numeric(iter_EM)
@@ -113,7 +112,6 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                 Z_zitb <- GH$Z_zitb
                 wGH <- GH$wGH
                 log_wGH <- rep(log(wGH), each = n)
-                #dets <- GH$dets
                 log_dets <- GH$log_dets
                 post_modes <- GH$post_modes
             }
@@ -140,7 +138,7 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
             #p_y <- c(p_yb %*% wGH)
             #p_by <- p_yb / p_y
             log_p_yb_b <- log_p_yb + log_p_b
-            log_p_y <- matrixStats::rowLogSumExps(log_p_yb_b + log_wGH)
+            log_p_y <- rowLogSumExps(log_p_yb_b + log_wGH)
             p_by <- exp(log_p_yb_b - log_p_y)
             t_p_by <- t(p_by)
             post_b <- apply(b, 2, function (b_k)

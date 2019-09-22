@@ -119,7 +119,6 @@ GHfun <- function (b, y_lis, N_lis, X_lis, Z_lis, offset_lis, X_zi_lis, Z_zi_lis
     log_dets <- numeric(n)
     for (i in seq_len(n)) {
         b_new[[i]] <- t(sqrt(2) * solve(chol_hessians[[i]], t(b)) + modes[i, ])
-        #dets[i] <- 1 / determinant.matrix(chol_hessians[[i]], logarithm = FALSE)$modulus
         log_dets[i] <- - determinant.matrix(chol_hessians[[i]], logarithm = TRUE)$modulus
     }
     wGH <- as.matrix(expand.grid(lapply(seq_len(q), function (k, u) u$w, u = GH)))

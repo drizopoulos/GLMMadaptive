@@ -36,6 +36,7 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
     groups <- unique(c(all.vars(getID_Formula(random)), 
                        if (!is.null(zi_random)) all.vars(getID_Formula(zi_random))))
     data[groups] <- lapply(data[groups], function (x) if (!is.factor(x)) factor(x) else x)
+    data <- data[order(data[[groups[1L]]]), ]
     # construct model frames
     # fixed effects
     mfX <- model.frame(terms(fixed, data = data), data = data, na.action = na.pass)
