@@ -6,9 +6,16 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GLMMadaptive Basics • GLMMadaptive</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="GLMMadaptive Basics">
 <meta property="og:description" content="">
 <meta property="og:image" content="/logo.png">
@@ -31,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.5</span>
       </span>
     </div>
 
@@ -39,7 +46,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -89,7 +96,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/drizopoulos/GLMMadaptive">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -102,13 +109,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>GLMMadaptive Basics</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-07-16</h4>
+            <h4 class="date">2019-09-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/GLMMadaptive_basics.Rmd"><code>vignettes/GLMMadaptive_basics.Rmd</code></a></small>
       <div class="hidden name"><code>GLMMadaptive_basics.Rmd</code></div>
@@ -144,36 +152,36 @@
 <a href="#mixed-effects-logistic-regression" class="anchor"></a>Mixed Effects Logistic Regression</h2>
 <p>We illustrate the use of the package in the standard case of a mixed effects logistic regression. That is, the distribution of <span class="math inline">\([y_i \mid b_i]\)</span> is binomial, and the distribution of <span class="math inline">\([b_i]\)</span> multivariate normal.</p>
 <p>We start by simulating some data for a binary longitudinal outcome:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1234</span>)</a>
 <a class="sourceLine" id="cb1-2" title="2">n &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># number of subjects</span></a>
 <a class="sourceLine" id="cb1-3" title="3">K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span></a>
 <a class="sourceLine" id="cb1-4" title="4">t_max &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># maximum follow-up time</span></a>
 <a class="sourceLine" id="cb1-5" title="5"></a>
 <a class="sourceLine" id="cb1-6" title="6"><span class="co"># we constuct a data frame with the design: </span></a>
 <a class="sourceLine" id="cb1-7" title="7"><span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span></a>
-<a class="sourceLine" id="cb1-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
-<a class="sourceLine" id="cb1-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">replicate</a></span>(n, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),</a>
-<a class="sourceLine" id="cb1-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
+<a class="sourceLine" id="cb1-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
+<a class="sourceLine" id="cb1-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(n, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),</a>
+<a class="sourceLine" id="cb1-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
 <a class="sourceLine" id="cb1-11" title="11"></a>
 <a class="sourceLine" id="cb1-12" title="12"><span class="co"># design matrices for the fixed and random effects</span></a>
 <a class="sourceLine" id="cb1-13" title="13">X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)</a>
 <a class="sourceLine" id="cb1-14" title="14">Z &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>time, <span class="dt">data =</span> DF)</a>
 <a class="sourceLine" id="cb1-15" title="15"></a>
-<a class="sourceLine" id="cb1-16" title="16">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">2.13</span>, <span class="fl">-0.25</span>, <span class="fl">0.24</span>, <span class="fl">-0.05</span>) <span class="co"># fixed effects coefficients</span></a>
+<a class="sourceLine" id="cb1-16" title="16">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">2.13</span>, <span class="fl">-0.25</span>, <span class="fl">0.24</span>, <span class="fl">-0.05</span>) <span class="co"># fixed effects coefficients</span></a>
 <a class="sourceLine" id="cb1-17" title="17">D11 &lt;-<span class="st"> </span><span class="fl">0.48</span> <span class="co"># variance of random intercepts</span></a>
 <a class="sourceLine" id="cb1-18" title="18">D22 &lt;-<span class="st"> </span><span class="fl">0.1</span> <span class="co"># variance of random slopes</span></a>
 <a class="sourceLine" id="cb1-19" title="19"></a>
 <a class="sourceLine" id="cb1-20" title="20"><span class="co"># we simulate random effects</span></a>
-<a class="sourceLine" id="cb1-21" title="21">b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11)), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D22)))</a>
+<a class="sourceLine" id="cb1-21" title="21">b &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(D11)), <span class="kw"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(D22)))</a>
 <a class="sourceLine" id="cb1-22" title="22"><span class="co"># linear predictor</span></a>
-<a class="sourceLine" id="cb1-23" title="23">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/drop">drop</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, ]))</a>
+<a class="sourceLine" id="cb1-23" title="23">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/drop.html">drop</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, ]))</a>
 <a class="sourceLine" id="cb1-24" title="24"><span class="co"># we simulate binary longitudinal data</span></a>
-<a class="sourceLine" id="cb1-25" title="25">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dv">1</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Logistic">plogis</a></span>(eta_y))</a></code></pre></div>
+<a class="sourceLine" id="cb1-25" title="25">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dv">1</span>, <span class="kw"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(eta_y))</a></code></pre></div>
 <p>We fit a mixed effects logistic regression for <code>y</code>, assuming random intercepts for the random-effects part. The basic model-fitting function in <strong>GLMMadaptive</strong> is called <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, and has four required arguments, namely <code>fixed</code> a formula for the fixed effects, <code>random</code> a formula for the random effects, <code>family</code> a family object specifying the type of response variable, and <code>data</code> a data frame containing the variables in the previously mentioned formulas. Hence, the call to fit the random intercepts logistic regression is:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">fm1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
-<a class="sourceLine" id="cb2-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</a></code></pre></div>
+<a class="sourceLine" id="cb2-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())</a></code></pre></div>
 <p>The summary method gives a detailed output of the model:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(fm1)</a>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(fm1)</a>
 <a class="sourceLine" id="cb3-2" title="2"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt; Call:</span></a>
 <a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 | id, data = DF, </span></a>
@@ -211,16 +219,16 @@
 <a class="sourceLine" id="cb3-36" title="36"><span class="co">#&gt; converged: TRUE</span></a></code></pre></div>
 <p>We continue by checking the impact of the chosen number of quadrature points to the parameters estimates and the log-likelihood value at convergence. First, we refit the model with an increasing number of quadrature points. The default when the number of random effects is smaller or equal to two is 11 points. We fit then with 15, and 21 points:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">fm1_q11 &lt;-<span class="st"> </span>fm1</a>
-<a class="sourceLine" id="cb4-2" title="2">fm1_q15 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/update">update</a></span>(fm1_q11, <span class="dt">nAGQ =</span> <span class="dv">15</span>)</a>
-<a class="sourceLine" id="cb4-3" title="3">fm1_q21 &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/update">update</a></span>(fm1_q11, <span class="dt">nAGQ =</span> <span class="dv">21</span>)</a>
+<a class="sourceLine" id="cb4-2" title="2">fm1_q15 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(fm1_q11, <span class="dt">nAGQ =</span> <span class="dv">15</span>)</a>
+<a class="sourceLine" id="cb4-3" title="3">fm1_q21 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(fm1_q11, <span class="dt">nAGQ =</span> <span class="dv">21</span>)</a>
 <a class="sourceLine" id="cb4-4" title="4"></a>
-<a class="sourceLine" id="cb4-5" title="5">models &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="st">"nAGQ=11"</span> =<span class="st"> </span>fm1_q11, <span class="st">"nAGQ=15"</span> =<span class="st"> </span>fm1_q15, <span class="st">"nAGQ=21"</span> =<span class="st"> </span>fm1_q21)</a></code></pre></div>
-<p>We now extract from the model the estimated parameter for the fixed effects (using function <code><a href="../reference/methods.html">fixef()</a></code>), for the random effects, and the log-likelihood (using function <code><a href="https://www.rdocumentation.org/packages/stats/topics/logLik">logLik()</a></code>):</p>
+<a class="sourceLine" id="cb4-5" title="5">models &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"nAGQ=11"</span> =<span class="st"> </span>fm1_q11, <span class="st">"nAGQ=15"</span> =<span class="st"> </span>fm1_q15, <span class="st">"nAGQ=21"</span> =<span class="st"> </span>fm1_q21)</a></code></pre></div>
+<p>We now extract from the model the estimated parameter for the fixed effects (using function <code><a href="../reference/methods.html">fixef()</a></code>), for the random effects, and the log-likelihood (using function <code><a href="https://rdrr.io/r/stats/logLik.html">logLik()</a></code>):</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">extract &lt;-<span class="st"> </span><span class="cf">function</span> (obj) {</a>
-<a class="sourceLine" id="cb5-2" title="2">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="../reference/methods.html">fixef</a></span>(obj), <span class="st">"var_(Intercept)"</span> =<span class="st"> </span>obj<span class="op">$</span>D[<span class="dv">1</span>, <span class="dv">1</span>], <span class="st">"logLik"</span> =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/logLik">logLik</a></span>(obj))</a>
+<a class="sourceLine" id="cb5-2" title="2">    <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw"><a href="../reference/methods.html">fixef</a></span>(obj), <span class="st">"var_(Intercept)"</span> =<span class="st"> </span>obj<span class="op">$</span>D[<span class="dv">1</span>, <span class="dv">1</span>], <span class="st">"logLik"</span> =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/logLik.html">logLik</a></span>(obj))</a>
 <a class="sourceLine" id="cb5-3" title="3">}</a>
 <a class="sourceLine" id="cb5-4" title="4"></a>
-<a class="sourceLine" id="cb5-5" title="5"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(models, extract)</a>
+<a class="sourceLine" id="cb5-5" title="5"><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(models, extract)</a>
 <a class="sourceLine" id="cb5-6" title="6"><span class="co">#&gt;                       nAGQ=11       nAGQ=15      nAGQ=21</span></a>
 <a class="sourceLine" id="cb5-7" title="7"><span class="co">#&gt; (Intercept)       -2.61816557   -2.61679077   -2.6168440</span></a>
 <a class="sourceLine" id="cb5-8" title="8"><span class="co">#&gt; sexfemale         -1.32418678   -1.32349829   -1.3235049</span></a>
@@ -230,7 +238,7 @@
 <a class="sourceLine" id="cb5-12" title="12"><span class="co">#&gt; logLik          -374.51972108 -374.51983340 -374.5198046</span></a></code></pre></div>
 <p>We observe a rather stable model with virtually no differences between the different choices of quadrature points.</p>
 <p>We first compare the model with a simple logistic regression that does not include any random effects:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">km &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/glm">glm</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</a>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">km &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF, <span class="dt">family =</span> <span class="kw"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())</a>
 <a class="sourceLine" id="cb6-2" title="2"></a>
 <a class="sourceLine" id="cb6-3" title="3"><span class="kw"><a href="../reference/methods.html">anova</a></span>(fm1, km)</a>
 <a class="sourceLine" id="cb6-4" title="4"><span class="co">#&gt; </span></a>
@@ -240,7 +248,7 @@
 <p>We obtain a highly significant p-value suggesting that there are correlations in the data that cannot be ignored. <em>Note:</em> the <code><a href="../reference/methods.html">anova()</a></code> method that performs the likelihood ratio test calculates the p-value using the standard <span class="math inline">\(\chi^2\)</span> distribution, here with one degree of freedom. However, because the null hypothesis for testing variance parameters is on the boundary of the corresponding parameter space, it would be more appropriate to use a mixture of <span class="math inline">\(\chi^2\)</span> distributions.</p>
 <p>We extend model <code>fm1</code> by also including a random slopes term; however, we assume that the covariance between the random intercepts and random slopes is zero. This is achieved by using the <code>||</code> symbol in the specification of the <code>random</code> argument, i.e.,</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">fm2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">||</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
-<a class="sourceLine" id="cb7-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</a></code></pre></div>
+<a class="sourceLine" id="cb7-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())</a></code></pre></div>
 <p>The likelihood ratio test between the two models is computed with function <code><a href="../reference/methods.html">anova()</a></code>. When two <code>"MixMod"</code> objects are provided, the function assumes that the first object represents the model under the null hypothesis, and the second object the model under the alternative, i.e.,</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="../reference/methods.html">anova</a></span>(fm1, fm2)</a>
 <a class="sourceLine" id="cb8-2" title="2"><span class="co">#&gt; </span></a>
@@ -249,7 +257,7 @@
 <a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; fm2 730.94 746.57 -359.47 30.1  1 &lt;0.0001</span></a></code></pre></div>
 <p>The results suggest that we need the random slopes term. We continue by testing whether the covariance between the random effects terms is zero. The model under the alternative hypothesis is (results not shown):</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">fm3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
-<a class="sourceLine" id="cb9-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</a></code></pre></div>
+<a class="sourceLine" id="cb9-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())</a></code></pre></div>
 <p>And again the likelihood ratio test is performed by a call to <code><a href="../reference/methods.html">anova()</a></code> (results not shown):</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="../reference/methods.html">anova</a></span>(fm2, fm3)</a>
 <a class="sourceLine" id="cb10-2" title="2"><span class="co">#&gt; </span></a>
@@ -262,34 +270,34 @@
 <h2 class="hasAnchor">
 <a href="#penalized-mixed-effects-poisson-regression" class="anchor"></a>Penalized Mixed Effects Poisson Regression</h2>
 <p>We continue our illustration with a Poisson mixed effects model. We start again by simulating some data for a Poisson longitudinal outcome:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)</a>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1234</span>)</a>
 <a class="sourceLine" id="cb11-2" title="2">n &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># number of subjects</span></a>
 <a class="sourceLine" id="cb11-3" title="3">K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span></a>
 <a class="sourceLine" id="cb11-4" title="4">t_max &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># maximum follow-up time</span></a>
 <a class="sourceLine" id="cb11-5" title="5"></a>
 <a class="sourceLine" id="cb11-6" title="6"><span class="co"># we constuct a data frame with the design: </span></a>
 <a class="sourceLine" id="cb11-7" title="7"><span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span></a>
-<a class="sourceLine" id="cb11-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
-<a class="sourceLine" id="cb11-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">replicate</a></span>(n, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),</a>
-<a class="sourceLine" id="cb11-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
+<a class="sourceLine" id="cb11-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
+<a class="sourceLine" id="cb11-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(n, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),</a>
+<a class="sourceLine" id="cb11-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
 <a class="sourceLine" id="cb11-11" title="11"></a>
 <a class="sourceLine" id="cb11-12" title="12"><span class="co"># design matrices for the fixed and random effects</span></a>
 <a class="sourceLine" id="cb11-13" title="13">X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)</a>
 <a class="sourceLine" id="cb11-14" title="14"></a>
-<a class="sourceLine" id="cb11-15" title="15">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">2.13</span>, <span class="fl">-0.25</span>, <span class="fl">0.24</span>, <span class="fl">-0.05</span>) <span class="co"># fixed effects coefficients</span></a>
+<a class="sourceLine" id="cb11-15" title="15">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2.13</span>, <span class="fl">-0.25</span>, <span class="fl">0.24</span>, <span class="fl">-0.05</span>) <span class="co"># fixed effects coefficients</span></a>
 <a class="sourceLine" id="cb11-16" title="16">D11 &lt;-<span class="st"> </span><span class="fl">0.48</span> <span class="co"># variance of random intercepts</span></a>
 <a class="sourceLine" id="cb11-17" title="17"></a>
 <a class="sourceLine" id="cb11-18" title="18"><span class="co"># we simulate random effects</span></a>
-<a class="sourceLine" id="cb11-19" title="19">b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11))</a>
+<a class="sourceLine" id="cb11-19" title="19">b &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(D11))</a>
 <a class="sourceLine" id="cb11-20" title="20"><span class="co"># linear predictor</span></a>
-<a class="sourceLine" id="cb11-21" title="21">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/drop">drop</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span>b[DF<span class="op">$</span>id])</a>
+<a class="sourceLine" id="cb11-21" title="21">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/drop.html">drop</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span>b[DF<span class="op">$</span>id])</a>
 <a class="sourceLine" id="cb11-22" title="22"><span class="co"># we simulate Poisson longitudinal data</span></a>
-<a class="sourceLine" id="cb11-23" title="23">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Poisson">rpois</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(eta_y))</a></code></pre></div>
+<a class="sourceLine" id="cb11-23" title="23">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Poisson.html">rpois</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="kw"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(eta_y))</a></code></pre></div>
 <p>We fit the mixed effects Poisson regression for <code>y</code> assuming random intercepts for the random-effects part.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">gm1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
-<a class="sourceLine" id="cb12-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>())</a></code></pre></div>
+<a class="sourceLine" id="cb12-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>())</a></code></pre></div>
 <p>As previously, the summary method gives a detailed output of the model:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(gm1)</a>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(gm1)</a>
 <a class="sourceLine" id="cb13-2" title="2"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb13-3" title="3"><span class="co">#&gt; Call:</span></a>
 <a class="sourceLine" id="cb13-4" title="4"><span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 | id, data = DF, </span></a>
@@ -327,22 +335,23 @@
 <a class="sourceLine" id="cb13-36" title="36"><span class="co">#&gt; converged: TRUE</span></a></code></pre></div>
 <p>In settings with few subjects, repeated measurements of separation effects, the package also allows to place a penalty in the fixed effects regression coefficients <span class="math inline">\(\beta\)</span>. The penalty/prior is in the form of a Student’s t distribution with mean 0, scale parameter 1, and 3 degrees of freedom, and it is placed in all <span class="math inline">\(\beta\)</span> coefficients except from the intercept. The penalized model can be fitted by setting argument <code>penalized</code> to <code>TRUE</code>, i.e.,</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">gm2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
-<a class="sourceLine" id="cb14-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>(), <span class="dt">penalized =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="st">'unpenalized'</span> =<span class="st"> </span><span class="kw"><a href="../reference/methods.html">fixef</a></span>(gm1), <span class="st">'penalized'</span> =<span class="st"> </span><span class="kw"><a href="../reference/methods.html">fixef</a></span>(gm2))</a>
-<a class="sourceLine" id="cb15-2" title="2"><span class="co">#&gt;                unpenalized   penalized</span></a>
-<a class="sourceLine" id="cb15-3" title="3"><span class="co">#&gt; (Intercept)     2.94471507  2.94339254</span></a>
-<a class="sourceLine" id="cb15-4" title="4"><span class="co">#&gt; sexfemale      -0.86111224 -0.85993767</span></a>
-<a class="sourceLine" id="cb15-5" title="5"><span class="co">#&gt; time            0.24039444  0.24045925</span></a>
-<a class="sourceLine" id="cb15-6" title="6"><span class="co">#&gt; sexfemale:time -0.05105926 -0.05115046</span></a></code></pre></div>
+<a class="sourceLine" id="cb14-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>(), <span class="dt">penalized =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="st">'unpenalized'</span> =<span class="st"> </span><span class="kw"><a href="../reference/methods.html">fixef</a></span>(gm1), <span class="st">'penalized'</span> =<span class="st"> </span><span class="kw"><a href="../reference/methods.html">fixef</a></span>(gm2))</a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="co">#&gt;                unpenalized  penalized</span></a>
+<a class="sourceLine" id="cb15-3" title="3"><span class="co">#&gt; (Intercept)     2.94471508  2.9433924</span></a>
+<a class="sourceLine" id="cb15-4" title="4"><span class="co">#&gt; sexfemale      -0.86111225 -0.8599373</span></a>
+<a class="sourceLine" id="cb15-5" title="5"><span class="co">#&gt; time            0.24039444  0.2404593</span></a>
+<a class="sourceLine" id="cb15-6" title="6"><span class="co">#&gt; sexfemale:time -0.05105926 -0.0511505</span></a></code></pre></div>
 <p>In this example we observe small differences between the penalized and unpenalized models. The users have the option to alter the specification of the Student’s t penalty by directly specifying the mean, scale and degrees of freedom arguments of the distribution. For example, a ridge penalty could be placed by setting the degrees of freedom to a high value. The call in this case should be:</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1">gm3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
-<a class="sourceLine" id="cb16-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>(), </a>
-<a class="sourceLine" id="cb16-3" title="3">                   <span class="dt">penalized =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">pen_mu =</span> <span class="dv">0</span>, <span class="dt">pen_sigma =</span> <span class="dv">1</span>, <span class="dt">pen_df =</span> <span class="dv">200</span>))</a></code></pre></div>
+<a class="sourceLine" id="cb16-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>(), </a>
+<a class="sourceLine" id="cb16-3" title="3">                   <span class="dt">penalized =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">pen_mu =</span> <span class="dv">0</span>, <span class="dt">pen_sigma =</span> <span class="dv">1</span>, <span class="dt">pen_df =</span> <span class="dv">200</span>))</a></code></pre></div>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -366,17 +375,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by <a href="http://www.drizopoulos.com/">Dimitris Rizopoulos</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

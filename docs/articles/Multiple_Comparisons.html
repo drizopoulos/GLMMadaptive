@@ -6,9 +6,16 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Multiple Comparisons for MixMod Objects • GLMMadaptive</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Multiple Comparisons for MixMod Objects">
 <meta property="og:description" content="">
 <meta property="og:image" content="/logo.png">
@@ -31,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.5</span>
       </span>
     </div>
 
@@ -39,7 +46,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -89,7 +96,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/drizopoulos/GLMMadaptive">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -102,13 +109,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Multiple Comparisons for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-07-16</h4>
+            <h4 class="date">2019-09-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Multiple_Comparisons.Rmd"><code>vignettes/Multiple_Comparisons.Rmd</code></a></small>
       <div class="hidden name"><code>Multiple_Comparisons.Rmd</code></div>
@@ -125,35 +133,35 @@
 <h2 class="hasAnchor">
 <a href="#additive-model" class="anchor"></a>Additive Model</h2>
 <p>We start by simulating some data for a binary longitudinal outcome:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1234</span>)</a>
 <a class="sourceLine" id="cb1-2" title="2">n &lt;-<span class="st"> </span><span class="dv">300</span> <span class="co"># number of subjects</span></a>
 <a class="sourceLine" id="cb1-3" title="3">K &lt;-<span class="st"> </span><span class="dv">4</span> <span class="co"># number of measurements per subject</span></a>
 <a class="sourceLine" id="cb1-4" title="4">t_max &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># maximum follow-up time</span></a>
 <a class="sourceLine" id="cb1-5" title="5"></a>
 <a class="sourceLine" id="cb1-6" title="6"><span class="co"># we constuct a data frame with the design: </span></a>
 <a class="sourceLine" id="cb1-7" title="7"><span class="co"># everyone has a baseline measurment, and then measurements at K time points</span></a>
-<a class="sourceLine" id="cb1-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
-<a class="sourceLine" id="cb1-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(K, <span class="dv">1</span>, n<span class="op">*</span>K, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"Time"</span>, <span class="dv">1</span><span class="op">:</span>K)),</a>
-<a class="sourceLine" id="cb1-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
+<a class="sourceLine" id="cb1-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
+<a class="sourceLine" id="cb1-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(K, <span class="dv">1</span>, n<span class="op">*</span>K, <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Time"</span>, <span class="dv">1</span><span class="op">:</span>K)),</a>
+<a class="sourceLine" id="cb1-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
 <a class="sourceLine" id="cb1-11" title="11"></a>
 <a class="sourceLine" id="cb1-12" title="12"><span class="co"># design matrices for the fixed and random effects</span></a>
 <a class="sourceLine" id="cb1-13" title="13">X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)</a>
 <a class="sourceLine" id="cb1-14" title="14">Z &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> DF)</a>
 <a class="sourceLine" id="cb1-15" title="15"></a>
-<a class="sourceLine" id="cb1-16" title="16">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">2.13</span>, <span class="dv">1</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">1.2</span>, <span class="fl">-1.2</span>), K<span class="dv">-1</span>)) <span class="co"># fixed effects coefficients</span></a>
+<a class="sourceLine" id="cb1-16" title="16">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">2.13</span>, <span class="dv">1</span>, <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.2</span>, <span class="fl">-1.2</span>), K<span class="dv">-1</span>)) <span class="co"># fixed effects coefficients</span></a>
 <a class="sourceLine" id="cb1-17" title="17">D11 &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># variance of random intercepts</span></a>
 <a class="sourceLine" id="cb1-18" title="18"></a>
 <a class="sourceLine" id="cb1-19" title="19"><span class="co"># we simulate random effects</span></a>
-<a class="sourceLine" id="cb1-20" title="20">b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11)))</a>
+<a class="sourceLine" id="cb1-20" title="20">b &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(D11)))</a>
 <a class="sourceLine" id="cb1-21" title="21"><span class="co"># linear predictor</span></a>
-<a class="sourceLine" id="cb1-22" title="22">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, ]))</a>
+<a class="sourceLine" id="cb1-22" title="22">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, ]))</a>
 <a class="sourceLine" id="cb1-23" title="23"><span class="co"># we simulate binary longitudinal data</span></a>
-<a class="sourceLine" id="cb1-24" title="24">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dv">1</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Logistic">plogis</a></span>(eta_y))</a></code></pre></div>
+<a class="sourceLine" id="cb1-24" title="24">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dv">1</span>, <span class="kw"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(eta_y))</a></code></pre></div>
 <p>We fit a mixed effects logistic regression for <code>y</code> assuming random intercepts for the random-effects part, and the main effects of <code>sex</code> and <code>time</code> for the fixed-effects part.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">fm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
-<a class="sourceLine" id="cb2-2" title="2">                  <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</a></code></pre></div>
-<p>The uncorrected p-values for the 4 time points are give by the <code><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary()</a></code> method:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(fm)</a>
+<a class="sourceLine" id="cb2-2" title="2">                  <span class="dt">family =</span> <span class="kw"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())</a></code></pre></div>
+<p>The uncorrected p-values for the 4 time points are give by the <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> method:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(fm)</a>
 <a class="sourceLine" id="cb3-2" title="2"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt; Call:</span></a>
 <a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; mixed_model(fixed = y ~ sex + time, random = ~1 | id, data = DF, </span></a>
@@ -191,7 +199,7 @@
 <a class="sourceLine" id="cb3-36" title="36"><span class="co">#&gt; method: hybrid EM and quasi-Newton</span></a>
 <a class="sourceLine" id="cb3-37" title="37"><span class="co">#&gt; converged: TRUE</span></a></code></pre></div>
 <p>To perform the pairwise comparisons and obtain corrected p-values, we load the <strong>multcomp</strong> package and use the <code>glht()</code> function. Because no specific methods exist for <code>MixMod</code> object returned by <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, we need to specify the <code>vcov.</code> and <code>coef.</code> arguments of <code>glht()</code>, i.e.,</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"multcomp"</span>)</a>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"multcomp"</span>)</a>
 <a class="sourceLine" id="cb4-2" title="2"><span class="co">#&gt; Loading required package: mvtnorm</span></a>
 <a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt; Loading required package: survival</span></a>
 <a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; Loading required package: TH.data</span></a>
@@ -207,9 +215,9 @@
 <a class="sourceLine" id="cb4-14" title="14"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb4-15" title="15"><span class="co">#&gt;     geyser</span></a>
 <a class="sourceLine" id="cb4-16" title="16">fm_mc &lt;-<span class="st"> </span><span class="kw">glht</span>(fm, <span class="dt">linfct =</span> <span class="kw">mcp</span>(<span class="dt">time =</span> <span class="st">"Tukey"</span>),</a>
-<a class="sourceLine" id="cb4-17" title="17">           <span class="dt">vcov. =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/vcov">vcov</a></span>(fm, <span class="st">"fixed"</span>), <span class="dt">coef. =</span> fixef)</a>
+<a class="sourceLine" id="cb4-17" title="17">           <span class="dt">vcov. =</span> <span class="kw"><a href="https://rdrr.io/r/stats/vcov.html">vcov</a></span>(fm, <span class="st">"fixed"</span>), <span class="dt">coef. =</span> fixef)</a>
 <a class="sourceLine" id="cb4-18" title="18"></a>
-<a class="sourceLine" id="cb4-19" title="19"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(fm_mc)</a>
+<a class="sourceLine" id="cb4-19" title="19"><span class="kw"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(fm_mc)</a>
 <a class="sourceLine" id="cb4-20" title="20"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb4-21" title="21"><span class="co">#&gt;   Simultaneous Tests for General Linear Hypotheses</span></a>
 <a class="sourceLine" id="cb4-22" title="22"><span class="co">#&gt; </span></a>
@@ -236,9 +244,9 @@
 <a href="#interaction-model" class="anchor"></a>Interaction Model</h2>
 <p>We continue our illustration by including the interaction term between <code>sex</code> and <code>time</code>, and we focus on the difference between males and females for the various time points. We start by fitting the model:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">gm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="dt">fixed =</span> y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
-<a class="sourceLine" id="cb5-2" title="2">                  <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</a></code></pre></div>
+<a class="sourceLine" id="cb5-2" title="2">                  <span class="dt">family =</span> <span class="kw"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())</a></code></pre></div>
 <p>To compute the estimated log odds for males and females at the different time points we use the <code>emmeans()</code> functions from the <strong>emmeans</strong> package:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"emmeans"</span>)</a>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"emmeans"</span>)</a>
 <a class="sourceLine" id="cb6-2" title="2">gm_mc &lt;-<span class="st"> </span><span class="kw">emmeans</span>(gm, <span class="op">~</span><span class="st"> </span>sex <span class="op">|</span><span class="st"> </span>time)</a>
 <a class="sourceLine" id="cb6-3" title="3"></a>
 <a class="sourceLine" id="cb6-4" title="4">gm_mc</a>
@@ -263,8 +271,8 @@
 <a class="sourceLine" id="cb6-23" title="23"><span class="co">#&gt;  female  -1.25 0.256 Inf     -1.75    -0.749</span></a>
 <a class="sourceLine" id="cb6-24" title="24"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb6-25" title="25"><span class="co">#&gt; Confidence level used: 0.95</span></a></code></pre></div>
-<p>The corresponding pairwise comparisons are performed by the <code><a href="https://www.rdocumentation.org/packages/graphics/topics/pairs">pairs()</a></code> function:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/pairs">pairs</a></span>(gm_mc)</a>
+<p>The corresponding pairwise comparisons are performed by the <code><a href="https://rdrr.io/r/graphics/pairs.html">pairs()</a></code> function:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/pairs.html">pairs</a></span>(gm_mc)</a>
 <a class="sourceLine" id="cb7-2" title="2"><span class="co">#&gt; time = Time1:</span></a>
 <a class="sourceLine" id="cb7-3" title="3"><span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span></a>
 <a class="sourceLine" id="cb7-4" title="4"><span class="co">#&gt;  male - female  -1.5305 0.410 Inf -3.735  0.0002 </span></a>
@@ -286,6 +294,7 @@
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -303,17 +312,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by <a href="http://www.drizopoulos.com/">Dimitris Rizopoulos</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

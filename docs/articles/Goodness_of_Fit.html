@@ -6,9 +6,16 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Goodness of Fit for MixMod Objects • GLMMadaptive</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Goodness of Fit for MixMod Objects">
 <meta property="og:description" content="">
 <meta property="og:image" content="/logo.png">
@@ -31,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.5</span>
       </span>
     </div>
 
@@ -39,7 +46,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -89,7 +96,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/drizopoulos/GLMMadaptive">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -102,13 +109,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Goodness of Fit for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-07-16</h4>
+            <h4 class="date">2019-09-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Goodness_of_Fit.Rmd"><code>vignettes/Goodness_of_Fit.Rmd</code></a></small>
       <div class="hidden name"><code>Goodness_of_Fit.Rmd</code></div>
@@ -125,16 +133,16 @@
 <h2 class="hasAnchor">
 <a href="#zero-inflated-negative-binomial-longitudinal-data" class="anchor"></a>Zero-Inflated Negative Binomial Longitudinal Data</h2>
 <p>We start by simulating a longitudinal outcome from a zero-inflated negative binomial distribution:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">123</span>)</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">123</span>)</a>
 <a class="sourceLine" id="cb1-2" title="2">n &lt;-<span class="st"> </span><span class="dv">300</span> <span class="co"># number of subjects</span></a>
 <a class="sourceLine" id="cb1-3" title="3">K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span></a>
 <a class="sourceLine" id="cb1-4" title="4">t_max &lt;-<span class="st"> </span><span class="dv">5</span> <span class="co"># maximum follow-up time</span></a>
 <a class="sourceLine" id="cb1-5" title="5"></a>
 <a class="sourceLine" id="cb1-6" title="6"><span class="co"># we constuct a data frame with the design: </span></a>
 <a class="sourceLine" id="cb1-7" title="7"><span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span></a>
-<a class="sourceLine" id="cb1-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
-<a class="sourceLine" id="cb1-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">replicate</a></span>(n, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),</a>
-<a class="sourceLine" id="cb1-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
+<a class="sourceLine" id="cb1-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
+<a class="sourceLine" id="cb1-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(n, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),</a>
+<a class="sourceLine" id="cb1-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
 <a class="sourceLine" id="cb1-11" title="11"></a>
 <a class="sourceLine" id="cb1-12" title="12"><span class="co"># design matrices for the fixed and random effects non-zero part</span></a>
 <a class="sourceLine" id="cb1-13" title="13">X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)</a>
@@ -143,50 +151,50 @@
 <a class="sourceLine" id="cb1-16" title="16">X_zi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex, <span class="dt">data =</span> DF)</a>
 <a class="sourceLine" id="cb1-17" title="17">Z_zi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> DF)</a>
 <a class="sourceLine" id="cb1-18" title="18"></a>
-<a class="sourceLine" id="cb1-19" title="19">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">1.5</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">-0.03</span>) <span class="co"># fixed effects coefficients non-zero part</span></a>
+<a class="sourceLine" id="cb1-19" title="19">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.5</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">-0.03</span>) <span class="co"># fixed effects coefficients non-zero part</span></a>
 <a class="sourceLine" id="cb1-20" title="20">shape &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># shape/size parameter of the negative binomial distribution</span></a>
-<a class="sourceLine" id="cb1-21" title="21">gammas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0.5</span>) <span class="co"># fixed effects coefficients zero part</span></a>
+<a class="sourceLine" id="cb1-21" title="21">gammas &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0.5</span>) <span class="co"># fixed effects coefficients zero part</span></a>
 <a class="sourceLine" id="cb1-22" title="22">D11 &lt;-<span class="st"> </span><span class="fl">0.5</span> <span class="co"># variance of random intercepts non-zero part</span></a>
 <a class="sourceLine" id="cb1-23" title="23">D22 &lt;-<span class="st"> </span><span class="fl">0.4</span> <span class="co"># variance of random intercepts zero part</span></a>
 <a class="sourceLine" id="cb1-24" title="24"></a>
 <a class="sourceLine" id="cb1-25" title="25"><span class="co"># we simulate random effects</span></a>
-<a class="sourceLine" id="cb1-26" title="26">b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11)), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D22)))</a>
+<a class="sourceLine" id="cb1-26" title="26">b &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(D11)), <span class="kw"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(D22)))</a>
 <a class="sourceLine" id="cb1-27" title="27"><span class="co"># linear predictor non-zero part</span></a>
-<a class="sourceLine" id="cb1-28" title="28">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, <span class="dv">1</span>, <span class="dt">drop =</span> <span class="ot">FALSE</span>]))</a>
+<a class="sourceLine" id="cb1-28" title="28">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, <span class="dv">1</span>, <span class="dt">drop =</span> <span class="ot">FALSE</span>]))</a>
 <a class="sourceLine" id="cb1-29" title="29"><span class="co"># linear predictor zero part</span></a>
-<a class="sourceLine" id="cb1-30" title="30">eta_zi &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(X_zi <span class="op">%*%</span><span class="st"> </span>gammas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z_zi <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, <span class="dv">2</span>, <span class="dt">drop =</span> <span class="ot">FALSE</span>]))</a>
+<a class="sourceLine" id="cb1-30" title="30">eta_zi &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(X_zi <span class="op">%*%</span><span class="st"> </span>gammas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(Z_zi <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, <span class="dv">2</span>, <span class="dt">drop =</span> <span class="ot">FALSE</span>]))</a>
 <a class="sourceLine" id="cb1-31" title="31"><span class="co"># we simulate negative binomial longitudinal data</span></a>
-<a class="sourceLine" id="cb1-32" title="32">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/NegBinomial">rnbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">size =</span> shape, <span class="dt">mu =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(eta_y))</a>
+<a class="sourceLine" id="cb1-32" title="32">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/NegBinomial.html">rnbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">size =</span> shape, <span class="dt">mu =</span> <span class="kw"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(eta_y))</a>
 <a class="sourceLine" id="cb1-33" title="33"><span class="co"># we set the extra zeros</span></a>
-<a class="sourceLine" id="cb1-34" title="34">DF<span class="op">$</span>y[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/logical">as.logical</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Binomial">rbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Logistic">plogis</a></span>(eta_zi)))] &lt;-<span class="st"> </span><span class="dv">0</span></a></code></pre></div>
+<a class="sourceLine" id="cb1-34" title="34">DF<span class="op">$</span>y[<span class="kw"><a href="https://rdrr.io/r/base/logical.html">as.logical</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(n <span class="op">*</span><span class="st"> </span>K, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> <span class="kw"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(eta_zi)))] &lt;-<span class="st"> </span><span class="dv">0</span></a></code></pre></div>
 </div>
 <div id="function-for-scaled-simulated-residuals" class="section level2">
 <h2 class="hasAnchor">
 <a href="#function-for-scaled-simulated-residuals" class="anchor"></a>Function for Scaled Simulated Residuals</h2>
 <p>Because <strong>DHARMa</strong> does not yet support objects of class <code>MixMod</code> (see <a href="https://github.com/florianhartig/DHARMa/issues/96">here</a> for current plants), we provide a wrapper function to enable the use of the procedures of the package:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">resids_plot &lt;-<span class="st"> </span><span class="cf">function</span> (object, y, <span class="dt">nsim =</span> <span class="dv">1000</span>,</a>
-<a class="sourceLine" id="cb2-2" title="2">                         <span class="dt">type =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"subject_specific"</span>, <span class="st">"mean_subject"</span>),</a>
+<a class="sourceLine" id="cb2-2" title="2">                         <span class="dt">type =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"subject_specific"</span>, <span class="st">"mean_subject"</span>),</a>
 <a class="sourceLine" id="cb2-3" title="3">                         <span class="dt">integerResponse =</span> <span class="ot">NULL</span>) {</a>
-<a class="sourceLine" id="cb2-4" title="4">    <span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/class">inherits</a></span>(object, <span class="st">"MixMod"</span>))</a>
-<a class="sourceLine" id="cb2-5" title="5">        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/stop">stop</a></span>(<span class="st">"this function works for 'MixMod' objects.</span><span class="ch">\n</span><span class="st">"</span>)</a>
-<a class="sourceLine" id="cb2-6" title="6">    type &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match.arg">match.arg</a></span>(type)</a>
-<a class="sourceLine" id="cb2-7" title="7">    <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">is.null</a></span>(integerResponse)) {</a>
-<a class="sourceLine" id="cb2-8" title="8">        integer_families &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"binomial"</span>, <span class="st">"poisson"</span>, <span class="st">"negative binomial"</span>,</a>
+<a class="sourceLine" id="cb2-4" title="4">    <span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/class.html">inherits</a></span>(object, <span class="st">"MixMod"</span>))</a>
+<a class="sourceLine" id="cb2-5" title="5">        <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"this function works for 'MixMod' objects.</span><span class="ch">\n</span><span class="st">"</span>)</a>
+<a class="sourceLine" id="cb2-6" title="6">    type &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span>(type)</a>
+<a class="sourceLine" id="cb2-7" title="7">    <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(integerResponse)) {</a>
+<a class="sourceLine" id="cb2-8" title="8">        integer_families &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"binomial"</span>, <span class="st">"poisson"</span>, <span class="st">"negative binomial"</span>,</a>
 <a class="sourceLine" id="cb2-9" title="9">                              <span class="st">"zero-inflated poisson"</span>, <span class="st">"zero-inflated negative binomial"</span>, </a>
 <a class="sourceLine" id="cb2-10" title="10">                              <span class="st">"hurdle poisson"</span>, <span class="st">"hurdle negative binomial"</span>)</a>
-<a class="sourceLine" id="cb2-11" title="11">        numeric_families &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"hurdle log-normal"</span>, <span class="st">"beta"</span>, <span class="st">"hurdle beta"</span>)</a>
+<a class="sourceLine" id="cb2-11" title="11">        numeric_families &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"hurdle log-normal"</span>, <span class="st">"beta"</span>, <span class="st">"hurdle beta"</span>)</a>
 <a class="sourceLine" id="cb2-12" title="12">        <span class="cf">if</span> (object<span class="op">$</span>family<span class="op">$</span>family <span class="op">%in%</span><span class="st"> </span>integer_families) {</a>
 <a class="sourceLine" id="cb2-13" title="13">            integerResponse &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
 <a class="sourceLine" id="cb2-14" title="14">        } <span class="cf">else</span> <span class="cf">if</span> (object<span class="op">$</span>family<span class="op">$</span>family <span class="op">%in%</span><span class="st"> </span>numeric_families) {</a>
 <a class="sourceLine" id="cb2-15" title="15">            integerResponse &lt;-<span class="st"> </span><span class="ot">FALSE</span></a>
 <a class="sourceLine" id="cb2-16" title="16">        } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb2-17" title="17">            <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/stop">stop</a></span>(<span class="st">"non build-in family object; you need to specify the 'integerResponse',</span><span class="ch">\n</span><span class="st">"</span>,</a>
+<a class="sourceLine" id="cb2-17" title="17">            <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"non build-in family object; you need to specify the 'integerResponse',</span><span class="ch">\n</span><span class="st">"</span>,</a>
 <a class="sourceLine" id="cb2-18" title="18">                 <span class="st">"</span><span class="ch">\t</span><span class="st">argument indicating whether the outcome variable is integer or not.</span><span class="ch">\n</span><span class="st">"</span>)</a>
 <a class="sourceLine" id="cb2-19" title="19">        }</a>
 <a class="sourceLine" id="cb2-20" title="20">    }</a>
 <a class="sourceLine" id="cb2-21" title="21">    sims &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">simulate</a></span>(object, <span class="dt">nsim =</span> nsim, <span class="dt">type =</span> type)</a>
 <a class="sourceLine" id="cb2-22" title="22">    fits &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">fitted</a></span>(object, <span class="dt">type =</span> type)</a>
-<a class="sourceLine" id="cb2-23" title="23">    dharmaRes &lt;-<span class="st"> </span>DHARMa<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DHARMa/topics/createDHARMa">createDHARMa</a></span>(<span class="dt">simulatedResponse =</span> sims, <span class="dt">observedResponse =</span> y, </a>
+<a class="sourceLine" id="cb2-23" title="23">    dharmaRes &lt;-<span class="st"> </span>DHARMa<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/DHARMa/man/createDHARMa.html">createDHARMa</a></span>(<span class="dt">simulatedResponse =</span> sims, <span class="dt">observedResponse =</span> y, </a>
 <a class="sourceLine" id="cb2-24" title="24">                              <span class="dt">fittedPredictedResponse =</span> fits, </a>
 <a class="sourceLine" id="cb2-25" title="25">                              <span class="dt">integerResponse =</span> integerResponse)</a>
 <a class="sourceLine" id="cb2-26" title="26">    DHARMa<span class="op">:::</span><span class="kw">plot.DHARMa</span>(dharmaRes, <span class="dt">quantreg =</span> <span class="ot">FALSE</span>)</a>
@@ -210,7 +218,7 @@
 <a href="#poisson-mixed-model" class="anchor"></a>Poisson Mixed Model</h2>
 <p>We start by fitting a Poisson mixed model to the data using the following call to <code><a href="../reference/mixed_model.html">mixed_model()</a></code>:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">fm1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y <span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, <span class="dt">data =</span> DF,</a>
-<a class="sourceLine" id="cb3-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">poisson</a></span>())</a></code></pre></div>
+<a class="sourceLine" id="cb3-2" title="2">                   <span class="dt">family =</span> <span class="kw"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>())</a></code></pre></div>
 <p>We expect that this model will not fit the data well because it does not account for the overdispersion and the extra zeros we have simulated. To evaluate the fit we compare the simulated outcome data from the model versus the observed outcome data. If the model fits the data well, we would expect the observed outcome data to have the same empirical distribution as the empirical distribution of the simulated data. The following call to <code>resids_plot()</code> performs this comparison:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">resids_plot</span>(fm1, DF<span class="op">$</span>y)</a></code></pre></div>
 <p><img src="Goodness_of_Fit_files/figure-html/poisson_mixed_model_GoF-1.png" width="816" style="display: block; margin: auto;"></p>
@@ -257,6 +265,7 @@
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -278,17 +287,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by <a href="http://www.drizopoulos.com/">Dimitris Rizopoulos</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

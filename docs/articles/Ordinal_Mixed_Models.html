@@ -6,9 +6,16 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mixed Models for Ordinal Data • GLMMadaptive</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Mixed Models for Ordinal Data">
 <meta property="og:description" content="">
 <meta property="og:image" content="/logo.png">
@@ -31,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.5</span>
       </span>
     </div>
 
@@ -39,7 +46,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -89,7 +96,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/drizopoulos/GLMMadaptive">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -102,13 +109,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Mixed Models for Ordinal Data</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2019-07-16</h4>
+            <h4 class="date">2019-09-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Ordinal_Mixed_Models.Rmd"><code>vignettes/Ordinal_Mixed_Models.Rmd</code></a></small>
       <div class="hidden name"><code>Ordinal_Mixed_Models.Rmd</code></div>
@@ -167,16 +175,16 @@
 <h3 class="hasAnchor">
 <a href="#simulated-data" class="anchor"></a>Simulated Data</h3>
 <p>In this section we will illustrate how the continuation ratio model can be fitted with the <code><a href="../reference/mixed_model.html">mixed_model()</a></code> function of the <strong>GLMMadaptive</strong> package. We start by simulating some data for an ordinal longitudinal outcome under the forward formulation of the continuation ratio model:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1234</span>)</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1234</span>)</a>
 <a class="sourceLine" id="cb1-2" title="2">n &lt;-<span class="st"> </span><span class="dv">300</span> <span class="co"># number of subjects</span></a>
 <a class="sourceLine" id="cb1-3" title="3">K &lt;-<span class="st"> </span><span class="dv">8</span> <span class="co"># number of measurements per subject</span></a>
 <a class="sourceLine" id="cb1-4" title="4">t_max &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># maximum follow-up time</span></a>
 <a class="sourceLine" id="cb1-5" title="5"></a>
 <a class="sourceLine" id="cb1-6" title="6"><span class="co"># we constuct a data frame with the design: </span></a>
 <a class="sourceLine" id="cb1-7" title="7"><span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span></a>
-<a class="sourceLine" id="cb1-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
-<a class="sourceLine" id="cb1-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">replicate</a></span>(n, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sort">sort</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Uniform">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),</a>
-<a class="sourceLine" id="cb1-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rep">rep</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/gl">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
+<a class="sourceLine" id="cb1-8" title="8">DF &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">id =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(n), <span class="dt">each =</span> K),</a>
+<a class="sourceLine" id="cb1-9" title="9">                 <span class="dt">time =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(n, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(K <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">0</span>, t_max))))),</a>
+<a class="sourceLine" id="cb1-10" title="10">                 <span class="dt">sex =</span> <span class="kw"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="dv">2</span>, n<span class="op">/</span><span class="dv">2</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="dt">each =</span> K))</a>
 <a class="sourceLine" id="cb1-11" title="11"></a>
 <a class="sourceLine" id="cb1-12" title="12"><span class="co"># design matrices for the fixed and random effects</span></a>
 <a class="sourceLine" id="cb1-13" title="13"><span class="co"># we exclude the intercept from the design matrix of the fixed effects because in the</span></a>
@@ -184,23 +192,23 @@
 <a class="sourceLine" id="cb1-15" title="15">X &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>sex <span class="op">*</span><span class="st"> </span>time, <span class="dt">data =</span> DF)[, <span class="dv">-1</span>]</a>
 <a class="sourceLine" id="cb1-16" title="16">Z &lt;-<span class="st"> </span><span class="kw"><a href="../reference/methods.html">model.matrix</a></span>(<span class="op">~</span><span class="st"> </span>time, <span class="dt">data =</span> DF)</a>
 <a class="sourceLine" id="cb1-17" title="17"></a>
-<a class="sourceLine" id="cb1-18" title="18">thrs &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="dv">0</span>, <span class="fl">0.9</span>) <span class="co"># thresholds for the different ordinal categories</span></a>
-<a class="sourceLine" id="cb1-19" title="19">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="fl">-0.05</span>) <span class="co"># fixed effects coefficients</span></a>
+<a class="sourceLine" id="cb1-18" title="18">thrs &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="dv">0</span>, <span class="fl">0.9</span>) <span class="co"># thresholds for the different ordinal categories</span></a>
+<a class="sourceLine" id="cb1-19" title="19">betas &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="fl">-0.05</span>) <span class="co"># fixed effects coefficients</span></a>
 <a class="sourceLine" id="cb1-20" title="20">D11 &lt;-<span class="st"> </span><span class="fl">0.48</span> <span class="co"># variance of random intercepts</span></a>
 <a class="sourceLine" id="cb1-21" title="21">D22 &lt;-<span class="st"> </span><span class="fl">0.1</span> <span class="co"># variance of random slopes</span></a>
 <a class="sourceLine" id="cb1-22" title="22"></a>
 <a class="sourceLine" id="cb1-23" title="23"><span class="co"># we simulate random effects</span></a>
-<a class="sourceLine" id="cb1-24" title="24">b &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D11)), <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(D22)))</a>
+<a class="sourceLine" id="cb1-24" title="24">b &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(D11)), <span class="kw"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(n, <span class="dt">sd =</span> <span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(D22)))</a>
 <a class="sourceLine" id="cb1-25" title="25"><span class="co"># linear predictor</span></a>
-<a class="sourceLine" id="cb1-26" title="26">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/drop">drop</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, , <span class="dt">drop =</span> <span class="ot">FALSE</span>]))</a>
+<a class="sourceLine" id="cb1-26" title="26">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/drop.html">drop</a></span>(X <span class="op">%*%</span><span class="st"> </span>betas <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(Z <span class="op">*</span><span class="st"> </span>b[DF<span class="op">$</span>id, , <span class="dt">drop =</span> <span class="ot">FALSE</span>]))</a>
 <a class="sourceLine" id="cb1-27" title="27"><span class="co"># linear predictor for each category under forward CR formulation</span></a>
 <a class="sourceLine" id="cb1-28" title="28"><span class="co"># for the backward formulation, check the note below</span></a>
-<a class="sourceLine" id="cb1-29" title="29">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/outer">outer</a></span>(eta_y, thrs, <span class="st">"+"</span>)</a>
+<a class="sourceLine" id="cb1-29" title="29">eta_y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/outer.html">outer</a></span>(eta_y, thrs, <span class="st">"+"</span>)</a>
 <a class="sourceLine" id="cb1-30" title="30"><span class="co"># marginal probabilities per category</span></a>
 <a class="sourceLine" id="cb1-31" title="31">mprobs &lt;-<span class="st"> </span><span class="kw"><a href="../reference/continuation_ratio.html">cr_marg_probs</a></span>(eta_y)</a>
 <a class="sourceLine" id="cb1-32" title="32"><span class="co"># we simulate ordinal longitudinal data</span></a>
-<a class="sourceLine" id="cb1-33" title="33">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unname">unname</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(mprobs, <span class="dv">1</span>, sample, <span class="dt">x =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">ncol</a></span>(mprobs), <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>))</a>
-<a class="sourceLine" id="cb1-34" title="34">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">factor</a></span>(DF<span class="op">$</span>y, <span class="dt">levels =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"none"</span>, <span class="st">"mild"</span>, <span class="st">"moderate"</span>, <span class="st">"severe"</span>))</a></code></pre></div>
+<a class="sourceLine" id="cb1-33" title="33">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/unname.html">unname</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(mprobs, <span class="dv">1</span>, sample, <span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(mprobs), <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb1-34" title="34">DF<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(DF<span class="op">$</span>y, <span class="dt">levels =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"none"</span>, <span class="st">"mild"</span>, <span class="st">"moderate"</span>, <span class="st">"severe"</span>))</a></code></pre></div>
 <p><strong>Note:</strong> If we wanted to simulate from the backward formulation of continuation ratio model, we need to reverse the ordering of the thresholds, namely the line <code>eta_y &lt;- outer(eta_y, thrs, "+")</code> of the code above should be replaced by <code>eta_y &lt;- outer(eta_y, rev(thrs), "+")</code>, and also specify in the call to <code><a href="../reference/continuation_ratio.html">cr_marg_probs()</a></code> that <code>direction = "backward"</code>.</p>
 </div>
 <div id="data-preparation-forward-formulation" class="section level3">
@@ -219,7 +227,7 @@
 <a href="#basic-continuation-ratio-model" class="anchor"></a>Basic Continuation Ratio Model</h3>
 <p>We begin with a random intercepts model, with fixed effects <code>sex</code> and <code>time</code>. Note that the <code>cohort</code> variable needs also to be included into the model:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">fm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y_new <span class="op">~</span><span class="st"> </span>cohort <span class="op">+</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, </a>
-<a class="sourceLine" id="cb3-2" title="2">                  <span class="dt">data =</span> cr_data, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</a>
+<a class="sourceLine" id="cb3-2" title="2">                  <span class="dt">data =</span> cr_data, <span class="dt">family =</span> <span class="kw"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())</a>
 <a class="sourceLine" id="cb3-3" title="3"></a>
 <a class="sourceLine" id="cb3-4" title="4">fm</a>
 <a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; </span></a>
@@ -250,7 +258,7 @@
 <a href="#relaxing-the-cr-assumption" class="anchor"></a>Relaxing the CR Assumption</h3>
 <p>As an illustration, we show how we can relax the ordinality assumption for the <code>sex</code> variable, namely, allowing that the effect of <code>sex</code> is different for each of the response categories of our ordinal outcome <span class="math inline">\(y\)</span>. As explained earlier, this can be achieved by simply including the interaction term between the <code>sex</code> and <code>cohort</code> variables, i.e.:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">gm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mixed_model.html">mixed_model</a></span>(y_new <span class="op">~</span><span class="st"> </span>cohort <span class="op">*</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>time, <span class="dt">random =</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>id, </a>
-<a class="sourceLine" id="cb4-2" title="2">                  <span class="dt">data =</span> cr_data, <span class="dt">family =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/family">binomial</a></span>())</a>
+<a class="sourceLine" id="cb4-2" title="2">                  <span class="dt">data =</span> cr_data, <span class="dt">family =</span> <span class="kw"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())</a>
 <a class="sourceLine" id="cb4-3" title="3"></a>
 <a class="sourceLine" id="cb4-4" title="4">gm</a>
 <a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt; </span></a>
@@ -290,17 +298,17 @@
 <h3 class="hasAnchor">
 <a href="#effect-plots-of-conditional-probabilities" class="anchor"></a>Effect Plots of Conditional Probabilities</h3>
 <p>Finally, we produce effect plots based on our final model <code>fm</code>. The required data for these plots are calculated from the <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function. Note that because we would like to obtain the predicted values and confidence intervals for all categories of our ordinal outcome, we also need to include the <code>cohort</code> variable in the specification of the data frame based on which <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> will calculate the predicted values. The following code calculates the data for the plot for both sexes and follow-up times in the interval from 0 to 10:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">nDF &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/with">with</a></span>(cr_data, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/expand.grid">expand.grid</a></span>(<span class="dt">cohort =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(cohort), <span class="dt">sex =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(sex), </a>
-<a class="sourceLine" id="cb6-2" title="2">                                 <span class="dt">time =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dt">length.out =</span> <span class="dv">55</span>)))</a>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">nDF &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/with.html">with</a></span>(cr_data, <span class="kw"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span>(<span class="dt">cohort =</span> <span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(cohort), <span class="dt">sex =</span> <span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(sex), </a>
+<a class="sourceLine" id="cb6-2" title="2">                                 <span class="dt">time =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dt">length.out =</span> <span class="dv">55</span>)))</a>
 <a class="sourceLine" id="cb6-3" title="3"></a>
 <a class="sourceLine" id="cb6-4" title="4">plot_data &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF)</a></code></pre></div>
 <p>Then we produce the plot with the following call to the <code>xyplot()</code> function from the <strong>lattice</strong> package:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">expit &lt;-<span class="st"> </span><span class="cf">function</span> (x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(x) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">exp</a></span>(x))</a>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">expit &lt;-<span class="st"> </span><span class="cf">function</span> (x) <span class="kw"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(x) <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(x))</a>
 <a class="sourceLine" id="cb7-2" title="2">my_panel_bands &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, upper, lower, fill, col, subscripts, ..., font, </a>
 <a class="sourceLine" id="cb7-3" title="3">                           fontface) {</a>
 <a class="sourceLine" id="cb7-4" title="4">    upper &lt;-<span class="st"> </span>upper[subscripts]</a>
 <a class="sourceLine" id="cb7-5" title="5">    lower &lt;-<span class="st"> </span>lower[subscripts]</a>
-<a class="sourceLine" id="cb7-6" title="6">    <span class="kw">panel.polygon</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(x, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rev">rev</a></span>(x)), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(upper, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/rev">rev</a></span>(lower)), <span class="dt">col =</span> fill, <span class="dt">border =</span> <span class="ot">FALSE</span>, ...)</a>
+<a class="sourceLine" id="cb7-6" title="6">    <span class="kw">panel.polygon</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(x, <span class="kw"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(x)), <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(upper, <span class="kw"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(lower)), <span class="dt">col =</span> fill, <span class="dt">border =</span> <span class="ot">FALSE</span>, ...)</a>
 <a class="sourceLine" id="cb7-7" title="7">}</a>
 <a class="sourceLine" id="cb7-8" title="8"></a>
 <a class="sourceLine" id="cb7-9" title="9"><span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">group =</span> cohort, <span class="dt">data =</span> plot_data, </a>
@@ -319,11 +327,11 @@
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">plot_data_m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(fm, nDF, <span class="dt">CR_cohort_varname =</span> <span class="st">"cohort"</span>, </a>
 <a class="sourceLine" id="cb8-2" title="2">                              <span class="dt">direction =</span> <span class="st">"forward"</span>)</a></code></pre></div>
 <p>The dataset produced by <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> contains a new variable named <code>ordinal_response</code> that specifies the different categories of the ordinal outcome. To plot these probabilities we use an analogous call to <code>xyplot()</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">key &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">space =</span> <span class="st">"top"</span>, <span class="dt">rep =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb9-2" title="2">            <span class="dt">text =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(DF<span class="op">$</span>y)[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]),</a>
-<a class="sourceLine" id="cb9-3" title="3">            <span class="dt">lines =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"#0080ff"</span>, <span class="st">"#ff00ff"</span>)),</a>
-<a class="sourceLine" id="cb9-4" title="4">            <span class="dt">text =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(DF<span class="op">$</span>y)[<span class="dv">3</span><span class="op">:</span><span class="dv">4</span>]),</a>
-<a class="sourceLine" id="cb9-5" title="5">            <span class="dt">lines =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">lty =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"darkgreen"</span>, <span class="st">"#ff0000"</span>)))</a>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">key &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">space =</span> <span class="st">"top"</span>, <span class="dt">rep =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb9-2" title="2">            <span class="dt">text =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(DF<span class="op">$</span>y)[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]),</a>
+<a class="sourceLine" id="cb9-3" title="3">            <span class="dt">lines =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">lty =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#0080ff"</span>, <span class="st">"#ff00ff"</span>)),</a>
+<a class="sourceLine" id="cb9-4" title="4">            <span class="dt">text =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(DF<span class="op">$</span>y)[<span class="dv">3</span><span class="op">:</span><span class="dv">4</span>]),</a>
+<a class="sourceLine" id="cb9-5" title="5">            <span class="dt">lines =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">lty =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dt">lwd =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"darkgreen"</span>, <span class="st">"#ff0000"</span>)))</a>
 <a class="sourceLine" id="cb9-6" title="6"></a>
 <a class="sourceLine" id="cb9-7" title="7"><span class="kw">xyplot</span>(<span class="kw">expit</span>(pred) <span class="op">~</span><span class="st"> </span>time <span class="op">|</span><span class="st"> </span>sex, <span class="dt">group =</span> ordinal_response, <span class="dt">data =</span> plot_data_m, </a>
 <a class="sourceLine" id="cb9-8" title="8">       <span class="dt">upper =</span> <span class="kw">expit</span>(plot_data_m<span class="op">$</span>upp), <span class="dt">low =</span> <span class="kw">expit</span>(plot_data_m<span class="op">$</span>low), <span class="dt">type =</span> <span class="st">"l"</span>,</a>
@@ -350,6 +358,7 @@
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -363,17 +372,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by <a href="http://www.drizopoulos.com/">Dimitris Rizopoulos</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>
