@@ -1,4 +1,4 @@
-# GLMMadaptive 0.7.0
+# GLMMadaptive 0.6.5
 
 ## General
 * Added a `weights` argument in `mixed_model()`. These are simple multipliers on the log-likelihood contributions of each group/cluster, i.e., we presume that there are multiple replicates of each group/cluster denoted by the weights.
