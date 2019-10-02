@@ -32,7 +32,7 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
              "object with an extra zero-part.")
     }
     known_families <- c("binomial", "poisson", "negative binomial")
-    data <- as.data.frame(data) # in case 'data' is a tibble
+    data <- orig_data <- as.data.frame(data) # in case 'data' is a tibble
     groups <- unique(c(all.vars(getID_Formula(random)), 
                        if (!is.null(zi_random)) all.vars(getID_Formula(zi_random))))
     data[groups] <- lapply(data[groups], function (x) if (!is.factor(x)) factor(x) else x)
@@ -279,6 +279,7 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
           if (!is.null(out$gammas)) paste0("zi_", names(out$gammas)))
     }
     dimnames(out$Hessian) <- list(all_nams, all_nams)
+    out$data <- orig_data
     out$id <- id_orig
     out$id_name <- id_nam 
     out$offset <- offset

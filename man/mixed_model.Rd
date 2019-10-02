@@ -142,6 +142,7 @@ An object of class \code{"MixMod"} with components:
 \item{Hessian}{a numeric matrix denoting the Hessian matrix at the end of the optimization 
     procedure.}
 \item{converged}{a logical indicating whether convergence was attained.}
+\item{data}{a copy of the \code{data} argument.}
 \item{id}{a copy of the grouping variable from \code{data}.}
 \item{id_name}{a character string with the name of the grouping variable.}
 \item{Terms}{a list with two terms components, \code{termsX} derived from the \code{fixed}
