@@ -1630,5 +1630,39 @@ VIF.MixMod <- function (object, type = c("fixed", "zi_fixed"), ...) {
     result
 }
 
+cooks.distance.MixMod <- function (model, cores = max(parallel::detectCores() - 1, 1), 
+                                   ...) {
+    data <- model$data
+    id <- data[[model$id_name]]
+    unq_id <- unique(id)
+    n <- length(unq_id)
+    cook_distance <- function (exclude, model, data, id) {
+        data_i <- data[id != exclude, ]
+        model_i <- update(model, data = data_i)
+        list(betas = fixef(model_i), Vbetas = vcov(model_i, parm = "fixed-effects"),
+             gammas = if (!is.null(model_i$gammas)) fixef(model_i, "zero_part"), 
+             Vgammas = if (!is.null(model_i$gammas)) vcov(model_i, parm = "zero_part"))
+    }
+    cl <- parallel::makeCluster(cores)
+    res <- parallel::parLapply(cl, unq_id, cook_distance, model = model, 
+                               data = data, id = id)
+    parallel::stopCluster(cl)
+    betas <- fixef(model)
+    betas_i <- do.call(rbind, lapply(res, "[[", "betas"))
+    ss <- rep(betas, each = nrow(betas_i)) - betas_i
+    invCov <- solve(vcov(model, parm = "fixed-effects"))
+    CooksD_betas <- rowSums((ss %*% invCov) * ss)
+    if (!is.null(model$gammas)) {
+        gammas <- fixef(model, "zero_part")
+        gammas_i <- do.call(rbind, lapply(res, "[[", "gammas"))
+        ss <- rep(gammas, each = nrow(gammas_i)) - gammas_i
+        invCov <- solve(vcov(model, parm = "zero_part"))
+        CooksD_gammas <- rowSums((ss %*% invCov) * ss)
+        list(betas = CooksD_betas, gammas = CooksD_gammas)
+    } else {
+        CooksD_betas
+    }
+}
+
 
 

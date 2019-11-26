@@ -30,6 +30,8 @@
 \alias{nobs.MixMod}
 \alias{VIF}
 \alias{VIF.MixMod}
+\alias{cooks.distance}
+\alias{cooks.distance.MixMod}
 
 \title{
 Various Methods for Standard Generics
@@ -117,10 +119,14 @@ VIF(object, \dots)
 
 \method{VIF}{MixMod}(object, type = c("fixed", "zi_fixed"), \dots)
 
+cooks.distance(model, \dots)
+
+\method{cooks.distance}{MixMod}(model, cores = max(parallel::detectCores() - 1, 1), \dots)
+
 }
 
 \arguments{
-\item{object, object2, x, formula}{objects inheriting from class \code{"MixMod"}. When \code{object2}
+\item{object, object2, x, formula, model}{objects inheriting from class \code{"MixMod"}. When \code{object2}
   is also provided, then the model behind \code{object} must be nested within the model 
   behind \code{object2}.}
 \item{sub_model}{character string indicating for which sub-model to extract the estimated
@@ -188,6 +194,7 @@ VIF(object, \dots)
     observations to simulate, \code{mu} a numeric vector of means, \code{phis} a numeric
     vector of extra dispersion/scale parameters, and \code{eta_zi} a numeric vector for 
     the zero-part of the model, if this is relevant.}
+\item{cores}{the number of cores to use in the computation.}
 \item{\dots}{further arguments; currently none is used.}
 }
 

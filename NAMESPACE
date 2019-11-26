@@ -2,7 +2,7 @@ export(mixed_model, marginal_coefs, coef, fixef, ranef, confint, anova, fitted, 
        effectPlotData, negative.binomial, predict, zi.poisson, zi.negative.binomial,
        simulate, model.matrix, model.frame, terms, formula, nobs, hurdle.poisson, 
        hurdle.negative.binomial, hurdle.lognormal, beta.fam, hurdle.beta.fam, students.t,
-       scoring_rules, cr_setup, cr_marg_probs, VIF, unit.lindley)
+       scoring_rules, cr_setup, cr_marg_probs, VIF, unit.lindley, cooks.distance)
 
 importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
              "dbinom", "dnorm", "dpois", "fitted", "glm.fit", "logLik",
@@ -13,7 +13,8 @@ importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
            "sd", "predict", "binomial", "plogis", "poisson", "simulate", "rbinom", 
            "rnbinom", "rpois", "ppois", "qpois", "qnbinom", "pnbinom", "dnbinom", "rbeta",
            "rlnorm", "na.pass", "formula", "family", "optim", "nlminb", "nobs", "rt",
-           "as.formula", "qlogis", "complete.cases", "model.frame.default", "uniroot")
+           "as.formula", "qlogis", "complete.cases", "model.frame.default", "uniroot",
+           "cooks.distance", "update")
 importFrom("utils", "as.relistable", "relist")
 importFrom("MASS", "mvrnorm")
 importFrom("parallel", "makeCluster", "stopCluster", "detectCores", "parLapply")
@@ -50,6 +51,7 @@ S3method(formula, MixMod)
 S3method(family, MixMod)
 S3method(nobs, MixMod)
 S3method(VIF, MixMod)
+S3method(cooks.distance, MixMod)
 
 
 
