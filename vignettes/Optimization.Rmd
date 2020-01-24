@@ -1,0 +1,115 @@
+---
+title: "Optimization and Numerical Integration in GLMMadaptive"
+author: "Dimitris Rizopoulos"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Optimization and Numerical Integration}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library("GLMMadaptive")
+```
+
+# Estimation Procedure
+As described in vignette GLMMadaptive basics (`vignette("GLMMadaptive_basics", package = "GLMMadaptive")`), the log-likelihood function behind the mixed models fitted by **GLMMadaptive** contains an intractable integral over the random effects. In addition, the mode of the log-likelihood function cannot be calculated analytically. Therefore, maximum likelihood estimation requires a combination of numerical integration and optimization.
+
+For the numerical optimization two, interlinked by default, algorithms are implemented. An EM algorithm in which the random effects are treated as 'missing data', and a quasi-Newton algorithm for direct optimization. The EM algorithm is often a more stable algorithm, especially when the initial values are far from the mode of the log-likelihood; however, because it has a linear convergence rate it can be slow reaching the mode. On the other hand, quasi-Newton algorithms typically have a super-linear convergence rate, but they may have trouble if they are initiated far from the mode. For this reason, optimization procedure in **GLMMadaptive** starts with the EM algorithm for a fixed number of iterations that are used as a refinement of the initial values before switching to the quasi-Newton algorithm. 
+
+The numerical integration over the random effects is done using the adaptive Gauss-Hermite quadrature rule. This also requires an optimization step of finding the modes of the complete-data (= observed response variable and unobserved random effects) log-likelihood with respect to the random effects, *for each sample unit*. To decrease the computational cost, the optimization procedure in **GLMMadaptive** does not locate these modes of the random effects in every iteration but every few iterations of the optimization procedure. 
+
+The `control` argument of function `mixed_model()` has a number of arguments that enable the user to determine how the numerical integration and optimization procedure are performed. The relevant arguments are:
+
+- `nAGQ` the number of quadrature points; default is 11 for one and two-dimensional random effects vectors, and 7 otherwise.
+
+- `iter_EM` the number of the first-phase EM iterations; default is 30.
+
+- `update_GH_every` every how many EM iterations the modes of the random effects conditional distribution will be located for the adaptive Gauss-Hermite rule; default is 10.
+
+- `optimizer` sets the optimizer, options are `"optim"` (default) and `"nlminb"`.
+
+- `optim_method` if the optimizer is `"optim"`, you can set here the algorithm to be used, from the available options of the `optim()` function.
+
+- `iter_qN_outer` the number of outer quasi-Newton iterations; every outer quasi-Newton iteration the modes of the random effects conditional distribution are located (i.e., this is the analogous argument for the quasi-Newton phase as the `update_GH_every` was described above for the EM-phase).
+
+- `iter_qN` the number of iterations the quasi-Newton algorithm runs for each out iteration; default is 10, but see also the following argument.
+
+- `iter_qN_incr` the increment in the `iter_qN` iterations after each outer iteration; default is 10.
+
+- `parscale_betas`, `parscale_D`, `parscale_phis` and `parscale_phis` vectors of scaling values for the different sets of parameters, with 'betas' corresponding to the fixed effects, 'D' the unique elements of the covariance matrix of the random effects, 'phis' extra dispersion/scale parameters, and 'gammas' the fixed effects for the extra zeros-part, relevant for zero-inflated and hurdle models.
+
+
+## Controlling the Optimization and Integration
+We start by simulating some data for a binary longitudinal outcome:
+```{r, sim_data, eval = FALSE}
+set.seed(1234)
+n <- 300 # number of subjects
+K <- 4 # number of measurements per subject
+t_max <- 15 # maximum follow-up time
+
+# we constuct a data frame with the design: 
+# everyone has a baseline measurment, and then measurements at K time points
+DF <- data.frame(id = rep(seq_len(n), each = K),
+                 time = gl(K, 1, n*K, labels = paste0("Time", 1:K)),
+                 sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
+
+# design matrices for the fixed and random effects
+X <- model.matrix(~ sex * time, data = DF)
+Z <- model.matrix(~ 1, data = DF)
+
+betas <- c(-2.13, 1, rep(c(1.2, -1.2), K-1)) # fixed effects coefficients
+D11 <- 1 # variance of random intercepts
+
+# we simulate random effects
+b <- cbind(rnorm(n, sd = sqrt(D11)))
+# linear predictor
+eta_y <- as.vector(X %*% betas + rowSums(Z * b[DF$id, ]))
+# we simulate binary longitudinal data
+DF$y <- rbinom(n * K, 1, plogis(eta_y))
+```
+
+We fit a mixed effects logistic regression for `y` assuming random intercepts for the random-effects part, and the main effects of `sex` and `time` for the fixed-effects part. In the call to `mixed_model()`, we are using the default values for the control arguments:
+```{r, default_controls, eval = FALSE}
+mixed_model(fixed = y ~ sex + time, random = ~ 1 | id, data = DF, family = binomial())
+```
+
+In the following example we do not use any EM iterations, and we specify as optimizer the `nlimnb()` function. In addition, during each iteration of the outer loop in which the modes of the modes of the conditional distribution of the random effects are relocated, we increase the number of the quasi-Newton iterations by 5:
+```{r, noEM_nlminb, eval = FALSE}
+mixed_model(fixed = y ~ sex + time, random = ~ 1 | id, data = DF, family = binomial(), 
+            iter_EM = 0, optimizer = "nlminb", iter_qN_incr = 5)
+```
+
+In the following call, we allow again for EM iterations, but we set the number of the iterations to 1000 giving the option to achieve convergence only during the EM-phase. In addition, we set to update the modes of the conditional distribution of the random effects every 5 iterations, and we also set the number of quadrature points to 21:
+```{r, onlyEM, eval = FALSE}
+mixed_model(fixed = y ~ sex + time, random = ~ 1 | id, data = DF, family = binomial(), 
+            iter_EM = 1000, update_GH_every = 5, nAGQ = 21)
+```
+
+To not run the optimization procedure at all, we need to also to set `iter_qN_outer` to 0, e.g.,
+```{r, noOptimization, eval = FALSE}
+mixed_model(fixed = y ~ sex + time, random = ~ 1 | id, data = DF, family = binomial(), 
+            iter_EM = 0, iter_qN_outer = 0)
+```
+
+## Advice on optimization and numerical integration control
+
+- Even though, as mentioned above, the EM algorithm is a more stable algorithm than the quasi-Newton, it can happen in some occasions that it can overshoot and fail to bring the parameters into the neighborhood of the (local) maximum. In these cases you can set to `iter_EM = 0` to only use the quasi-Newton part of the optimization procedure.
+
+- Convergence problems may sometimes be attributed to initial values. The `initial_values` argument of `mixed_model()` can be used to override the default algorithm that calculate these values. For example, in the case of a random intercepts and random slopes model, we could set the initial values for the fixed effects to zero, the variance of the intercepts to 0.5, the variance of the slopes to 0.1 and their covariance to zero by `mixed_model(..., initial_values = list(betas = rep(0, n_fixed_effects), D = matrix(c(0.5, 0, 0, 0.1), 2, 2)))`.
+
+- Coefficients that are several orders of the magnitude different in absolute value can also lead to convergence issues. In such cases it helps to scale variable such that the coefficients are on the same magnitude.
+
+- For dichotomous and count data (complete) separation issues may be encountered. In such cases you can invoke the `penalized` argument of `mixed_model()` that places a Student's t penalty on the fixed effects coefficients. The default mean is zero, the default scale is one, and the degrees of freedom are three.
+
+- With regard to the number of quadrature points, a general advice is to increase them until the coefficients and log-likelihood value seem to be stabilized. However, if you too many quadrature points are put these may also lead to overflow problems. In the majority of the cases, 11 to 15 quadrature points suffice.
+
+
+
