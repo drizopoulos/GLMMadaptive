@@ -1179,30 +1179,4 @@ find_lambda <- function (mu, nu, sumTo = 100) {
     out
 }
 
-y = 4
-eta = 1.2
-mu_fun = exp
-phis = log(2)
-.max = 100
-
-log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
-    # the log density function
-    nu <- exp(phis)
-    mu <- mu_fun(eta)
-    lambda <- find_lambda(mu, nu, .max)
-    Z <- function (lambda, nu, sumTo) {
-        out <- lambda
-        j <- seq(1, sumTo)
-        log_lambda <- log(lambda)
-        nu_log_factorial <- nu * cumsum(log(j))
-        for (i in seq_along(out)) {
-            out[i] <- 1 + sum(exp(j * log_lambda[i] - nu_log_factorial))
-        }
-        out
-    }
-    out <- y * log(lambda) - phis * lgamma(y + 1) - log(Z(lambda, nu, .max))
-    attr(out, "mu_y") <- mu
-    out
-}
-
 

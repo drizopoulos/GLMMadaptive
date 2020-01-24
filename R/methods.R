@@ -621,13 +621,21 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
             }
             m_betas
         }
-        cl <- parallel::makeCluster(cores)
-        res <- parallel::parLapply(cl, blocks, cluster_compute_marg_coefs, tht = tht,
-                                   list_thetas = list_thetas, V = V, XX = X, Z = Z, 
-                                   X_zi = X_zi, Z_zi = Z_zi, M = M,
-                                   object = object, compute_marg_coefs = compute_marg_coefs,
-                                   chol_transf = chol_transf, link_fun = link_fun, seed = seed)
-        parallel::stopCluster(cl)
+        if (cores > 1) {
+            cl <- parallel::makeCluster(cores)
+            res <- parallel::parLapply(cl, blocks, cluster_compute_marg_coefs, tht = tht,
+                                       list_thetas = list_thetas, V = V, XX = X, Z = Z, 
+                                       X_zi = X_zi, Z_zi = Z_zi, M = M,
+                                       object = object, compute_marg_coefs = compute_marg_coefs,
+                                       chol_transf = chol_transf, link_fun = link_fun, seed = seed)
+            parallel::stopCluster(cl)
+        } else {
+            res <- lapply(blocks, cluster_compute_marg_coefs, tht = tht,
+                          list_thetas = list_thetas, V = V, XX = X, Z = Z, 
+                          X_zi = X_zi, Z_zi = Z_zi, M = M,
+                          object = object, compute_marg_coefs = compute_marg_coefs,
+                          chol_transf = chol_transf, link_fun = link_fun, seed = seed)
+        }
         out$var_betas <- var(do.call("rbind", res))
         dimnames(out$var_betas) <- list(names(out$betas), names(out$betas))
         ses <- sqrt(diag(out$var_betas))
