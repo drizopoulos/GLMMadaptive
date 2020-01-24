@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.8</span>
       </span>
     </div>
 
@@ -250,13 +250,18 @@
 <span class='fu'>VIF</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for MixMod</span>
-<span class='fu'>VIF</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fixed"</span>, <span class='st'>"zi_fixed"</span>), <span class='no'>...</span>)</pre>
+<span class='fu'>VIF</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fixed"</span>, <span class='st'>"zi_fixed"</span>), <span class='no'>...</span>)
+
+<span class='fu'>cooks.distance</span>(<span class='no'>model</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for MixMod</span>
+<span class='fu'>cooks.distance</span>(<span class='no'>model</span>, <span class='kw'>cores</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='kw pkg'>parallel</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span>() - <span class='fl'>1</span>, <span class='fl'>1</span>), <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object, object2, x, formula</th>
+      <th>object, object2, x, formula, model</th>
       <td><p>objects inheriting from class <code>"MixMod"</code>. When <code>object2</code>
   is also provided, then the model behind <code>object</code> must be nested within the model 
   behind <code>object2</code>.</p></td>
@@ -391,6 +396,10 @@
     observations to simulate, <code>mu</code> a numeric vector of means, <code>phis</code> a numeric
     vector of extra dispersion/scale parameters, and <code>eta_zi</code> a numeric vector for 
     the zero-part of the model, if this is relevant.</p></td>
+    </tr>
+    <tr>
+      <th>cores</th>
+      <td><p>the number of cores to use in the computation.</p></td>
     </tr>
     <tr>
       <th>...</th>
