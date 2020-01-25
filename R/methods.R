@@ -662,11 +662,7 @@ print.m_coefs <- function (x, digits = max(4, getOption("digits") - 4), ...) {
 }
 
 coef.m_coefs <- function (object, ...) {
-    if (is.null(object$coef_table)) {
-        object$betas
-    } else {
-        object$coef_table
-    }
+    object$betas
 }
 
 vcov.m_coefs <- function (object, ...) {
