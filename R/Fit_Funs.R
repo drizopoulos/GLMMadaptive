@@ -434,7 +434,7 @@ score_gammas <- function (gammas, y, X, betas, Ztb, offset, weights, X_zi, Z_zi,
     - sc
 }
 
-binomial_log_dens = function (y, eta, mu_fun, phis, eta_zi) {
+binomial_log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
     mu_y <- mu_fun(eta)
     out <- if (NCOL(y) == 2L) {
         dbinom(y[, 1L], y[, 1L] + y[, 2L], mu_y, TRUE)
@@ -445,9 +445,17 @@ binomial_log_dens = function (y, eta, mu_fun, phis, eta_zi) {
     out
 }
 
-poisson_log_dens = function (y, eta, mu_fun, phis, eta_zi) {
+poisson_log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
     mu_y <- mu_fun(eta)
     out <- y * log(mu_y) - mu_y - lgamma(y + 1)
+    attr(out, "mu_y") <- mu_y
+    out
+}
+
+gamma_log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+    mu_y <- mu_fun(eta)
+    scale <- exp(phis)
+    out <- dgamma(y, shape = mu_y / scale, scale = scale, log = TRUE)
     attr(out, "mu_y") <- mu_y
     out
 }

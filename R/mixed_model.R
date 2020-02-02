@@ -16,8 +16,7 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
              "package 'lme4'.\n")
     if (length(grep("Negative Binomial", family$family))) {
         stop("Because the namespace of the MASS package seems also to be loaded\n",
-             "  use 'family = GLMMadaptive::negative.binomial(xx)' with 'xx' ", 
-             "denoting a value for the\n  'theta' parameter of the family.")
+             "  use 'family = GLMMadaptive::negative.binomial()'.")
     }
     if (family$family %in% c("zero-inflated poisson", "zero-inflated negative binomial",
                              "hurdle poisson", "hurdle negative binomial", "hurdle beta") && 
@@ -25,13 +24,13 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
         stop("you have defined a family with an extra zero-part;\nat least argument ",
              "'zi_fixed' needs to be defined, and potentially also argument 'zi_random'.")
     }
-    if (family$family %in% c("binomial", "poisson", "negative binomial", "beta") && 
+    if (family$family %in% c("binomial", "poisson", "negative binomial", "beta", "Gamma") && 
         !is.null(zi_fixed)) {
         stop("\nyou have defined a family object *without* an extra zero-part but\n ",
              "you have also specified the 'zi_fixed' argument; use instead a family\n ", 
              "object with an extra zero-part.")
     }
-    known_families <- c("binomial", "poisson", "negative binomial")
+    known_families <- c("binomial", "poisson", "negative binomial", "Gamma")
     data <- orig_data <- as.data.frame(data) # in case 'data' is a tibble
     groups <- unique(c(all.vars(getID_Formula(random)), 
                        if (!is.null(zi_random)) all.vars(getID_Formula(zi_random))))
@@ -197,7 +196,8 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
         Funs$log_dens <- switch(family$family,
                                 'binomial' = binomial_log_dens,
                                 'poisson' = poisson_log_dens,
-                                'negative binomial' = negative.binomial_log_dens)
+                                'negative binomial' = negative.binomial_log_dens,
+                                'Gamma' = gamma_log_dens)
     } else if (family$family %in% known_families && !is.null(family$log_dens)) {
         Funs$log_dens <- family$log_dens
     } else if (!family$family %in% known_families && !is.null(family$log_dens)) {
@@ -229,7 +229,8 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
     if (has_phis) {
         if (family$family %in% c("negative binomial", "zero-inflated negative binomial",
                                  "hurdle negative binomial", "hurdle log-normal",
-                                 "beta", "hurdle beta", "Conway Maxwell Poisson")) {
+                                 "beta", "hurdle beta", "Conway Maxwell Poisson", 
+                                 "Gamma")) {
             n_phis <- 1
         } else if (is.null(n_phis)) {
             stop("argument 'n_phis' needs to be specified.\n")
