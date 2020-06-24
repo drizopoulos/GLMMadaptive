@@ -334,6 +334,7 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                                             mu.eta_fun, score_eta_fun, score_eta_zi_fun, score_phis_fun, 
                                             list_thetas, diag_D, penalized, pen_mu, pen_invSigma, pen_df,
                                             i_contributions = TRUE, weights = weights)
+    names(GH$post_vars) <- rownames(GH$post_modes)
     list(coefficients = betas, phis = if (has_phis) phis, D = D, gammas = gammas,
          post_modes = GH$post_modes, post_vars = GH$post_vars,
          logLik = logLik, Hessian = Hessian, 
