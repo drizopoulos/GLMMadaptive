@@ -1,6 +1,7 @@
 \name{Extra Family Objects}
 \alias{students.t}
 \alias{beta.fam}
+\alias{beta.binomial}
 \alias{zi.poisson}
 \alias{zi.negative.binomial}
 \alias{hurdle.poisson}
@@ -31,6 +32,7 @@ hurdle.negative.binomial()
 hurdle.lognormal()
 hurdle.beta.fam()
 unit.lindley()
+beta.binomial(link = "logit")
 }
 
 \arguments{
