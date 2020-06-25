@@ -21,6 +21,7 @@ Dimitris Rizopoulos \email{d.rizopoulos@erasmusmc.nl}
 }
 
 \examples{
+\donttest{
 # simulate some data
 set.seed(102)
 dd <- expand.grid(f1 = factor(1:3), f2 = LETTERS[1:2], g = 1:30, rep = 1:15,
@@ -89,4 +90,5 @@ fm <-  mixed_model(fixed = y ~ f1 * f2, random = ~ 1 | g, data = dd,
                    initial_values = list("betas" = poisson()))
 
 summary(fm)
+}
 }

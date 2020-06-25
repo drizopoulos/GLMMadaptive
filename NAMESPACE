@@ -15,7 +15,7 @@ importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
            "rnbinom", "rpois", "ppois", "qpois", "qnbinom", "pnbinom", "dnbinom", "rbeta",
            "rlnorm", "na.pass", "formula", "family", "optim", "nlminb", "nobs", "rt",
            "as.formula", "qlogis", "complete.cases", "model.frame.default", "uniroot",
-           "cooks.distance", "update")
+           "cooks.distance", "update", "dgamma")
 importFrom("utils", "as.relistable", "relist")
 importFrom("MASS", "mvrnorm")
 importFrom("parallel", "makeCluster", "stopCluster", "detectCores", "parLapply")
