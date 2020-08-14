@@ -1265,6 +1265,42 @@ beta.binomial <- function (link = "logit") {
               class = "family")
 }
 
-
-
+Gamma.fam <- function () {
+    stats <- make.link("log")
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+        phi <- exp(phis)
+        eta <- as.matrix(eta)
+        mu_y <- mu_fun(eta)
+        out <- dgamma(y, shape = mu_y^2 / phi, scale = phi / mu_y, log = TRUE)
+        attr(out, "mu_y") <- mu_y
+        out
+    }
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
+        phi <- exp(phis)
+        mu <- as.matrix(mu)
+        A <- 2 * mu / phi
+        comp1 <- log(mu) + log(y) - log(phi) - digamma(mu^2 / phi)
+        comp2 <- (mu - y) / phi
+        mu.eta <- mu
+        out <- (A * comp1 + comp2) * mu.eta
+        out
+    }
+    score_phis_fun <- function (y, mu, phis, eta_zi) {
+        phi <- exp(phis)
+        mu <- as.matrix(mu)
+        mu2 <- mu^2
+        comp <- log(phi) + digamma(mu2 / phi) - log(mu) - log(y) - 1
+        out <- (mu2 * comp + y * mu) / phi
+        out
+    }
+    simulate <- function (n, mu, phis, eta_zi) {
+        phi <- exp(phis)
+        rgamma(n, shape = mu^2 / phi, scale = phi / mu)
+    }
+    structure(list(family = "Gamma", link = stats$name, 
+                   linkfun = stats$linkfun, linkinv = stats$linkinv, 
+                   log_dens = log_dens, score_eta_fun = score_eta_fun,
+                   score_phis_fun = score_phis_fun, simulate = simulate),
+              class = "family")
+}
 

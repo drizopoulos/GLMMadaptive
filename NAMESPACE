@@ -3,7 +3,7 @@ export(mixed_model, marginal_coefs, coef, fixef, ranef, confint, anova, fitted, 
        simulate, model.matrix, model.frame, terms, formula, nobs, hurdle.poisson, 
        hurdle.negative.binomial, hurdle.lognormal, beta.fam, hurdle.beta.fam, students.t,
        scoring_rules, cr_setup, cr_marg_probs, VIF, unit.lindley, cooks.distance,
-       beta.binomial)
+       beta.binomial, Gamma.fam)
 
 importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
              "dbinom", "dnorm", "dpois", "fitted", "glm.fit", "logLik",

@@ -9,6 +9,7 @@
 \alias{hurdle.lognormal}
 \alias{hurdle.beta.fam}
 \alias{unit.lindley}
+\alias(Gamma.fam)
 
 
 \title{
@@ -33,6 +34,7 @@ hurdle.lognormal()
 hurdle.beta.fam()
 unit.lindley()
 beta.binomial(link = "logit")
+Gamma.fam()
 }
 
 \arguments{
@@ -40,8 +42,8 @@ beta.binomial(link = "logit")
 \item{df}{the degrees of freedom of the Student's t distribution.}
 }
 
-\note{Currently only the log-link is implemented for the Poisson and negative binomial 
-models, the logit link for the beta and hurdle beta models and the identity link for the 
+\note{Currently only the log-link is implemented for the Poisson, negative binomial 
+and Gamma models, the logit link for the beta and hurdle beta models and the identity link for the 
 log-normal model.}
 
 \examples{
