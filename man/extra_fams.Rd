@@ -9,7 +9,7 @@
 \alias{hurdle.lognormal}
 \alias{hurdle.beta.fam}
 \alias{unit.lindley}
-\alias(Gamma.fam)
+\alias{Gamma.fam}
 
 
 \title{
