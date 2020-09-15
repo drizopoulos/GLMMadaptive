@@ -80,7 +80,7 @@ resids_plot <- function (object, y, nsim = 1000,
         integer_families <- c("binomial", "poisson", "negative binomial",
                               "zero-inflated poisson", "zero-inflated negative binomial", 
                               "hurdle poisson", "hurdle negative binomial")
-        numeric_families <- c("hurdle log-normal", "beta", "hurdle beta")
+        numeric_families <- c("hurdle log-normal", "beta", "hurdle beta", "Gamma")
         if (object$family$family %in% integer_families) {
             integerResponse <- TRUE
         } else if (object$family$family %in% numeric_families) {
