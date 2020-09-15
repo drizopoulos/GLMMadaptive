@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-12</span>
       </span>
     </div>
 
@@ -164,101 +164,101 @@
     <p>Methods for object of class <code>"MixMod"</code> for standard generic functions.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>coef</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>coef</span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for MixMod</span>
-<span class='fu'>coef</span>(<span class='no'>object</span>, <span class='kw'>sub_model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"main"</span>, <span class='st'>"zero_part"</span>),
-    <span class='no'>...</span>)
+<span class='fu'>coef</span>(<span class='kw'>object</span>, sub_model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"main"</span>, <span class='st'>"zero_part"</span>), 
+    <span class='kw'>...</span>)
 
-<span class='fu'>fixef</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for MixMod</span>
-<span class='fu'>fixef</span>(<span class='no'>object</span>, <span class='kw'>sub_model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"main"</span>, <span class='st'>"zero_part"</span>), <span class='no'>...</span>)
-
-<span class='fu'>ranef</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='fu'>fixef</span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for MixMod</span>
-<span class='fu'>ranef</span>(<span class='no'>object</span>, <span class='kw'>post_vars</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>fixef</span>(<span class='kw'>object</span>, sub_model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"main"</span>, <span class='st'>"zero_part"</span>), <span class='kw'>...</span>)
 
-<span class='fu'>confint</span>(<span class='no'>object</span>, <span class='no'>parm</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for MixMod</span>
-<span class='fu'>confint</span>(<span class='no'>object</span>,
-  <span class='kw'>parm</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fixed-effects"</span>, <span class='st'>"var-cov"</span>,<span class='st'>"extra"</span>, <span class='st'>"zero_part"</span>),
-  <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='kw'>sandwich</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
-
-<span class='fu'>anova</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='fu'>ranef</span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for MixMod</span>
-<span class='fu'>anova</span>(<span class='no'>object</span>, <span class='no'>object2</span>, <span class='kw'>test</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>L</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sandwich</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>ranef</span>(<span class='kw'>object</span>, post_vars = <span class='fl'>FALSE</span>, <span class='kw'>...</span>)
 
-<span class='fu'>fitted</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for MixMod</span>
-<span class='fu'>fitted</span>(<span class='no'>object</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"mean_subject"</span>, <span class='st'>"subject_specific"</span>, <span class='st'>"marginal"</span>),
-  <span class='kw'>link_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
-
-<span class='fu'>residuals</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='fu'>confint</span>(<span class='kw'>object</span>, <span class='kw'>parm</span>, level = <span class='fl'>0.95</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for MixMod</span>
-<span class='fu'>residuals</span>(<span class='no'>object</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"mean_subject"</span>, <span class='st'>"subject_specific"</span>, <span class='st'>"marginal"</span>),
-  <span class='kw'>link_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tasnf_y</span> <span class='kw'>=</span> <span class='kw'>function</span> (<span class='no'>x</span>) <span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>confint</span>(<span class='kw'>object</span>, 
+  parm = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fixed-effects"</span>, <span class='st'>"var-cov"</span>,<span class='st'>"extra"</span>, <span class='st'>"zero_part"</span>), 
+  level = <span class='fl'>0.95</span>, sandwich = <span class='fl'>FALSE</span>, <span class='kw'>...</span>)
 
-<span class='fu'>predict</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for MixMod</span>
-<span class='fu'>predict</span>(<span class='no'>object</span>, <span class='no'>newdata</span>, <span class='kw'>newdata2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-    <span class='kw'>type_pred</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"response"</span>, <span class='st'>"link"</span>),
-    <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"mean_subject"</span>, <span class='st'>"subject_specific"</span>, <span class='st'>"marginal"</span>, <span class='st'>"zero_part"</span>),
-    <span class='kw'>se.fit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>M</span> <span class='kw'>=</span> <span class='fl'>300</span>, <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>0.3</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>0.95</span>,
-    <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>return_newdata</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sandwich</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
-
-<span class='fu'>simulate</span>(<span class='no'>object</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>anova</span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for MixMod</span>
-<span class='fu'>simulate</span>(<span class='no'>object</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-    <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"subject_specific"</span>, <span class='st'>"mean_subject"</span>), <span class='kw'>new_RE</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-    <span class='kw'>acount_MLEs_var</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sim_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-    <span class='kw'>sandwich</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>anova</span>(<span class='kw'>object</span>, <span class='kw'>object2</span>, test = <span class='fl'>TRUE</span>, 
+  L = <span class='kw'>NULL</span>, sandwich = <span class='fl'>FALSE</span>, <span class='kw'>...</span>)
 
-<span class='fu'>terms</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>fitted</span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for MixMod</span>
-<span class='fu'>terms</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fixed"</span>, <span class='st'>"random"</span>, <span class='st'>"zi_fixed"</span>, <span class='st'>"zi_random"</span>), <span class='no'>...</span>)
+<span class='fu'>fitted</span>(<span class='kw'>object</span>, 
+  type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"mean_subject"</span>, <span class='st'>"subject_specific"</span>, <span class='st'>"marginal"</span>),
+  link_fun = <span class='kw'>NULL</span>, <span class='kw'>...</span>)
 
-<span class='fu'>formula</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for MixMod</span>
-<span class='fu'>formula</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fixed"</span>, <span class='st'>"random"</span>, <span class='st'>"zi_fixed"</span>, <span class='st'>"zi_random"</span>), <span class='no'>...</span>)
-
-
-<span class='fu'>model.frame</span>(<span class='no'>formula</span>, <span class='no'>...</span>)
+<span class='fu'>residuals</span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for MixMod</span>
-<span class='fu'>model.frame</span>(<span class='no'>formula</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fixed"</span>, <span class='st'>"random"</span>, <span class='st'>"zi_fixed"</span>, <span class='st'>"zi_random"</span>), <span class='no'>...</span>)
-
-<span class='fu'>model.matrix</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for MixMod</span>
-<span class='fu'>model.matrix</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fixed"</span>, <span class='st'>"random"</span>, <span class='st'>"zi_fixed"</span>, <span class='st'>"zi_random"</span>), <span class='no'>...</span>)
-
-<span class='fu'>nobs</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='fu'>residuals</span>(<span class='kw'>object</span>, 
+  type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"mean_subject"</span>, <span class='st'>"subject_specific"</span>, <span class='st'>"marginal"</span>), 
+  link_fun = <span class='kw'>NULL</span>, tasnf_y = <span class='fu'>function</span> (<span class='kw'>x</span>) <span class='kw'>x</span>, <span class='kw'>...</span>)
+  
+<span class='fu'>predict</span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for MixMod</span>
-<span class='fu'>nobs</span>(<span class='no'>object</span>, <span class='kw'>level</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)
-
-<span class='fu'>VIF</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='fu'>predict</span>(<span class='kw'>object</span>, <span class='kw'>newdata</span>, newdata2 = <span class='kw'>NULL</span>, 
+    type_pred = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"response"</span>, <span class='st'>"link"</span>),
+    type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"mean_subject"</span>, <span class='st'>"subject_specific"</span>, <span class='st'>"marginal"</span>, <span class='st'>"zero_part"</span>),
+    se.fit = <span class='fl'>FALSE</span>, M = <span class='fl'>300</span>, df = <span class='fl'>10</span>, scale = <span class='fl'>0.3</span>, level = <span class='fl'>0.95</span>, 
+    seed = <span class='fl'>1</span>, return_newdata = <span class='fl'>FALSE</span>, sandwich = <span class='fl'>FALSE</span>, <span class='kw'>...</span>)
+    
+<span class='fu'>simulate</span>(<span class='kw'>object</span>, nsim = <span class='fl'>1</span>, seed = <span class='kw'>NULL</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for MixMod</span>
-<span class='fu'>VIF</span>(<span class='no'>object</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fixed"</span>, <span class='st'>"zi_fixed"</span>), <span class='no'>...</span>)
-
-<span class='fu'>cooks.distance</span>(<span class='no'>model</span>, <span class='no'>...</span>)
+<span class='fu'>simulate</span>(<span class='kw'>object</span>, nsim = <span class='fl'>1</span>, seed = <span class='kw'>NULL</span>, 
+    type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"subject_specific"</span>, <span class='st'>"mean_subject"</span>), new_RE = <span class='fl'>FALSE</span>,
+    acount_MLEs_var = <span class='fl'>FALSE</span>, sim_fun = <span class='kw'>NULL</span>, 
+    sandwich = <span class='fl'>FALSE</span>, <span class='kw'>...</span>)
+    
+<span class='fu'>terms</span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for MixMod</span>
-<span class='fu'>cooks.distance</span>(<span class='no'>model</span>, <span class='kw'>cores</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='kw pkg'>parallel</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span>() - <span class='fl'>1</span>, <span class='fl'>1</span>), <span class='no'>...</span>)</pre>
+<span class='fu'>terms</span>(<span class='kw'>x</span>, type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fixed"</span>, <span class='st'>"random"</span>, <span class='st'>"zi_fixed"</span>, <span class='st'>"zi_random"</span>), <span class='kw'>...</span>)
+
+<span class='fu'>formula</span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
+
+<span class='co'># S3 method for MixMod</span>
+<span class='fu'>formula</span>(<span class='kw'>x</span>, type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fixed"</span>, <span class='st'>"random"</span>, <span class='st'>"zi_fixed"</span>, <span class='st'>"zi_random"</span>), <span class='kw'>...</span>)
+
+
+<span class='fu'>model.frame</span>(<span class='kw'>formula</span>, <span class='kw'>...</span>)
+
+<span class='co'># S3 method for MixMod</span>
+<span class='fu'>model.frame</span>(<span class='kw'>formula</span>, type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fixed"</span>, <span class='st'>"random"</span>, <span class='st'>"zi_fixed"</span>, <span class='st'>"zi_random"</span>), <span class='kw'>...</span>)
+
+<span class='fu'>model.matrix</span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
+
+<span class='co'># S3 method for MixMod</span>
+<span class='fu'>model.matrix</span>(<span class='kw'>object</span>, type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fixed"</span>, <span class='st'>"random"</span>, <span class='st'>"zi_fixed"</span>, <span class='st'>"zi_random"</span>), <span class='kw'>...</span>)
+
+<span class='fu'>nobs</span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
+
+<span class='co'># S3 method for MixMod</span>
+<span class='fu'>nobs</span>(<span class='kw'>object</span>, level = <span class='fl'>1</span>, <span class='kw'>...</span>)
+
+<span class='fu'>VIF</span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
+
+<span class='co'># S3 method for MixMod</span>
+<span class='fu'>VIF</span>(<span class='kw'>object</span>, type = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"fixed"</span>, <span class='st'>"zi_fixed"</span>), <span class='kw'>...</span>)
+
+<span class='fu'>cooks.distance</span>(<span class='kw'>model</span>, <span class='kw'>...</span>)
+
+<span class='co'># S3 method for MixMod</span>
+<span class='fu'>cooks.distance</span>(<span class='kw'>model</span>, cores = <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='kw'>parallel</span>::<span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span>() <span class='op'>-</span> <span class='fl'>1</span>, <span class='fl'>1</span>), <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -447,7 +447,7 @@
  extra zero-part, <code>type = "marginal"</code> predictions are not yet implemented.</p> 
 <p>When <code>se.fit = TRUE</code> and <code>type = "subject_specific"</code>, standard errors and 
  confidence intervals for the subject-specific predictions are obtained by a Monte Carlo 
- scheme entailing three steps repeated <code>M</code> times, namely</p><dl'>
+ scheme entailing three steps repeated <code>M</code> times, namely</p><dl>
     <dt>Step I</dt><dd><p>Account for the variability of maximum likelihood estimates (MLES) by 
         simulating a new value \(\theta^*\) for the parameters \(\theta\) from a 
         multivariate normal distribution with mean the MLEs and covariance matrix the 
@@ -479,6 +479,9 @@
     <p>The estimated fixed and random effects, coefficients (this is similar as in package 
 <b>nlme</b>), confidence intervals fitted values (on the scale on the response) and 
 residuals.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Dimitris Rizopoulos <a href='mailto:d.rizopoulos@erasmusmc.nl'>d.rizopoulos@erasmusmc.nl</a></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='mixed_model.html'>mixed_model</a></code>,
@@ -488,39 +491,42 @@ residuals.</p>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='co'># simulate some data</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>123L</span>)
-<span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fl'>500</span>
-<span class='no'>K</span> <span class='kw'>&lt;-</span> <span class='fl'>15</span>
-<span class='no'>t.max</span> <span class='kw'>&lt;-</span> <span class='fl'>25</span>
+<span class='kw'>n</span> <span class='op'>&lt;-</span> <span class='fl'>500</span>
+<span class='kw'>K</span> <span class='op'>&lt;-</span> <span class='fl'>15</span>
+<span class='kw'>t.max</span> <span class='op'>&lt;-</span> <span class='fl'>25</span>
 
-<span class='no'>betas</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>2.13</span>, -<span class='fl'>0.25</span>, <span class='fl'>0.24</span>, -<span class='fl'>0.05</span>)
-<span class='no'>D</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0</span>, <span class='fl'>2</span>, <span class='fl'>2</span>)
-<span class='no'>D</span>[<span class='fl'>1</span>:<span class='fl'>2</span>, <span class='fl'>1</span>:<span class='fl'>2</span>] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.48</span>, -<span class='fl'>0.08</span>, -<span class='fl'>0.08</span>, <span class='fl'>0.18</span>)
+<span class='kw'>betas</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='op'>-</span><span class='fl'>2.13</span>, <span class='op'>-</span><span class='fl'>0.25</span>, <span class='fl'>0.24</span>, <span class='op'>-</span><span class='fl'>0.05</span>)
+<span class='kw'>D</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0</span>, <span class='fl'>2</span>, <span class='fl'>2</span>)
+<span class='kw'>D</span>[<span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>] <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.48</span>, <span class='op'>-</span><span class='fl'>0.08</span>, <span class='op'>-</span><span class='fl'>0.08</span>, <span class='fl'>0.18</span>)
 
-<span class='no'>times</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>replicate</a></span>(<span class='no'>n</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='no'>K</span>-<span class='fl'>1</span>, <span class='fl'>0</span>, <span class='no'>t.max</span>)))))
-<span class='no'>group</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>:<span class='fl'>1</span>, <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>n</span>/<span class='fl'>2</span>))
-<span class='no'>DF</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>year</span> <span class='kw'>=</span> <span class='no'>times</span>, <span class='kw'>group</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='no'>group</span>, <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>K</span>)))
-<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'>model.matrix</span>(~ <span class='no'>group</span> * <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>)
-<span class='no'>Z</span> <span class='kw'>&lt;-</span> <span class='fu'>model.matrix</span>(~ <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>)
+<span class='kw'>times</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>replicate</a></span>(<span class='kw'>n</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='kw'>K</span><span class='op'>-</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='kw'>t.max</span>)))))
+<span class='kw'>group</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span><span class='op'>:</span><span class='fl'>1</span>, each = <span class='kw'>n</span><span class='op'>/</span><span class='fl'>2</span>))
+<span class='kw'>DF</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(year = <span class='kw'>times</span>, group = <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='kw'>group</span>, each = <span class='kw'>K</span>)))
+<span class='kw'>X</span> <span class='op'>&lt;-</span> <span class='fu'>model.matrix</span>(<span class='op'>~</span> <span class='kw'>group</span> <span class='op'>*</span> <span class='kw'>year</span>, data = <span class='kw'>DF</span>)
+<span class='kw'>Z</span> <span class='op'>&lt;-</span> <span class='fu'>model.matrix</span>(<span class='op'>~</span> <span class='kw'>year</span>, data = <span class='kw'>DF</span>)
 
-<span class='no'>b</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='no'>D</span>[<span class='fl'>1</span>, <span class='fl'>1</span>])), <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='no'>D</span>[<span class='fl'>2</span>, <span class='fl'>2</span>])))
-<span class='no'>id</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>:<span class='no'>n</span>, <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>K</span>)
-<span class='no'>eta.y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/vector.html'>as.vector</a></span>(<span class='no'>X</span> <span class='kw'>%*%</span> <span class='no'>betas</span> + <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span>(<span class='no'>Z</span> * <span class='no'>b</span>[<span class='no'>id</span>, ]))
-<span class='no'>DF</span>$<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span>(<span class='no'>n</span> * <span class='no'>K</span>, <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/stats/Logistic.html'>plogis</a></span>(<span class='no'>eta.y</span>))
-<span class='no'>DF</span>$<span class='no'>id</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>id</span>)
+<span class='kw'>b</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='kw'>n</span>, sd = <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='kw'>D</span>[<span class='fl'>1</span>, <span class='fl'>1</span>])), <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='kw'>n</span>, sd = <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='kw'>D</span>[<span class='fl'>2</span>, <span class='fl'>2</span>])))
+<span class='kw'>id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='kw'>n</span>, each = <span class='kw'>K</span>)
+<span class='kw'>eta.y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/vector.html'>as.vector</a></span>(<span class='kw'>X</span> <span class='op'>%*%</span> <span class='kw'>betas</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span>(<span class='kw'>Z</span> <span class='op'>*</span> <span class='kw'>b</span>[<span class='kw'>id</span>, ]))
+<span class='kw'>DF</span><span class='op'>$</span><span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span>(<span class='kw'>n</span> <span class='op'>*</span> <span class='kw'>K</span>, <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/stats/Logistic.html'>plogis</a></span>(<span class='kw'>eta.y</span>))
+<span class='kw'>DF</span><span class='op'>$</span><span class='kw'>id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='kw'>id</span>)
 
 <span class='co'>################################################</span>
 
-<span class='no'>fm1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(<span class='kw'>fixed</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>year</span> + <span class='no'>group</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='no'>year</span> <span class='kw'>|</span> <span class='no'>id</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>,
-                   <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>())
+<span class='kw'>fm1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(fixed = <span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>year</span> <span class='op'>+</span> <span class='kw'>group</span>, random = <span class='op'>~</span> <span class='kw'>year</span> <span class='op'>|</span> <span class='kw'>id</span>, data = <span class='kw'>DF</span>,
+                   family = <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>())
 
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'>coef</span>(<span class='no'>fm1</span>))</div><div class='output co'>#&gt;   (Intercept)        year    group1
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'>coef</span>(<span class='kw'>fm1</span>))
+</div><div class='output co'>#&gt;   (Intercept)        year    group1
 #&gt; 1   -2.305583  0.54222964 -0.265744
 #&gt; 2   -1.905620 -0.12525835 -0.265744
 #&gt; 3   -2.395862 -0.14287663 -0.265744
 #&gt; 4   -2.379605  0.42518796 -0.265744
 #&gt; 5   -2.348230  0.01936688 -0.265744
-#&gt; 6   -2.056225  0.69488984 -0.265744</div><div class='input'><span class='fu'>fixef</span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; (Intercept)        year      group1 
-#&gt;  -2.2391690   0.1968593  -0.2657440 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'>ranef</span>(<span class='no'>fm1</span>))</div><div class='output co'>#&gt;   (Intercept)       year
+#&gt; 6   -2.056225  0.69488984 -0.265744</div><div class='input'><span class='fu'>fixef</span>(<span class='kw'>fm1</span>)
+</div><div class='output co'>#&gt; (Intercept)        year      group1 
+#&gt;  -2.2391690   0.1968593  -0.2657440 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'>ranef</span>(<span class='kw'>fm1</span>))
+</div><div class='output co'>#&gt;   (Intercept)       year
 #&gt; 1 -0.06641381  0.3453703
 #&gt; 2  0.33354914 -0.3221176
 #&gt; 3 -0.15669315 -0.3397359
@@ -528,27 +534,33 @@ residuals.</p>
 #&gt; 5 -0.10906060 -0.1774924
 #&gt; 6  0.18294398  0.4980305</div><div class='input'>
 
-<span class='fu'>confint</span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt;                  2.5 %   Estimate      97.5 %
+<span class='fu'>confint</span>(<span class='kw'>fm1</span>)
+</div><div class='output co'>#&gt;                  2.5 %   Estimate      97.5 %
 #&gt; (Intercept) -2.4728845 -2.2391690 -2.00545354
 #&gt; year         0.1529535  0.1968593  0.24076514
-#&gt; group1      -0.5673166 -0.2657440  0.03582867</div><div class='input'><span class='fu'>confint</span>(<span class='no'>fm1</span>, <span class='st'>"var-cov"</span>)</div><div class='output co'>#&gt;                       2.5 %    Estimate      97.5 %
+#&gt; group1      -0.5673166 -0.2657440  0.03582867</div><div class='input'><span class='fu'>confint</span>(<span class='kw'>fm1</span>, <span class='st'>"var-cov"</span>)
+</div><div class='output co'>#&gt;                       2.5 %    Estimate      97.5 %
 #&gt; var.(Intercept)  0.22607344  0.50791169  0.06600001
 #&gt; cov.(Int)_year  -0.08018454 -0.03554827  0.06888253
 #&gt; var.year         0.15508238  0.16033127 -0.81295806</div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'>fitted</span>(<span class='no'>fm1</span>, <span class='st'>"subject_specific"</span>))</div><div class='output co'>#&gt;          1          2          3          4          5          6 
-#&gt; 0.09066165 0.15603499 0.83100175 0.96225413 0.97895242 0.97984947 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'>residuals</span>(<span class='no'>fm1</span>, <span class='st'>"marginal"</span>))</div><div class='output co'>#&gt;          1          2          3          4          5          6 
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'>fitted</span>(<span class='kw'>fm1</span>, <span class='st'>"subject_specific"</span>))
+</div><div class='output co'>#&gt;          1          2          3          4          5          6 
+#&gt; 0.09066165 0.15603499 0.83100175 0.96225413 0.97895242 0.97984947 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'>residuals</span>(<span class='kw'>fm1</span>, <span class='st'>"marginal"</span>))
+</div><div class='output co'>#&gt;          1          2          3          4          5          6 
 #&gt; -0.1805435 -0.1980669  0.6881459  0.6194025  0.5928527  0.5908654 </div><div class='input'>
-<span class='no'>fm2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(<span class='kw'>fixed</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>year</span> * <span class='no'>group</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='no'>year</span> <span class='kw'>|</span> <span class='no'>id</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>,
-                   <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>())
+<span class='kw'>fm2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(fixed = <span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>year</span> <span class='op'>*</span> <span class='kw'>group</span>, random = <span class='op'>~</span> <span class='kw'>year</span> <span class='op'>|</span> <span class='kw'>id</span>, data = <span class='kw'>DF</span>,
+                   family = <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>())
 
 <span class='co'># likelihood ratio test between fm1 and fm2</span>
-<span class='fu'>anova</span>(<span class='no'>fm1</span>, <span class='no'>fm2</span>)</div><div class='output co'>#&gt; 
+<span class='fu'>anova</span>(<span class='kw'>fm1</span>, <span class='kw'>fm2</span>)
+</div><div class='output co'>#&gt; 
 #&gt;         AIC     BIC  log.Lik  LRT df p.value
 #&gt; fm1 5203.04 5228.33 -2595.52                
 #&gt; fm2 5201.62 5231.12 -2593.81 3.43  1  0.0642
 #&gt; </div><div class='input'>
 <span class='co'># the same but with a Wald test</span>
-<span class='fu'>anova</span>(<span class='no'>fm2</span>, <span class='kw'>L</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>)))</div><div class='output co'>#&gt; 
+<span class='fu'>anova</span>(<span class='kw'>fm2</span>, L = <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>)))
+</div><div class='output co'>#&gt; 
 #&gt; Marginal Wald Tests Table
 #&gt; 
 #&gt; User-defined contrasts matrix:
@@ -557,7 +569,7 @@ residuals.</p>
 #&gt; 
 #&gt;    Chisq df Pr(&gt;|Chi|)
 #&gt;   3.7927  1     0.0515
-#&gt; </div><div class='input'># }
+#&gt; </div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -574,7 +586,7 @@ residuals.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

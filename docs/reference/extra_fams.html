@@ -85,7 +85,7 @@ mixed_model()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-12</span>
       </span>
     </div>
 
@@ -173,7 +173,7 @@ mixed-effects model, using
 <code><a href='mixed_model.html'>mixed_model()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>students.t</span>(<span class='kw'>df</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/stop.html'>stop</a></span>(<span class='st'>"'df' must be specified"</span>), <span class='kw'>link</span> <span class='kw'>=</span> <span class='st'>"identity"</span>)
+    <pre class="usage"><span class='fu'>students.t</span>(df = <span class='fu'><a href='https://rdrr.io/r/base/stop.html'>stop</a></span>(<span class='st'>"'df' must be specified"</span>), link = <span class='st'>"identity"</span>)
 <span class='fu'>beta.fam</span>()
 <span class='fu'>zi.poisson</span>()
 <span class='fu'>zi.negative.binomial</span>()
@@ -182,7 +182,8 @@ mixed-effects model, using
 <span class='fu'>hurdle.lognormal</span>()
 <span class='fu'>hurdle.beta.fam</span>()
 <span class='fu'>unit.lindley</span>()
-<span class='fu'>beta.binomial</span>(<span class='kw'>link</span> <span class='kw'>=</span> <span class='st'>"logit"</span>)</pre>
+<span class='fu'>beta.binomial</span>(link = <span class='st'>"logit"</span>)
+<span class='fu'>Gamma.fam</span>()</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -199,24 +200,25 @@ mixed-effects model, using
 
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Currently only the log-link is implemented for the Poisson and negative binomial 
-models, the logit link for the beta and hurdle beta models and the identity link for the 
+    <p>Currently only the log-link is implemented for the Poisson, negative binomial 
+and Gamma models, the logit link for the beta and hurdle beta models and the identity link for the 
 log-normal model.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># simulate some data from a negative binomial model</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>102</span>)
-<span class='no'>dd</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span>(<span class='kw'>f1</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='fl'>1</span>:<span class='fl'>3</span>), <span class='kw'>f2</span> <span class='kw'>=</span> <span class='no'>LETTERS</span>[<span class='fl'>1</span>:<span class='fl'>2</span>], <span class='kw'>g</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>30</span>, <span class='kw'>rep</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>15</span>,
-                  <span class='kw'>KEEP.OUT.ATTRS</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='no'>mu</span> <span class='kw'>&lt;-</span> <span class='fl'>5</span>*(-<span class='fl'>4</span> + <span class='fu'><a href='https://rdrr.io/r/base/with.html'>with</a></span>(<span class='no'>dd</span>, <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span>(<span class='no'>f1</span>) + <span class='fl'>4</span> * <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span>(<span class='no'>f2</span>)))
-<span class='no'>dd</span>$<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/NegBinomial.html'>rnbinom</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>dd</span>), <span class='kw'>mu</span> <span class='kw'>=</span> <span class='no'>mu</span>, <span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)
+<span class='kw'>dd</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span>(f1 = <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>), f2 = <span class='kw'>LETTERS</span>[<span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>], g = <span class='fl'>1</span><span class='op'>:</span><span class='fl'>30</span>, rep = <span class='fl'>1</span><span class='op'>:</span><span class='fl'>15</span>,
+                  KEEP.OUT.ATTRS = <span class='fl'>FALSE</span>)
+<span class='kw'>mu</span> <span class='op'>&lt;-</span> <span class='fl'>5</span><span class='op'>*</span>(<span class='op'>-</span><span class='fl'>4</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/with.html'>with</a></span>(<span class='kw'>dd</span>, <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span>(<span class='kw'>f1</span>) <span class='op'>+</span> <span class='fl'>4</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span>(<span class='kw'>f2</span>)))
+<span class='kw'>dd</span><span class='op'>$</span><span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/NegBinomial.html'>rnbinom</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='kw'>dd</span>), mu = <span class='kw'>mu</span>, size = <span class='fl'>0.5</span>)
 
 <span class='co'># Fit a zero-inflated Poisson model, with only fixed effects in the </span>
 <span class='co'># zero-inflated part</span>
-<span class='no'>fm1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(<span class='kw'>fixed</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>f1</span> * <span class='no'>f2</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> <span class='kw'>|</span> <span class='no'>g</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>dd</span>,
-                  <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'>zi.poisson</span>(), <span class='kw'>zi_fixed</span> <span class='kw'>=</span> ~ <span class='fl'>1</span>)
+<span class='kw'>fm1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(fixed = <span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>f1</span> <span class='op'>*</span> <span class='kw'>f2</span>, random = <span class='op'>~</span> <span class='fl'>1</span> <span class='op'>|</span> <span class='kw'>g</span>, data = <span class='kw'>dd</span>, 
+                  family = <span class='fu'>zi.poisson</span>(), zi_fixed = <span class='op'>~</span> <span class='fl'>1</span>)
 
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; 
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>fm1</span>)
+</div><div class='output co'>#&gt; 
 #&gt; Call:
 #&gt; mixed_model(fixed = y ~ f1 * f2, random = ~1 | g, data = dd, 
 #&gt;     family = zi.poisson(), zi_fixed = ~1)
@@ -260,11 +262,12 @@ log-normal model.</p>
 <span class='co'># \donttest{</span>
 <span class='co'># We extend the previous model allowing also for a random intercept in the</span>
 <span class='co'># zero-inflated part</span>
-<span class='no'>fm2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(<span class='kw'>fixed</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>f1</span> * <span class='no'>f2</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> <span class='kw'>|</span> <span class='no'>g</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>dd</span>,
-                  <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'>zi.poisson</span>(), <span class='kw'>zi_fixed</span> <span class='kw'>=</span> ~ <span class='fl'>1</span>, <span class='kw'>zi_random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> <span class='kw'>|</span> <span class='no'>g</span>)
+<span class='kw'>fm2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(fixed = <span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>f1</span> <span class='op'>*</span> <span class='kw'>f2</span>, random = <span class='op'>~</span> <span class='fl'>1</span> <span class='op'>|</span> <span class='kw'>g</span>, data = <span class='kw'>dd</span>, 
+                  family = <span class='fu'>zi.poisson</span>(), zi_fixed = <span class='op'>~</span> <span class='fl'>1</span>, zi_random = <span class='op'>~</span> <span class='fl'>1</span> <span class='op'>|</span> <span class='kw'>g</span>)
 
 <span class='co'># We do a likelihood ratio test between the two models</span>
-<span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>fm1</span>, <span class='no'>fm2</span>)</div><div class='output co'>#&gt; 
+<span class='fu'><a href='MixMod Methods.html'>anova</a></span>(<span class='kw'>fm1</span>, <span class='kw'>fm2</span>)
+</div><div class='output co'>#&gt; 
 #&gt;          AIC      BIC   log.Lik  LRT df p.value
 #&gt; fm1 77329.32 77340.53 -38656.66                
 #&gt; fm2 77331.95 77345.96 -38655.97 1.37  2  0.5047
@@ -273,10 +276,11 @@ log-normal model.</p>
 <span class='co'>#############################################################################</span>
 
 <span class='co'># The same as above but with a negative binomial model</span>
-<span class='no'>gm1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(<span class='kw'>fixed</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>f1</span> * <span class='no'>f2</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> <span class='kw'>|</span> <span class='no'>g</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>dd</span>,
-                  <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'>zi.negative.binomial</span>(), <span class='kw'>zi_fixed</span> <span class='kw'>=</span> ~ <span class='fl'>1</span>)
+<span class='kw'>gm1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(fixed = <span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>f1</span> <span class='op'>*</span> <span class='kw'>f2</span>, random = <span class='op'>~</span> <span class='fl'>1</span> <span class='op'>|</span> <span class='kw'>g</span>, data = <span class='kw'>dd</span>, 
+                  family = <span class='fu'>zi.negative.binomial</span>(), zi_fixed = <span class='op'>~</span> <span class='fl'>1</span>)
 
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>gm1</span>)</div><div class='output co'>#&gt; 
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>gm1</span>)
+</div><div class='output co'>#&gt; 
 #&gt; Call:
 #&gt; mixed_model(fixed = y ~ f1 * f2, random = ~1 | g, data = dd, 
 #&gt;     family = zi.negative.binomial(), zi_fixed = ~1)
@@ -322,11 +326,12 @@ log-normal model.</p>
 #&gt; method: hybrid EM and quasi-Newton
 #&gt; converged: TRUE </div><div class='input'>
 <span class='co'># We do a likelihood ratio test between the Poisson and negative binomial models</span>
-<span class='fu'><a href='methods.html'>anova</a></span>(<span class='no'>fm1</span>, <span class='no'>gm1</span>)</div><div class='output co'>#&gt; 
+<span class='fu'><a href='MixMod Methods.html'>anova</a></span>(<span class='kw'>fm1</span>, <span class='kw'>gm1</span>)
+</div><div class='output co'>#&gt; 
 #&gt;          AIC      BIC   log.Lik      LRT df p.value
 #&gt; fm1 77329.32 77340.53 -38656.66                    
 #&gt; gm1 20080.30 20092.91 -10031.15 57251.01  1 &lt;0.0001
-#&gt; </div><div class='input'># }
+#&gt; </div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -343,7 +348,7 @@ log-normal model.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

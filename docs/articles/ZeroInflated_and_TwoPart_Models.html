@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-12</span>
       </span>
     </div>
 
@@ -116,7 +116,7 @@
       <h1 data-toc-skip>Zero-Inflated and Two-Part Mixed Effects Models</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2020-06-25</h4>
+            <h4 class="date">2020-09-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/ZeroInflated_and_TwoPart_Models.Rmd"><code>vignettes/ZeroInflated_and_TwoPart_Models.Rmd</code></a></small>
       <div class="hidden name"><code>ZeroInflated_and_TwoPart_Models.Rmd</code></div>
@@ -133,46 +133,49 @@
 <div id="zero-inflated-poisson-mixed-effects-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#zero-inflated-poisson-mixed-effects-model" class="anchor"></a>Zero-Inflated Poisson Mixed Effects Model</h2>
-<p>We start our illustrations by showing how we can fit a zero-inflated Poisson mixed effects model. The specification of the required <code>family</code> object is already available in the package as the object returned by <code><a href="../reference/extra_fams.html">zi.poisson()</a></code>. <em>Currently, only the log link is allowed.</em> First, we simulate longitudinal data from a zero-inflated negative binomial distribution:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1234</span>)
-<span class="no">n</span> <span class="kw">&lt;-</span> <span class="fl">100</span> <span class="co"># number of subjects</span>
-<span class="no">K</span> <span class="kw">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
-<span class="no">t_max</span> <span class="kw">&lt;-</span> <span class="fl">5</span> <span class="co"># maximum follow-up time</span>
+<p>We start our illustrations by showing how we can fit a zero-inflated Poisson mixed effects model. The specification of the required <code>family</code> object is already available in the package as the object returned by <code><a href="../reference/Extra%20Family%20Objects.html">zi.poisson()</a></code>. <em>Currently, only the log link is allowed.</em> First, we simulate longitudinal data from a zero-inflated negative binomial distribution:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1234</span>)
+<span class="kw">n</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># number of subjects</span>
+<span class="kw">K</span> <span class="op">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
+<span class="kw">t_max</span> <span class="op">&lt;-</span> <span class="fl">5</span> <span class="co"># maximum follow-up time</span>
 
 <span class="co"># we constuct a data frame with the design: </span>
 <span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span>
-<span class="no">DF</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">id</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="no">n</span>), <span class="kw">each</span> <span class="kw">=</span> <span class="no">K</span>),
-                 <span class="kw">time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="no">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="no">K</span> - <span class="fl">1</span>, <span class="fl">0</span>, <span class="no">t_max</span>))))),
-                 <span class="kw">sex</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="no">n</span>/<span class="fl">2</span>, <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="kw">each</span> <span class="kw">=</span> <span class="no">K</span>))
+<span class="kw">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(id = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="kw">n</span>), each = <span class="kw">K</span>),
+                 time = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="kw">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw">K</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0</span>, <span class="kw">t_max</span>))))),
+                 sex = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="kw">n</span><span class="op">/</span><span class="fl">2</span>, labels = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), each = <span class="kw">K</span>))
 
 <span class="co"># design matrices for the fixed and random effects non-zero part</span>
-<span class="no">X</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
-<span class="no">Z</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="fl">1</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
+<span class="kw">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, data = <span class="kw">DF</span>)
+<span class="kw">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="fl">1</span>, data = <span class="kw">DF</span>)
 <span class="co"># design matrices for the fixed and random effects zero part</span>
-<span class="no">X_zi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">sex</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
-<span class="no">Z_zi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="fl">1</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
+<span class="kw">X_zi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">sex</span>, data = <span class="kw">DF</span>)
+<span class="kw">Z_zi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="fl">1</span>, data = <span class="kw">DF</span>)
 
-<span class="no">betas</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.5</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, -<span class="fl">0.03</span>) <span class="co"># fixed effects coefficients non-zero part</span>
-<span class="no">shape</span> <span class="kw">&lt;-</span> <span class="fl">2</span> <span class="co"># shape/size parameter of the negative binomial distribution</span>
-<span class="no">gammas</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">1.5</span>, <span class="fl">0.5</span>) <span class="co"># fixed effects coefficients zero part</span>
-<span class="no">D11</span> <span class="kw">&lt;-</span> <span class="fl">0.5</span> <span class="co"># variance of random intercepts non-zero part</span>
-<span class="no">D22</span> <span class="kw">&lt;-</span> <span class="fl">0.4</span> <span class="co"># variance of random intercepts zero part</span>
+<span class="kw">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.5</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="op">-</span><span class="fl">0.03</span>) <span class="co"># fixed effects coefficients non-zero part</span>
+<span class="kw">shape</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="co"># shape/size parameter of the negative binomial distribution</span>
+<span class="kw">gammas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0.5</span>) <span class="co"># fixed effects coefficients zero part</span>
+<span class="kw">D11</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="co"># variance of random intercepts non-zero part</span>
+<span class="kw">D22</span> <span class="op">&lt;-</span> <span class="fl">0.4</span> <span class="co"># variance of random intercepts zero part</span>
 
 <span class="co"># we simulate random effects</span>
-<span class="no">b</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D11</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D22</span>)))
+<span class="kw">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D11</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D22</span>)))
 <span class="co"># linear predictor non-zero part</span>
-<span class="no">eta_y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="no">X</span> <span class="kw">%*%</span> <span class="no">betas</span> + <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">Z</span> * <span class="no">b</span>[<span class="no">DF</span>$<span class="no">id</span>, <span class="fl">1</span>, <span class="kw">drop</span> <span class="kw">=</span> <span class="fl">FALSE</span>]))
+<span class="kw">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="kw">X</span> <span class="op">%*%</span> <span class="kw">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="kw">Z</span> <span class="op">*</span> <span class="kw">b</span>[<span class="kw">DF</span><span class="op">$</span><span class="kw">id</span>, <span class="fl">1</span>, drop = <span class="fl">FALSE</span>]))
 <span class="co"># linear predictor zero part</span>
-<span class="no">eta_zi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="no">X_zi</span> <span class="kw">%*%</span> <span class="no">gammas</span> + <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">Z_zi</span> * <span class="no">b</span>[<span class="no">DF</span>$<span class="no">id</span>, <span class="fl">2</span>, <span class="kw">drop</span> <span class="kw">=</span> <span class="fl">FALSE</span>]))
+<span class="kw">eta_zi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="kw">X_zi</span> <span class="op">%*%</span> <span class="kw">gammas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="kw">Z_zi</span> <span class="op">*</span> <span class="kw">b</span>[<span class="kw">DF</span><span class="op">$</span><span class="kw">id</span>, <span class="fl">2</span>, drop = <span class="fl">FALSE</span>]))
 <span class="co"># we simulate negative binomial longitudinal data</span>
-<span class="no">DF</span>$<span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/NegBinomial.html">rnbinom</a></span>(<span class="no">n</span> * <span class="no">K</span>, <span class="kw">size</span> <span class="kw">=</span> <span class="no">shape</span>, <span class="kw">mu</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="no">eta_y</span>))
+<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/NegBinomial.html">rnbinom</a></span>(<span class="kw">n</span> <span class="op">*</span> <span class="kw">K</span>, size = <span class="kw">shape</span>, mu = <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="kw">eta_y</span>))
 <span class="co"># we set the extra zeros</span>
-<span class="no">DF</span>$<span class="no">y</span>[<span class="fu"><a href="https://rdrr.io/r/base/logical.html">as.logical</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(<span class="no">n</span> * <span class="no">K</span>, <span class="kw">size</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">prob</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="no">eta_zi</span>)))] <span class="kw">&lt;-</span> <span class="fl">0</span></pre></body></html></div>
+<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span>[<span class="fu"><a href="https://rdrr.io/r/base/logical.html">as.logical</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(<span class="kw">n</span> <span class="op">*</span> <span class="kw">K</span>, size = <span class="fl">1</span>, prob = <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="kw">eta_zi</span>)))] <span class="op">&lt;-</span> <span class="fl">0</span>
+</pre></div>
 <p>A zero-inflated Poisson mixed model with only fixed effects in the zero part is fitted with the following call to <code><a href="../reference/mixed_model.html">mixed_model()</a></code>:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">fm1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                   <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="../reference/extra_fams.html">zi.poisson</a></span>(), <span class="kw">zi_fixed</span> <span class="kw">=</span> ~ <span class="no">sex</span>)
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="kw">fm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>,
+                   family = <span class="fu"><a href="../reference/Extra%20Family%20Objects.html">zi.poisson</a></span>(), zi_fixed = <span class="op">~</span> <span class="kw">sex</span>)
 
-<span class="no">fm1</span>
+<span class="kw">fm1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 | id, data = DF, </span>
@@ -195,11 +198,13 @@
 <span class="co">#&gt; (Intercept)   sexfemale </span>
 <span class="co">#&gt;   -1.210597    0.498611 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2223.937</span></pre></body></html></div>
+<span class="co">#&gt; log-Lik: -2223.937</span>
+</pre></div>
 <p>As noted above, only the log link is currently available for the non-zero part and the logit link for the zero part. Hence, the estimated fixed effects for the two parts are interpreted accordingly. We extend <code>fm1</code> by allowing also for random intercepts in the zero part. We should note that by default the random intercept of the non-zero part is correlated with the random intercept from the zero part:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">fm2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="no">fm1</span>, <span class="kw">zi_random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>)
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="kw">fm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="kw">fm1</span>, zi_random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>)
 
-<span class="no">fm2</span>
+<span class="kw">fm2</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 | id, data = DF, </span>
@@ -224,23 +229,27 @@
 <span class="co">#&gt; (Intercept)   sexfemale </span>
 <span class="co">#&gt;   -1.112309    0.427672 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2214.277</span></pre></body></html></div>
+<span class="co">#&gt; log-Lik: -2214.277</span>
+</pre></div>
 <p>We test if we need the extra random effect using a likelihood ratio test:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="../reference/methods.html">anova</a></span>(<span class="no">fm1</span>, <span class="no">fm2</span>)
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="fu"><a href="../reference/MixMod%20Methods.html">anova</a></span>(<span class="kw">fm1</span>, <span class="kw">fm2</span>)
 <span class="co">#&gt; </span>
 <span class="co">#&gt;         AIC     BIC  log.Lik   LRT df p.value</span>
 <span class="co">#&gt; fm1 4461.87 4480.11 -2223.94                 </span>
-<span class="co">#&gt; fm2 4446.55 4470.00 -2214.28 19.32  2   1e-04</span></pre></body></html></div>
+<span class="co">#&gt; fm2 4446.55 4470.00 -2214.28 19.32  2   1e-04</span>
+</pre></div>
 <p>The results suggest that the extra random effect improves the fit of the model.</p>
 </div>
 <div id="zero-inflated-negative-binomial-mixed-effects-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#zero-inflated-negative-binomial-mixed-effects-model" class="anchor"></a>Zero-Inflated Negative Binomial Mixed Effects Model</h2>
-<p>We continue with the same data, but we now take into account the potential over-dispersion in the data using a zero-inflated negative binomial model. To fit this mixed model we use an almost identical syntax to what we just did above - the only difference is that we now specify as family the <code><a href="../reference/extra_fams.html">zi.negative.binomial()</a></code> object:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">gm1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                   <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="../reference/extra_fams.html">zi.negative.binomial</a></span>(), <span class="kw">zi_fixed</span> <span class="kw">=</span> ~ <span class="no">sex</span>)
+<p>We continue with the same data, but we now take into account the potential over-dispersion in the data using a zero-inflated negative binomial model. To fit this mixed model we use an almost identical syntax to what we just did above - the only difference is that we now specify as family the <code><a href="../reference/Extra%20Family%20Objects.html">zi.negative.binomial()</a></code> object:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="kw">gm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>,
+                   family = <span class="fu"><a href="../reference/Extra%20Family%20Objects.html">zi.negative.binomial</a></span>(), zi_fixed = <span class="op">~</span> <span class="kw">sex</span>)
 
-<span class="no">gm1</span>
+<span class="kw">gm1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 | id, data = DF, </span>
@@ -266,13 +275,16 @@
 <span class="co">#&gt; dispersion parameter:</span>
 <span class="co">#&gt;  2.227075 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -1958.746</span></pre></body></html></div>
-<p>Similarly to <code>fm1</code>, in <code>gm1</code> we specified only fixed effects for the logistic regression for the zero part. We now compare this model with the zero-inflated Poisson model that allowed for a random intercept in the zero part. The comparison can be done with the <code><a href="../reference/methods.html">anova()</a></code> method; because the two models are not nested, we set <code>test = FALSE</code> in the call to <code><a href="../reference/methods.html">anova()</a></code>, i.e.:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="../reference/methods.html">anova</a></span>(<span class="no">gm1</span>, <span class="no">fm2</span>, <span class="kw">test</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
+<span class="co">#&gt; log-Lik: -1958.746</span>
+</pre></div>
+<p>Similarly to <code>fm1</code>, in <code>gm1</code> we specified only fixed effects for the logistic regression for the zero part. We now compare this model with the zero-inflated Poisson model that allowed for a random intercept in the zero part. The comparison can be done with the <code><a href="../reference/MixMod%20Methods.html">anova()</a></code> method; because the two models are not nested, we set <code>test = FALSE</code> in the call to <code><a href="../reference/MixMod%20Methods.html">anova()</a></code>, i.e.:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="fu"><a href="../reference/MixMod%20Methods.html">anova</a></span>(<span class="kw">gm1</span>, <span class="kw">fm2</span>, test = <span class="fl">FALSE</span>)
 <span class="co">#&gt; </span>
 <span class="co">#&gt;         AIC     BIC  log.Lik df</span>
 <span class="co">#&gt; gm1 3933.49 3954.33 -1958.75   </span>
-<span class="co">#&gt; fm2 4446.55 4470.00 -2214.28  1</span></pre></body></html></div>
+<span class="co">#&gt; fm2 4446.55 4470.00 -2214.28  1</span>
+</pre></div>
 <p>We observe that accounting for the over-dispersion seems to better improve the fit than including the random intercepts term in the zero part.</p>
 </div>
 <div id="two-part-mixed-effects-model-for-semi-continuous-data" class="section level2">
@@ -280,105 +292,110 @@
 <a href="#two-part-mixed-effects-model-for-semi-continuous-data" class="anchor"></a>Two-Part Mixed Effects Model for Semi-Continuous Data</h2>
 <p>To further illustrate the flexibility provided by <strong>GLMMadaptive</strong> in allowing users to specify their own family objects with a specific log density function, we consider the setting of multivariate semi-continuous data. That is, continuous data with excess zeros. In the literature the class of two-part / hurdle mixed models has been proposed to analyze such data. These models specify a logistic regression for the dichotomous indicator that the outcome is zero or not, and a standard linear mixed model for the logarithmic transformation of the non-zero responses.</p>
 <p>We start again by simulating some longitudinal data from this model:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1234</span>)
-<span class="no">n</span> <span class="kw">&lt;-</span> <span class="fl">100</span> <span class="co"># number of subjects</span>
-<span class="no">K</span> <span class="kw">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
-<span class="no">t_max</span> <span class="kw">&lt;-</span> <span class="fl">5</span> <span class="co"># maximum follow-up time</span>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1234</span>)
+<span class="kw">n</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># number of subjects</span>
+<span class="kw">K</span> <span class="op">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
+<span class="kw">t_max</span> <span class="op">&lt;-</span> <span class="fl">5</span> <span class="co"># maximum follow-up time</span>
 
 <span class="co"># we constuct a data frame with the design: </span>
 <span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span>
-<span class="no">DF</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">id</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="no">n</span>), <span class="kw">each</span> <span class="kw">=</span> <span class="no">K</span>),
-                 <span class="kw">time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="no">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="no">K</span> - <span class="fl">1</span>, <span class="fl">0</span>, <span class="no">t_max</span>))))),
-                 <span class="kw">sex</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="no">n</span>/<span class="fl">2</span>, <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="kw">each</span> <span class="kw">=</span> <span class="no">K</span>))
+<span class="kw">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(id = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="kw">n</span>), each = <span class="kw">K</span>),
+                 time = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="kw">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw">K</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0</span>, <span class="kw">t_max</span>))))),
+                 sex = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="kw">n</span><span class="op">/</span><span class="fl">2</span>, labels = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), each = <span class="kw">K</span>))
 
 <span class="co"># design matrices for the fixed and random effects non-zero part</span>
-<span class="no">X</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
-<span class="no">Z</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">time</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
+<span class="kw">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, data = <span class="kw">DF</span>)
+<span class="kw">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">time</span>, data = <span class="kw">DF</span>)
 <span class="co"># design matrices for the fixed and random effects zero part</span>
-<span class="no">X_zi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">sex</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
-<span class="no">Z_zi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="fl">1</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
+<span class="kw">X_zi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">sex</span>, data = <span class="kw">DF</span>)
+<span class="kw">Z_zi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="fl">1</span>, data = <span class="kw">DF</span>)
 
-<span class="no">betas</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">2.13</span>, -<span class="fl">0.25</span>, <span class="fl">0.24</span>, -<span class="fl">0.05</span>) <span class="co"># fixed effects coefficients non-zero part</span>
-<span class="no">sigma</span> <span class="kw">&lt;-</span> <span class="fl">0.5</span> <span class="co"># standard deviation error terms non-zero part</span>
-<span class="no">gammas</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">1.5</span>, <span class="fl">0.5</span>) <span class="co"># fixed effects coefficients zero part</span>
-<span class="no">D11</span> <span class="kw">&lt;-</span> <span class="fl">0.5</span> <span class="co"># variance of random intercepts non-zero part</span>
-<span class="no">D22</span> <span class="kw">&lt;-</span> <span class="fl">0.1</span> <span class="co"># variance of random slopes non-zero part</span>
-<span class="no">D33</span> <span class="kw">&lt;-</span> <span class="fl">0.4</span> <span class="co"># variance of random intercepts zero part</span>
+<span class="kw">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">2.13</span>, <span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span>) <span class="co"># fixed effects coefficients non-zero part</span>
+<span class="kw">sigma</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="co"># standard deviation error terms non-zero part</span>
+<span class="kw">gammas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0.5</span>) <span class="co"># fixed effects coefficients zero part</span>
+<span class="kw">D11</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="co"># variance of random intercepts non-zero part</span>
+<span class="kw">D22</span> <span class="op">&lt;-</span> <span class="fl">0.1</span> <span class="co"># variance of random slopes non-zero part</span>
+<span class="kw">D33</span> <span class="op">&lt;-</span> <span class="fl">0.4</span> <span class="co"># variance of random intercepts zero part</span>
 
 <span class="co"># we simulate random effects</span>
-<span class="no">b</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D11</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D22</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D33</span>)))
+<span class="kw">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D11</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D22</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D33</span>)))
 <span class="co"># linear predictor non-zero part</span>
-<span class="no">eta_y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="no">X</span> <span class="kw">%*%</span> <span class="no">betas</span> + <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">Z</span> * <span class="no">b</span>[<span class="no">DF</span>$<span class="no">id</span>, <span class="fl">1</span>:<span class="fl">2</span>, <span class="kw">drop</span> <span class="kw">=</span> <span class="fl">FALSE</span>]))
+<span class="kw">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="kw">X</span> <span class="op">%*%</span> <span class="kw">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="kw">Z</span> <span class="op">*</span> <span class="kw">b</span>[<span class="kw">DF</span><span class="op">$</span><span class="kw">id</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, drop = <span class="fl">FALSE</span>]))
 <span class="co"># linear predictor zero part</span>
-<span class="no">eta_zi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="no">X_zi</span> <span class="kw">%*%</span> <span class="no">gammas</span> + <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">Z_zi</span> * <span class="no">b</span>[<span class="no">DF</span>$<span class="no">id</span>, <span class="fl">3</span>, <span class="kw">drop</span> <span class="kw">=</span> <span class="fl">FALSE</span>]))
+<span class="kw">eta_zi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="kw">X_zi</span> <span class="op">%*%</span> <span class="kw">gammas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="kw">Z_zi</span> <span class="op">*</span> <span class="kw">b</span>[<span class="kw">DF</span><span class="op">$</span><span class="kw">id</span>, <span class="fl">3</span>, drop = <span class="fl">FALSE</span>]))
 <span class="co"># we simulate log-normal longitudinal data</span>
-<span class="no">DF</span>$<span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span> * <span class="no">K</span>, <span class="kw">mean</span> <span class="kw">=</span> <span class="no">eta_y</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="no">sigma</span>))
+<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span> <span class="op">*</span> <span class="kw">K</span>, mean = <span class="kw">eta_y</span>, sd = <span class="kw">sigma</span>))
 <span class="co"># we set the zeros from the logistic regression</span>
-<span class="no">DF</span>$<span class="no">y</span>[<span class="fu"><a href="https://rdrr.io/r/base/logical.html">as.logical</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(<span class="no">n</span> * <span class="no">K</span>, <span class="kw">size</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">prob</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="no">eta_zi</span>)))] <span class="kw">&lt;-</span> <span class="fl">0</span></pre></body></html></div>
-<p>To fit the two-part mixed model for log-normal data we can use the already build-in <code><a href="../reference/extra_fams.html">hurdle.lognormal()</a></code> family object. However, just as an illustration, and to show that users can define their own family objects to be used in <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, we explain how exactly <code><a href="../reference/extra_fams.html">hurdle.lognormal()</a></code> is specified. To define the family object: The minimal requirement is to specify the <code>log_dens</code> component and the link function; however, as also explained in the <a href="http://www.drizopoulos.com/vignettes/Custom_Models.html">Custom Models</a> vignette, the internal calculations will be faster and more stable if the user also specifies the score vector for the linear predictor of the non-zero part (function <code>score_eta_fun()</code>), the derivative of the log density with respect to <code>phis</code> (function <code>score_phis_fun()</code>), and because we have a model with a zero part, also the derivative of the log density with respect to the linear predictor of the zero part (function <code>score_eta_zi_fun()</code>). Finally, for being able to simulate from the model using the <code><a href="../reference/methods.html">simulate()</a></code> method, the function <code><a href="../reference/methods.html">simulate()</a></code> within the family object can also be specified. Hence, the family object for the two-part model is defined as:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">hurdle.lognormal</span> <span class="kw">&lt;-</span> <span class="kw">function</span> () {
-    <span class="no">stats</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/make.link.html">make.link</a></span>(<span class="st">"identity"</span>)
-    <span class="no">log_dens</span> <span class="kw">&lt;-</span> <span class="kw">function</span> (<span class="no">y</span>, <span class="no">eta</span>, <span class="no">mu_fun</span>, <span class="no">phis</span>, <span class="no">eta_zi</span>) {
-        <span class="no">sigma</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="no">phis</span>)
+<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span>[<span class="fu"><a href="https://rdrr.io/r/base/logical.html">as.logical</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(<span class="kw">n</span> <span class="op">*</span> <span class="kw">K</span>, size = <span class="fl">1</span>, prob = <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="kw">eta_zi</span>)))] <span class="op">&lt;-</span> <span class="fl">0</span>
+</pre></div>
+<p>To fit the two-part mixed model for log-normal data we can use the already build-in <code><a href="../reference/Extra%20Family%20Objects.html">hurdle.lognormal()</a></code> family object. However, just as an illustration, and to show that users can define their own family objects to be used in <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, we explain how exactly <code><a href="../reference/Extra%20Family%20Objects.html">hurdle.lognormal()</a></code> is specified. To define the family object: The minimal requirement is to specify the <code>log_dens</code> component and the link function; however, as also explained in the <a href="http://www.drizopoulos.com/vignettes/Custom_Models.html">Custom Models</a> vignette, the internal calculations will be faster and more stable if the user also specifies the score vector for the linear predictor of the non-zero part (function <code>score_eta_fun()</code>), the derivative of the log density with respect to <code>phis</code> (function <code>score_phis_fun()</code>), and because we have a model with a zero part, also the derivative of the log density with respect to the linear predictor of the zero part (function <code>score_eta_zi_fun()</code>). Finally, for being able to simulate from the model using the <code><a href="../reference/MixMod%20Methods.html">simulate()</a></code> method, the function <code><a href="../reference/MixMod%20Methods.html">simulate()</a></code> within the family object can also be specified. Hence, the family object for the two-part model is defined as:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="kw">hurdle.lognormal</span> <span class="op">&lt;-</span> <span class="fu">function</span> () {
+    <span class="kw">stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/make.link.html">make.link</a></span>(<span class="st">"identity"</span>)
+    <span class="kw">log_dens</span> <span class="op">&lt;-</span> <span class="fu">function</span> (<span class="kw">y</span>, <span class="kw">eta</span>, <span class="kw">mu_fun</span>, <span class="kw">phis</span>, <span class="kw">eta_zi</span>) {
+        <span class="kw">sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="kw">phis</span>)
         <span class="co"># binary indicator for y &gt; 0</span>
-        <span class="no">ind</span> <span class="kw">&lt;-</span> <span class="no">y</span> <span class="kw">&gt;</span> <span class="fl">0</span>
+        <span class="kw">ind</span> <span class="op">&lt;-</span> <span class="kw">y</span> <span class="op">&gt;</span> <span class="fl">0</span>
         <span class="co"># non-zero part</span>
-        <span class="no">eta</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="no">eta</span>)
-        <span class="no">eta_zi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="no">eta_zi</span>)
-        <span class="no">out</span> <span class="kw">&lt;-</span> <span class="no">eta</span>
-        <span class="no">out</span>[<span class="no">ind</span>, ] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="no">eta_zi</span>[<span class="no">ind</span>, ], <span class="kw">lower.tail</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">log.p</span> <span class="kw">=</span> <span class="fl">TRUE</span>) +
-            <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="no">y</span>[<span class="no">ind</span>]), <span class="kw">mean</span> <span class="kw">=</span> <span class="no">eta</span>[<span class="no">ind</span>, ], <span class="kw">sd</span> <span class="kw">=</span> <span class="no">sigma</span>, <span class="kw">log</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+        <span class="kw">eta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="kw">eta</span>)
+        <span class="kw">eta_zi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="kw">eta_zi</span>)
+        <span class="kw">out</span> <span class="op">&lt;-</span> <span class="kw">eta</span>
+        <span class="kw">out</span>[<span class="kw">ind</span>, ] <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="kw">eta_zi</span>[<span class="kw">ind</span>, ], lower.tail = <span class="fl">FALSE</span>, log.p = <span class="fl">TRUE</span>) <span class="op">+</span> 
+            <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span>(x = <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="kw">y</span>[<span class="kw">ind</span>]), mean = <span class="kw">eta</span>[<span class="kw">ind</span>, ], sd = <span class="kw">sigma</span>, log = <span class="fl">TRUE</span>)
         <span class="co"># zero part</span>
-        <span class="no">out</span>[!<span class="no">ind</span>, ] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="no">eta_zi</span>[!<span class="no">ind</span>, ], <span class="kw">log.p</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-        <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(<span class="no">out</span>, <span class="st">"mu_y"</span>) <span class="kw">&lt;-</span> <span class="no">eta</span>
-        <span class="no">out</span>
+        <span class="kw">out</span>[<span class="op">!</span><span class="kw">ind</span>, ] <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="kw">eta_zi</span>[<span class="op">!</span><span class="kw">ind</span>, ], log.p = <span class="fl">TRUE</span>)
+        <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(<span class="kw">out</span>, <span class="st">"mu_y"</span>) <span class="op">&lt;-</span> <span class="kw">eta</span>
+        <span class="kw">out</span>
     }
-    <span class="no">score_eta_fun</span> <span class="kw">&lt;-</span> <span class="kw">function</span> (<span class="no">y</span>, <span class="no">mu</span>, <span class="no">phis</span>, <span class="no">eta_zi</span>) {
-        <span class="no">sigma</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="no">phis</span>)
+    <span class="kw">score_eta_fun</span> <span class="op">&lt;-</span> <span class="fu">function</span> (<span class="kw">y</span>, <span class="kw">mu</span>, <span class="kw">phis</span>, <span class="kw">eta_zi</span>) {
+        <span class="kw">sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="kw">phis</span>)
         <span class="co"># binary indicator for y &gt; 0</span>
-        <span class="no">ind</span> <span class="kw">&lt;-</span> <span class="no">y</span> <span class="kw">&gt;</span> <span class="fl">0</span>
+        <span class="kw">ind</span> <span class="op">&lt;-</span> <span class="kw">y</span> <span class="op">&gt;</span> <span class="fl">0</span>
         <span class="co"># non-zero part</span>
-        <span class="no">eta</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="no">mu</span>)
-        <span class="no">out</span> <span class="kw">&lt;-</span> <span class="no">eta</span>
-        <span class="no">out</span>[!<span class="no">ind</span>, ] <span class="kw">&lt;-</span> <span class="fl">0</span>
-        <span class="no">out</span>[<span class="no">ind</span>, ] <span class="kw">&lt;-</span> (<span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="no">y</span>[<span class="no">ind</span>]) - <span class="no">eta</span>[<span class="no">ind</span>, ]) / <span class="no">sigma</span>^<span class="fl">2</span>
-        <span class="no">out</span>
+        <span class="kw">eta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="kw">mu</span>)
+        <span class="kw">out</span> <span class="op">&lt;-</span> <span class="kw">eta</span>
+        <span class="kw">out</span>[<span class="op">!</span><span class="kw">ind</span>, ] <span class="op">&lt;-</span> <span class="fl">0</span>
+        <span class="kw">out</span>[<span class="kw">ind</span>, ] <span class="op">&lt;-</span> (<span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="kw">y</span>[<span class="kw">ind</span>]) <span class="op">-</span> <span class="kw">eta</span>[<span class="kw">ind</span>, ]) <span class="op">/</span> <span class="kw">sigma</span><span class="op">^</span><span class="fl">2</span>
+        <span class="kw">out</span>
     }
-    <span class="no">score_eta_zi_fun</span> <span class="kw">&lt;-</span> <span class="kw">function</span> (<span class="no">y</span>, <span class="no">mu</span>, <span class="no">phis</span>, <span class="no">eta_zi</span>) {
-        <span class="no">ind</span> <span class="kw">&lt;-</span> <span class="no">y</span> <span class="kw">&gt;</span> <span class="fl">0</span>
-        <span class="no">probs</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="no">eta_zi</span>))
-        <span class="no">out</span> <span class="kw">&lt;-</span> <span class="fl">1</span> - <span class="no">probs</span>
-        <span class="no">out</span>[<span class="no">ind</span>, ] <span class="kw">&lt;-</span> - <span class="no">probs</span>[<span class="no">ind</span>, ]
-        <span class="no">out</span>
+    <span class="kw">score_eta_zi_fun</span> <span class="op">&lt;-</span> <span class="fu">function</span> (<span class="kw">y</span>, <span class="kw">mu</span>, <span class="kw">phis</span>, <span class="kw">eta_zi</span>) {
+        <span class="kw">ind</span> <span class="op">&lt;-</span> <span class="kw">y</span> <span class="op">&gt;</span> <span class="fl">0</span>
+        <span class="kw">probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="kw">eta_zi</span>))
+        <span class="kw">out</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="kw">probs</span>
+        <span class="kw">out</span>[<span class="kw">ind</span>, ] <span class="op">&lt;-</span> <span class="op">-</span> <span class="kw">probs</span>[<span class="kw">ind</span>, ]
+        <span class="kw">out</span>
     }
-    <span class="no">score_phis_fun</span> <span class="kw">&lt;-</span> <span class="kw">function</span> (<span class="no">y</span>, <span class="no">mu</span>, <span class="no">phis</span>, <span class="no">eta_zi</span>) {
-        <span class="no">sigma</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="no">phis</span>)
+    <span class="kw">score_phis_fun</span> <span class="op">&lt;-</span> <span class="fu">function</span> (<span class="kw">y</span>, <span class="kw">mu</span>, <span class="kw">phis</span>, <span class="kw">eta_zi</span>) {
+        <span class="kw">sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="kw">phis</span>)
         <span class="co"># binary indicator for y &gt; 0</span>
-        <span class="no">ind</span> <span class="kw">&lt;-</span> <span class="no">y</span> <span class="kw">&gt;</span> <span class="fl">0</span>
+        <span class="kw">ind</span> <span class="op">&lt;-</span> <span class="kw">y</span> <span class="op">&gt;</span> <span class="fl">0</span>
         <span class="co"># non-zero part</span>
-        <span class="no">eta</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="no">mu</span>)
-        <span class="no">out</span> <span class="kw">&lt;-</span> <span class="no">eta</span>
-        <span class="no">out</span>[!<span class="no">ind</span>, ] <span class="kw">&lt;-</span> <span class="fl">0</span>
-        <span class="no">out</span>[<span class="no">ind</span>, ] <span class="kw">&lt;-</span> - <span class="fl">1</span> + (<span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="no">y</span>[<span class="no">ind</span>]) - <span class="no">eta</span>[<span class="no">ind</span>, ])^<span class="fl">2</span> / <span class="no">sigma</span>^<span class="fl">2</span>
-        <span class="no">out</span>
+        <span class="kw">eta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="kw">mu</span>)
+        <span class="kw">out</span> <span class="op">&lt;-</span> <span class="kw">eta</span>
+        <span class="kw">out</span>[<span class="op">!</span><span class="kw">ind</span>, ] <span class="op">&lt;-</span> <span class="fl">0</span>
+        <span class="kw">out</span>[<span class="kw">ind</span>, ] <span class="op">&lt;-</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">+</span> (<span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="kw">y</span>[<span class="kw">ind</span>]) <span class="op">-</span> <span class="kw">eta</span>[<span class="kw">ind</span>, ])<span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="kw">sigma</span><span class="op">^</span><span class="fl">2</span>
+        <span class="kw">out</span>
     }
-    <span class="no">simulate</span> <span class="kw">&lt;-</span> <span class="kw">function</span> (<span class="no">n</span>, <span class="no">mu</span>, <span class="no">phis</span>, <span class="no">eta_zi</span>) {
-        <span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html">rlnorm</a></span>(<span class="kw">n</span> <span class="kw">=</span> <span class="no">n</span>, <span class="kw">meanlog</span> <span class="kw">=</span> <span class="no">mu</span>, <span class="kw">sdlog</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="no">phis</span>))
-        <span class="no">y</span>[<span class="fu"><a href="https://rdrr.io/r/base/logical.html">as.logical</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(<span class="no">n</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="no">eta_zi</span>)))] <span class="kw">&lt;-</span> <span class="fl">0</span>
-        <span class="no">y</span>
+    <span class="kw">simulate</span> <span class="op">&lt;-</span> <span class="fu">function</span> (<span class="kw">n</span>, <span class="kw">mu</span>, <span class="kw">phis</span>, <span class="kw">eta_zi</span>) {
+        <span class="kw">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html">rlnorm</a></span>(n = <span class="kw">n</span>, meanlog = <span class="kw">mu</span>, sdlog = <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="kw">phis</span>))
+        <span class="kw">y</span>[<span class="fu"><a href="https://rdrr.io/r/base/logical.html">as.logical</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(<span class="kw">n</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="kw">eta_zi</span>)))] <span class="op">&lt;-</span> <span class="fl">0</span>
+        <span class="kw">y</span>
     }
-    <span class="fu"><a href="https://rdrr.io/r/base/structure.html">structure</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">family</span> <span class="kw">=</span> <span class="st">"two-part log-normal"</span>, <span class="kw">link</span> <span class="kw">=</span> <span class="no">stats</span>$<span class="no">name</span>,
-                   <span class="kw">linkfun</span> <span class="kw">=</span> <span class="no">stats</span>$<span class="no">linkfun</span>, <span class="kw">linkinv</span> <span class="kw">=</span> <span class="no">stats</span>$<span class="no">linkinv</span>, <span class="kw">log_dens</span> <span class="kw">=</span> <span class="no">log_dens</span>,
-                   <span class="kw">score_eta_fun</span> <span class="kw">=</span> <span class="no">score_eta_fun</span>, <span class="kw">score_eta_zi_fun</span> <span class="kw">=</span> <span class="no">score_eta_zi_fun</span>,
-                   <span class="kw">score_phis_fun</span> <span class="kw">=</span> <span class="no">score_phis_fun</span>, <span class="kw">simulate</span> <span class="kw">=</span> <span class="no">simulate</span>),
-              <span class="kw">class</span> <span class="kw">=</span> <span class="st">"family"</span>)
-}</pre></body></html></div>
+    <span class="fu"><a href="https://rdrr.io/r/base/structure.html">structure</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(family = <span class="st">"two-part log-normal"</span>, link = <span class="kw">stats</span><span class="op">$</span><span class="kw">name</span>, 
+                   linkfun = <span class="kw">stats</span><span class="op">$</span><span class="kw">linkfun</span>, linkinv = <span class="kw">stats</span><span class="op">$</span><span class="kw">linkinv</span>, log_dens = <span class="kw">log_dens</span>,
+                   score_eta_fun = <span class="kw">score_eta_fun</span>, score_eta_zi_fun = <span class="kw">score_eta_zi_fun</span>,
+                   score_phis_fun = <span class="kw">score_phis_fun</span>, simulate = <span class="kw">simulate</span>),
+              class = <span class="st">"family"</span>)
+}
+</pre></div>
 <p>Then to fit the model, we provide the user-defined family object in the <code>family</code> argument of <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, specifying also that we have one dispersion parameter in the family (i.e., <code>n_phis = 1</code>), and that in the zero part we only include fixed effects:</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">km1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                  <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="../reference/extra_fams.html">hurdle.lognormal</a></span>(), <span class="kw">n_phis</span> <span class="kw">=</span> <span class="fl">1</span>,
-                  <span class="kw">zi_fixed</span> <span class="kw">=</span> ~ <span class="no">sex</span>)
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="kw">km1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>, 
+                  family = <span class="fu"><a href="../reference/Extra%20Family%20Objects.html">hurdle.lognormal</a></span>(), n_phis = <span class="fl">1</span>,
+                  zi_fixed = <span class="op">~</span> <span class="kw">sex</span>)
 
-<span class="no">km1</span>
+<span class="kw">km1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 | id, data = DF, </span>
@@ -404,11 +421,13 @@
 <span class="co">#&gt; phi parameters:</span>
 <span class="co">#&gt;  -0.3348787 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -1214.208</span></pre></body></html></div>
-<p>The estimated standard deviation for the error terms is <code>exp(phis) =</code> 0.7 We extend the model by allowing for a random intercept in the zero-part, but using the <code>||</code> symbol in the <code>random</code> argument we specify the covariance matrix of the random effects is diagonal; hence, that the two random intercepts terms are uncorrelated:</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">km2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="no">km1</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">||</span> <span class="no">id</span>, <span class="kw">zi_random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>)
+<span class="co">#&gt; log-Lik: -1214.208</span>
+</pre></div>
+<p>The estimated standard deviation for the error terms is <code>exp(phis) =</code> 0.7 We extend the model by allowing for a random intercept in the zero-part, but using the <code><a href="https://rdrr.io/r/base/Logic.html">||</a></code> symbol in the <code>random</code> argument we specify the covariance matrix of the random effects is diagonal; hence, that the two random intercepts terms are uncorrelated:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="kw">km2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="kw">km1</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">||</span> <span class="kw">id</span>, zi_random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>)
 
-<span class="no">km2</span>
+<span class="kw">km2</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 || id, data = DF, </span>
@@ -436,74 +455,82 @@
 <span class="co">#&gt; phi parameters:</span>
 <span class="co">#&gt;  -0.3349759 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -1210.313</span></pre></body></html></div>
+<span class="co">#&gt; log-Lik: -1210.313</span>
+</pre></div>
 <p>For zero-inflated or hurdle models the <code><a href="../reference/marginal_coefs.html">marginal_coefs()</a></code> functions provides the marginalized coefficients corresponding the average mixture response variable, i.e., <span class="math display">\[(1 - \pi) \times E(Y),\]</span> where <span class="math inline">\(\pi\)</span> denotes the probability of being zero, and <span class="math inline">\(Y\)</span> the response random variable for the noz-zero part. For example, in the case of the hurdle log-normal family, we get the marginalized coefficients for <span class="math inline">\((1 - \pi) \times E\{\log(Y)\}\)</span>, e.g.,</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(<span class="no">km2</span>)
+<div class="sourceCode" id="cb11"><pre class="downlit">
+<span class="fu"><a href="../reference/marginal_coefs.html">marginal_coefs</a></span>(<span class="kw">km2</span>)
 <span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;        -1.7311         0.0626         0.1852        -0.0661</span></pre></body></html></div>
-<p>Finally, we show how the <code><a href="../reference/methods.html">simulate()</a></code> method can be used to perform a replication / posterior predictive check. In particular, in the following code we compare the empirical distribution function estimated in the observed data with estimates of the empirical distribution function obtained from simulated/replicated data from the model. In the call to <code><a href="../reference/methods.html">simulate()</a></code> below we also specify to account for the variability in the maximum likelihood estimates by setting <code>acount_MLEs_var = TRUE</code>:</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span>(<span class="kw">mar</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2.5</span>, <span class="fl">2.5</span>, <span class="fl">0</span>, <span class="fl">0</span>), <span class="kw">mgp</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.1</span>, <span class="fl">0.5</span>, <span class="fl">0</span>), <span class="kw">cex.axis</span> <span class="kw">=</span> <span class="fl">0.7</span>, <span class="kw">cex.lab</span> <span class="kw">=</span> <span class="fl">0.8</span>)
-<span class="no">y</span> <span class="kw">&lt;-</span> <span class="no">DF</span>$<span class="no">y</span>
-<span class="no">y</span>[<span class="no">y</span> <span class="kw">&gt;</span> <span class="fl">0</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="no">y</span>[<span class="no">y</span> <span class="kw">&gt;</span> <span class="fl">0</span>])
-<span class="no">x_vals</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span>(<span class="no">y</span>), <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="no">y</span>), <span class="kw">length.out</span> <span class="kw">=</span> <span class="fl">500</span>)
-<span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">simulate</a></span>(<span class="no">km2</span>, <span class="kw">nsim</span> <span class="kw">=</span> <span class="fl">30</span>, <span class="kw">acount_MLEs_var</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="no">ind</span> <span class="kw">&lt;-</span> <span class="no">out</span> <span class="kw">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">.Machine</span>$<span class="no">double.eps</span>)
-<span class="no">out</span>[<span class="no">ind</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="no">out</span>[<span class="no">ind</span>])
-<span class="no">rep_y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="no">out</span>, <span class="fl">2</span>, <span class="kw">function</span> (<span class="no">x</span>, <span class="no">x_vals</span>) <span class="fu"><a href="https://rdrr.io/r/stats/ecdf.html">ecdf</a></span>(<span class="no">x</span>)(<span class="no">x_vals</span>), <span class="kw">x_vals</span> <span class="kw">=</span> <span class="no">x_vals</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/matplot.html">matplot</a></span>(<span class="no">x_vals</span>, <span class="no">rep_y</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">"l"</span>, <span class="kw">lty</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"lightgrey"</span>,
-        <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">"Response Variable"</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Empirical CDF"</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span>(<span class="no">x_vals</span>, <span class="fu"><a href="https://rdrr.io/r/stats/ecdf.html">ecdf</a></span>(<span class="no">y</span>)(<span class="no">x_vals</span>))
-<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"bottomright"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"log replicated data"</span>, <span class="st">"log observed data"</span>), <span class="kw">lty</span> <span class="kw">=</span> <span class="fl">1</span>,
-       <span class="kw">col</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"lightgrey"</span>, <span class="st">"black"</span>), <span class="kw">bty</span> <span class="kw">=</span> <span class="st">"n"</span>, <span class="kw">cex</span> <span class="kw">=</span> <span class="fl">0.8</span>)</pre></body></html></div>
+<span class="co">#&gt;        -1.7311         0.0626         0.1852        -0.0661</span>
+</pre></div>
+<p>Finally, we show how the <code><a href="../reference/MixMod%20Methods.html">simulate()</a></code> method can be used to perform a replication / posterior predictive check. In particular, in the following code we compare the empirical distribution function estimated in the observed data with estimates of the empirical distribution function obtained from simulated/replicated data from the model. In the call to <code><a href="../reference/MixMod%20Methods.html">simulate()</a></code> below we also specify to account for the variability in the maximum likelihood estimates by setting <code>acount_MLEs_var = TRUE</code>:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span>(mar = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2.5</span>, <span class="fl">2.5</span>, <span class="fl">0</span>, <span class="fl">0</span>), mgp = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.1</span>, <span class="fl">0.5</span>, <span class="fl">0</span>), cex.axis = <span class="fl">0.7</span>, cex.lab = <span class="fl">0.8</span>)
+<span class="kw">y</span> <span class="op">&lt;-</span> <span class="kw">DF</span><span class="op">$</span><span class="kw">y</span>
+<span class="kw">y</span>[<span class="kw">y</span> <span class="op">&gt;</span> <span class="fl">0</span>] <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="kw">y</span>[<span class="kw">y</span> <span class="op">&gt;</span> <span class="fl">0</span>])
+<span class="kw">x_vals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span>(<span class="kw">y</span>), <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="kw">y</span>), length.out = <span class="fl">500</span>)
+<span class="kw">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">simulate</a></span>(<span class="kw">km2</span>, nsim = <span class="fl">30</span>, acount_MLEs_var = <span class="fl">TRUE</span>)
+<span class="kw">ind</span> <span class="op">&lt;-</span> <span class="kw">out</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">.Machine</span><span class="op">$</span><span class="kw">double.eps</span>)
+<span class="kw">out</span>[<span class="kw">ind</span>] <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="kw">out</span>[<span class="kw">ind</span>])
+<span class="kw">rep_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="kw">out</span>, <span class="fl">2</span>, <span class="fu">function</span> (<span class="kw">x</span>, <span class="kw">x_vals</span>) <span class="fu"><a href="https://rdrr.io/r/stats/ecdf.html">ecdf</a></span>(<span class="kw">x</span>)(<span class="kw">x_vals</span>), x_vals = <span class="kw">x_vals</span>)
+<span class="fu"><a href="https://rdrr.io/r/graphics/matplot.html">matplot</a></span>(<span class="kw">x_vals</span>, <span class="kw">rep_y</span>, type = <span class="st">"l"</span>, lty = <span class="fl">1</span>, col = <span class="st">"lightgrey"</span>, 
+        xlab = <span class="st">"Response Variable"</span>, ylab = <span class="st">"Empirical CDF"</span>)
+<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span>(<span class="kw">x_vals</span>, <span class="fu"><a href="https://rdrr.io/r/stats/ecdf.html">ecdf</a></span>(<span class="kw">y</span>)(<span class="kw">x_vals</span>))
+<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"bottomright"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"log replicated data"</span>, <span class="st">"log observed data"</span>), lty = <span class="fl">1</span>, 
+       col = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"lightgrey"</span>, <span class="st">"black"</span>), bty = <span class="st">"n"</span>, cex = <span class="fl">0.8</span>)
+</pre></div>
 <p><img src="ZeroInflated_and_TwoPart_Models_files/figure-html/unnamed-chunk-12-1.png" width="816" style="display: block; margin: auto;"></p>
 </div>
 <div id="two-parthurdle-poisson-mixed-effects-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#two-parthurdle-poisson-mixed-effects-model" class="anchor"></a>Two-Part/Hurdle Poisson Mixed Effects Model</h2>
-<p>An alternative modeling framework to account for high percentages of 0 in count data is hurdle models. These models are similar to the two-part model for semi-continuous data presented above. The difference is that for the positive part we have positive counts instead of a positive continuous outcome. For the positive counts, a truncated at zero Poisson or negative binomial distribution is typically used. Both hurdle Poisson and hurdle negative binomial mixed models can be fitted by <code><a href="../reference/mixed_model.html">mixed_model()</a></code> using the family objects <code><a href="../reference/extra_fams.html">hurdle.poisson()</a></code> and <code>hurdle.negative.binomial</code>, respectively.</p>
+<p>An alternative modeling framework to account for high percentages of 0 in count data is hurdle models. These models are similar to the two-part model for semi-continuous data presented above. The difference is that for the positive part we have positive counts instead of a positive continuous outcome. For the positive counts, a truncated at zero Poisson or negative binomial distribution is typically used. Both hurdle Poisson and hurdle negative binomial mixed models can be fitted by <code><a href="../reference/mixed_model.html">mixed_model()</a></code> using the family objects <code><a href="../reference/Extra%20Family%20Objects.html">hurdle.poisson()</a></code> and <code>hurdle.negative.binomial</code>, respectively.</p>
 <p>To illustrate how these models are fitted, we simulate some longitudinal data from a hurdle negative binomial model using the code:</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">123</span>)
-<span class="no">n</span> <span class="kw">&lt;-</span> <span class="fl">100</span> <span class="co"># number of subjects</span>
-<span class="no">K</span> <span class="kw">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
-<span class="no">t_max</span> <span class="kw">&lt;-</span> <span class="fl">5</span> <span class="co"># maximum follow-up time</span>
+<div class="sourceCode" id="cb13"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">123</span>)
+<span class="kw">n</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># number of subjects</span>
+<span class="kw">K</span> <span class="op">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
+<span class="kw">t_max</span> <span class="op">&lt;-</span> <span class="fl">5</span> <span class="co"># maximum follow-up time</span>
 
 <span class="co"># we constuct a data frame with the design: </span>
 <span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span>
-<span class="no">DF</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">id</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="no">n</span>), <span class="kw">each</span> <span class="kw">=</span> <span class="no">K</span>),
-                 <span class="kw">time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="no">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="no">K</span> - <span class="fl">1</span>, <span class="fl">0</span>, <span class="no">t_max</span>))))),
-                 <span class="kw">sex</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="no">n</span>/<span class="fl">2</span>, <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="kw">each</span> <span class="kw">=</span> <span class="no">K</span>))
+<span class="kw">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(id = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="kw">n</span>), each = <span class="kw">K</span>),
+                 time = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="kw">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw">K</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0</span>, <span class="kw">t_max</span>))))),
+                 sex = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="kw">n</span><span class="op">/</span><span class="fl">2</span>, labels = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), each = <span class="kw">K</span>))
 
 <span class="co"># design matrices for the fixed and random effects non-zero part</span>
-<span class="no">X</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
-<span class="no">Z</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">time</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
+<span class="kw">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, data = <span class="kw">DF</span>)
+<span class="kw">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">time</span>, data = <span class="kw">DF</span>)
 <span class="co"># design matrices for the fixed and random effects zero part</span>
-<span class="no">X_zi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">sex</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
-<span class="no">Z_zi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="fl">1</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
+<span class="kw">X_zi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">sex</span>, data = <span class="kw">DF</span>)
+<span class="kw">Z_zi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="fl">1</span>, data = <span class="kw">DF</span>)
 
-<span class="no">betas</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.5</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, -<span class="fl">0.03</span>) <span class="co"># fixed effects coefficients non-zero part</span>
-<span class="no">shape</span> <span class="kw">&lt;-</span> <span class="fl">2</span> <span class="co"># shape/size parameter of the negative binomial distribution</span>
-<span class="no">gammas</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">1.5</span>, <span class="fl">0.5</span>) <span class="co"># fixed effects coefficients zero part</span>
-<span class="no">D11</span> <span class="kw">&lt;-</span> <span class="fl">0.5</span> <span class="co"># variance of random intercepts non-zero part</span>
-<span class="no">D22</span> <span class="kw">&lt;-</span> <span class="fl">0.1</span> <span class="co"># variance of random slopes non-zero part</span>
-<span class="no">D33</span> <span class="kw">&lt;-</span> <span class="fl">0.4</span> <span class="co"># variance of random intercepts zero part</span>
+<span class="kw">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.5</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="op">-</span><span class="fl">0.03</span>) <span class="co"># fixed effects coefficients non-zero part</span>
+<span class="kw">shape</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="co"># shape/size parameter of the negative binomial distribution</span>
+<span class="kw">gammas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0.5</span>) <span class="co"># fixed effects coefficients zero part</span>
+<span class="kw">D11</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="co"># variance of random intercepts non-zero part</span>
+<span class="kw">D22</span> <span class="op">&lt;-</span> <span class="fl">0.1</span> <span class="co"># variance of random slopes non-zero part</span>
+<span class="kw">D33</span> <span class="op">&lt;-</span> <span class="fl">0.4</span> <span class="co"># variance of random intercepts zero part</span>
 
 <span class="co"># we simulate random effects</span>
-<span class="no">b</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D11</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D22</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D33</span>)))
+<span class="kw">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D11</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D22</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D33</span>)))
 <span class="co"># linear predictor non-zero part</span>
-<span class="no">eta_y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="no">X</span> <span class="kw">%*%</span> <span class="no">betas</span> + <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">Z</span> * <span class="no">b</span>[<span class="no">DF</span>$<span class="no">id</span>, <span class="fl">1</span>:<span class="fl">2</span>, <span class="kw">drop</span> <span class="kw">=</span> <span class="fl">FALSE</span>]))
+<span class="kw">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="kw">X</span> <span class="op">%*%</span> <span class="kw">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="kw">Z</span> <span class="op">*</span> <span class="kw">b</span>[<span class="kw">DF</span><span class="op">$</span><span class="kw">id</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, drop = <span class="fl">FALSE</span>]))
 <span class="co"># linear predictor zero part</span>
-<span class="no">eta_zi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="no">X_zi</span> <span class="kw">%*%</span> <span class="no">gammas</span> + <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">Z_zi</span> * <span class="no">b</span>[<span class="no">DF</span>$<span class="no">id</span>, <span class="fl">3</span>, <span class="kw">drop</span> <span class="kw">=</span> <span class="fl">FALSE</span>]))
+<span class="kw">eta_zi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="kw">X_zi</span> <span class="op">%*%</span> <span class="kw">gammas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="kw">Z_zi</span> <span class="op">*</span> <span class="kw">b</span>[<span class="kw">DF</span><span class="op">$</span><span class="kw">id</span>, <span class="fl">3</span>, drop = <span class="fl">FALSE</span>]))
 <span class="co"># we simulate truncated at zero negative binomial longitudinal data</span>
-<span class="no">lower</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/NegBinomial.html">pnbinom</a></span>(<span class="fl">0</span>, <span class="kw">mu</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="no">eta_y</span>), <span class="kw">size</span> <span class="kw">=</span> <span class="no">shape</span>)
-<span class="no">u</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="no">n</span> * <span class="no">K</span>, <span class="kw">min</span> <span class="kw">=</span> <span class="no">lower</span>, <span class="kw">max</span> <span class="kw">=</span> <span class="fl">1</span>)
-<span class="no">DF</span>$<span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/NegBinomial.html">qnbinom</a></span>(<span class="no">u</span>, <span class="kw">mu</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="no">eta_y</span>), <span class="kw">size</span> <span class="kw">=</span> <span class="no">shape</span>)
+<span class="kw">lower</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/NegBinomial.html">pnbinom</a></span>(<span class="fl">0</span>, mu = <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="kw">eta_y</span>), size = <span class="kw">shape</span>)
+<span class="kw">u</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw">n</span> <span class="op">*</span> <span class="kw">K</span>, min = <span class="kw">lower</span>, max = <span class="fl">1</span>)
+<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/NegBinomial.html">qnbinom</a></span>(<span class="kw">u</span>, mu = <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="kw">eta_y</span>), size = <span class="kw">shape</span>)
 <span class="co"># we set the zeros from the logistic regression</span>
-<span class="no">DF</span>$<span class="no">y</span>[<span class="fu"><a href="https://rdrr.io/r/base/logical.html">as.logical</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(<span class="no">n</span> * <span class="no">K</span>, <span class="kw">size</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">prob</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="no">eta_zi</span>)))] <span class="kw">&lt;-</span> <span class="fl">0</span></pre></body></html></div>
+<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span>[<span class="fu"><a href="https://rdrr.io/r/base/logical.html">as.logical</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(<span class="kw">n</span> <span class="op">*</span> <span class="kw">K</span>, size = <span class="fl">1</span>, prob = <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="kw">eta_zi</span>)))] <span class="op">&lt;-</span> <span class="fl">0</span>
+</pre></div>
 <p>The following code fits a hurdle Poisson mixed effects model. In the fixed-effects part for the positive counts we include the main effects of <code>sex</code> and <code>time</code> and their interaction, and in the random-effects for the positive counts random intercepts and random slopes. For the zero-part we only include a fixed-effects part, using argument <code>zi_fixed</code>, with <code>sex</code> as the predictor:</p>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">dm1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="no">time</span> <span class="kw">|</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                  <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="../reference/extra_fams.html">hurdle.poisson</a></span>(), <span class="kw">zi_fixed</span> <span class="kw">=</span> ~ <span class="no">sex</span>)
+<div class="sourceCode" id="cb14"><pre class="downlit">
+<span class="kw">dm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="kw">time</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>, 
+                  family = <span class="fu"><a href="../reference/Extra%20Family%20Objects.html">hurdle.poisson</a></span>(), zi_fixed = <span class="op">~</span> <span class="kw">sex</span>)
 
-<span class="no">dm1</span>
+<span class="kw">dm1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~time | id, data = DF, </span>
@@ -527,12 +554,14 @@
 <span class="co">#&gt; (Intercept)   sexfemale </span>
 <span class="co">#&gt;  -1.4178427   0.4857483 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2802.3</span></pre></body></html></div>
-<p>Currently, only the log-link is implemented for the <code><a href="../reference/extra_fams.html">hurdle.poisson()</a></code> family. The output is similar as in the case of the zero-inflated models. However, it has been noted that the fixed-effects coefficients for the positive counts part relate to the mean <span class="math inline">\(\mu\)</span> of Poisson distribution that includes the zeros, not the mean for those who experience the event. The mean for those who experience more than one events is <span class="math inline">\(\mu / (1 - e^{-\mu})\)</span>. Hence, a <span class="math inline">\(\beta = 0.1\)</span> cannot be interpreted as reflecting a <span class="math inline">\(e^\beta =\)</span> 10% increase in the mean of the subjects who experience the events.</p>
+<span class="co">#&gt; log-Lik: -2802.3</span>
+</pre></div>
+<p>Currently, only the log-link is implemented for the <code><a href="../reference/Extra%20Family%20Objects.html">hurdle.poisson()</a></code> family. The output is similar as in the case of the zero-inflated models. However, it has been noted that the fixed-effects coefficients for the positive counts part relate to the mean <span class="math inline">\(\mu\)</span> of Poisson distribution that includes the zeros, not the mean for those who experience the event. The mean for those who experience more than one events is <span class="math inline">\(\mu / (1 - e^{-\mu})\)</span>. Hence, a <span class="math inline">\(\beta = 0.1\)</span> cannot be interpreted as reflecting a <span class="math inline">\(e^\beta =\)</span> 10% increase in the mean of the subjects who experience the events.</p>
 <p>We extend model <code>dm1</code> by also including a random intercept for the zero-part. As we have done above, this is achieved by specifying the <code>zi_random</code> argument, i.e.:</p>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">dm2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="no">dm1</span>, <span class="kw">zi_random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>)
+<div class="sourceCode" id="cb15"><pre class="downlit">
+<span class="kw">dm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="kw">dm1</span>, zi_random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>)
 
-<span class="no">dm2</span>
+<span class="kw">dm2</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~time | id, data = DF, </span>
@@ -558,23 +587,27 @@
 <span class="co">#&gt; (Intercept)   sexfemale </span>
 <span class="co">#&gt;  -1.5398382   0.5175922 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2797.307</span></pre></body></html></div>
-<p>The likelihood ratio test between the two models is computed with the <code><a href="../reference/methods.html">anova()</a></code> method:</p>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="fu"><a href="../reference/methods.html">anova</a></span>(<span class="no">dm1</span>, <span class="no">dm2</span>)
+<span class="co">#&gt; log-Lik: -2797.307</span>
+</pre></div>
+<p>The likelihood ratio test between the two models is computed with the <code><a href="../reference/MixMod%20Methods.html">anova()</a></code> method:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit">
+<span class="fu"><a href="../reference/MixMod%20Methods.html">anova</a></span>(<span class="kw">dm1</span>, <span class="kw">dm2</span>)
 <span class="co">#&gt; </span>
 <span class="co">#&gt;         AIC     BIC  log.Lik  LRT df p.value</span>
 <span class="co">#&gt; dm1 5622.60 5646.05 -2802.30                </span>
-<span class="co">#&gt; dm2 5618.61 5649.88 -2797.31 9.99  3  0.0187</span></pre></body></html></div>
+<span class="co">#&gt; dm2 5618.61 5649.88 -2797.31 9.99  3  0.0187</span>
+</pre></div>
 <p>The result indicates that the extra random effect for the zero-part improves the fit of the model.</p>
 </div>
 <div id="two-parthurdle-negative-binomial-mixed-effects-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#two-parthurdle-negative-binomial-mixed-effects-model" class="anchor"></a>Two-Part/Hurdle Negative Binomial Mixed Effects Model</h2>
-<p>We continue our illustration of hurdle models by fitting the hurdle negative binomial mixed model. The only change from the previous syntax we used is the name of the family object, namely, we use now <code><a href="../reference/extra_fams.html">hurdle.negative.binomial()</a></code>. The code below fits exactly the same model as model <code>dm1</code> above, but using now the negative binomial distribution for the positive counts:</p>
-<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="no">hm1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="no">time</span> <span class="kw">|</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                  <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="../reference/extra_fams.html">hurdle.negative.binomial</a></span>(), <span class="kw">zi_fixed</span> <span class="kw">=</span> ~ <span class="no">sex</span>)
+<p>We continue our illustration of hurdle models by fitting the hurdle negative binomial mixed model. The only change from the previous syntax we used is the name of the family object, namely, we use now <code><a href="../reference/Extra%20Family%20Objects.html">hurdle.negative.binomial()</a></code>. The code below fits exactly the same model as model <code>dm1</code> above, but using now the negative binomial distribution for the positive counts:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit">
+<span class="kw">hm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="kw">time</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>, 
+                  family = <span class="fu"><a href="../reference/Extra%20Family%20Objects.html">hurdle.negative.binomial</a></span>(), zi_fixed = <span class="op">~</span> <span class="kw">sex</span>)
 
-<span class="no">hm1</span>
+<span class="kw">hm1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~time | id, data = DF, </span>
@@ -601,12 +634,14 @@
 <span class="co">#&gt; phi parameters:</span>
 <span class="co">#&gt;  0.6778918 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2181.468</span></pre></body></html></div>
-<p>Also for the <code><a href="../reference/extra_fams.html">hurdle.negative.binomial()</a></code> family only the log-link is implemented. The structure of the output is identical to what we had for the hurdle Poisson model. Again we should note that the fixed-effects coefficients for the positive part have an interpretation for the mean of the entire distribution, not only for the positive counts.</p>
+<span class="co">#&gt; log-Lik: -2181.468</span>
+</pre></div>
+<p>Also for the <code><a href="../reference/Extra%20Family%20Objects.html">hurdle.negative.binomial()</a></code> family only the log-link is implemented. The structure of the output is identical to what we had for the hurdle Poisson model. Again we should note that the fixed-effects coefficients for the positive part have an interpretation for the mean of the entire distribution, not only for the positive counts.</p>
 <p>We update again the fitted model <code>hm1</code> by including a random intercept for the zero-part:</p>
-<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="no">hm2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="no">hm1</span>, <span class="kw">zi_random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>)
+<div class="sourceCode" id="cb18"><pre class="downlit">
+<span class="kw">hm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="kw">hm1</span>, zi_random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>)
 
-<span class="no">hm2</span>
+<span class="kw">hm2</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~time | id, data = DF, </span>
@@ -635,13 +670,16 @@
 <span class="co">#&gt; phi parameters:</span>
 <span class="co">#&gt;  0.6759598 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2176.312</span></pre></body></html></div>
-<p>The likelihood ratio test between the two models is computed with the <code><a href="../reference/methods.html">anova()</a></code> method:</p>
-<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu"><a href="../reference/methods.html">anova</a></span>(<span class="no">hm1</span>, <span class="no">hm2</span>)
+<span class="co">#&gt; log-Lik: -2176.312</span>
+</pre></div>
+<p>The likelihood ratio test between the two models is computed with the <code><a href="../reference/MixMod%20Methods.html">anova()</a></code> method:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit">
+<span class="fu"><a href="../reference/MixMod%20Methods.html">anova</a></span>(<span class="kw">hm1</span>, <span class="kw">hm2</span>)
 <span class="co">#&gt; </span>
 <span class="co">#&gt;         AIC     BIC  log.Lik   LRT df p.value</span>
 <span class="co">#&gt; hm1 4382.94 4408.99 -2181.47                 </span>
-<span class="co">#&gt; hm2 4378.62 4412.49 -2176.31 10.31  3  0.0161</span></pre></body></html></div>
+<span class="co">#&gt; hm2 4378.62 4412.49 -2176.31 10.31  3  0.0161</span>
+</pre></div>
 <p>The result again indicates that the extra random effect for the zero-part improves the fit of the model.</p>
 </div>
 </div>
@@ -662,7 +700,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

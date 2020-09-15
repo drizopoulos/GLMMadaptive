@@ -1,5 +1,5 @@
 pandoc: 2.7.3
-pkgdown: 1.5.1
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   Custom_Models: Custom_Models.html
@@ -11,5 +11,5 @@ articles:
   Optimization: Optimization.html
   Ordinal_Mixed_Models: Ordinal_Mixed_Models.html
   ZeroInflated_and_TwoPart_Models: ZeroInflated_and_TwoPart_Models.html
-last_built: 2020-06-25T08:43Z
+last_built: 2020-09-15T19:51Z
 

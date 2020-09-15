@@ -81,7 +81,7 @@ mixed models." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-12</span>
       </span>
     </div>
 
@@ -166,13 +166,13 @@ mixed models." />
 mixed models.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>marginal_coefs</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>marginal_coefs</span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for MixMod</span>
-<span class='fu'>marginal_coefs</span>(<span class='no'>object</span>, <span class='kw'>std_errors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-   <span class='kw'>link_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>M</span> <span class='kw'>=</span> <span class='fl'>3000</span>, <span class='kw'>K</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-   <span class='kw'>cores</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='kw pkg'>parallel</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span>() - <span class='fl'>1</span>, <span class='fl'>1</span>),
-   <span class='kw'>sandwich</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>marginal_coefs</span>(<span class='kw'>object</span>, std_errors = <span class='fl'>FALSE</span>, 
+   link_fun = <span class='kw'>NULL</span>, M = <span class='fl'>3000</span>, K = <span class='fl'>100</span>, seed = <span class='fl'>1</span>, 
+   cores = <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='kw'>parallel</span>::<span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span>() <span class='op'>-</span> <span class='fl'>1</span>, <span class='fl'>1</span>), 
+   sandwich = <span class='fl'>FALSE</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -245,6 +245,9 @@ p-values using the normal approximation.</p>
     <p>Hedeker, D., du Toit, S. H., Demirtas, H. and Gibbons, R. D. (2018), A note on 
 marginalization of regression parameters from mixed models of binary outcomes. 
 <em>Biometrics</em> <b>74</b>, 354--361. doi:10.1111/biom.12707</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Dimitris Rizopoulos <a href='mailto:d.rizopoulos@erasmusmc.nl'>d.rizopoulos@erasmusmc.nl</a></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='mixed_model.html'>mixed_model</a></code></p></div>
@@ -253,39 +256,42 @@ marginalization of regression parameters from mixed models of binary outcomes.
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='co'># simulate some data</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>123L</span>)
-<span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fl'>500</span>
-<span class='no'>K</span> <span class='kw'>&lt;-</span> <span class='fl'>15</span>
-<span class='no'>t.max</span> <span class='kw'>&lt;-</span> <span class='fl'>25</span>
+<span class='kw'>n</span> <span class='op'>&lt;-</span> <span class='fl'>500</span>
+<span class='kw'>K</span> <span class='op'>&lt;-</span> <span class='fl'>15</span>
+<span class='kw'>t.max</span> <span class='op'>&lt;-</span> <span class='fl'>25</span>
 
-<span class='no'>betas</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>2.13</span>, -<span class='fl'>0.25</span>, <span class='fl'>0.24</span>, -<span class='fl'>0.05</span>)
-<span class='no'>D</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0</span>, <span class='fl'>2</span>, <span class='fl'>2</span>)
-<span class='no'>D</span>[<span class='fl'>1</span>:<span class='fl'>2</span>, <span class='fl'>1</span>:<span class='fl'>2</span>] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.48</span>, -<span class='fl'>0.08</span>, -<span class='fl'>0.08</span>, <span class='fl'>0.18</span>)
+<span class='kw'>betas</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='op'>-</span><span class='fl'>2.13</span>, <span class='op'>-</span><span class='fl'>0.25</span>, <span class='fl'>0.24</span>, <span class='op'>-</span><span class='fl'>0.05</span>)
+<span class='kw'>D</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0</span>, <span class='fl'>2</span>, <span class='fl'>2</span>)
+<span class='kw'>D</span>[<span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>] <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.48</span>, <span class='op'>-</span><span class='fl'>0.08</span>, <span class='op'>-</span><span class='fl'>0.08</span>, <span class='fl'>0.18</span>)
 
-<span class='no'>times</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>replicate</a></span>(<span class='no'>n</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='no'>K</span>-<span class='fl'>1</span>, <span class='fl'>0</span>, <span class='no'>t.max</span>)))))
-<span class='no'>group</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>:<span class='fl'>1</span>, <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>n</span>/<span class='fl'>2</span>))
-<span class='no'>DF</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>year</span> <span class='kw'>=</span> <span class='no'>times</span>, <span class='kw'>group</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='no'>group</span>, <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>K</span>)))
-<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='methods.html'>model.matrix</a></span>(~ <span class='no'>group</span> * <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>)
-<span class='no'>Z</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='methods.html'>model.matrix</a></span>(~ <span class='no'>year</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>)
+<span class='kw'>times</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>replicate</a></span>(<span class='kw'>n</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='kw'>K</span><span class='op'>-</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='kw'>t.max</span>)))))
+<span class='kw'>group</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span><span class='op'>:</span><span class='fl'>1</span>, each = <span class='kw'>n</span><span class='op'>/</span><span class='fl'>2</span>))
+<span class='kw'>DF</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(year = <span class='kw'>times</span>, group = <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='kw'>group</span>, each = <span class='kw'>K</span>)))
+<span class='kw'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='MixMod Methods.html'>model.matrix</a></span>(<span class='op'>~</span> <span class='kw'>group</span> <span class='op'>*</span> <span class='kw'>year</span>, data = <span class='kw'>DF</span>)
+<span class='kw'>Z</span> <span class='op'>&lt;-</span> <span class='fu'><a href='MixMod Methods.html'>model.matrix</a></span>(<span class='op'>~</span> <span class='kw'>year</span>, data = <span class='kw'>DF</span>)
 
-<span class='no'>b</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='no'>D</span>[<span class='fl'>1</span>, <span class='fl'>1</span>])), <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='no'>D</span>[<span class='fl'>2</span>, <span class='fl'>2</span>])))
-<span class='no'>id</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>:<span class='no'>n</span>, <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>K</span>)
-<span class='no'>eta.y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/vector.html'>as.vector</a></span>(<span class='no'>X</span> <span class='kw'>%*%</span> <span class='no'>betas</span> + <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span>(<span class='no'>Z</span> * <span class='no'>b</span>[<span class='no'>id</span>, ]))
-<span class='no'>DF</span>$<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span>(<span class='no'>n</span> * <span class='no'>K</span>, <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/stats/Logistic.html'>plogis</a></span>(<span class='no'>eta.y</span>))
-<span class='no'>DF</span>$<span class='no'>id</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>id</span>)
+<span class='kw'>b</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='kw'>n</span>, sd = <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='kw'>D</span>[<span class='fl'>1</span>, <span class='fl'>1</span>])), <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='kw'>n</span>, sd = <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='kw'>D</span>[<span class='fl'>2</span>, <span class='fl'>2</span>])))
+<span class='kw'>id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='kw'>n</span>, each = <span class='kw'>K</span>)
+<span class='kw'>eta.y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/vector.html'>as.vector</a></span>(<span class='kw'>X</span> <span class='op'>%*%</span> <span class='kw'>betas</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span>(<span class='kw'>Z</span> <span class='op'>*</span> <span class='kw'>b</span>[<span class='kw'>id</span>, ]))
+<span class='kw'>DF</span><span class='op'>$</span><span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span>(<span class='kw'>n</span> <span class='op'>*</span> <span class='kw'>K</span>, <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/stats/Logistic.html'>plogis</a></span>(<span class='kw'>eta.y</span>))
+<span class='kw'>DF</span><span class='op'>$</span><span class='kw'>id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='kw'>id</span>)
 
 <span class='co'>################################################</span>
 
-<span class='no'>fm1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(<span class='kw'>fixed</span> <span class='kw'>=</span> <span class='no'>y</span> ~ <span class='no'>year</span> * <span class='no'>group</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> <span class='kw'>|</span> <span class='no'>id</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>,
-                   <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>())
+<span class='kw'>fm1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(fixed = <span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>year</span> <span class='op'>*</span> <span class='kw'>group</span>, random = <span class='op'>~</span> <span class='fl'>1</span> <span class='op'>|</span> <span class='kw'>id</span>, data = <span class='kw'>DF</span>,
+                   family = <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>())
 
-<span class='fu'><a href='methods.html'>fixef</a></span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt;  (Intercept)         year       group1  year:group1 
-#&gt; -2.875293208  0.204144801 -0.648693468 -0.006044763 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='no'>fm1</span>)</div><div class='output co'>#&gt; (Intercept)        year      group1 year:group1 
-#&gt;     -1.3589      0.0966     -0.3298     -0.0017 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='no'>fm1</span>, <span class='kw'>std_errors</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;             Estimate Std.Err  z-value p-value
+<span class='fu'><a href='MixMod Methods.html'>fixef</a></span>(<span class='kw'>fm1</span>)                   
+</div><div class='output co'>#&gt;  (Intercept)         year       group1  year:group1 
+#&gt; -2.875293208  0.204144801 -0.648693468 -0.006044763 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='kw'>fm1</span>)
+</div><div class='output co'>#&gt; (Intercept)        year      group1 year:group1 
+#&gt;     -1.3589      0.0966     -0.3298     -0.0017 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='kw'>fm1</span>, std_errors = <span class='fl'>TRUE</span>)
+</div><div class='output co'>#&gt;             Estimate Std.Err  z-value p-value
 #&gt; (Intercept)  -1.3589  0.1132 -12.0052 &lt; 1e-04
 #&gt; year          0.0966  0.0049  19.5229 &lt; 1e-04
 #&gt; group1       -0.3298  0.1593  -2.0701 0.03844
 #&gt; year:group1  -0.0017  0.0060  -0.2795 0.77983
-#&gt; </div><div class='input'># }
+#&gt; </div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -302,7 +308,7 @@ marginalization of regression parameters from mixed models of binary outcomes.
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

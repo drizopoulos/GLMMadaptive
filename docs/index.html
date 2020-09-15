@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-12</span>
       </span>
     </div>
 
@@ -131,13 +131,14 @@
 <a href="#basic-features" class="anchor"></a>Basic Features</h2>
 <ul>
 <li><p>The package contains a single model-fitting function named <code><a href="reference/mixed_model.html">mixed_model()</a></code> with four required arguments, <code>fixed</code> a formula for the fixed effects, <code>random</code> a formula for the random effects, <code>family</code> a family object specifying the type of response variable, and <code>data</code> a data frame containing the variables in the previously mentioned formulas.</p></li>
-<li><p>Methods for standard generics are provided, i.e., <code><a href="reference/methods.html">coef()</a></code>, <code><a href="reference/methods.html">fixef()</a></code>, <code><a href="reference/methods.html">ranef()</a></code>, <code><a href="https://rdrr.io/r/stats/vcov.html">vcov()</a></code>, <code><a href="https://rdrr.io/r/stats/logLik.html">logLik()</a></code>, <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>, <code><a href="reference/methods.html">anova()</a></code>, <code><a href="reference/methods.html">confint()</a></code>, <code><a href="reference/methods.html">fitted()</a></code>, <code><a href="reference/methods.html">residuals()</a></code>, <code><a href="reference/methods.html">predict()</a></code>, and <code><a href="reference/methods.html">simulate()</a></code>.</p></li>
-<li><p>Negative binomial mixed models can be fitted using the <code><a href="reference/negative_binomial.html">negative.binomial()</a></code> family object.</p></li>
-<li><p>Zero-inflated Poisson and negative binomial models using the <code><a href="reference/extra_fams.html">zi.poisson()</a></code> and <code><a href="reference/extra_fams.html">zi.negative.binomial()</a></code> family objects.</p></li>
-<li><p>Hurdle Poisson and negative binomial models using the <code><a href="reference/extra_fams.html">hurdle.poisson()</a></code> and <code><a href="reference/extra_fams.html">hurdle.negative.binomial()</a></code> family objects.</p></li>
-<li><p>Two-part/hurdle mixed models for semi-continuous normal data using the <code><a href="reference/extra_fams.html">hurdle.lognormal()</a></code> family objects.</p></li>
-<li><p>Continuation ratio mixed models for ordinal data using functions <code><a href="reference/continuation_ratio.html">cr_setup()</a></code> and <code><a href="reference/continuation_ratio.html">cr_marg_probs()</a></code>.</p></li>
-<li><p>Beta and hurdle Beta mixed effects models using <code><a href="reference/extra_fams.html">beta.fam()</a></code> and <code><a href="reference/extra_fams.html">hurdle.beta.fam()</a></code> family objects.</p></li>
+<li><p>Methods for standard generics are provided, i.e., <code><a href="reference/MixMod%20Methods.html">coef()</a></code>, <code><a href="reference/MixMod%20Methods.html">fixef()</a></code>, <code><a href="reference/MixMod%20Methods.html">ranef()</a></code>, <code><a href="https://rdrr.io/r/stats/vcov.html">vcov()</a></code>, <code><a href="https://rdrr.io/r/stats/logLik.html">logLik()</a></code>, <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>, <code><a href="reference/MixMod%20Methods.html">anova()</a></code>, <code><a href="reference/MixMod%20Methods.html">confint()</a></code>, <code><a href="reference/MixMod%20Methods.html">fitted()</a></code>, <code><a href="reference/MixMod%20Methods.html">residuals()</a></code>, <code><a href="reference/MixMod%20Methods.html">predict()</a></code>, and <code><a href="reference/MixMod%20Methods.html">simulate()</a></code>.</p></li>
+<li><p>Negative binomial mixed models can be fitted using the <code><a href="reference/negative.binomial.html">negative.binomial()</a></code> family object.</p></li>
+<li><p>Zero-inflated Poisson and negative binomial models using the <code><a href="reference/Extra%20Family%20Objects.html">zi.poisson()</a></code> and <code><a href="reference/Extra%20Family%20Objects.html">zi.negative.binomial()</a></code> family objects.</p></li>
+<li><p>Hurdle Poisson and negative binomial models using the <code><a href="reference/Extra%20Family%20Objects.html">hurdle.poisson()</a></code> and <code><a href="reference/Extra%20Family%20Objects.html">hurdle.negative.binomial()</a></code> family objects.</p></li>
+<li><p>Two-part/hurdle mixed models for semi-continuous normal data using the <code><a href="reference/Extra%20Family%20Objects.html">hurdle.lognormal()</a></code> family objects.</p></li>
+<li><p>Continuation ratio mixed models for ordinal data using functions <code><a href="reference/Continuation%20Ratio%20Set-Up.html">cr_setup()</a></code> and <code><a href="reference/Continuation%20Ratio%20Set-Up.html">cr_marg_probs()</a></code>.</p></li>
+<li><p>Beta and hurdle Beta mixed effects models using <code><a href="reference/Extra%20Family%20Objects.html">beta.fam()</a></code> and <code><a href="reference/Extra%20Family%20Objects.html">hurdle.beta.fam()</a></code> family objects.</p></li>
+<li><p>Gamma mixed effects models using the <code><a href="https://rdrr.io/r/stats/family.html">Gamma()</a></code> or <code><a href="reference/Extra%20Family%20Objects.html">Gamma.fam()</a></code> family object.</p></li>
 <li><p>Users may also specify their own log-density function for the repeated measurements response variable, and the internal algorithms will take care of the optimization.</p></li>
 <li><p>Calculates the marginalized coefficients using the idea of Hedeker et al. (2017) using function <code><a href="reference/marginal_coefs.html">marginal_coefs()</a></code>.</p></li>
 <li><p>Predictions with confidence interval for constructing effects plots are provided by function <code><a href="reference/effectPlotData.html">effectPlotData()</a></code>.</p></li>
@@ -147,23 +148,31 @@
 <h2 class="hasAnchor">
 <a href="#basic-use" class="anchor"></a>Basic Use</h2>
 <p>Let <code>y</code> denote a grouped/clustered outcome, <code>g</code> denote the grouping factor, and <code>x1</code> and <code>x2</code> covariates. A mixed effects model with <code>y</code> as outcome, <code>x1</code> and <code>x2</code> as fixed effects, and random intercepts is fitted with the code:</p>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="no">fm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/mixed_model.html">mixed_model</a></span>(<span class="kw">fixed</span> <span class="kw">=</span> <span class="no">y</span> ~ <span class="no">x1</span> + <span class="no">x2</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">g</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                  <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>())
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="kw">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixed_model.html">mixed_model</a></span>(fixed = <span class="kw">y</span> <span class="op">~</span> <span class="kw">x1</span> <span class="op">+</span> <span class="kw">x2</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">g</span>, data = <span class="kw">DF</span>,
+                  family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>())
 
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">fm</span>)</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="kw">fm</span>)
+</pre></div>
 <p>In the <code>data</code> argument we provide the data frame <code>DF</code>, which contains the aforementioned variables. In the family argument we specify the distribution of the grouped/clustered outcome conditional on the random effects. To include in the random-effects part intercepts and <code>x1</code>, we update the call to <code><a href="reference/mixed_model.html">mixed_model()</a></code> as</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="no">gm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/mixed_model.html">mixed_model</a></span>(<span class="kw">fixed</span> <span class="kw">=</span> <span class="no">y</span> ~ <span class="no">x1</span> + <span class="no">x2</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="no">x1</span> <span class="kw">|</span> <span class="no">g</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                  <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>())
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="kw">gm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixed_model.html">mixed_model</a></span>(fixed = <span class="kw">y</span> <span class="op">~</span> <span class="kw">x1</span> <span class="op">+</span> <span class="kw">x2</span>, random = <span class="op">~</span> <span class="kw">x1</span> <span class="op">|</span> <span class="kw">g</span>, data = <span class="kw">DF</span>,
+                  family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>())
 
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">gm</span>)</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="kw">gm</span>)
+</pre></div>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>The development version of the package can be installed from GitHub using the <strong>devtools</strong> package:</p>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"drizopoulos/GLMMadaptive"</span>)</pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="kw">devtools</span>::<span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"drizopoulos/GLMMadaptive"</span>)
+</pre></div>
 <p>and with vignettes</p>
-<div class="sourceCode" id="cb4"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"drizopoulos/GLMMadaptive"</span>, <span class="kw">build_opts</span> <span class="kw">=</span> <span class="kw">NULL</span>)</pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="kw">devtools</span>::<span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"drizopoulos/GLMMadaptive"</span>, build_opts = <span class="kw">NULL</span>)
+</pre></div>
 <p>Hex-sticker courtesy of Greg Papageorgiou <a href="https://twitter.com/gr_papageorgiou">@gr_papageorgiou</a>.</p>
 </div>
 </div>
@@ -215,7 +224,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

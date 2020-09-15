@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-12</span>
       </span>
     </div>
 
@@ -116,7 +116,7 @@
       <h1 data-toc-skip>Mixed Models for Ordinal Data</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2020-06-25</h4>
+            <h4 class="date">2020-09-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Ordinal_Mixed_Models.Rmd"><code>vignettes/Ordinal_Mixed_Models.Rmd</code></a></small>
       <div class="hidden name"><code>Ordinal_Mixed_Models.Rmd</code></div>
@@ -175,61 +175,66 @@
 <h3 class="hasAnchor">
 <a href="#simulated-data" class="anchor"></a>Simulated Data</h3>
 <p>In this section we will illustrate how the continuation ratio model can be fitted with the <code><a href="../reference/mixed_model.html">mixed_model()</a></code> function of the <strong>GLMMadaptive</strong> package. We start by simulating some data for an ordinal longitudinal outcome under the forward formulation of the continuation ratio model:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1234</span>)
-<span class="no">n</span> <span class="kw">&lt;-</span> <span class="fl">300</span> <span class="co"># number of subjects</span>
-<span class="no">K</span> <span class="kw">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
-<span class="no">t_max</span> <span class="kw">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1234</span>)
+<span class="kw">n</span> <span class="op">&lt;-</span> <span class="fl">300</span> <span class="co"># number of subjects</span>
+<span class="kw">K</span> <span class="op">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
+<span class="kw">t_max</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span>
 
 <span class="co"># we constuct a data frame with the design: </span>
 <span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span>
-<span class="no">DF</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">id</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="no">n</span>), <span class="kw">each</span> <span class="kw">=</span> <span class="no">K</span>),
-                 <span class="kw">time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="no">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="no">K</span> - <span class="fl">1</span>, <span class="fl">0</span>, <span class="no">t_max</span>))))),
-                 <span class="kw">sex</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="no">n</span>/<span class="fl">2</span>, <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="kw">each</span> <span class="kw">=</span> <span class="no">K</span>))
+<span class="kw">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(id = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="kw">n</span>), each = <span class="kw">K</span>),
+                 time = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="kw">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw">K</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0</span>, <span class="kw">t_max</span>))))),
+                 sex = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="kw">n</span><span class="op">/</span><span class="fl">2</span>, labels = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), each = <span class="kw">K</span>))
 
 <span class="co"># design matrices for the fixed and random effects</span>
 <span class="co"># we exclude the intercept from the design matrix of the fixed effects because in the</span>
 <span class="co"># CR model we have K intercepts (the alpha_k coefficients in the formulation above)</span>
-<span class="no">X</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)[, -<span class="fl">1</span>]
-<span class="no">Z</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">time</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
+<span class="kw">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, data = <span class="kw">DF</span>)[, <span class="op">-</span><span class="fl">1</span>]
+<span class="kw">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">time</span>, data = <span class="kw">DF</span>)
 
-<span class="no">thrs</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">1.5</span>, <span class="fl">0</span>, <span class="fl">0.9</span>) <span class="co"># thresholds for the different ordinal categories</span>
-<span class="no">betas</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">0.25</span>, <span class="fl">0.24</span>, -<span class="fl">0.05</span>) <span class="co"># fixed effects coefficients</span>
-<span class="no">D11</span> <span class="kw">&lt;-</span> <span class="fl">0.48</span> <span class="co"># variance of random intercepts</span>
-<span class="no">D22</span> <span class="kw">&lt;-</span> <span class="fl">0.1</span> <span class="co"># variance of random slopes</span>
+<span class="kw">thrs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0</span>, <span class="fl">0.9</span>) <span class="co"># thresholds for the different ordinal categories</span>
+<span class="kw">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span>) <span class="co"># fixed effects coefficients</span>
+<span class="kw">D11</span> <span class="op">&lt;-</span> <span class="fl">0.48</span> <span class="co"># variance of random intercepts</span>
+<span class="kw">D22</span> <span class="op">&lt;-</span> <span class="fl">0.1</span> <span class="co"># variance of random slopes</span>
 
 <span class="co"># we simulate random effects</span>
-<span class="no">b</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D11</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D22</span>)))
+<span class="kw">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D11</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D22</span>)))
 <span class="co"># linear predictor</span>
-<span class="no">eta_y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/drop.html">drop</a></span>(<span class="no">X</span> <span class="kw">%*%</span> <span class="no">betas</span> + <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">Z</span> * <span class="no">b</span>[<span class="no">DF</span>$<span class="no">id</span>, , <span class="kw">drop</span> <span class="kw">=</span> <span class="fl">FALSE</span>]))
+<span class="kw">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/drop.html">drop</a></span>(<span class="kw">X</span> <span class="op">%*%</span> <span class="kw">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="kw">Z</span> <span class="op">*</span> <span class="kw">b</span>[<span class="kw">DF</span><span class="op">$</span><span class="kw">id</span>, , drop = <span class="fl">FALSE</span>]))
 <span class="co"># linear predictor for each category under forward CR formulation</span>
 <span class="co"># for the backward formulation, check the note below</span>
-<span class="no">eta_y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/outer.html">outer</a></span>(<span class="no">eta_y</span>, <span class="no">thrs</span>, <span class="st">"+"</span>)
+<span class="kw">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/outer.html">outer</a></span>(<span class="kw">eta_y</span>, <span class="kw">thrs</span>, <span class="st">"+"</span>)
 <span class="co"># marginal probabilities per category</span>
-<span class="no">mprobs</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/continuation_ratio.html">cr_marg_probs</a></span>(<span class="no">eta_y</span>)
+<span class="kw">mprobs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Continuation%20Ratio%20Set-Up.html">cr_marg_probs</a></span>(<span class="kw">eta_y</span>)
 <span class="co"># we simulate ordinal longitudinal data</span>
-<span class="no">DF</span>$<span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="no">mprobs</span>, <span class="fl">1</span>, <span class="no">sample</span>, <span class="kw">x</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">mprobs</span>), <span class="kw">size</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">replace</span> <span class="kw">=</span> <span class="fl">TRUE</span>))
-<span class="no">DF</span>$<span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">DF</span>$<span class="no">y</span>, <span class="kw">levels</span> <span class="kw">=</span> <span class="fl">1</span>:<span class="fl">4</span>, <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"none"</span>, <span class="st">"mild"</span>, <span class="st">"moderate"</span>, <span class="st">"severe"</span>))</pre></body></html></div>
-<p><strong>Note:</strong> If we wanted to simulate from the backward formulation of continuation ratio model, we need to reverse the ordering of the thresholds, namely the line <code>eta_y &lt;- outer(eta_y, thrs, "+")</code> of the code above should be replaced by <code>eta_y &lt;- outer(eta_y, rev(thrs), "+")</code>, and also specify in the call to <code><a href="../reference/continuation_ratio.html">cr_marg_probs()</a></code> that <code>direction = "backward"</code>.</p>
+<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="kw">mprobs</span>, <span class="fl">1</span>, <span class="kw">sample</span>, x = <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="kw">mprobs</span>), size = <span class="fl">1</span>, replace = <span class="fl">TRUE</span>))
+<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span>, levels = <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, labels = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"none"</span>, <span class="st">"mild"</span>, <span class="st">"moderate"</span>, <span class="st">"severe"</span>))
+</pre></div>
+<p><strong>Note:</strong> If we wanted to simulate from the backward formulation of continuation ratio model, we need to reverse the ordering of the thresholds, namely the line <code>eta_y &lt;- outer(eta_y, thrs, "+")</code> of the code above should be replaced by <code>eta_y &lt;- outer(eta_y, rev(thrs), "+")</code>, and also specify in the call to <code><a href="../reference/Continuation%20Ratio%20Set-Up.html">cr_marg_probs()</a></code> that <code>direction = "backward"</code>.</p>
 </div>
 <div id="data-preparation-forward-formulation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-preparation-forward-formulation" class="anchor"></a>Data Preparation Forward Formulation</h3>
-<p>As explained in the Estimation Section above, before proceeding in fitting the model we need to reconstruct the database by creating extra records for each longitudinal measurement, a new dichotomous outcome and a ‘cohort’ variable denoting the record at which the original measurement corresponded. These variables are created with the <code><a href="../reference/continuation_ratio.html">cr_setup()</a></code> function. The underlying code in this function is based on the code of the <code>cr.setup()</code> function of the <a href="https://cran.r-project.org/package=rms"><strong>rms</strong></a> package, but allowing for both the forward and backward formulation of the continuation ratio model. The specific steps are:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">cr_vals</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/continuation_ratio.html">cr_setup</a></span>(<span class="no">DF</span>$<span class="no">y</span>)
-<span class="no">cr_data</span> <span class="kw">&lt;-</span> <span class="no">DF</span>[<span class="no">cr_vals</span>$<span class="no">subs</span>, ]
-<span class="no">cr_data</span>$<span class="no">y_new</span> <span class="kw">&lt;-</span> <span class="no">cr_vals</span>$<span class="no">y</span>
-<span class="no">cr_data</span>$<span class="no">cohort</span> <span class="kw">&lt;-</span> <span class="no">cr_vals</span>$<span class="no">cohort</span></pre></body></html></div>
-<p>By default <code><a href="../reference/continuation_ratio.html">cr_setup()</a></code> works under the forward formulation (i.e., the one we have simulated from). To fit the continuation ratio model under the backward formulation, we would need to set <code>direction = "backward"</code> in the call to <code><a href="../reference/continuation_ratio.html">cr_setup()</a></code>.</p>
+<p>As explained in the Estimation Section above, before proceeding in fitting the model we need to reconstruct the database by creating extra records for each longitudinal measurement, a new dichotomous outcome and a ‘cohort’ variable denoting the record at which the original measurement corresponded. These variables are created with the <code><a href="../reference/Continuation%20Ratio%20Set-Up.html">cr_setup()</a></code> function. The underlying code in this function is based on the code of the <code>cr.setup()</code> function of the <a href="https://cran.r-project.org/package=rms"><strong>rms</strong></a> package, but allowing for both the forward and backward formulation of the continuation ratio model. The specific steps are:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="kw">cr_vals</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Continuation%20Ratio%20Set-Up.html">cr_setup</a></span>(<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span>)
+<span class="kw">cr_data</span> <span class="op">&lt;-</span> <span class="kw">DF</span>[<span class="kw">cr_vals</span><span class="op">$</span><span class="kw">subs</span>, ]
+<span class="kw">cr_data</span><span class="op">$</span><span class="kw">y_new</span> <span class="op">&lt;-</span> <span class="kw">cr_vals</span><span class="op">$</span><span class="kw">y</span>
+<span class="kw">cr_data</span><span class="op">$</span><span class="kw">cohort</span> <span class="op">&lt;-</span> <span class="kw">cr_vals</span><span class="op">$</span><span class="kw">cohort</span>
+</pre></div>
+<p>By default <code><a href="../reference/Continuation%20Ratio%20Set-Up.html">cr_setup()</a></code> works under the forward formulation (i.e., the one we have simulated from). To fit the continuation ratio model under the backward formulation, we would need to set <code>direction = "backward"</code> in the call to <code><a href="../reference/Continuation%20Ratio%20Set-Up.html">cr_setup()</a></code>.</p>
 <p>Hence, to fit the model we will use the outcome <code>y_new</code> in the new dataset <code>cr_data</code>.</p>
 </div>
 <div id="basic-continuation-ratio-model" class="section level3">
 <h3 class="hasAnchor">
 <a href="#basic-continuation-ratio-model" class="anchor"></a>Basic Continuation Ratio Model</h3>
 <p>We begin with a random intercepts model, with fixed effects <code>sex</code> and <code>time</code>. Note that the <code>cohort</code> variable needs also to be included into the model:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">fm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="no">y_new</span> ~ <span class="no">cohort</span> + <span class="no">sex</span> + <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>,
-                  <span class="kw">data</span> <span class="kw">=</span> <span class="no">cr_data</span>, <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="kw">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">y_new</span> <span class="op">~</span> <span class="kw">cohort</span> <span class="op">+</span> <span class="kw">sex</span> <span class="op">+</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, 
+                  data = <span class="kw">cr_data</span>, family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())
 
-<span class="no">fm</span>
+<span class="kw">fm</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y_new ~ cohort + sex + time, random = ~1 | </span>
@@ -250,17 +255,19 @@
 <span class="co">#&gt;              time </span>
 <span class="co">#&gt;         0.1143118 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2712.608</span></pre></body></html></div>
+<span class="co">#&gt; log-Lik: -2712.608</span>
+</pre></div>
 <p>According to the definition of the model, the coefficients have a log odds ratio interpretation for a unit increase of the corresponding covariate. For example, <code>exp(fixef(fm)['sexfemale']) =</code> 0.63 is the odds ratio for females versus males for <span class="math inline">\(y = k\)</span>, whatever the conditioning event <span class="math inline">\(y \geq k\)</span>.</p>
 </div>
 <div id="relaxing-the-cr-assumption" class="section level3">
 <h3 class="hasAnchor">
 <a href="#relaxing-the-cr-assumption" class="anchor"></a>Relaxing the CR Assumption</h3>
 <p>As an illustration, we show how we can relax the ordinality assumption for the <code>sex</code> variable, namely, allowing that the effect of <code>sex</code> is different for each of the response categories of our ordinal outcome <span class="math inline">\(y\)</span>. As explained earlier, this can be achieved by simply including the interaction term between the <code>sex</code> and <code>cohort</code> variables, i.e.:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">gm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="no">y_new</span> ~ <span class="no">cohort</span> * <span class="no">sex</span> + <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>,
-                  <span class="kw">data</span> <span class="kw">=</span> <span class="no">cr_data</span>, <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="kw">gm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">y_new</span> <span class="op">~</span> <span class="kw">cohort</span> <span class="op">*</span> <span class="kw">sex</span> <span class="op">+</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, 
+                  data = <span class="kw">cr_data</span>, family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())
 
-<span class="no">gm</span>
+<span class="kw">gm</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y_new ~ cohort * sex + time, random = ~1 | </span>
@@ -285,73 +292,88 @@
 <span class="co">#&gt; cohorty&gt;=moderate:sexfemale </span>
 <span class="co">#&gt;                   0.1790653 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -2711.869</span></pre></body></html></div>
-<p>To test whether this extension is required we can perform a likelihood ratio test using the <code><a href="../reference/methods.html">anova()</a></code> method:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/methods.html">anova</a></span>(<span class="no">fm</span>, <span class="no">gm</span>)
+<span class="co">#&gt; log-Lik: -2711.869</span>
+</pre></div>
+<p>To test whether this extension is required we can perform a likelihood ratio test using the <code><a href="../reference/MixMod%20Methods.html">anova()</a></code> method:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="fu"><a href="../reference/MixMod%20Methods.html">anova</a></span>(<span class="kw">fm</span>, <span class="kw">gm</span>)
 <span class="co">#&gt; </span>
 <span class="co">#&gt;        AIC     BIC  log.Lik  LRT df p.value</span>
 <span class="co">#&gt; fm 5437.22 5459.44 -2712.61                </span>
-<span class="co">#&gt; gm 5439.74 5469.37 -2711.87 1.48  2  0.4775</span></pre></body></html></div>
+<span class="co">#&gt; gm 5439.74 5469.37 -2711.87 1.48  2  0.4775</span>
+</pre></div>
 <p>As we expected the test suggests that <code>sex</code> satisfies the ordinality / continuation ratio assumption.</p>
 </div>
 <div id="effect-plots-of-conditional-probabilities" class="section level3">
 <h3 class="hasAnchor">
 <a href="#effect-plots-of-conditional-probabilities" class="anchor"></a>Effect Plots of Conditional Probabilities</h3>
 <p>Finally, we produce effect plots based on our final model <code>fm</code>. The required data for these plots are calculated from the <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function. Note that because we would like to obtain the predicted values and confidence intervals for all categories of our ordinal outcome, we also need to include the <code>cohort</code> variable in the specification of the data frame based on which <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> will calculate the predicted values. The following code calculates the data for the plot for both sexes and follow-up times in the interval from 0 to 10:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">nDF</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span>(<span class="no">cr_data</span>, <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span>(<span class="kw">cohort</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(<span class="no">cohort</span>), <span class="kw">sex</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(<span class="no">sex</span>),
-                                 <span class="kw">time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fl">0</span>, <span class="fl">10</span>, <span class="kw">length.out</span> <span class="kw">=</span> <span class="fl">55</span>)))
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="kw">nDF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span>(<span class="kw">cr_data</span>, <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span>(cohort = <span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(<span class="kw">cohort</span>), sex = <span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(<span class="kw">sex</span>), 
+                                 time = <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fl">0</span>, <span class="fl">10</span>, length.out = <span class="fl">55</span>)))
 
-<span class="no">plot_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(<span class="no">fm</span>, <span class="no">nDF</span>)</pre></body></html></div>
-<p>Then we produce the plot with the following call to the <code>xyplot()</code> function from the <strong>lattice</strong> package:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">expit</span> <span class="kw">&lt;-</span> <span class="kw">function</span> (<span class="no">x</span>) <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="no">x</span>) / (<span class="fl">1</span> + <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="no">x</span>))
-<span class="no">my_panel_bands</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">x</span>, <span class="no">y</span>, <span class="no">upper</span>, <span class="no">lower</span>, <span class="no">fill</span>, <span class="no">col</span>, <span class="no">subscripts</span>, <span class="no">...</span>, <span class="no">font</span>,
-                           <span class="no">fontface</span>) {
-    <span class="no">upper</span> <span class="kw">&lt;-</span> <span class="no">upper</span>[<span class="no">subscripts</span>]
-    <span class="no">lower</span> <span class="kw">&lt;-</span> <span class="no">lower</span>[<span class="no">subscripts</span>]
-    <span class="fu">panel.polygon</span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(<span class="no">x</span>)), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">upper</span>, <span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(<span class="no">lower</span>)), <span class="kw">col</span> <span class="kw">=</span> <span class="no">fill</span>, <span class="kw">border</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="no">...</span>)
+<span class="kw">plot_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(<span class="kw">fm</span>, <span class="kw">nDF</span>)
+</pre></div>
+<p>Then we produce the plot with the following call to the <code><a href="https://rdrr.io/pkg/lattice/man/xyplot.html">xyplot()</a></code> function from the <strong>lattice</strong> package:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="kw">expit</span> <span class="op">&lt;-</span> <span class="fu">function</span> (<span class="kw">x</span>) <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="kw">x</span>) <span class="op">/</span> (<span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="kw">x</span>))
+<span class="kw">my_panel_bands</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">x</span>, <span class="kw">y</span>, <span class="kw">upper</span>, <span class="kw">lower</span>, <span class="kw">fill</span>, <span class="kw">col</span>, <span class="kw">subscripts</span>, <span class="kw">...</span>, <span class="kw">font</span>, 
+                           <span class="kw">fontface</span>) {
+    <span class="kw">upper</span> <span class="op">&lt;-</span> <span class="kw">upper</span>[<span class="kw">subscripts</span>]
+    <span class="kw">lower</span> <span class="op">&lt;-</span> <span class="kw">lower</span>[<span class="kw">subscripts</span>]
+    <span class="fu"><a href="https://rdrr.io/pkg/lattice/man/llines.html">panel.polygon</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(<span class="kw">x</span>)), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">upper</span>, <span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(<span class="kw">lower</span>)), col = <span class="kw">fill</span>, border = <span class="fl">FALSE</span>, <span class="kw">...</span>)
 }
 
-<span class="fu">xyplot</span>(<span class="fu">expit</span>(<span class="no">pred</span>) ~ <span class="no">time</span> <span class="kw">|</span> <span class="no">sex</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">cohort</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">plot_data</span>,
-       <span class="kw">upper</span> <span class="kw">=</span> <span class="fu">expit</span>(<span class="no">plot_data</span>$<span class="no">upp</span>), <span class="kw">low</span> <span class="kw">=</span> <span class="fu">expit</span>(<span class="no">plot_data</span>$<span class="no">low</span>), <span class="kw">type</span> <span class="kw">=</span> <span class="st">"l"</span>,
-       <span class="kw">panel</span> <span class="kw">=</span> <span class="kw">function</span> (<span class="no">x</span>, <span class="no">y</span>, <span class="no">...</span>) {
-           <span class="fu">panel.superpose</span>(<span class="no">x</span>, <span class="no">y</span>, <span class="kw">panel.groups</span> <span class="kw">=</span> <span class="no">my_panel_bands</span>, <span class="no">...</span>)
-           <span class="fu">panel.xyplot</span>(<span class="no">x</span>, <span class="no">y</span>, <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">2</span>,  <span class="no">...</span>)
-       }, <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">"Follow-up time"</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Continuation Ratio Probabilities"</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/pkg/lattice/man/xyplot.html">xyplot</a></span>(<span class="fu">expit</span>(<span class="kw">pred</span>) <span class="op">~</span> <span class="kw">time</span> <span class="op">|</span> <span class="kw">sex</span>, group = <span class="kw">cohort</span>, data = <span class="kw">plot_data</span>, 
+       upper = <span class="fu">expit</span>(<span class="kw">plot_data</span><span class="op">$</span><span class="kw">upp</span>), low = <span class="fu">expit</span>(<span class="kw">plot_data</span><span class="op">$</span><span class="kw">low</span>), type = <span class="st">"l"</span>,
+       panel = <span class="fu">function</span> (<span class="kw">x</span>, <span class="kw">y</span>, <span class="kw">...</span>) {
+           <span class="fu"><a href="https://rdrr.io/pkg/lattice/man/panel.superpose.html">panel.superpose</a></span>(<span class="kw">x</span>, <span class="kw">y</span>, panel.groups = <span class="kw">my_panel_bands</span>, <span class="kw">...</span>)
+           <span class="fu"><a href="https://rdrr.io/pkg/lattice/man/panel.xyplot.html">panel.xyplot</a></span>(<span class="kw">x</span>, <span class="kw">y</span>, lwd = <span class="fl">2</span>,  <span class="kw">...</span>)
+       }, xlab = <span class="st">"Follow-up time"</span>, ylab = <span class="st">"Continuation Ratio Probabilities"</span>)
+</pre></div>
 <p><img src="Ordinal_Mixed_Models_files/figure-html/CR_probs_plot-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>The <code>my_panel_bands()</code> is used to put the different curves for the response categories in the same plot.</p>
 </div>
 <div id="effect-plots-of-marginal-probabilities" class="section level3">
 <h3 class="hasAnchor">
 <a href="#effect-plots-of-marginal-probabilities" class="anchor"></a>Effect Plots of Marginal Probabilities</h3>
-<p>The effect plot of the previous section depicts the conditional probabilities according to the forward formulation of the continuation ratio model. However, it is easier to understand the marginal probabilities of each category, calculated according to the formulas presented in the first section and the <code><a href="../reference/continuation_ratio.html">cr_marg_probs()</a></code> function. The <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> can calculate these marginal probabilities by invoking its <code>CR_cohort_varname</code> argument in which the name of the cohort variable needs to be provided. The following call calculates the plot data for the marginal probabilities based on model <code>fm</code>:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">plot_data_m</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(<span class="no">fm</span>, <span class="no">nDF</span>, <span class="kw">CR_cohort_varname</span> <span class="kw">=</span> <span class="st">"cohort"</span>,
-                              <span class="kw">direction</span> <span class="kw">=</span> <span class="st">"forward"</span>)</pre></body></html></div>
-<p>The dataset produced by <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> contains a new variable named <code>ordinal_response</code> that specifies the different categories of the ordinal outcome. To plot these probabilities we use an analogous call to <code>xyplot()</code>:</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">key</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">space</span> <span class="kw">=</span> <span class="st">"top"</span>, <span class="kw">rep</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
-            <span class="kw">text</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(<span class="no">DF</span>$<span class="no">y</span>)[<span class="fl">1</span>:<span class="fl">2</span>]),
-            <span class="kw">lines</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">lty</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">1</span>), <span class="kw">lwd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>, <span class="fl">2</span>), <span class="kw">col</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#0080ff"</span>, <span class="st">"#ff00ff"</span>)),
-            <span class="kw">text</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(<span class="no">DF</span>$<span class="no">y</span>)[<span class="fl">3</span>:<span class="fl">4</span>]),
-            <span class="kw">lines</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">lty</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">1</span>), <span class="kw">lwd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>, <span class="fl">2</span>), <span class="kw">col</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"darkgreen"</span>, <span class="st">"#ff0000"</span>)))
+<p>The effect plot of the previous section depicts the conditional probabilities according to the forward formulation of the continuation ratio model. However, it is easier to understand the marginal probabilities of each category, calculated according to the formulas presented in the first section and the <code><a href="../reference/Continuation%20Ratio%20Set-Up.html">cr_marg_probs()</a></code> function. The <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> can calculate these marginal probabilities by invoking its <code>CR_cohort_varname</code> argument in which the name of the cohort variable needs to be provided. The following call calculates the plot data for the marginal probabilities based on model <code>fm</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="kw">plot_data_m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(<span class="kw">fm</span>, <span class="kw">nDF</span>, CR_cohort_varname = <span class="st">"cohort"</span>, 
+                              direction = <span class="st">"forward"</span>)
+</pre></div>
+<p>The dataset produced by <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> contains a new variable named <code>ordinal_response</code> that specifies the different categories of the ordinal outcome. To plot these probabilities we use an analogous call to <code><a href="https://rdrr.io/pkg/lattice/man/xyplot.html">xyplot()</a></code>:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="kw">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(space = <span class="st">"top"</span>, rep = <span class="fl">FALSE</span>,
+            text = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span>)[<span class="fl">1</span><span class="op">:</span><span class="fl">2</span>]),
+            lines = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(lty = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">1</span>), lwd = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>, <span class="fl">2</span>), col = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#0080ff"</span>, <span class="st">"#ff00ff"</span>)),
+            text = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span>)[<span class="fl">3</span><span class="op">:</span><span class="fl">4</span>]),
+            lines = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(lty = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">1</span>), lwd = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>, <span class="fl">2</span>), col = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"darkgreen"</span>, <span class="st">"#ff0000"</span>)))
 
-<span class="fu">xyplot</span>(<span class="fu">expit</span>(<span class="no">pred</span>) ~ <span class="no">time</span> <span class="kw">|</span> <span class="no">sex</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">ordinal_response</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">plot_data_m</span>,
-       <span class="kw">upper</span> <span class="kw">=</span> <span class="fu">expit</span>(<span class="no">plot_data_m</span>$<span class="no">upp</span>), <span class="kw">low</span> <span class="kw">=</span> <span class="fu">expit</span>(<span class="no">plot_data_m</span>$<span class="no">low</span>), <span class="kw">type</span> <span class="kw">=</span> <span class="st">"l"</span>,
-       <span class="kw">panel</span> <span class="kw">=</span> <span class="kw">function</span> (<span class="no">x</span>, <span class="no">y</span>, <span class="no">...</span>) {
-           <span class="fu">panel.superpose</span>(<span class="no">x</span>, <span class="no">y</span>, <span class="kw">panel.groups</span> <span class="kw">=</span> <span class="no">my_panel_bands</span>, <span class="no">...</span>)
-           <span class="fu">panel.xyplot</span>(<span class="no">x</span>, <span class="no">y</span>, <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="no">...</span>)
-       }, <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">"Follow-up time"</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Marginal Probabilities"</span>, <span class="kw">key</span> <span class="kw">=</span> <span class="no">key</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/pkg/lattice/man/xyplot.html">xyplot</a></span>(<span class="fu">expit</span>(<span class="kw">pred</span>) <span class="op">~</span> <span class="kw">time</span> <span class="op">|</span> <span class="kw">sex</span>, group = <span class="kw">ordinal_response</span>, data = <span class="kw">plot_data_m</span>, 
+       upper = <span class="fu">expit</span>(<span class="kw">plot_data_m</span><span class="op">$</span><span class="kw">upp</span>), low = <span class="fu">expit</span>(<span class="kw">plot_data_m</span><span class="op">$</span><span class="kw">low</span>), type = <span class="st">"l"</span>,
+       panel = <span class="fu">function</span> (<span class="kw">x</span>, <span class="kw">y</span>, <span class="kw">...</span>) {
+           <span class="fu"><a href="https://rdrr.io/pkg/lattice/man/panel.superpose.html">panel.superpose</a></span>(<span class="kw">x</span>, <span class="kw">y</span>, panel.groups = <span class="kw">my_panel_bands</span>, <span class="kw">...</span>)
+           <span class="fu"><a href="https://rdrr.io/pkg/lattice/man/panel.xyplot.html">panel.xyplot</a></span>(<span class="kw">x</span>, <span class="kw">y</span>, lwd = <span class="fl">2</span>, <span class="kw">...</span>)
+       }, xlab = <span class="st">"Follow-up time"</span>, ylab = <span class="st">"Marginal Probabilities"</span>, key = <span class="kw">key</span>)
+</pre></div>
 <p><img src="Ordinal_Mixed_Models_files/figure-html/CR_probs_plot_marg-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>To marginalize over the random effects as well you will need to set the <code>marginal</code> argument of <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> to <code>TRUE</code>, e.g.,</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">plot_data_m2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(<span class="no">fm</span>, <span class="no">nDF</span>, <span class="kw">CR_cohort_varname</span> <span class="kw">=</span> <span class="st">"cohort"</span>,
-                               <span class="kw">direction</span> <span class="kw">=</span> <span class="st">"forward"</span>, <span class="kw">marginal</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">cores</span> <span class="kw">=</span> <span class="fl">2</span>)</pre></body></html></div>
-<p>To plot these probabilities we use an analogous call to <code>xyplot()</code>:</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu">xyplot</span>(<span class="fu">expit</span>(<span class="no">pred</span>) ~ <span class="no">time</span> <span class="kw">|</span> <span class="no">sex</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="no">ordinal_response</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">plot_data_m2</span>,
-       <span class="kw">upper</span> <span class="kw">=</span> <span class="fu">expit</span>(<span class="no">plot_data_m2</span>$<span class="no">upp</span>), <span class="kw">low</span> <span class="kw">=</span> <span class="fu">expit</span>(<span class="no">plot_data_m2</span>$<span class="no">low</span>), <span class="kw">type</span> <span class="kw">=</span> <span class="st">"l"</span>,
-       <span class="kw">panel</span> <span class="kw">=</span> <span class="kw">function</span> (<span class="no">x</span>, <span class="no">y</span>, <span class="no">...</span>) {
-           <span class="fu">panel.superpose</span>(<span class="no">x</span>, <span class="no">y</span>, <span class="kw">panel.groups</span> <span class="kw">=</span> <span class="no">my_panel_bands</span>, <span class="no">...</span>)
-           <span class="fu">panel.xyplot</span>(<span class="no">x</span>, <span class="no">y</span>, <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">2</span>,  <span class="no">...</span>)
-       }, <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">"Follow-up time"</span>,
-       <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Marginal Probabilities\nalso w.r.t Random Effects"</span>,
-       <span class="kw">key</span> <span class="kw">=</span> <span class="no">key</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="kw">plot_data_m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/effectPlotData.html">effectPlotData</a></span>(<span class="kw">fm</span>, <span class="kw">nDF</span>, CR_cohort_varname = <span class="st">"cohort"</span>, 
+                               direction = <span class="st">"forward"</span>, marginal = <span class="fl">TRUE</span>, cores = <span class="fl">2</span>)
+</pre></div>
+<p>To plot these probabilities we use an analogous call to <code><a href="https://rdrr.io/pkg/lattice/man/xyplot.html">xyplot()</a></code>:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/pkg/lattice/man/xyplot.html">xyplot</a></span>(<span class="fu">expit</span>(<span class="kw">pred</span>) <span class="op">~</span> <span class="kw">time</span> <span class="op">|</span> <span class="kw">sex</span>, group = <span class="kw">ordinal_response</span>, data = <span class="kw">plot_data_m2</span>, 
+       upper = <span class="fu">expit</span>(<span class="kw">plot_data_m2</span><span class="op">$</span><span class="kw">upp</span>), low = <span class="fu">expit</span>(<span class="kw">plot_data_m2</span><span class="op">$</span><span class="kw">low</span>), type = <span class="st">"l"</span>,
+       panel = <span class="fu">function</span> (<span class="kw">x</span>, <span class="kw">y</span>, <span class="kw">...</span>) {
+           <span class="fu"><a href="https://rdrr.io/pkg/lattice/man/panel.superpose.html">panel.superpose</a></span>(<span class="kw">x</span>, <span class="kw">y</span>, panel.groups = <span class="kw">my_panel_bands</span>, <span class="kw">...</span>)
+           <span class="fu"><a href="https://rdrr.io/pkg/lattice/man/panel.xyplot.html">panel.xyplot</a></span>(<span class="kw">x</span>, <span class="kw">y</span>, lwd = <span class="fl">2</span>,  <span class="kw">...</span>)
+       }, xlab = <span class="st">"Follow-up time"</span>, 
+       ylab = <span class="st">"Marginal Probabilities\nalso w.r.t Random Effects"</span>, 
+       key = <span class="kw">key</span>)
+</pre></div>
 <p><img src="Ordinal_Mixed_Models_files/figure-html/CR_probs_plot_marg2-1.png" width="816" style="display: block; margin: auto;"></p>
 </div>
 </div>
@@ -372,7 +394,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

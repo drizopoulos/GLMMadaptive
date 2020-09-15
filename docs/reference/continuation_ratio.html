@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-12</span>
       </span>
     </div>
 
@@ -164,9 +164,9 @@
     <p>Data set-up and calculation of marginal probabilities from a continuation ratio model</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cr_setup</span>(<span class='no'>y</span>, <span class='kw'>direction</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"forward"</span>, <span class='st'>"backward"</span>))
+    <pre class="usage"><span class='fu'>cr_setup</span>(<span class='kw'>y</span>, direction = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"forward"</span>, <span class='st'>"backward"</span>))
 
-<span class='fu'>cr_marg_probs</span>(<span class='no'>eta</span>, <span class='kw'>direction</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"forward"</span>, <span class='st'>"backward"</span>))</pre>
+<span class='fu'>cr_marg_probs</span>(<span class='kw'>eta</span>, direction = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"forward"</span>, <span class='st'>"backward"</span>))</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -187,41 +187,45 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Dimitris Rizopoulos <a href='mailto:d.rizopoulos@erasmusmc.nl'>d.rizopoulos@erasmusmc.nl</a></p>
+<p>Frank Harrell</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>Function <code>cr_setup()</code> is based on the <code>cr.setup()</code> function from package 
 <b>rms</b>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fl'>300</span> <span class='co'># number of subjects</span>
-<span class='no'>K</span> <span class='kw'>&lt;-</span> <span class='fl'>8</span> <span class='co'># number of measurements per subject</span>
-<span class='no'>t_max</span> <span class='kw'>&lt;-</span> <span class='fl'>15</span> <span class='co'># maximum follow-up time</span>
+    <pre class="examples"><div class='input'><span class='kw'>n</span> <span class='op'>&lt;-</span> <span class='fl'>300</span> <span class='co'># number of subjects</span>
+<span class='kw'>K</span> <span class='op'>&lt;-</span> <span class='fl'>8</span> <span class='co'># number of measurements per subject</span>
+<span class='kw'>t_max</span> <span class='op'>&lt;-</span> <span class='fl'>15</span> <span class='co'># maximum follow-up time</span>
 
 <span class='co'># we constuct a data frame with the design: </span>
 <span class='co'># everyone has a baseline measurment, and then measurements at random follow-up times</span>
-<span class='no'>DF</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>id</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span>(<span class='no'>n</span>), <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>K</span>),
-                 <span class='kw'>time</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>replicate</a></span>(<span class='no'>n</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='no'>K</span> - <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='no'>t_max</span>))))),
-                 <span class='kw'>sex</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/gl.html'>gl</a></span>(<span class='fl'>2</span>, <span class='no'>n</span>/<span class='fl'>2</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"male"</span>, <span class='st'>"female"</span>)), <span class='kw'>each</span> <span class='kw'>=</span> <span class='no'>K</span>))
+<span class='kw'>DF</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(id = <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span>(<span class='kw'>n</span>), each = <span class='kw'>K</span>),
+                 time = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>replicate</a></span>(<span class='kw'>n</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='kw'>K</span> <span class='op'>-</span> <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='kw'>t_max</span>))))),
+                 sex = <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/gl.html'>gl</a></span>(<span class='fl'>2</span>, <span class='kw'>n</span><span class='op'>/</span><span class='fl'>2</span>, labels = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"male"</span>, <span class='st'>"female"</span>)), each = <span class='kw'>K</span>))
 
 <span class='co'># design matrices for the fixed and random effects</span>
-<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='methods.html'>model.matrix</a></span>(~ <span class='no'>sex</span> * <span class='no'>time</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>)[, -<span class='fl'>1</span>]
-<span class='no'>Z</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='methods.html'>model.matrix</a></span>(~ <span class='fl'>1</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>DF</span>)
+<span class='kw'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='MixMod Methods.html'>model.matrix</a></span>(<span class='op'>~</span> <span class='kw'>sex</span> <span class='op'>*</span> <span class='kw'>time</span>, data = <span class='kw'>DF</span>)[, <span class='op'>-</span><span class='fl'>1</span>]
+<span class='kw'>Z</span> <span class='op'>&lt;-</span> <span class='fu'><a href='MixMod Methods.html'>model.matrix</a></span>(<span class='op'>~</span> <span class='fl'>1</span>, data = <span class='kw'>DF</span>)
 
-<span class='no'>thrs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>1.5</span>, <span class='fl'>0</span>, <span class='fl'>0.9</span>) <span class='co'># thresholds for the different ordinal categories</span>
-<span class='no'>betas</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>0.25</span>, <span class='fl'>0.24</span>, -<span class='fl'>0.05</span>) <span class='co'># fixed effects coefficients</span>
-<span class='no'>D11</span> <span class='kw'>&lt;-</span> <span class='fl'>0.48</span> <span class='co'># variance of random intercepts</span>
-<span class='no'>D22</span> <span class='kw'>&lt;-</span> <span class='fl'>0.1</span> <span class='co'># variance of random slopes</span>
+<span class='kw'>thrs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='op'>-</span><span class='fl'>1.5</span>, <span class='fl'>0</span>, <span class='fl'>0.9</span>) <span class='co'># thresholds for the different ordinal categories</span>
+<span class='kw'>betas</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='op'>-</span><span class='fl'>0.25</span>, <span class='fl'>0.24</span>, <span class='op'>-</span><span class='fl'>0.05</span>) <span class='co'># fixed effects coefficients</span>
+<span class='kw'>D11</span> <span class='op'>&lt;-</span> <span class='fl'>0.48</span> <span class='co'># variance of random intercepts</span>
+<span class='kw'>D22</span> <span class='op'>&lt;-</span> <span class='fl'>0.1</span> <span class='co'># variance of random slopes</span>
 
 <span class='co'># we simulate random effects</span>
-<span class='no'>b</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='no'>D11</span>)), <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='no'>D22</span>)))[, <span class='fl'>1</span>, <span class='kw'>drop</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>]
+<span class='kw'>b</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='kw'>n</span>, sd = <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='kw'>D11</span>)), <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='kw'>n</span>, sd = <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='kw'>D22</span>)))[, <span class='fl'>1</span>, drop = <span class='fl'>FALSE</span>]
 <span class='co'># linear predictor</span>
-<span class='no'>eta_y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/drop.html'>drop</a></span>(<span class='no'>X</span> <span class='kw'>%*%</span> <span class='no'>betas</span> + <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span>(<span class='no'>Z</span> * <span class='no'>b</span>[<span class='no'>DF</span>$<span class='no'>id</span>, , <span class='kw'>drop</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>]))
+<span class='kw'>eta_y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/drop.html'>drop</a></span>(<span class='kw'>X</span> <span class='op'>%*%</span> <span class='kw'>betas</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span>(<span class='kw'>Z</span> <span class='op'>*</span> <span class='kw'>b</span>[<span class='kw'>DF</span><span class='op'>$</span><span class='kw'>id</span>, , drop = <span class='fl'>FALSE</span>]))
 <span class='co'># linear predictor for each category</span>
-<span class='no'>eta_y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/outer.html'>outer</a></span>(<span class='no'>eta_y</span>, <span class='no'>thrs</span>, <span class='st'>"+"</span>)
+<span class='kw'>eta_y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/outer.html'>outer</a></span>(<span class='kw'>eta_y</span>, <span class='kw'>thrs</span>, <span class='st'>"+"</span>)
 <span class='co'># marginal probabilities per category</span>
-<span class='no'>mprobs</span> <span class='kw'>&lt;-</span> <span class='fu'>cr_marg_probs</span>(<span class='no'>eta_y</span>)
+<span class='kw'>mprobs</span> <span class='op'>&lt;-</span> <span class='fu'>cr_marg_probs</span>(<span class='kw'>eta_y</span>)
 <span class='co'># we simulate ordinal longitudinal data</span>
-<span class='no'>DF</span>$<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/unname.html'>unname</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span>(<span class='no'>mprobs</span>, <span class='fl'>1</span>, <span class='no'>sample</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>mprobs</span>), <span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))
+<span class='kw'>DF</span><span class='op'>$</span><span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/unname.html'>unname</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span>(<span class='kw'>mprobs</span>, <span class='fl'>1</span>, <span class='kw'>sample</span>, x = <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='kw'>mprobs</span>), size = <span class='fl'>1</span>, replace = <span class='fl'>TRUE</span>))
 
 <span class='co'># If you want to simulate from the backward formulation of the CR model, you need to</span>
 <span class='co'># change `eta_y &lt;- outer(eta_y, thrs, "+")` to `eta_y &lt;- outer(eta_y, rev(thrs), "+")`,</span>
@@ -232,16 +236,17 @@
 <span class='co'># prepare the data</span>
 <span class='co'># If you want to fit the CR model under the backward formulation, you need to change</span>
 <span class='co'># `cr_vals &lt;- cr_setup(DF$y)` to `cr_vals &lt;- cr_setup(DF$y, "backward")`</span>
-<span class='no'>cr_vals</span> <span class='kw'>&lt;-</span> <span class='fu'>cr_setup</span>(<span class='no'>DF</span>$<span class='no'>y</span>)
-<span class='no'>cr_data</span> <span class='kw'>&lt;-</span> <span class='no'>DF</span>[<span class='no'>cr_vals</span>$<span class='no'>subs</span>, ]
-<span class='no'>cr_data</span>$<span class='no'>y_new</span> <span class='kw'>&lt;-</span> <span class='no'>cr_vals</span>$<span class='no'>y</span>
-<span class='no'>cr_data</span>$<span class='no'>cohort</span> <span class='kw'>&lt;-</span> <span class='no'>cr_vals</span>$<span class='no'>cohort</span>
+<span class='kw'>cr_vals</span> <span class='op'>&lt;-</span> <span class='fu'>cr_setup</span>(<span class='kw'>DF</span><span class='op'>$</span><span class='kw'>y</span>)
+<span class='kw'>cr_data</span> <span class='op'>&lt;-</span> <span class='kw'>DF</span>[<span class='kw'>cr_vals</span><span class='op'>$</span><span class='kw'>subs</span>, ]
+<span class='kw'>cr_data</span><span class='op'>$</span><span class='kw'>y_new</span> <span class='op'>&lt;-</span> <span class='kw'>cr_vals</span><span class='op'>$</span><span class='kw'>y</span>
+<span class='kw'>cr_data</span><span class='op'>$</span><span class='kw'>cohort</span> <span class='op'>&lt;-</span> <span class='kw'>cr_vals</span><span class='op'>$</span><span class='kw'>cohort</span>
 
 <span class='co'># fit the model</span>
-<span class='no'>fm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(<span class='no'>y_new</span> ~ <span class='no'>cohort</span> + <span class='no'>sex</span> * <span class='no'>time</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> <span class='kw'>|</span> <span class='no'>id</span>,
-                  <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>cr_data</span>, <span class='kw'>family</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>())
+<span class='kw'>fm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(<span class='kw'>y_new</span> <span class='op'>~</span> <span class='kw'>cohort</span> <span class='op'>+</span> <span class='kw'>sex</span> <span class='op'>*</span> <span class='kw'>time</span>, random = <span class='op'>~</span> <span class='fl'>1</span> <span class='op'>|</span> <span class='kw'>id</span>, 
+                  data = <span class='kw'>cr_data</span>, family = <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>())
 
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>fm</span>)</div><div class='output co'>#&gt; 
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>fm</span>)
+</div><div class='output co'>#&gt; 
 #&gt; Call:
 #&gt; mixed_model(fixed = y_new ~ cohort + sex * time, random = ~1 | 
 #&gt;     id, data = cr_data, family = binomial())
@@ -293,7 +298,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

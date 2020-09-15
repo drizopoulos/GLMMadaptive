@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-12</span>
       </span>
     </div>
 
@@ -116,7 +116,7 @@
       <h1 data-toc-skip>GLMMadaptive Basics</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2020-06-25</h4>
+            <h4 class="date">2020-09-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/GLMMadaptive_basics.Rmd"><code>vignettes/GLMMadaptive_basics.Rmd</code></a></small>
       <div class="hidden name"><code>GLMMadaptive_basics.Rmd</code></div>
@@ -152,36 +152,41 @@
 <a href="#mixed-effects-logistic-regression" class="anchor"></a>Mixed Effects Logistic Regression</h2>
 <p>We illustrate the use of the package in the standard case of a mixed effects logistic regression. That is, the distribution of <span class="math inline">\([y_i \mid b_i]\)</span> is binomial, and the distribution of <span class="math inline">\([b_i]\)</span> multivariate normal.</p>
 <p>We start by simulating some data for a binary longitudinal outcome:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1234</span>)
-<span class="no">n</span> <span class="kw">&lt;-</span> <span class="fl">100</span> <span class="co"># number of subjects</span>
-<span class="no">K</span> <span class="kw">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
-<span class="no">t_max</span> <span class="kw">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1234</span>)
+<span class="kw">n</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># number of subjects</span>
+<span class="kw">K</span> <span class="op">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
+<span class="kw">t_max</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span>
 
 <span class="co"># we constuct a data frame with the design: </span>
 <span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span>
-<span class="no">DF</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">id</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="no">n</span>), <span class="kw">each</span> <span class="kw">=</span> <span class="no">K</span>),
-                 <span class="kw">time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="no">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="no">K</span> - <span class="fl">1</span>, <span class="fl">0</span>, <span class="no">t_max</span>))))),
-                 <span class="kw">sex</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="no">n</span>/<span class="fl">2</span>, <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="kw">each</span> <span class="kw">=</span> <span class="no">K</span>))
+<span class="kw">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(id = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="kw">n</span>), each = <span class="kw">K</span>),
+                 time = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="kw">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw">K</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0</span>, <span class="kw">t_max</span>))))),
+                 sex = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="kw">n</span><span class="op">/</span><span class="fl">2</span>, labels = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), each = <span class="kw">K</span>))
 
 <span class="co"># design matrices for the fixed and random effects</span>
-<span class="no">X</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
-<span class="no">Z</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">time</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
+<span class="kw">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, data = <span class="kw">DF</span>)
+<span class="kw">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">time</span>, data = <span class="kw">DF</span>)
 
-<span class="no">betas</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">2.13</span>, -<span class="fl">0.25</span>, <span class="fl">0.24</span>, -<span class="fl">0.05</span>) <span class="co"># fixed effects coefficients</span>
-<span class="no">D11</span> <span class="kw">&lt;-</span> <span class="fl">0.48</span> <span class="co"># variance of random intercepts</span>
-<span class="no">D22</span> <span class="kw">&lt;-</span> <span class="fl">0.1</span> <span class="co"># variance of random slopes</span>
+<span class="kw">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">2.13</span>, <span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span>) <span class="co"># fixed effects coefficients</span>
+<span class="kw">D11</span> <span class="op">&lt;-</span> <span class="fl">0.48</span> <span class="co"># variance of random intercepts</span>
+<span class="kw">D22</span> <span class="op">&lt;-</span> <span class="fl">0.1</span> <span class="co"># variance of random slopes</span>
 
 <span class="co"># we simulate random effects</span>
-<span class="no">b</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D11</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D22</span>)))
+<span class="kw">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D11</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D22</span>)))
 <span class="co"># linear predictor</span>
-<span class="no">eta_y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/drop.html">drop</a></span>(<span class="no">X</span> <span class="kw">%*%</span> <span class="no">betas</span> + <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">Z</span> * <span class="no">b</span>[<span class="no">DF</span>$<span class="no">id</span>, ]))
+<span class="kw">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/drop.html">drop</a></span>(<span class="kw">X</span> <span class="op">%*%</span> <span class="kw">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="kw">Z</span> <span class="op">*</span> <span class="kw">b</span>[<span class="kw">DF</span><span class="op">$</span><span class="kw">id</span>, ]))
 <span class="co"># we simulate binary longitudinal data</span>
-<span class="no">DF</span>$<span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(<span class="no">n</span> * <span class="no">K</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="no">eta_y</span>))</pre></body></html></div>
+<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(<span class="kw">n</span> <span class="op">*</span> <span class="kw">K</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="kw">eta_y</span>))
+</pre></div>
 <p>We fit a mixed effects logistic regression for <code>y</code>, assuming random intercepts for the random-effects part. The basic model-fitting function in <strong>GLMMadaptive</strong> is called <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, and has four required arguments, namely <code>fixed</code> a formula for the fixed effects, <code>random</code> a formula for the random effects, <code>family</code> a family object specifying the type of response variable, and <code>data</code> a data frame containing the variables in the previously mentioned formulas. Hence, the call to fit the random intercepts logistic regression is:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">fm1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">fixed</span> <span class="kw">=</span> <span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                   <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="kw">fm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(fixed = <span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>,
+                   family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())
+</pre></div>
 <p>The summary method gives a detailed output of the model:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">fm1</span>)
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="kw">fm1</span>)
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 | id, data = DF, </span>
@@ -216,88 +221,108 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Optimization:</span>
 <span class="co">#&gt; method: hybrid EM and quasi-Newton</span>
-<span class="co">#&gt; converged: TRUE</span></pre></body></html></div>
+<span class="co">#&gt; converged: TRUE</span>
+</pre></div>
 <p>We continue by checking the impact of the chosen number of quadrature points to the parameters estimates and the log-likelihood value at convergence. First, we refit the model with an increasing number of quadrature points. The default when the number of random effects is smaller or equal to two is 11 points. We fit then with 15, and 21 points:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">fm1_q11</span> <span class="kw">&lt;-</span> <span class="no">fm1</span>
-<span class="no">fm1_q15</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="no">fm1_q11</span>, <span class="kw">nAGQ</span> <span class="kw">=</span> <span class="fl">15</span>)
-<span class="no">fm1_q21</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="no">fm1_q11</span>, <span class="kw">nAGQ</span> <span class="kw">=</span> <span class="fl">21</span>)
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="kw">fm1_q11</span> <span class="op">&lt;-</span> <span class="kw">fm1</span>
+<span class="kw">fm1_q15</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="kw">fm1_q11</span>, nAGQ = <span class="fl">15</span>)
+<span class="kw">fm1_q21</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="kw">fm1_q11</span>, nAGQ = <span class="fl">21</span>)
 
-<span class="no">models</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"nAGQ=11"</span> <span class="kw">=</span> <span class="no">fm1_q11</span>, <span class="st">"nAGQ=15"</span> <span class="kw">=</span> <span class="no">fm1_q15</span>, <span class="st">"nAGQ=21"</span> <span class="kw">=</span> <span class="no">fm1_q21</span>)</pre></body></html></div>
-<p>We now extract from the model the estimated parameter for the fixed effects (using function <code><a href="../reference/methods.html">fixef()</a></code>), for the random effects, and the log-likelihood (using function <code><a href="https://rdrr.io/r/stats/logLik.html">logLik()</a></code>):</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">extract</span> <span class="kw">&lt;-</span> <span class="kw">function</span> (<span class="no">obj</span>) {
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="../reference/methods.html">fixef</a></span>(<span class="no">obj</span>), <span class="st">"var_(Intercept)"</span> <span class="kw">=</span> <span class="no">obj</span>$<span class="no">D</span>[<span class="fl">1</span>, <span class="fl">1</span>], <span class="st">"logLik"</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/logLik.html">logLik</a></span>(<span class="no">obj</span>))
+<span class="kw">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"nAGQ=11"</span> = <span class="kw">fm1_q11</span>, <span class="st">"nAGQ=15"</span> = <span class="kw">fm1_q15</span>, <span class="st">"nAGQ=21"</span> = <span class="kw">fm1_q21</span>)
+</pre></div>
+<p>We now extract from the model the estimated parameter for the fixed effects (using function <code><a href="../reference/MixMod%20Methods.html">fixef()</a></code>), for the random effects, and the log-likelihood (using function <code><a href="https://rdrr.io/r/stats/logLik.html">logLik()</a></code>):</p>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="kw">extract</span> <span class="op">&lt;-</span> <span class="fu">function</span> (<span class="kw">obj</span>) {
+    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="../reference/MixMod%20Methods.html">fixef</a></span>(<span class="kw">obj</span>), <span class="st">"var_(Intercept)"</span> = <span class="kw">obj</span><span class="op">$</span><span class="kw">D</span>[<span class="fl">1</span>, <span class="fl">1</span>], <span class="st">"logLik"</span> = <span class="fu"><a href="https://rdrr.io/r/stats/logLik.html">logLik</a></span>(<span class="kw">obj</span>))
 }
 
-<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="no">models</span>, <span class="no">extract</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="kw">models</span>, <span class="kw">extract</span>)
 <span class="co">#&gt;                       nAGQ=11       nAGQ=15      nAGQ=21</span>
 <span class="co">#&gt; (Intercept)       -2.61816557   -2.61679077   -2.6168440</span>
 <span class="co">#&gt; sexfemale         -1.32418678   -1.32349829   -1.3235049</span>
 <span class="co">#&gt; time               0.28514773    0.28501148    0.2850151</span>
 <span class="co">#&gt; sexfemale:time     0.04015372    0.04020003    0.0401995</span>
 <span class="co">#&gt; var_(Intercept)    4.26266211    4.26351799    4.2636311</span>
-<span class="co">#&gt; logLik          -374.51972108 -374.51983340 -374.5198046</span></pre></body></html></div>
+<span class="co">#&gt; logLik          -374.51972108 -374.51983340 -374.5198046</span>
+</pre></div>
 <p>We observe a rather stable model with virtually no differences between the different choices of quadrature points.</p>
 <p>We first compare the model with a simple logistic regression that does not include any random effects:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">km</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span>(<span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>, <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="kw">km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, data = <span class="kw">DF</span>, family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())
 
-<span class="fu"><a href="../reference/methods.html">anova</a></span>(<span class="no">fm1</span>, <span class="no">km</span>)
+<span class="fu"><a href="../reference/MixMod%20Methods.html">anova</a></span>(<span class="kw">fm1</span>, <span class="kw">km</span>)
 <span class="co">#&gt; </span>
 <span class="co">#&gt;        AIC    BIC log.Lik    LRT df p.value</span>
 <span class="co">#&gt; fm1 759.04 772.07 -374.52                  </span>
-<span class="co">#&gt; km  919.11 937.85 -455.55 162.07  1 &lt;0.0001</span></pre></body></html></div>
-<p>We obtain a highly significant p-value suggesting that there are correlations in the data that cannot be ignored. <em>Note:</em> the <code><a href="../reference/methods.html">anova()</a></code> method that performs the likelihood ratio test calculates the p-value using the standard <span class="math inline">\(\chi^2\)</span> distribution, here with one degree of freedom. However, because the null hypothesis for testing variance parameters is on the boundary of the corresponding parameter space, it would be more appropriate to use a mixture of <span class="math inline">\(\chi^2\)</span> distributions.</p>
-<p>We extend model <code>fm1</code> by also including a random slopes term; however, we assume that the covariance between the random intercepts and random slopes is zero. This is achieved by using the <code>||</code> symbol in the specification of the <code>random</code> argument, i.e.,</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">fm2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">fixed</span> <span class="kw">=</span> <span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="no">time</span> <span class="kw">||</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                   <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())</pre></body></html></div>
-<p>The likelihood ratio test between the two models is computed with function <code><a href="../reference/methods.html">anova()</a></code>. When two <code>"MixMod"</code> objects are provided, the function assumes that the first object represents the model under the null hypothesis, and the second object the model under the alternative, i.e.,</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="../reference/methods.html">anova</a></span>(<span class="no">fm1</span>, <span class="no">fm2</span>)
+<span class="co">#&gt; km  919.11 937.85 -455.55 162.07  1 &lt;0.0001</span>
+</pre></div>
+<p>We obtain a highly significant p-value suggesting that there are correlations in the data that cannot be ignored. <em>Note:</em> the <code><a href="../reference/MixMod%20Methods.html">anova()</a></code> method that performs the likelihood ratio test calculates the p-value using the standard <span class="math inline">\(\chi^2\)</span> distribution, here with one degree of freedom. However, because the null hypothesis for testing variance parameters is on the boundary of the corresponding parameter space, it would be more appropriate to use a mixture of <span class="math inline">\(\chi^2\)</span> distributions.</p>
+<p>We extend model <code>fm1</code> by also including a random slopes term; however, we assume that the covariance between the random intercepts and random slopes is zero. This is achieved by using the <code><a href="https://rdrr.io/r/base/Logic.html">||</a></code> symbol in the specification of the <code>random</code> argument, i.e.,</p>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="kw">fm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(fixed = <span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="kw">time</span> <span class="op">||</span> <span class="kw">id</span>, data = <span class="kw">DF</span>,
+                   family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())
+</pre></div>
+<p>The likelihood ratio test between the two models is computed with function <code><a href="../reference/MixMod%20Methods.html">anova()</a></code>. When two <code>"MixMod"</code> objects are provided, the function assumes that the first object represents the model under the null hypothesis, and the second object the model under the alternative, i.e.,</p>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="fu"><a href="../reference/MixMod%20Methods.html">anova</a></span>(<span class="kw">fm1</span>, <span class="kw">fm2</span>)
 <span class="co">#&gt; </span>
 <span class="co">#&gt;        AIC    BIC log.Lik  LRT df p.value</span>
 <span class="co">#&gt; fm1 759.04 772.07 -374.52                </span>
-<span class="co">#&gt; fm2 730.94 746.57 -359.47 30.1  1 &lt;0.0001</span></pre></body></html></div>
+<span class="co">#&gt; fm2 730.94 746.57 -359.47 30.1  1 &lt;0.0001</span>
+</pre></div>
 <p>The results suggest that we need the random slopes term. We continue by testing whether the covariance between the random effects terms is zero. The model under the alternative hypothesis is (results not shown):</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">fm3</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">fixed</span> <span class="kw">=</span> <span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="no">time</span> <span class="kw">|</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                   <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())</pre></body></html></div>
-<p>And again the likelihood ratio test is performed by a call to <code><a href="../reference/methods.html">anova()</a></code> (results not shown):</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="../reference/methods.html">anova</a></span>(<span class="no">fm2</span>, <span class="no">fm3</span>)
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="kw">fm3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(fixed = <span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="kw">time</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>,
+                   family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())
+</pre></div>
+<p>And again the likelihood ratio test is performed by a call to <code><a href="../reference/MixMod%20Methods.html">anova()</a></code> (results not shown):</p>
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="fu"><a href="../reference/MixMod%20Methods.html">anova</a></span>(<span class="kw">fm2</span>, <span class="kw">fm3</span>)
 <span class="co">#&gt; </span>
 <span class="co">#&gt;        AIC    BIC log.Lik  LRT df p.value</span>
 <span class="co">#&gt; fm2 730.94 746.57 -359.47                </span>
-<span class="co">#&gt; fm3 731.63 749.86 -358.81 1.32  1  0.2514</span></pre></body></html></div>
+<span class="co">#&gt; fm3 731.63 749.86 -358.81 1.32  1  0.2514</span>
+</pre></div>
 <p>The results now suggest that indeed the covariance between the two random effects terms is not statistically different from zero.</p>
 </div>
 <div id="penalized-mixed-effects-poisson-regression" class="section level2">
 <h2 class="hasAnchor">
 <a href="#penalized-mixed-effects-poisson-regression" class="anchor"></a>Penalized Mixed Effects Poisson Regression</h2>
 <p>We continue our illustration with a Poisson mixed effects model. We start again by simulating some data for a Poisson longitudinal outcome:</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1234</span>)
-<span class="no">n</span> <span class="kw">&lt;-</span> <span class="fl">100</span> <span class="co"># number of subjects</span>
-<span class="no">K</span> <span class="kw">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
-<span class="no">t_max</span> <span class="kw">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span>
+<div class="sourceCode" id="cb11"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1234</span>)
+<span class="kw">n</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># number of subjects</span>
+<span class="kw">K</span> <span class="op">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
+<span class="kw">t_max</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span>
 
 <span class="co"># we constuct a data frame with the design: </span>
 <span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span>
-<span class="no">DF</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">id</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="no">n</span>), <span class="kw">each</span> <span class="kw">=</span> <span class="no">K</span>),
-                 <span class="kw">time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="no">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="no">K</span> - <span class="fl">1</span>, <span class="fl">0</span>, <span class="no">t_max</span>))))),
-                 <span class="kw">sex</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="no">n</span>/<span class="fl">2</span>, <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="kw">each</span> <span class="kw">=</span> <span class="no">K</span>))
+<span class="kw">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(id = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="kw">n</span>), each = <span class="kw">K</span>),
+                 time = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="kw">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw">K</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0</span>, <span class="kw">t_max</span>))))),
+                 sex = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="kw">n</span><span class="op">/</span><span class="fl">2</span>, labels = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), each = <span class="kw">K</span>))
 
 <span class="co"># design matrices for the fixed and random effects</span>
-<span class="no">X</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
+<span class="kw">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, data = <span class="kw">DF</span>)
 
-<span class="no">betas</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2.13</span>, -<span class="fl">0.25</span>, <span class="fl">0.24</span>, -<span class="fl">0.05</span>) <span class="co"># fixed effects coefficients</span>
-<span class="no">D11</span> <span class="kw">&lt;-</span> <span class="fl">0.48</span> <span class="co"># variance of random intercepts</span>
+<span class="kw">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2.13</span>, <span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span>) <span class="co"># fixed effects coefficients</span>
+<span class="kw">D11</span> <span class="op">&lt;-</span> <span class="fl">0.48</span> <span class="co"># variance of random intercepts</span>
 
 <span class="co"># we simulate random effects</span>
-<span class="no">b</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D11</span>))
+<span class="kw">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D11</span>))
 <span class="co"># linear predictor</span>
-<span class="no">eta_y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/drop.html">drop</a></span>(<span class="no">X</span> <span class="kw">%*%</span> <span class="no">betas</span> + <span class="no">b</span>[<span class="no">DF</span>$<span class="no">id</span>])
+<span class="kw">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/drop.html">drop</a></span>(<span class="kw">X</span> <span class="op">%*%</span> <span class="kw">betas</span> <span class="op">+</span> <span class="kw">b</span>[<span class="kw">DF</span><span class="op">$</span><span class="kw">id</span>])
 <span class="co"># we simulate Poisson longitudinal data</span>
-<span class="no">DF</span>$<span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">rpois</a></span>(<span class="no">n</span> * <span class="no">K</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="no">eta_y</span>))</pre></body></html></div>
+<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">rpois</a></span>(<span class="kw">n</span> <span class="op">*</span> <span class="kw">K</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="kw">eta_y</span>))
+</pre></div>
 <p>We fit the mixed effects Poisson regression for <code>y</code> assuming random intercepts for the random-effects part.</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">gm1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">fixed</span> <span class="kw">=</span> <span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                   <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>())</pre></body></html></div>
+<div class="sourceCode" id="cb12"><pre class="downlit">
+<span class="kw">gm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(fixed = <span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>,
+                   family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>())
+</pre></div>
 <p>As previously, the summary method gives a detailed output of the model:</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="no">gm1</span>)
+<div class="sourceCode" id="cb13"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="kw">gm1</span>)
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 | id, data = DF, </span>
@@ -332,20 +357,27 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Optimization:</span>
 <span class="co">#&gt; method: hybrid EM and quasi-Newton</span>
-<span class="co">#&gt; converged: TRUE</span></pre></body></html></div>
+<span class="co">#&gt; converged: TRUE</span>
+</pre></div>
 <p>In settings with few subjects, repeated measurements of separation effects, the package also allows to place a penalty in the fixed effects regression coefficients <span class="math inline">\(\beta\)</span>. The penalty/prior is in the form of a Student’s t distribution with mean 0, scale parameter 1, and 3 degrees of freedom, and it is placed in all <span class="math inline">\(\beta\)</span> coefficients except from the intercept. The penalized model can be fitted by setting argument <code>penalized</code> to <code>TRUE</code>, i.e.,</p>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">gm2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">fixed</span> <span class="kw">=</span> <span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                   <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>(), <span class="kw">penalized</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="st">'unpenalized'</span> <span class="kw">=</span> <span class="fu"><a href="../reference/methods.html">fixef</a></span>(<span class="no">gm1</span>), <span class="st">'penalized'</span> <span class="kw">=</span> <span class="fu"><a href="../reference/methods.html">fixef</a></span>(<span class="no">gm2</span>))
+<div class="sourceCode" id="cb14"><pre class="downlit">
+<span class="kw">gm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(fixed = <span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>,
+                   family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>(), penalized = <span class="fl">TRUE</span>)
+</pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="st">'unpenalized'</span> = <span class="fu"><a href="../reference/MixMod%20Methods.html">fixef</a></span>(<span class="kw">gm1</span>), <span class="st">'penalized'</span> = <span class="fu"><a href="../reference/MixMod%20Methods.html">fixef</a></span>(<span class="kw">gm2</span>))
 <span class="co">#&gt;                unpenalized  penalized</span>
 <span class="co">#&gt; (Intercept)     2.94471508  2.9433924</span>
 <span class="co">#&gt; sexfemale      -0.86111225 -0.8599373</span>
 <span class="co">#&gt; time            0.24039444  0.2404593</span>
-<span class="co">#&gt; sexfemale:time -0.05105926 -0.0511505</span></pre></body></html></div>
+<span class="co">#&gt; sexfemale:time -0.05105926 -0.0511505</span>
+</pre></div>
 <p>In this example we observe small differences between the penalized and unpenalized models. The users have the option to alter the specification of the Student’s t penalty by directly specifying the mean, scale and degrees of freedom arguments of the distribution. For example, a ridge penalty could be placed by setting the degrees of freedom to a high value. The call in this case should be:</p>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="no">gm3</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">fixed</span> <span class="kw">=</span> <span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                   <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>(),
-                   <span class="kw">penalized</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">pen_mu</span> <span class="kw">=</span> <span class="fl">0</span>, <span class="kw">pen_sigma</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">pen_df</span> <span class="kw">=</span> <span class="fl">200</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb16"><pre class="downlit">
+<span class="kw">gm3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(fixed = <span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>,
+                   family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>(), 
+                   penalized = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(pen_mu = <span class="fl">0</span>, pen_sigma = <span class="fl">1</span>, pen_df = <span class="fl">200</span>))
+</pre></div>
 </div>
 </div>
   </div>
@@ -365,7 +397,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

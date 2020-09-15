@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-12</span>
       </span>
     </div>
 
@@ -116,7 +116,7 @@
       <h1 data-toc-skip>Goodness of Fit for MixMod Objects</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2020-06-25</h4>
+            <h4 class="date">2020-09-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Goodness_of_Fit.Rmd"><code>vignettes/Goodness_of_Fit.Rmd</code></a></small>
       <div class="hidden name"><code>Goodness_of_Fit.Rmd</code></div>
@@ -133,72 +133,76 @@
 <h2 class="hasAnchor">
 <a href="#zero-inflated-negative-binomial-longitudinal-data" class="anchor"></a>Zero-Inflated Negative Binomial Longitudinal Data</h2>
 <p>We start by simulating a longitudinal outcome from a zero-inflated negative binomial distribution:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">123</span>)
-<span class="no">n</span> <span class="kw">&lt;-</span> <span class="fl">300</span> <span class="co"># number of subjects</span>
-<span class="no">K</span> <span class="kw">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
-<span class="no">t_max</span> <span class="kw">&lt;-</span> <span class="fl">5</span> <span class="co"># maximum follow-up time</span>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">123</span>)
+<span class="kw">n</span> <span class="op">&lt;-</span> <span class="fl">300</span> <span class="co"># number of subjects</span>
+<span class="kw">K</span> <span class="op">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
+<span class="kw">t_max</span> <span class="op">&lt;-</span> <span class="fl">5</span> <span class="co"># maximum follow-up time</span>
 
 <span class="co"># we constuct a data frame with the design: </span>
 <span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span>
-<span class="no">DF</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">id</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="no">n</span>), <span class="kw">each</span> <span class="kw">=</span> <span class="no">K</span>),
-                 <span class="kw">time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="no">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="no">K</span> - <span class="fl">1</span>, <span class="fl">0</span>, <span class="no">t_max</span>))))),
-                 <span class="kw">sex</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="no">n</span>/<span class="fl">2</span>, <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), <span class="kw">each</span> <span class="kw">=</span> <span class="no">K</span>))
+<span class="kw">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(id = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="kw">n</span>), each = <span class="kw">K</span>),
+                 time = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="kw">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw">K</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0</span>, <span class="kw">t_max</span>))))),
+                 sex = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="kw">n</span><span class="op">/</span><span class="fl">2</span>, labels = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), each = <span class="kw">K</span>))
 
 <span class="co"># design matrices for the fixed and random effects non-zero part</span>
-<span class="no">X</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
-<span class="no">Z</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="fl">1</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
+<span class="kw">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, data = <span class="kw">DF</span>)
+<span class="kw">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="fl">1</span>, data = <span class="kw">DF</span>)
 <span class="co"># design matrices for the fixed and random effects zero part</span>
-<span class="no">X_zi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="no">sex</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
-<span class="no">Z_zi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span>(~ <span class="fl">1</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>)
+<span class="kw">X_zi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">sex</span>, data = <span class="kw">DF</span>)
+<span class="kw">Z_zi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="fl">1</span>, data = <span class="kw">DF</span>)
 
-<span class="no">betas</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.5</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, -<span class="fl">0.03</span>) <span class="co"># fixed effects coefficients non-zero part</span>
-<span class="no">shape</span> <span class="kw">&lt;-</span> <span class="fl">2</span> <span class="co"># shape/size parameter of the negative binomial distribution</span>
-<span class="no">gammas</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">1.5</span>, <span class="fl">0.5</span>) <span class="co"># fixed effects coefficients zero part</span>
-<span class="no">D11</span> <span class="kw">&lt;-</span> <span class="fl">0.5</span> <span class="co"># variance of random intercepts non-zero part</span>
-<span class="no">D22</span> <span class="kw">&lt;-</span> <span class="fl">0.4</span> <span class="co"># variance of random intercepts zero part</span>
+<span class="kw">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.5</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="op">-</span><span class="fl">0.03</span>) <span class="co"># fixed effects coefficients non-zero part</span>
+<span class="kw">shape</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="co"># shape/size parameter of the negative binomial distribution</span>
+<span class="kw">gammas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0.5</span>) <span class="co"># fixed effects coefficients zero part</span>
+<span class="kw">D11</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="co"># variance of random intercepts non-zero part</span>
+<span class="kw">D22</span> <span class="op">&lt;-</span> <span class="fl">0.4</span> <span class="co"># variance of random intercepts zero part</span>
 
 <span class="co"># we simulate random effects</span>
-<span class="no">b</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D11</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="no">n</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="no">D22</span>)))
+<span class="kw">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D11</span>)), <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D22</span>)))
 <span class="co"># linear predictor non-zero part</span>
-<span class="no">eta_y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="no">X</span> <span class="kw">%*%</span> <span class="no">betas</span> + <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">Z</span> * <span class="no">b</span>[<span class="no">DF</span>$<span class="no">id</span>, <span class="fl">1</span>, <span class="kw">drop</span> <span class="kw">=</span> <span class="fl">FALSE</span>]))
+<span class="kw">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="kw">X</span> <span class="op">%*%</span> <span class="kw">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="kw">Z</span> <span class="op">*</span> <span class="kw">b</span>[<span class="kw">DF</span><span class="op">$</span><span class="kw">id</span>, <span class="fl">1</span>, drop = <span class="fl">FALSE</span>]))
 <span class="co"># linear predictor zero part</span>
-<span class="no">eta_zi</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="no">X_zi</span> <span class="kw">%*%</span> <span class="no">gammas</span> + <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">Z_zi</span> * <span class="no">b</span>[<span class="no">DF</span>$<span class="no">id</span>, <span class="fl">2</span>, <span class="kw">drop</span> <span class="kw">=</span> <span class="fl">FALSE</span>]))
+<span class="kw">eta_zi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="kw">X_zi</span> <span class="op">%*%</span> <span class="kw">gammas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="kw">Z_zi</span> <span class="op">*</span> <span class="kw">b</span>[<span class="kw">DF</span><span class="op">$</span><span class="kw">id</span>, <span class="fl">2</span>, drop = <span class="fl">FALSE</span>]))
 <span class="co"># we simulate negative binomial longitudinal data</span>
-<span class="no">DF</span>$<span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/NegBinomial.html">rnbinom</a></span>(<span class="no">n</span> * <span class="no">K</span>, <span class="kw">size</span> <span class="kw">=</span> <span class="no">shape</span>, <span class="kw">mu</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="no">eta_y</span>))
+<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/NegBinomial.html">rnbinom</a></span>(<span class="kw">n</span> <span class="op">*</span> <span class="kw">K</span>, size = <span class="kw">shape</span>, mu = <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="kw">eta_y</span>))
 <span class="co"># we set the extra zeros</span>
-<span class="no">DF</span>$<span class="no">y</span>[<span class="fu"><a href="https://rdrr.io/r/base/logical.html">as.logical</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(<span class="no">n</span> * <span class="no">K</span>, <span class="kw">size</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">prob</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="no">eta_zi</span>)))] <span class="kw">&lt;-</span> <span class="fl">0</span></pre></body></html></div>
+<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span>[<span class="fu"><a href="https://rdrr.io/r/base/logical.html">as.logical</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(<span class="kw">n</span> <span class="op">*</span> <span class="kw">K</span>, size = <span class="fl">1</span>, prob = <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="kw">eta_zi</span>)))] <span class="op">&lt;-</span> <span class="fl">0</span>
+</pre></div>
 </div>
 <div id="function-for-scaled-simulated-residuals" class="section level2">
 <h2 class="hasAnchor">
 <a href="#function-for-scaled-simulated-residuals" class="anchor"></a>Function for Scaled Simulated Residuals</h2>
 <p>Because <strong>DHARMa</strong> does not yet support objects of class <code>MixMod</code> (see <a href="https://github.com/florianhartig/DHARMa/issues/96">here</a> for current plants), we provide a wrapper function to enable the use of the procedures of the package:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">resids_plot</span> <span class="kw">&lt;-</span> <span class="kw">function</span> (<span class="no">object</span>, <span class="no">y</span>, <span class="no">nsim</span> <span class="kw">=</span> <span class="fl">1000</span>,
-                         <span class="no">type</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"subject_specific"</span>, <span class="st">"mean_subject"</span>),
-                         <span class="no">integerResponse</span> <span class="kw">=</span> <span class="kw">NULL</span>) {
-    <span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/class.html">inherits</a></span>(<span class="no">object</span>, <span class="st">"MixMod"</span>))
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="kw">resids_plot</span> <span class="op">&lt;-</span> <span class="fu">function</span> (<span class="kw">object</span>, <span class="kw">y</span>, <span class="kw">nsim</span> = <span class="fl">1000</span>,
+                         <span class="kw">type</span> = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"subject_specific"</span>, <span class="st">"mean_subject"</span>),
+                         <span class="kw">integerResponse</span> = <span class="kw">NULL</span>) {
+    <span class="co">if</span> (<span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/class.html">inherits</a></span>(<span class="kw">object</span>, <span class="st">"MixMod"</span>))
         <span class="fu"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"this function works for 'MixMod' objects.\n"</span>)
-    <span class="no">type</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span>(<span class="no">type</span>)
-    <span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">integerResponse</span>)) {
-        <span class="no">integer_families</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"binomial"</span>, <span class="st">"poisson"</span>, <span class="st">"negative binomial"</span>,
-                              <span class="st">"zero-inflated poisson"</span>, <span class="st">"zero-inflated negative binomial"</span>,
+    <span class="kw">type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span>(<span class="kw">type</span>)
+    <span class="co">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="kw">integerResponse</span>)) {
+        <span class="kw">integer_families</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"binomial"</span>, <span class="st">"poisson"</span>, <span class="st">"negative binomial"</span>,
+                              <span class="st">"zero-inflated poisson"</span>, <span class="st">"zero-inflated negative binomial"</span>, 
                               <span class="st">"hurdle poisson"</span>, <span class="st">"hurdle negative binomial"</span>)
-        <span class="no">numeric_families</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"hurdle log-normal"</span>, <span class="st">"beta"</span>, <span class="st">"hurdle beta"</span>)
-        <span class="kw">if</span> (<span class="no">object</span>$<span class="no">family</span>$<span class="no">family</span> <span class="kw">%in%</span> <span class="no">integer_families</span>) {
-            <span class="no">integerResponse</span> <span class="kw">&lt;-</span> <span class="fl">TRUE</span>
-        } <span class="kw">else</span> <span class="kw">if</span> (<span class="no">object</span>$<span class="no">family</span>$<span class="no">family</span> <span class="kw">%in%</span> <span class="no">numeric_families</span>) {
-            <span class="no">integerResponse</span> <span class="kw">&lt;-</span> <span class="fl">FALSE</span>
-        } <span class="kw">else</span> {
+        <span class="kw">numeric_families</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"hurdle log-normal"</span>, <span class="st">"beta"</span>, <span class="st">"hurdle beta"</span>, <span class="st">"Gamma"</span>)
+        <span class="co">if</span> (<span class="kw">object</span><span class="op">$</span><span class="kw">family</span><span class="op">$</span><span class="kw">family</span> <span class="op">%in%</span> <span class="kw">integer_families</span>) {
+            <span class="kw">integerResponse</span> <span class="op">&lt;-</span> <span class="fl">TRUE</span>
+        } <span class="co">else</span> <span class="co">if</span> (<span class="kw">object</span><span class="op">$</span><span class="kw">family</span><span class="op">$</span><span class="kw">family</span> <span class="op">%in%</span> <span class="kw">numeric_families</span>) {
+            <span class="kw">integerResponse</span> <span class="op">&lt;-</span> <span class="fl">FALSE</span>
+        } <span class="co">else</span> {
             <span class="fu"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"non build-in family object; you need to specify the 'integerResponse',\n"</span>,
                  <span class="st">"\targument indicating whether the outcome variable is integer or not.\n"</span>)
         }
     }
-    <span class="no">sims</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">simulate</a></span>(<span class="no">object</span>, <span class="kw">nsim</span> <span class="kw">=</span> <span class="no">nsim</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="no">type</span>)
-    <span class="no">fits</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/methods.html">fitted</a></span>(<span class="no">object</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="no">type</span>)
-    <span class="no">dharmaRes</span> <span class="kw">&lt;-</span> <span class="kw pkg">DHARMa</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/DHARMa/man/createDHARMa.html">createDHARMa</a></span>(<span class="kw">simulatedResponse</span> <span class="kw">=</span> <span class="no">sims</span>, <span class="kw">observedResponse</span> <span class="kw">=</span> <span class="no">y</span>,
-                              <span class="kw">fittedPredictedResponse</span> <span class="kw">=</span> <span class="no">fits</span>,
-                              <span class="kw">integerResponse</span> <span class="kw">=</span> <span class="no">integerResponse</span>)
-    <span class="kw pkg">DHARMa</span><span class="kw ns">:::</span><span class="fu"><a href="https://rdrr.io/pkg/DHARMa/man/plot.DHARMa.html">plot.DHARMa</a></span>(<span class="no">dharmaRes</span>, <span class="kw">quantreg</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-}</pre></body></html></div>
+    <span class="kw">sims</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">simulate</a></span>(<span class="kw">object</span>, nsim = <span class="kw">nsim</span>, type = <span class="kw">type</span>)
+    <span class="kw">fits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">fitted</a></span>(<span class="kw">object</span>, type = <span class="kw">type</span>)
+    <span class="kw">dharmaRes</span> <span class="op">&lt;-</span> <span class="kw">DHARMa</span>::<span class="fu"><a href="https://rdrr.io/pkg/DHARMa/man/createDHARMa.html">createDHARMa</a></span>(simulatedResponse = <span class="kw">sims</span>, observedResponse = <span class="kw">y</span>, 
+                              fittedPredictedResponse = <span class="kw">fits</span>, 
+                              integerResponse = <span class="kw">integerResponse</span>)
+    <span class="kw">DHARMa</span>:::<span class="fu"><a href="https://rdrr.io/pkg/DHARMa/man/plot.DHARMa.html">plot.DHARMa</a></span>(<span class="kw">dharmaRes</span>, quantreg = <span class="fl">FALSE</span>)
+}
+</pre></div>
 <p>This function has the following arguments:</p>
 <ul>
 <li>
@@ -217,10 +221,15 @@
 <h2 class="hasAnchor">
 <a href="#poisson-mixed-model" class="anchor"></a>Poisson Mixed Model</h2>
 <p>We start by fitting a Poisson mixed model to the data using the following call to <code><a href="../reference/mixed_model.html">mixed_model()</a></code>:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">fm1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                   <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>())</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="kw">fm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>,
+                   family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span>())
+</pre></div>
 <p>We expect that this model will not fit the data well because it does not account for the overdispersion and the extra zeros we have simulated. To evaluate the fit we compare the simulated outcome data from the model versus the observed outcome data. If the model fits the data well, we would expect the observed outcome data to have the same empirical distribution as the empirical distribution of the simulated data. The following call to <code>resids_plot()</code> performs this comparison:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu">resids_plot</span>(<span class="no">fm1</span>, <span class="no">DF</span>$<span class="no">y</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="fu">resids_plot</span>(<span class="kw">fm1</span>, <span class="kw">DF</span><span class="op">$</span><span class="kw">y</span>)
+<span class="co">#&gt; DHARMa:plot used testOutliers with type = binomial for computational reasons (nObs &gt; 500). Note that this method may not have inflated Type I error rates for integer-valued distributions. To get a more exact result, it is recommended to re-run testOutliers with type = 'bootstrap'. See ?testOutliers for details</span>
+</pre></div>
 <p><img src="Goodness_of_Fit_files/figure-html/poisson_mixed_model_GoF-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>The left panel shows the QQ-plot of the observed versus expected residuals. According to the manner the scaled residuals are calculated in <strong>DHARMa</strong>, we expect these residuals to have a uniform distribution in the interval <span class="math inline">\((0, 1)\)</span> for a well-specified model. The <span class="math inline">\(p\)</span>-value reported in the plot is the one obtained from the Kolmogorov-Smirnov test for testing uniformity. The right panel shows the scatterplot of the residuals against the fitted values. To provide a visual aid in detecting deviations from uniformity in the y-direction, the plot of the residuals against the predicted values also performs a quantile regression, which provides 0.25, 0.5 and 0.75 quantile lines across the plots. These lines should be straight, horizontal, and at y-values of 0.25, 0.5 and 0.75. Note, however, that some deviations from this are to be expected by chance, even for a perfect model, especially if the sample size is small.</p>
 <p>It is evident from these two plots that the Poisson model does not fit the data satisfactorily.</p>
@@ -229,11 +238,16 @@
 <h2 class="hasAnchor">
 <a href="#zero-inflated-poisson-mixed-model" class="anchor"></a>Zero-Inflated Poisson Mixed Model</h2>
 <p>To improve the simple Poisson model, allow for extra zeros using the zero-inflated Poisson mixed model. First, here we only include fixed effects in the linear predictor of the logistic regression for the extra zeros:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">fm2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                   <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="../reference/extra_fams.html">zi.poisson</a></span>(),
-                   <span class="kw">zi_fixed</span> <span class="kw">=</span> ~ <span class="no">sex</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="kw">fm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>,
+                   family = <span class="fu"><a href="../reference/Extra%20Family%20Objects.html">zi.poisson</a></span>(), 
+                   zi_fixed = <span class="op">~</span> <span class="kw">sex</span>)
+</pre></div>
 <p>Using <code>resids_plot()</code> again we evaluate the fit this model:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu">resids_plot</span>(<span class="no">fm2</span>, <span class="no">DF</span>$<span class="no">y</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="fu">resids_plot</span>(<span class="kw">fm2</span>, <span class="kw">DF</span><span class="op">$</span><span class="kw">y</span>)
+<span class="co">#&gt; DHARMa:plot used testOutliers with type = binomial for computational reasons (nObs &gt; 500). Note that this method may not have inflated Type I error rates for integer-valued distributions. To get a more exact result, it is recommended to re-run testOutliers with type = 'bootstrap'. See ?testOutliers for details</span>
+</pre></div>
 <p><img src="Goodness_of_Fit_files/figure-html/zi_poisson_mixed_model_GoF-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>We observe that the fit has improved, but still we have evident deviations from uniformity.</p>
 </div>
@@ -241,11 +255,16 @@
 <h2 class="hasAnchor">
 <a href="#zero-inflated-poisson-mixed-model-extra-random-effects" class="anchor"></a>Zero-Inflated Poisson Mixed Model Extra Random Effects</h2>
 <p>We further extend the zero-inflated Poisson mixed model by also allowing for a random intercept in the linear predictor of the logistic regression for the extra zeros:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">fm3</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                   <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="../reference/extra_fams.html">zi.poisson</a></span>(),
-                   <span class="kw">zi_fixed</span> <span class="kw">=</span> ~ <span class="no">sex</span>, <span class="kw">zi_random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="kw">fm3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>,
+                   family = <span class="fu"><a href="../reference/Extra%20Family%20Objects.html">zi.poisson</a></span>(), 
+                   zi_fixed = <span class="op">~</span> <span class="kw">sex</span>, zi_random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>)
+</pre></div>
 <p>We check the fit with the simulated residuals:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu">resids_plot</span>(<span class="no">fm3</span>, <span class="no">DF</span>$<span class="no">y</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="fu">resids_plot</span>(<span class="kw">fm3</span>, <span class="kw">DF</span><span class="op">$</span><span class="kw">y</span>)
+<span class="co">#&gt; DHARMa:plot used testOutliers with type = binomial for computational reasons (nObs &gt; 500). Note that this method may not have inflated Type I error rates for integer-valued distributions. To get a more exact result, it is recommended to re-run testOutliers with type = 'bootstrap'. See ?testOutliers for details</span>
+</pre></div>
 <p><img src="Goodness_of_Fit_files/figure-html/zi_poisson_mixed_model2_GoF-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>There are still deviations from uniformity, indicating that the fit of the last model to the data is not optimal.</p>
 </div>
@@ -253,11 +272,15 @@
 <h2 class="hasAnchor">
 <a href="#zero-inflated-negative-binomial-mixed-model-extra-random-effects" class="anchor"></a>Zero-Inflated Negative Binomial Mixed Model Extra Random Effects</h2>
 <p>As a final attempt, we allow of overspersion by changing the Poisson distribution to the negative binomial distribution. The rest of the components remain the same:</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">fm4</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="no">y</span> ~ <span class="no">sex</span> * <span class="no">time</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">DF</span>,
-                   <span class="kw">family</span> <span class="kw">=</span> <span class="fu"><a href="../reference/extra_fams.html">zi.negative.binomial</a></span>(),
-                   <span class="kw">zi_fixed</span> <span class="kw">=</span> ~ <span class="no">sex</span>, <span class="kw">zi_random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">id</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="kw">fm4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(<span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>,
+                   family = <span class="fu"><a href="../reference/Extra%20Family%20Objects.html">zi.negative.binomial</a></span>(), 
+                   zi_fixed = <span class="op">~</span> <span class="kw">sex</span>, zi_random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>)
+</pre></div>
 <p>We check the fit with the simulated residuals:</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu">resids_plot</span>(<span class="no">fm4</span>, <span class="no">DF</span>$<span class="no">y</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="fu">resids_plot</span>(<span class="kw">fm4</span>, <span class="kw">DF</span><span class="op">$</span><span class="kw">y</span>)
+</pre></div>
 <p><img src="Goodness_of_Fit_files/figure-html/zi_NB_mixed_model_GoF-1.png" width="816" style="display: block; margin: auto;"></p>
 <p>We now observe that the fit of the zero-inflated model seems to be acceptable. The right panel still shows that the lines from the quantile regression are not horizontal, but as previously explained, these may potentially show deviations even for the correct model.</p>
 </div>
@@ -279,7 +302,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
