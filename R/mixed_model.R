@@ -30,6 +30,13 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
              "you have also specified the 'zi_fixed' argument; use instead a family\n ", 
              "object with an extra zero-part.")
     }
+    if (family$family == "Gamma" && is.null(family$log_dens)) {
+        if (family$link != "log") {
+            warning("with the Gamma family currently only the log link ",
+                    "function works. It has been reset automatically.")
+        }
+        family <- Gamma.fam()
+    }
     known_families <- c("binomial", "poisson", "negative binomial", "Gamma")
     data <- orig_data <- as.data.frame(data) # in case 'data' is a tibble
     groups <- unique(c(all.vars(getID_Formula(random)), 
@@ -151,7 +158,9 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
         betas <- if (family$family %in% known_families) {
             if (family$family == "negative binomial")
                 glm.fit(X, y, family = poisson(), offset = offset)$coefficients
-            else 
+            else if (family$family == "Gamma")
+                glm.fit(X, y, family = Gamma(), offset = offset)$coefficients
+            else
                 glm.fit(X, y, family = family, offset = offset)$coefficients
         } else {
             glm.fit(X, y, family = initial_values$betas, offset = offset)$coefficients
@@ -196,8 +205,7 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
         Funs$log_dens <- switch(family$family,
                                 'binomial' = binomial_log_dens,
                                 'poisson' = poisson_log_dens,
-                                'negative binomial' = negative.binomial_log_dens,
-                                'Gamma' = gamma_log_dens)
+                                'negative binomial' = negative.binomial_log_dens)
     } else if (family$family %in% known_families && !is.null(family$log_dens)) {
         Funs$log_dens <- family$log_dens
     } else if (!family$family %in% known_families && !is.null(family$log_dens)) {
