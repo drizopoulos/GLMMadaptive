@@ -309,6 +309,7 @@ confint.MixMod <- function (object, parm = c("fixed-effects", "var-cov","extra",
             ind <- lower.tri(D, TRUE)
             out[, 1] <- chol_transf(out[, 1])[ind]
             out[, 2] <- chol_transf(out[, 2])[ind]
+            out[, 3] <- chol_transf(out[, 3])[ind]
             nams <- rownames(D)
             rownames(out) <- apply(which(ind, arr.ind = TRUE), 1, function (k) {
                 if (k[1L] == k[2L]) paste0("var.", nams[k[1]]) else {
