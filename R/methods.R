@@ -952,7 +952,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                 stop("the predict() method is not yet implemented for models with an extra zero-part.")
             }
             mcoefs <- marginal_coefs(object, std_errors = TRUE, ...)
-            betas <- fixef(object)
+            betas <- coef(mcoefs)
             var_betas <- mcoefs$var_betas
             pred <- if (type_pred == "link") c(X %*% betas) else object$family$linkinv(c(X %*% betas))
             names(pred) <- row.names(newdata)
