@@ -240,7 +240,7 @@ xyplot(expit(pred) + expit(low) + expit(upp) ~ year | group, data = plot_data,
        xlab = "Follow-up time", ylab = "Probabilities")
 
 # An effects plots for the marginal probabilities
-plot_data_m <- effectPlotData(fm2, nDF, marginal = TRUE, cores = 1L)
+plot_data_m <- effectPlotData(fm2, nDF, marginal = TRUE)
 
 expit <- function (x) exp(x) / (1 + exp(x))
 xyplot(expit(pred) + expit(low) + expit(upp) ~ year | group, data = plot_data_m,

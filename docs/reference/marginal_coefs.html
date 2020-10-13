@@ -81,7 +81,7 @@ mixed models." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-15</span>
       </span>
     </div>
 
@@ -122,7 +122,7 @@ mixed models." />
       <a href="../articles/Multiple_Comparisons.html">Multiple Comparisons for MixMod Objects</a>
     </li>
     <li>
-      <a href="../articles/Optimization.html">Optimization and Numerical Integration in GLMMadaptive</a>
+      <a href="../articles/Optimization.html">Optimization and Numerical Integration</a>
     </li>
     <li>
       <a href="../articles/Ordinal_Mixed_Models.html">Mixed Models for Ordinal Data</a>
@@ -166,13 +166,13 @@ mixed models." />
 mixed models.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>marginal_coefs</span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
+    <pre class="usage"><span class='fu'>marginal_coefs</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for MixMod</span>
-<span class='fu'>marginal_coefs</span>(<span class='kw'>object</span>, std_errors = <span class='fl'>FALSE</span>, 
-   link_fun = <span class='kw'>NULL</span>, M = <span class='fl'>3000</span>, K = <span class='fl'>100</span>, seed = <span class='fl'>1</span>, 
-   cores = <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='kw'>parallel</span>::<span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span>() <span class='op'>-</span> <span class='fl'>1</span>, <span class='fl'>1</span>), 
-   sandwich = <span class='fl'>FALSE</span>, <span class='kw'>...</span>)</pre>
+<span class='fu'>marginal_coefs</span><span class='op'>(</span><span class='va'>object</span>, std_errors <span class='op'>=</span> <span class='cn'>FALSE</span>, 
+   link_fun <span class='op'>=</span> <span class='cn'>NULL</span>, M <span class='op'>=</span> <span class='fl'>3000</span>, K <span class='op'>=</span> <span class='fl'>100</span>, seed <span class='op'>=</span> <span class='fl'>1</span>, 
+   cores <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='fu'>parallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>, 
+   sandwich <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -255,37 +255,37 @@ marginalization of regression parameters from mixed models of binary outcomes.
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='co'># simulate some data</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>123L</span>)
-<span class='kw'>n</span> <span class='op'>&lt;-</span> <span class='fl'>500</span>
-<span class='kw'>K</span> <span class='op'>&lt;-</span> <span class='fl'>15</span>
-<span class='kw'>t.max</span> <span class='op'>&lt;-</span> <span class='fl'>25</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123L</span><span class='op'>)</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>500</span>
+<span class='va'>K</span> <span class='op'>&lt;-</span> <span class='fl'>15</span>
+<span class='va'>t.max</span> <span class='op'>&lt;-</span> <span class='fl'>25</span>
 
-<span class='kw'>betas</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='op'>-</span><span class='fl'>2.13</span>, <span class='op'>-</span><span class='fl'>0.25</span>, <span class='fl'>0.24</span>, <span class='op'>-</span><span class='fl'>0.05</span>)
-<span class='kw'>D</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0</span>, <span class='fl'>2</span>, <span class='fl'>2</span>)
-<span class='kw'>D</span>[<span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>] <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.48</span>, <span class='op'>-</span><span class='fl'>0.08</span>, <span class='op'>-</span><span class='fl'>0.08</span>, <span class='fl'>0.18</span>)
+<span class='va'>betas</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>2.13</span>, <span class='op'>-</span><span class='fl'>0.25</span>, <span class='fl'>0.24</span>, <span class='op'>-</span><span class='fl'>0.05</span><span class='op'>)</span>
+<span class='va'>D</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>D</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.48</span>, <span class='op'>-</span><span class='fl'>0.08</span>, <span class='op'>-</span><span class='fl'>0.08</span>, <span class='fl'>0.18</span><span class='op'>)</span>
 
-<span class='kw'>times</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>replicate</a></span>(<span class='kw'>n</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='kw'>K</span><span class='op'>-</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='kw'>t.max</span>)))))
-<span class='kw'>group</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span><span class='op'>:</span><span class='fl'>1</span>, each = <span class='kw'>n</span><span class='op'>/</span><span class='fl'>2</span>))
-<span class='kw'>DF</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(year = <span class='kw'>times</span>, group = <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='kw'>group</span>, each = <span class='kw'>K</span>)))
-<span class='kw'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='MixMod Methods.html'>model.matrix</a></span>(<span class='op'>~</span> <span class='kw'>group</span> <span class='op'>*</span> <span class='kw'>year</span>, data = <span class='kw'>DF</span>)
-<span class='kw'>Z</span> <span class='op'>&lt;-</span> <span class='fu'><a href='MixMod Methods.html'>model.matrix</a></span>(<span class='op'>~</span> <span class='kw'>year</span>, data = <span class='kw'>DF</span>)
+<span class='va'>times</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>replicate</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='va'>K</span><span class='op'>-</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='va'>t.max</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>group</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0</span><span class='op'>:</span><span class='fl'>1</span>, each <span class='op'>=</span> <span class='va'>n</span><span class='op'>/</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>DF</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>year <span class='op'>=</span> <span class='va'>times</span>, group <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='va'>group</span>, each <span class='op'>=</span> <span class='va'>K</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='MixMod Methods.html'>model.matrix</a></span><span class='op'>(</span><span class='op'>~</span> <span class='va'>group</span> <span class='op'>*</span> <span class='va'>year</span>, data <span class='op'>=</span> <span class='va'>DF</span><span class='op'>)</span>
+<span class='va'>Z</span> <span class='op'>&lt;-</span> <span class='fu'><a href='MixMod Methods.html'>model.matrix</a></span><span class='op'>(</span><span class='op'>~</span> <span class='va'>year</span>, data <span class='op'>=</span> <span class='va'>DF</span><span class='op'>)</span>
 
-<span class='kw'>b</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='kw'>n</span>, sd = <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='kw'>D</span>[<span class='fl'>1</span>, <span class='fl'>1</span>])), <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='kw'>n</span>, sd = <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='kw'>D</span>[<span class='fl'>2</span>, <span class='fl'>2</span>])))
-<span class='kw'>id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='kw'>n</span>, each = <span class='kw'>K</span>)
-<span class='kw'>eta.y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/vector.html'>as.vector</a></span>(<span class='kw'>X</span> <span class='op'>%*%</span> <span class='kw'>betas</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span>(<span class='kw'>Z</span> <span class='op'>*</span> <span class='kw'>b</span>[<span class='kw'>id</span>, ]))
-<span class='kw'>DF</span><span class='op'>$</span><span class='kw'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span>(<span class='kw'>n</span> <span class='op'>*</span> <span class='kw'>K</span>, <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/stats/Logistic.html'>plogis</a></span>(<span class='kw'>eta.y</span>))
-<span class='kw'>DF</span><span class='op'>$</span><span class='kw'>id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='kw'>id</span>)
+<span class='va'>b</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, sd <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='va'>D</span><span class='op'>[</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, sd <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='va'>D</span><span class='op'>[</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>n</span>, each <span class='op'>=</span> <span class='va'>K</span><span class='op'>)</span>
+<span class='va'>eta.y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/vector.html'>as.vector</a></span><span class='op'>(</span><span class='va'>X</span> <span class='op'>%*%</span> <span class='va'>betas</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span><span class='op'>(</span><span class='va'>Z</span> <span class='op'>*</span> <span class='va'>b</span><span class='op'>[</span><span class='va'>id</span>, <span class='op'>]</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>DF</span><span class='op'>$</span><span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span><span class='op'>(</span><span class='va'>n</span> <span class='op'>*</span> <span class='va'>K</span>, <span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/stats/Logistic.html'>plogis</a></span><span class='op'>(</span><span class='va'>eta.y</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>DF</span><span class='op'>$</span><span class='va'>id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>id</span><span class='op'>)</span>
 
 <span class='co'>################################################</span>
 
-<span class='kw'>fm1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span>(fixed = <span class='kw'>y</span> <span class='op'>~</span> <span class='kw'>year</span> <span class='op'>*</span> <span class='kw'>group</span>, random = <span class='op'>~</span> <span class='fl'>1</span> <span class='op'>|</span> <span class='kw'>id</span>, data = <span class='kw'>DF</span>,
-                   family = <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span>())
+<span class='va'>fm1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixed_model.html'>mixed_model</a></span><span class='op'>(</span>fixed <span class='op'>=</span> <span class='va'>y</span> <span class='op'>~</span> <span class='va'>year</span> <span class='op'>*</span> <span class='va'>group</span>, random <span class='op'>=</span> <span class='op'>~</span> <span class='fl'>1</span> <span class='op'>|</span> <span class='va'>id</span>, data <span class='op'>=</span> <span class='va'>DF</span>,
+                   family <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'><a href='MixMod Methods.html'>fixef</a></span>(<span class='kw'>fm1</span>)                   
+<span class='fu'><a href='MixMod Methods.html'>fixef</a></span><span class='op'>(</span><span class='va'>fm1</span><span class='op'>)</span>                   
 </div><div class='output co'>#&gt;  (Intercept)         year       group1  year:group1 
-#&gt; -2.875293208  0.204144801 -0.648693468 -0.006044763 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='kw'>fm1</span>)
+#&gt; -2.875293208  0.204144801 -0.648693468 -0.006044763 </div><div class='input'><span class='fu'>marginal_coefs</span><span class='op'>(</span><span class='va'>fm1</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; (Intercept)        year      group1 year:group1 
-#&gt;     -1.3589      0.0966     -0.3298     -0.0017 </div><div class='input'><span class='fu'>marginal_coefs</span>(<span class='kw'>fm1</span>, std_errors = <span class='fl'>TRUE</span>)
+#&gt;     -1.3589      0.0966     -0.3298     -0.0017 </div><div class='input'><span class='fu'>marginal_coefs</span><span class='op'>(</span><span class='va'>fm1</span>, std_errors <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;             Estimate Std.Err  z-value p-value
 #&gt; (Intercept)  -1.3589  0.1132 -12.0052 &lt; 1e-04
 #&gt; year          0.0966  0.0049  19.5229 &lt; 1e-04

@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Optimization and Numerical Integration in GLMMadaptive • GLMMadaptive</title>
+<title>Optimization and Numerical Integration • GLMMadaptive</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Optimization and Numerical Integration in GLMMadaptive">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Optimization and Numerical Integration">
 <meta property="og:description" content="GLMMadaptive">
 <meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-15</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@
       <a href="../articles/Multiple_Comparisons.html">Multiple Comparisons for MixMod Objects</a>
     </li>
     <li>
-      <a href="../articles/Optimization.html">Optimization and Numerical Integration in GLMMadaptive</a>
+      <a href="../articles/Optimization.html">Optimization and Numerical Integration</a>
     </li>
     <li>
       <a href="../articles/Ordinal_Mixed_Models.html">Mixed Models for Ordinal Data</a>
@@ -113,10 +113,10 @@
       </header><script src="Optimization_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Optimization and Numerical Integration in GLMMadaptive</h1>
+      <h1 data-toc-skip>Optimization and Numerical Integration</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2020-09-15</h4>
+            <h4 class="date">2020-10-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Optimization.Rmd"><code>vignettes/Optimization.Rmd</code></a></small>
       <div class="hidden name"><code>Optimization.Rmd</code></div>
@@ -148,50 +148,45 @@
 <a href="#controlling-the-optimization-and-integration" class="anchor"></a>Controlling the Optimization and Integration</h2>
 <p>We start by simulating some data for a binary longitudinal outcome:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1234</span>)
-<span class="kw">n</span> <span class="op">&lt;-</span> <span class="fl">300</span> <span class="co"># number of subjects</span>
-<span class="kw">K</span> <span class="op">&lt;-</span> <span class="fl">4</span> <span class="co"># number of measurements per subject</span>
-<span class="kw">t_max</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span>
+<span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">300</span> <span class="co"># number of subjects</span>
+<span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">4</span> <span class="co"># number of measurements per subject</span>
+<span class="va">t_max</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span>
 
 <span class="co"># we constuct a data frame with the design: </span>
 <span class="co"># everyone has a baseline measurment, and then measurements at K time points</span>
-<span class="kw">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(id = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(<span class="kw">n</span>), each = <span class="kw">K</span>),
-                 time = <span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="kw">K</span>, <span class="fl">1</span>, <span class="kw">n</span><span class="op">*</span><span class="kw">K</span>, labels = <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Time"</span>, <span class="fl">1</span><span class="op">:</span><span class="kw">K</span>)),
-                 sex = <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span>(<span class="fl">2</span>, <span class="kw">n</span><span class="op">/</span><span class="fl">2</span>, labels = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"male"</span>, <span class="st">"female"</span>)), each = <span class="kw">K</span>))
+<span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span>,
+                 time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span><span class="op">(</span><span class="va">K</span>, <span class="fl">1</span>, <span class="va">n</span><span class="op">*</span><span class="va">K</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Time"</span>, <span class="fl">1</span><span class="op">:</span><span class="va">K</span><span class="op">)</span><span class="op">)</span>,
+                 sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span><span class="op">(</span><span class="fl">2</span>, <span class="va">n</span><span class="op">/</span><span class="fl">2</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># design matrices for the fixed and random effects</span>
-<span class="kw">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="kw">sex</span> <span class="op">*</span> <span class="kw">time</span>, data = <span class="kw">DF</span>)
-<span class="kw">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span>(<span class="op">~</span> <span class="fl">1</span>, data = <span class="kw">DF</span>)
+<span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span>
+<span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MixMod%20Methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span>
 
-<span class="kw">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">2.13</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.2</span>, <span class="op">-</span><span class="fl">1.2</span>), <span class="kw">K</span><span class="op">-</span><span class="fl">1</span>)) <span class="co"># fixed effects coefficients</span>
-<span class="kw">D11</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="co"># variance of random intercepts</span>
+<span class="va">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2.13</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.2</span>, <span class="op">-</span><span class="fl">1.2</span><span class="op">)</span>, <span class="va">K</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="co"># fixed effects coefficients</span>
+<span class="va">D11</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="co"># variance of random intercepts</span>
 
 <span class="co"># we simulate random effects</span>
-<span class="kw">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="kw">n</span>, sd = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">D11</span>)))
+<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">D11</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co"># linear predictor</span>
-<span class="kw">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="kw">X</span> <span class="op">%*%</span> <span class="kw">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="kw">Z</span> <span class="op">*</span> <span class="kw">b</span>[<span class="kw">DF</span><span class="op">$</span><span class="kw">id</span>, ]))
+<span class="va">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">X</span> <span class="op">%*%</span> <span class="va">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span><span class="op">(</span><span class="va">Z</span> <span class="op">*</span> <span class="va">b</span><span class="op">[</span><span class="va">DF</span><span class="op">$</span><span class="va">id</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span>
 <span class="co"># we simulate binary longitudinal data</span>
-<span class="kw">DF</span><span class="op">$</span><span class="kw">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(<span class="kw">n</span> <span class="op">*</span> <span class="kw">K</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span>(<span class="kw">eta_y</span>))
-</pre></div>
+<span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">K</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span><span class="op">(</span><span class="va">eta_y</span><span class="op">)</span><span class="op">)</span></pre></div>
 <p>We fit a mixed effects logistic regression for <code>y</code> assuming random intercepts for the random-effects part, and the main effects of <code>sex</code> and <code>time</code> for the fixed-effects part. In the call to <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, we are using the default values for the control arguments:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(fixed = <span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">+</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>, family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>())
-</pre></div>
+<span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></pre></div>
 <p>In the following example we do not use any EM iterations, and we specify as optimizer the <code>nlimnb()</code> function. In addition, during each iteration of the outer loop in which the modes of the modes of the conditional distribution of the random effects are relocated, we increase the number of the quasi-Newton iterations by 5:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(fixed = <span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">+</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>, family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>(), 
-            iter_EM = <span class="fl">0</span>, optimizer = <span class="st">"nlminb"</span>, iter_qN_incr = <span class="fl">5</span>)
-</pre></div>
+<span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span><span class="op">)</span>, 
+            iter_EM <span class="op">=</span> <span class="fl">0</span>, optimizer <span class="op">=</span> <span class="st">"nlminb"</span>, iter_qN_incr <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></pre></div>
 <p>In the following call, we allow again for EM iterations, but we set the number of the iterations to 1000 giving the option to achieve convergence only during the EM-phase. In addition, we set to update the modes of the conditional distribution of the random effects every 5 iterations, and we also set the number of quadrature points to 21:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(fixed = <span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">+</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>, family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>(), 
-            iter_EM = <span class="fl">1000</span>, update_GH_every = <span class="fl">5</span>, nAGQ = <span class="fl">21</span>)
-</pre></div>
+<span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span><span class="op">)</span>, 
+            iter_EM <span class="op">=</span> <span class="fl">1000</span>, update_GH_every <span class="op">=</span> <span class="fl">5</span>, nAGQ <span class="op">=</span> <span class="fl">21</span><span class="op">)</span></pre></div>
 <p>To not run the optimization procedure at all, we need to also to set <code>iter_qN_outer</code> to 0, e.g.,</p>
 <div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span>(fixed = <span class="kw">y</span> <span class="op">~</span> <span class="kw">sex</span> <span class="op">+</span> <span class="kw">time</span>, random = <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="kw">id</span>, data = <span class="kw">DF</span>, family = <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span>(), 
-            iter_EM = <span class="fl">0</span>, iter_qN_outer = <span class="fl">0</span>)
-</pre></div>
+<span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span><span class="op">)</span>, 
+            iter_EM <span class="op">=</span> <span class="fl">0</span>, iter_qN_outer <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></pre></div>
 </div>
 <div id="advice-on-optimization-and-numerical-integration-control" class="section level2">
 <h2 class="hasAnchor">
