@@ -37,7 +37,7 @@ effectPlotData(object, newdata, level, \dots)
 \item{seed}{numerical scalar giving the seed to be used in the Monte Carlo scheme.}
 \item{sandwich}{logical; if \code{TRUE} robust/sandwich standard errors are used in the 
     calculations.}
-\item{\dots}{additional argument; currently none is used.}
+\item{\dots}{additional arguments passed to \code{\link{marginal_coefs}}, e.g., \code{cores}.}
 }
 
 \details{
@@ -120,7 +120,7 @@ xyplot(expit(pred) ~ year, group = group, data = plot_data, upper = expit(plot_d
 }, xlab = "Follow-up time", ylab = "Probabilities")
 
 # An effects plots for the marginal probabilities
-plot_data_m <- effectPlotData(fm1, nDF, marginal = TRUE)
+plot_data_m <- effectPlotData(fm1, nDF, marginal = TRUE, cores = 1L)
 
 expit <- function (x) exp(x) / (1 + exp(x))
 xyplot(expit(pred) + expit(low) + expit(upp) ~ year | group, data = plot_data_m,
