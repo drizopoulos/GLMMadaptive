@@ -106,6 +106,6 @@ fm1 <- mixed_model(fixed = y ~ year * group, random = ~ 1 | id, data = DF,
 
 fixef(fm1)                   
 marginal_coefs(fm1)
-marginal_coefs(fm1, std_errors = TRUE)
+marginal_coefs(fm1, std_errors = TRUE, cores = 1L)
 }
 }

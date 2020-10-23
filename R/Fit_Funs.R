@@ -1302,3 +1302,89 @@ Gamma.fam <- function () {
               class = "family")
 }
 
+censored.normal <- function () {
+    stats <- make.link("identity")
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+        sigma <- exp(phis)
+        # indicators for non-censored, left and right censored observations
+        ind0 <- y[, 2L] == 0 # non-censored
+        ind1 <- y[, 2L] == 1 # left-censored
+        ind2 <- y[, 2L] == 2 # right-censored
+        eta <- as.matrix(eta)
+        out <- eta
+        out[ind0, ] <- dnorm(y[ind0, 1L], eta[ind0, ], sigma, log = TRUE)
+        out[ind1, ] <- pnorm(y[ind1, 1L], eta[ind1, ], sigma, log.p = TRUE)
+        out[ind2, ] <- pnorm(y[ind2, 1L], eta[ind2, ], sigma, log.p = TRUE,
+                             lower.tail = FALSE)
+        attr(out, "mu_y") <- eta
+        out
+    }
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
+        sigma <- exp(phis)
+        # indicators for non-censored, left and right censored observations
+        ind0 <- y[, 2L] == 0 # non-censored
+        ind1 <- y[, 2L] == 1 # left-censored
+        ind2 <- y[, 2L] == 2 # right-censored
+        eta <- as.matrix(mu)
+        out <- eta
+        if (any(ind0)) out[ind0, ] <- (y[ind0, 1L] - eta[ind0, ]) / sigma^2
+        if (any(ind1)) {
+            f <- function (x, mean, sd) {
+                ingegrand <- function (x) x * dnorm(x, mean, sd)
+                integrate(ingegrand, lower = mean - 5 * sd, upper = x)$value
+            }
+            A <- mapply(f, y[ind1, 1L], eta[ind1, ], MoreArgs = list(sd = sigma))
+            B <- pnorm(y[ind1, 1L], eta[ind1, ], sigma)
+            out[ind1, ] <- (A / B - eta[ind1, ]) / sigma^2
+        }
+        if (any(ind2)) {
+            f <- function (x, mean, sd) {
+                ingegrand <- function (x) x * dnorm(x, mean, sd)
+                integrate(ingegrand, lower = mean - 5 * sd, upper = x)$value
+            }
+            A <- mapply(f, y[ind2, 1L], eta[ind2, ], MoreArgs = list(sd = sigma))
+            B <- pnorm(y[ind2, 1L], eta[ind2, ], sigma, lower.tail = FALSE)
+            out[ind2, ] <- (-A / B + eta[ind2, ] * (1 - B) / B) / sigma^2
+        }
+        out
+    }
+    score_phis_fun <- function (y, mu, phis, eta_zi) {
+        sigma <- exp(phis)
+        # indicators for non-censored, left and right censored observations
+        ind0 <- y[, 2L] == 0 # non-censored
+        ind1 <- y[, 2L] == 1 # left-censored
+        ind2 <- y[, 2L] == 2 # right-censored
+        eta <- as.matrix(mu)
+        out <- eta
+        if (any(ind0)) out[ind0, ] <- - 1 + (y[ind0, 1L] - eta[ind0, ])^2 / sigma^2
+        if (any(ind1)) {
+            f <- function (x, mean, sd) {
+                ingegrand <- function (x) (x - mean)^2 * dnorm(x, mean, sd)
+                integrate(ingegrand, lower = mean - 5 * sd, upper = x)$value
+            }
+            A <- mapply(f, y[ind1, 1L], eta[ind1, ], MoreArgs = list(sd = sigma))
+            B <- pnorm(y[ind1, 1L], eta[ind1, ], sigma) * sigma^2
+            out[ind1, ] <- - 1 + A / B
+        }
+        if (any(ind2)) {
+            f <- function (x, mean, sd) {
+                ingegrand <- function (x) (x - mean)^2 * dnorm(x, mean, sd)
+                integrate(ingegrand, lower = mean - 5 * sd, upper = x)$value
+            }
+            A <- mapply(f, y[ind2, 1L], eta[ind2, ], MoreArgs = list(sd = sigma))
+            B <- pnorm(y[ind2, 1L], eta[ind2, ], sigma, lower.tail = FALSE)
+            out[ind2, ] <- (1 - B) / B - A / (B * sigma^2)
+        }
+        out
+    }
+    simulate <- function (n, mu, phis, eta_zi) {
+        rnorm(n = n, mean = mu, sd = exp(phis))
+    }
+    structure(list(family = "censored normal", link = stats$name, 
+                   linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,
+                   score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun, 
+                   simulate = simulate),
+              class = "family")
+}
+
+

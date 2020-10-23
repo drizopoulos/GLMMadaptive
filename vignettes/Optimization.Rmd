@@ -1,5 +1,5 @@
 ---
-title: "Optimization and Numerical Integration"
+title: "Optimization and Numerical Integration in GLMMadaptive"
 author: "Dimitris Rizopoulos"
 date: "`r Sys.Date()`"
 output:
