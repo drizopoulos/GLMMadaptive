@@ -1329,20 +1329,14 @@ censored.normal <- function () {
         out <- eta
         if (any(ind0)) out[ind0, ] <- (y[ind0, 1L] - eta[ind0, ]) / sigma^2
         if (any(ind1)) {
-            f <- function (x, mean, sd) {
-                ingegrand <- function (x) x * dnorm(x, mean, sd)
-                integrate(ingegrand, lower = mean - 5 * sd, upper = x)$value
-            }
-            A <- mapply(f, y[ind1, 1L], eta[ind1, ], MoreArgs = list(sd = sigma))
-            B <- pnorm(y[ind1, 1L], eta[ind1, ], sigma)
-            out[ind1, ] <- (A / B - eta[ind1, ]) / sigma^2
+            A <- pnorm(y[ind1, 1L], eta[ind1, ], sigma)
+            tt <- (y[ind1, 1L] - eta[ind1, ]) / sigma
+            out[ind1, ] <- - exp(- 0.5 * tt^2) / (sqrt(2 * pi) * sigma * A)
         }
         if (any(ind2)) {
-            f <- function (x, mean, sd) {
-                ingegrand <- function (x) x * dnorm(x, mean, sd)
-                integrate(ingegrand, lower = mean - 5 * sd, upper = x)$value
-            }
-            A <- mapply(f, y[ind2, 1L], eta[ind2, ], MoreArgs = list(sd = sigma))
+            B <- pnorm(y[ind2, 1L], eta[ind2, ], sigma, lower.tail = FALSE)
+            tt <- (y[ind2, 1L] - eta[ind2, ]) / sigma
+            A <-  eta[ind2, ] * pnorm(tt) - sigma * exp(- 0.5 * tt^2) / sqrt(2 * pi) 
             B <- pnorm(y[ind2, 1L], eta[ind2, ], sigma, lower.tail = FALSE)
             out[ind2, ] <- (-A / B + eta[ind2, ] * (1 - B) / B) / sigma^2
         }
@@ -1386,5 +1380,6 @@ censored.normal <- function () {
                    simulate = simulate),
               class = "family")
 }
+
 
 
