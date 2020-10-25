@@ -38,7 +38,7 @@ print.MixMod <- function (x, digits = max(4, getOption("digits") - 4), ...) {
     if (!is.null(x$phis)) {
         if (x$family$family %in% c("negative binomial", "zero-inflated negative binomial")) {
             cat("\ndispersion parameter:\n", exp(x$phis), "\n")
-        } else if (x$family$family %in% c("hurdle log-normal")) {
+        } else if (x$family$family %in% c("hurdle log-normal", "censored normal")) {
             cat("\nResidual std. dev.:\n", exp(x$phis), "\n")
         } else {
             cat("\nphi parameters:\n", x$phis, "\n")
@@ -247,7 +247,7 @@ print.summary.MixMod <- function (x, digits = max(4, getOption("digits") - 4), .
         if (NB <- x$family$family %in% c("negative binomial", "zero-inflated negative binomial",
                                          "hurdle negative binomial")) {
             cat("\nlog(dispersion) parameter:\n")
-        } else if (NB <- x$family$family %in% c("hurdle log-normal")) {
+        } else if (NB <- x$family$family %in% c("hurdle log-normal", "censored normal")) {
             cat("\nlog(residual std. dev.):\n")
         } else {
             cat("\nphi parameters:\n")

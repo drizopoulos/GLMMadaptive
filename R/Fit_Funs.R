@@ -1334,10 +1334,10 @@ censored.normal <- function () {
             out[ind1, ] <- - exp(- 0.5 * tt^2) / (sqrt(2 * pi) * sigma * A)
         }
         if (any(ind2)) {
-            B <- pnorm(y[ind2, 1L], eta[ind2, ], sigma, lower.tail = FALSE)
+            P <- pnorm(y[ind2, 1L], eta[ind2, ], sigma)
             tt <- (y[ind2, 1L] - eta[ind2, ]) / sigma
-            A <-  eta[ind2, ] * pnorm(tt) - sigma * exp(- 0.5 * tt^2) / sqrt(2 * pi) 
-            B <- pnorm(y[ind2, 1L], eta[ind2, ], sigma, lower.tail = FALSE)
+            A <-  eta[ind2, ] * P - sigma * exp(- 0.5 * tt^2) / sqrt(2 * pi) 
+            B <- 1 - P
             out[ind2, ] <- (-A / B + eta[ind2, ] * (1 - B) / B) / sigma^2
         }
         out
@@ -1352,21 +1352,16 @@ censored.normal <- function () {
         out <- eta
         if (any(ind0)) out[ind0, ] <- - 1 + (y[ind0, 1L] - eta[ind0, ])^2 / sigma^2
         if (any(ind1)) {
-            f <- function (x, mean, sd) {
-                ingegrand <- function (x) (x - mean)^2 * dnorm(x, mean, sd)
-                integrate(ingegrand, lower = mean - 5 * sd, upper = x)$value
-            }
-            A <- mapply(f, y[ind1, 1L], eta[ind1, ], MoreArgs = list(sd = sigma))
-            B <- pnorm(y[ind1, 1L], eta[ind1, ], sigma) * sigma^2
-            out[ind1, ] <- - 1 + A / B
+            tt <- (y[ind1, 1L] - eta[ind1, ]) / sigma
+            A <- (-tt * exp(- 0.5 * tt^2)) / sqrt(2 * pi) 
+            B <- pnorm(y[ind1, 1L], eta[ind1, ], sigma)
+            out[ind1, ] <- A / B
         }
         if (any(ind2)) {
-            f <- function (x, mean, sd) {
-                ingegrand <- function (x) (x - mean)^2 * dnorm(x, mean, sd)
-                integrate(ingegrand, lower = mean - 5 * sd, upper = x)$value
-            }
-            A <- mapply(f, y[ind2, 1L], eta[ind2, ], MoreArgs = list(sd = sigma))
-            B <- pnorm(y[ind2, 1L], eta[ind2, ], sigma, lower.tail = FALSE)
+            P <- pnorm(y[ind2, 1L], eta[ind2, ], sigma)
+            tt <- (y[ind2, 1L] - eta[ind2, ]) / sigma
+            A <- sigma^2 * P + sigma^2 * (-tt * exp(- 0.5 * tt^2)) / sqrt(2 * pi) 
+            B <- 1 - P
             out[ind2, ] <- (1 - B) / B - A / (B * sigma^2)
         }
         out
@@ -1380,6 +1375,3 @@ censored.normal <- function () {
                    simulate = simulate),
               class = "family")
 }
-
-
-

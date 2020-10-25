@@ -40,7 +40,9 @@ object.
 `hurdle.negative.binomial()` family objects.
 
 - Two-part/hurdle mixed models for semi-continuous normal data using the 
-`hurdle.lognormal()` family objects.
+`hurdle.lognormal()` family object.
+
+- Mixed models for censored normal data using the `censored.normal()` family object.
 
 - Continuation ratio mixed models for ordinal data using functions `cr_setup()` and `cr_marg_probs()`.
 

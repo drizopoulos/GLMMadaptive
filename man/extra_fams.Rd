@@ -10,11 +10,12 @@
 \alias{hurdle.beta.fam}
 \alias{unit.lindley}
 \alias{Gamma.fam}
+\alias{censored.normal}
 
 
 \title{
 Family functions for Student's-t, Beta, Zero-Inflated and Hurdle Poisson and Negative Binomial,
-Hurdle Log-Normal, and Hurdle Beta Mixed Models}
+Hurdle Log-Normal, Hurdle Beta, Gamma, and Censored Normal Mixed Models}
 
 \description{
 Specifies the information required to fit a Beta, zero-inflated and hurdle Poisson, 
@@ -35,6 +36,7 @@ hurdle.beta.fam()
 unit.lindley()
 beta.binomial(link = "logit")
 Gamma.fam()
+censored.normal()
 }
 
 \arguments{
