@@ -5,3 +5,10 @@
 ^pkgdown$
 ^docs$
 ^\.github$
+
+^vignettes/Dynamic_Predictions$
+^vignettes/Goodness_of_Fit$
+^vignettes/Multiple_Comparisons$
+^vignettes/Optimization$
+^vignettes/Ordinal_Mixed_Models$
+^vignettes/ZeroInflated_and_TwoPart_Models$
