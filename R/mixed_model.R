@@ -242,7 +242,7 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
         if (family$family %in% c("negative binomial", "zero-inflated negative binomial",
                                  "hurdle negative binomial", "hurdle log-normal",
                                  "beta", "hurdle beta", "Conway Maxwell Poisson", 
-                                 "Gamma", "censored normal")) {
+                                 "Gamma", "censored normal", "beta binomial")) {
             n_phis <- 1
         } else if (is.null(n_phis)) {
             stop("argument 'n_phis' needs to be specified.\n")
