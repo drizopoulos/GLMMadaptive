@@ -981,7 +981,7 @@ students.t <- function (df = stop("'df' must be specified"), link = "identity") 
                    linkinv = stats$linkinv, log_dens = log_dens, 
                    variance = function (mu) rep.int(1, length(mu)),
                    score_eta_fun = score_eta_fun, score_phis_fun = score_phis_fun,
-                   simulate = simulate),
+                   simulate = simulate, df = df),
               class = "family")
 }
 
