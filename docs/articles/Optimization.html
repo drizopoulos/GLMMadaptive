@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8-0</span>
       </span>
     </div>
 
@@ -46,7 +46,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -96,7 +96,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/drizopoulos/GLMMadaptive/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -110,13 +110,13 @@
 
       
 
-      </header><script src="Optimization_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="Optimization_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Optimization and Numerical Integration</h1>
                         <h4 class="author">Dimitris Rizopoulos</h4>
             
-            <h4 class="date">2020-10-13</h4>
+            <h4 class="date">2021-01-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/master/vignettes/Optimization.Rmd"><code>vignettes/Optimization.Rmd</code></a></small>
       <div class="hidden name"><code>Optimization.Rmd</code></div>
@@ -147,8 +147,8 @@
 <h2 class="hasAnchor">
 <a href="#controlling-the-optimization-and-integration" class="anchor"></a>Controlling the Optimization and Integration</h2>
 <p>We start by simulating some data for a binary longitudinal outcome:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">300</span> <span class="co"># number of subjects</span>
 <span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">4</span> <span class="co"># number of measurements per subject</span>
 <span class="va">t_max</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span>
@@ -171,22 +171,22 @@
 <span class="co"># linear predictor</span>
 <span class="va">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">X</span> <span class="op">%*%</span> <span class="va">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span><span class="op">(</span><span class="va">Z</span> <span class="op">*</span> <span class="va">b</span><span class="op">[</span><span class="va">DF</span><span class="op">$</span><span class="va">id</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span>
 <span class="co"># we simulate binary longitudinal data</span>
-<span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">K</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span><span class="op">(</span><span class="va">eta_y</span><span class="op">)</span><span class="op">)</span></pre></div>
+<span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">K</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span><span class="op">(</span><span class="va">eta_y</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>We fit a mixed effects logistic regression for <code>y</code> assuming random intercepts for the random-effects part, and the main effects of <code>sex</code> and <code>time</code> for the fixed-effects part. In the call to <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, we are using the default values for the control arguments:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>In the following example we do not use any EM iterations, and we specify as optimizer the <code>nlimnb()</code> function. In addition, during each iteration of the outer loop in which the modes of the modes of the conditional distribution of the random effects are relocated, we increase the number of the quasi-Newton iterations by 5:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span><span class="op">)</span>, 
-            iter_EM <span class="op">=</span> <span class="fl">0</span>, optimizer <span class="op">=</span> <span class="st">"nlminb"</span>, iter_qN_incr <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span><span class="op">)</span>, 
+            iter_EM <span class="op">=</span> <span class="fl">0</span>, optimizer <span class="op">=</span> <span class="st">"nlminb"</span>, iter_qN_incr <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
 <p>In the following call, we allow again for EM iterations, but we set the number of the iterations to 1000 giving the option to achieve convergence only during the EM-phase. In addition, we set to update the modes of the conditional distribution of the random effects every 5 iterations, and we also set the number of quadrature points to 21:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span><span class="op">)</span>, 
-            iter_EM <span class="op">=</span> <span class="fl">1000</span>, update_GH_every <span class="op">=</span> <span class="fl">5</span>, nAGQ <span class="op">=</span> <span class="fl">21</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span><span class="op">)</span>, 
+            iter_EM <span class="op">=</span> <span class="fl">1000</span>, update_GH_every <span class="op">=</span> <span class="fl">5</span>, nAGQ <span class="op">=</span> <span class="fl">21</span><span class="op">)</span></code></pre></div>
 <p>To not run the optimization procedure at all, we need to also to set <code>iter_qN_outer</code> to 0, e.g.,</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span><span class="op">)</span>, 
-            iter_EM <span class="op">=</span> <span class="fl">0</span>, iter_qN_outer <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">binomial</a></span><span class="op">(</span><span class="op">)</span>, 
+            iter_EM <span class="op">=</span> <span class="fl">0</span>, iter_qN_outer <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="advice-on-optimization-and-numerical-integration-control" class="section level2">
 <h2 class="hasAnchor">

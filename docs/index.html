@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8-0</span>
       </span>
     </div>
 
@@ -49,7 +49,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -99,7 +99,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/drizopoulos/GLMMadaptive/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -135,7 +135,8 @@
 <li><p>Negative binomial mixed models can be fitted using the <code><a href="reference/negative.binomial.html">negative.binomial()</a></code> family object.</p></li>
 <li><p>Zero-inflated Poisson and negative binomial models using the <code><a href="reference/Extra%20Family%20Objects.html">zi.poisson()</a></code> and <code><a href="reference/Extra%20Family%20Objects.html">zi.negative.binomial()</a></code> family objects.</p></li>
 <li><p>Hurdle Poisson and negative binomial models using the <code><a href="reference/Extra%20Family%20Objects.html">hurdle.poisson()</a></code> and <code><a href="reference/Extra%20Family%20Objects.html">hurdle.negative.binomial()</a></code> family objects.</p></li>
-<li><p>Two-part/hurdle mixed models for semi-continuous normal data using the <code><a href="reference/Extra%20Family%20Objects.html">hurdle.lognormal()</a></code> family objects.</p></li>
+<li><p>Two-part/hurdle mixed models for semi-continuous normal data using the <code><a href="reference/Extra%20Family%20Objects.html">hurdle.lognormal()</a></code> family object.</p></li>
+<li><p>Mixed models for censored normal data using the <code><a href="reference/Extra%20Family%20Objects.html">censored.normal()</a></code> family object.</p></li>
 <li><p>Continuation ratio mixed models for ordinal data using functions <code><a href="reference/Continuation%20Ratio%20Set-Up.html">cr_setup()</a></code> and <code><a href="reference/Continuation%20Ratio%20Set-Up.html">cr_marg_probs()</a></code>.</p></li>
 <li><p>Beta and hurdle Beta mixed effects models using <code><a href="reference/Extra%20Family%20Objects.html">beta.fam()</a></code> and <code><a href="reference/Extra%20Family%20Objects.html">hurdle.beta.fam()</a></code> family objects.</p></li>
 <li><p>Gamma mixed effects models using the <code><a href="https://rdrr.io/r/stats/family.html">Gamma()</a></code> or <code><a href="reference/Extra%20Family%20Objects.html">Gamma.fam()</a></code> family object.</p></li>
@@ -148,27 +149,27 @@
 <h2 class="hasAnchor">
 <a href="#basic-use" class="anchor"></a>Basic Use</h2>
 <p>Let <code>y</code> denote a grouped/clustered outcome, <code>g</code> denote the grouping factor, and <code>x1</code> and <code>x2</code> covariates. A mixed effects model with <code>y</code> as outcome, <code>x1</code> and <code>x2</code> as fixed effects, and random intercepts is fitted with the code:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">g</span>, data <span class="op">=</span> <span class="va">DF</span>,
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">g</span>, data <span class="op">=</span> <span class="va">DF</span>,
                   family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></code></pre></div>
 <p>In the <code>data</code> argument we provide the data frame <code>DF</code>, which contains the aforementioned variables. In the family argument we specify the distribution of the grouped/clustered outcome conditional on the random effects. To include in the random-effects part intercepts and <code>x1</code>, we update the call to <code><a href="reference/mixed_model.html">mixed_model()</a></code> as</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">gm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span>, random <span class="op">=</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">|</span> <span class="va">g</span>, data <span class="op">=</span> <span class="va">DF</span>,
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">+</span> <span class="va">x2</span>, random <span class="op">=</span> <span class="op">~</span> <span class="va">x1</span> <span class="op">|</span> <span class="va">g</span>, data <span class="op">=</span> <span class="va">DF</span>,
                   family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">gm</span><span class="op">)</span></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">gm</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>The development version of the package can be installed from GitHub using the <strong>devtools</strong> package:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"drizopoulos/GLMMadaptive"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"drizopoulos/GLMMadaptive"</span><span class="op">)</span></code></pre></div>
 <p>and with vignettes</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"drizopoulos/GLMMadaptive"</span>, build_opts <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"drizopoulos/GLMMadaptive"</span>, build_opts <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
 <p>Hex-sticker courtesy of Greg Papageorgiou <a href="https://twitter.com/gr_papageorgiou">@gr_papageorgiou</a>.</p>
 </div>
 </div>
@@ -203,11 +204,11 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/drizopoulos/GLMMadaptive"><img src="https://travis-ci.org/drizopoulos/GLMMadaptive.svg?branch=master" alt="Travis-CI Build Status"></a></li>
+<li><a href="https://github.com/drizopoulos/GLMMadaptive/actions"><img src="https://github.com/drizopoulos/GLMMadaptive/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
 <li><a href="https://cran.r-project.org/package=GLMMadaptive"><img src="http://www.r-pkg.org/badges/version/GLMMadaptive" alt="CRAN status"></a></li>
 <li><a href="https://CRAN.R-project.org/package=GLMMadaptive"><img src="https://cranlogs.r-pkg.org/badges/grand-total/GLMMadaptive"></a></li>
 <li><a href="https://cran.r-project.org/package=GLMMadaptive"><img src="http://cranlogs.r-pkg.org/badges/GLMMadaptive" alt="Download counter"></a></li>
-<li><a href="http://www.rdocumentation.org/packages/GLMMadaptive"><img src="https://www.rdocumentation.org/badges/version/GLMMadaptive" alt="Rdoc"></a></li>
+<li><a href="https://www.rdocumentation.org/packages/GLMMadaptive"><img src="https://www.rdocumentation.org/badges/version/GLMMadaptive" alt="Rdoc"></a></li>
 </ul>
 </div>
 </div>

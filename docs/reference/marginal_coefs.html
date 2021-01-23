@@ -81,7 +81,7 @@ mixed models." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7-15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8-0</span>
       </span>
     </div>
 
@@ -89,7 +89,7 @@ mixed models." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -139,7 +139,7 @@ mixed models." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/drizopoulos/GLMMadaptive/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -285,7 +285,7 @@ marginalization of regression parameters from mixed models of binary outcomes.
 </div><div class='output co'>#&gt;  (Intercept)         year       group1  year:group1 
 #&gt; -2.875293208  0.204144801 -0.648693468 -0.006044763 </div><div class='input'><span class='fu'>marginal_coefs</span><span class='op'>(</span><span class='va'>fm1</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; (Intercept)        year      group1 year:group1 
-#&gt;     -1.3589      0.0966     -0.3298     -0.0017 </div><div class='input'><span class='fu'>marginal_coefs</span><span class='op'>(</span><span class='va'>fm1</span>, std_errors <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+#&gt;     -1.3589      0.0966     -0.3298     -0.0017 </div><div class='input'><span class='fu'>marginal_coefs</span><span class='op'>(</span><span class='va'>fm1</span>, std_errors <span class='op'>=</span> <span class='cn'>TRUE</span>, cores <span class='op'>=</span> <span class='fl'>1L</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;             Estimate Std.Err  z-value p-value
 #&gt; (Intercept)  -1.3589  0.1132 -12.0052 &lt; 1e-04
 #&gt; year          0.0966  0.0049  19.5229 &lt; 1e-04
