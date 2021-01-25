@@ -187,8 +187,8 @@ n <- 100 # number of subjects
 K <- 8 # number of measurements per subject
 t_max <- 15 # maximum follow-up time
 
-# we constuct a data frame with the design: 
-# everyone has a baseline measurment, and then measurements at random follow-up times
+# we construct a data frame with the design: 
+# everyone has a baseline measurement, and then measurements at random follow-up times
 DF <- data.frame(id = rep(seq_len(n), each = K),
                  time = c(replicate(n, c(0, sort(runif(K - 1, 0, t_max))))),
                  sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
@@ -264,8 +264,8 @@ n <- 100 # number of subjects
 K <- 8 # number of measurements per subject
 t_max <- 15 # maximum follow-up time
 
-# we constuct a data frame with the design: 
-# everyone has a baseline measurment, and then measurements at random follow-up times
+# we construct a data frame with the design: 
+# everyone has a baseline measurement, and then measurements at random follow-up times
 DF <- data.frame(id = rep(seq_len(n), each = K),
                  time = c(replicate(n, c(0, sort(runif(K - 1, 0, t_max))))),
                  sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
@@ -345,7 +345,7 @@ To depict the results of the model we create an effects plot, showing the longit
 evolution of the average/median male and female. We start by constructing the data frame 
 that contains the values we want to depict, and using it in the `effectPlotData()` 
 function; just for illustration, sandwich/robust standard errors are used in the 
-calculation of the 95% poinwise cofidence intervals:
+calculation of the 95% pointwise confidence intervals:
 ```{r}
 nDF <- with(DF, expand.grid(time = seq(min(time), max(time), length = 25),
                             sex = levels(sex)))

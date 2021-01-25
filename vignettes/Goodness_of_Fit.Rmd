@@ -34,8 +34,8 @@ n <- 300 # number of subjects
 K <- 8 # number of measurements per subject
 t_max <- 5 # maximum follow-up time
 
-# we constuct a data frame with the design: 
-# everyone has a baseline measurment, and then measurements at random follow-up times
+# we construct a data frame with the design: 
+# everyone has a baseline measurement, and then measurements at random follow-up times
 DF <- data.frame(id = rep(seq_len(n), each = K),
                  time = c(replicate(n, c(0, sort(runif(K - 1, 0, t_max))))),
                  sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
@@ -120,7 +120,7 @@ fm1 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF,
 ```
 
 We expect that this model will not fit the data well because it does not account for the
-overdispersion and the extra zeros we have simulated. To evaluate the fit we compare the 
+over-dispersion and the extra zeros we have simulated. To evaluate the fit we compare the 
 simulated outcome data from the model versus the observed outcome data. If 
 the model fits the data well, we would expect the observed outcome data to have the same
 empirical distribution as the empirical distribution of the simulated data. The following
@@ -180,7 +180,7 @@ There are still deviations from uniformity, indicating that the fit of the last 
 the data is not optimal.
 
 ## Zero-Inflated Negative Binomial Mixed Model Extra Random Effects
-As a final attempt, we allow of overspersion by changing the Poisson distribution to the
+As a final attempt, we allow of over-dispersion by changing the Poisson distribution to the
 negative binomial distribution. The rest of the components remain the same:
 ```{r, zi_NB_mixed_model}
 fm4 <- mixed_model(y ~ sex * time, random = ~ 1 | id, data = DF,

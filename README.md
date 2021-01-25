@@ -51,6 +51,8 @@ family objects.
 
 - Gamma mixed effects models using the `Gamma()` or `Gamma.fam()` family object.
 
+- Linear mixed effects models with right and left censored data using the `censored.normal()` family object.
+
 - Users may also specify their own log-density function for the repeated measurements 
 response variable, and the internal algorithms will take care of the optimization.
 

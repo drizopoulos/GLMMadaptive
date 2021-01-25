@@ -1,3 +1,16 @@
+# GLMMadaptive 0.8.0
+
+## General
+* Added the `beta.binomial()` family object for fitting Beta-Binomial mixed-effects models.
+
+* Added the `Gamma.fam()` family object for fitting Gamma mixed-effects models.
+
+* Added the `censored.normal()` family object for fitting linear mixed-effects models with right and left censored outcomes.
+
+## Minor
+* Corrected typos in the vignettes and the help files.
+
+
 # GLMMadaptive 0.6.5
 
 ## General

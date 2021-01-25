@@ -55,8 +55,8 @@ n <- 300 # number of subjects
 K <- 4 # number of measurements per subject
 t_max <- 15 # maximum follow-up time
 
-# we constuct a data frame with the design: 
-# everyone has a baseline measurment, and then measurements at K time points
+# we construct a data frame with the design: 
+# everyone has a baseline measurement, and then measurements at K time points
 DF <- data.frame(id = rep(seq_len(n), each = K),
                  time = gl(K, 1, n*K, labels = paste0("Time", 1:K)),
                  sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))

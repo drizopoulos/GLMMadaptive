@@ -70,10 +70,10 @@
       <a href="../articles/Dynamic_Predictions.html">Dynamic Predictions</a>
     </li>
     <li>
-      <a href="../articles/GLMMadaptive_basics.html">GLMMadaptive Basics</a>
+      <a href="../articles/Goodness_of_Fit.html">Goodness of Fit for MixMod Objects</a>
     </li>
     <li>
-      <a href="../articles/Goodness_of_Fit.html">Goodness of Fit for MixMod Objects</a>
+      <a href="../articles/Methods.html">Methods for MixMod Objects</a>
     </li>
     <li>
       <a href="../articles/Multiple_Comparisons.html">Multiple Comparisons for MixMod Objects</a>
@@ -139,8 +139,8 @@
 <span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
 <span class="va">t_max</span> <span class="op">&lt;-</span> <span class="fl">5</span> <span class="co"># maximum follow-up time</span>
 
-<span class="co"># we constuct a data frame with the design: </span>
-<span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span>
+<span class="co"># we construct a data frame with the design: </span>
+<span class="co"># everyone has a baseline measurement, and then measurements at random follow-up times</span>
 <span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span>,
                  time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">K</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0</span>, <span class="va">t_max</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
                  sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/gl.html">gl</a></span><span class="op">(</span><span class="fl">2</span>, <span class="va">n</span><span class="op">/</span><span class="fl">2</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span>
@@ -222,7 +222,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>,
                    family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html">poisson</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>We expect that this model will not fit the data well because it does not account for the overdispersion and the extra zeros we have simulated. To evaluate the fit we compare the simulated outcome data from the model versus the observed outcome data. If the model fits the data well, we would expect the observed outcome data to have the same empirical distribution as the empirical distribution of the simulated data. The following call to <code>resids_plot()</code> performs this comparison:</p>
+<p>We expect that this model will not fit the data well because it does not account for the over-dispersion and the extra zeros we have simulated. To evaluate the fit we compare the simulated outcome data from the model versus the observed outcome data. If the model fits the data well, we would expect the observed outcome data to have the same empirical distribution as the empirical distribution of the simulated data. The following call to <code>resids_plot()</code> performs this comparison:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">resids_plot</span><span class="op">(</span><span class="va">fm1</span>, <span class="va">DF</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>
 <span class="co">#&gt; DHARMa:plot used testOutliers with type = binomial for computational reasons (nObs &gt; 500). Note that this method may not have inflated Type I error rates for integer-valued distributions. To get a more exact result, it is recommended to re-run testOutliers with type = 'bootstrap'. See ?testOutliers for details</span></code></pre></div>
@@ -263,7 +263,7 @@
 <div id="zero-inflated-negative-binomial-mixed-model-extra-random-effects" class="section level2">
 <h2 class="hasAnchor">
 <a href="#zero-inflated-negative-binomial-mixed-model-extra-random-effects" class="anchor"></a>Zero-Inflated Negative Binomial Mixed Model Extra Random Effects</h2>
-<p>As a final attempt, we allow of overspersion by changing the Poisson distribution to the negative binomial distribution. The rest of the components remain the same:</p>
+<p>As a final attempt, we allow of over-dispersion by changing the Poisson distribution to the negative binomial distribution. The rest of the components remain the same:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fm4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>,
                    family <span class="op">=</span> <span class="fu"><a href="../reference/Extra%20Family%20Objects.html">zi.negative.binomial</a></span><span class="op">(</span><span class="op">)</span>, 

@@ -47,8 +47,8 @@ n <- 100 # number of subjects
 K <- 8 # number of measurements per subject
 t_max <- 5 # maximum follow-up time
 
-# we constuct a data frame with the design: 
-# everyone has a baseline measurment, and then measurements at random follow-up times
+# we construct a data frame with the design: 
+# everyone has a baseline measurement, and then measurements at random follow-up times
 DF <- data.frame(id = rep(seq_len(n), each = K),
                  time = c(replicate(n, c(0, sort(runif(K - 1, 0, t_max))))),
                  sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
@@ -145,8 +145,8 @@ n <- 100 # number of subjects
 K <- 8 # number of measurements per subject
 t_max <- 5 # maximum follow-up time
 
-# we constuct a data frame with the design: 
-# everyone has a baseline measurment, and then measurements at random follow-up times
+# we construct a data frame with the design: 
+# everyone has a baseline measurement, and then measurements at random follow-up times
 DF <- data.frame(id = rep(seq_len(n), each = K),
                  time = c(replicate(n, c(0, sort(runif(K - 1, 0, t_max))))),
                  sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
@@ -272,7 +272,7 @@ km2 <- update(km1, random = ~ 1 || id, zi_random = ~ 1 | id)
 km2
 ```
 
-For zero-inflated or hurdle models the `marginal_coefs()` functions provides the marginalized coefficients corresponding the average mixture response variable, i.e., $$(1 - \pi) \times E(Y),$$ where $\pi$ denotes the probability of being zero, and $Y$ the response random variable for the noz-zero part. For example, in the case of the hurdle log-normal family, we get the marginalized coefficients for $(1 - \pi) \times E\{\log(Y)\}$, e.g.,
+For zero-inflated or hurdle models the `marginal_coefs()` functions provides the marginalized coefficients corresponding the average mixture response variable, i.e., $$(1 - \pi) \times E(Y),$$ where $\pi$ denotes the probability of being zero, and $Y$ the response random variable for the non-zero part. For example, in the case of the hurdle log-normal family, we get the marginalized coefficients for $(1 - \pi) \times E\{\log(Y)\}$, e.g.,
 ```{r}
 marginal_coefs(km2)
 ```
@@ -316,8 +316,8 @@ n <- 100 # number of subjects
 K <- 8 # number of measurements per subject
 t_max <- 5 # maximum follow-up time
 
-# we constuct a data frame with the design: 
-# everyone has a baseline measurment, and then measurements at random follow-up times
+# we construct a data frame with the design: 
+# everyone has a baseline measurement, and then measurements at random follow-up times
 DF <- data.frame(id = rep(seq_len(n), each = K),
                  time = c(replicate(n, c(0, sort(runif(K - 1, 0, t_max))))),
                  sex = rep(gl(2, n/2, labels = c("male", "female")), each = K))
