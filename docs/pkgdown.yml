@@ -4,12 +4,12 @@ pkgdown_sha: ~
 articles:
   Custom_Models: Custom_Models.html
   Dynamic_Predictions: Dynamic_Predictions.html
+  GLMMadaptive: GLMMadaptive.html
   GLMMadaptive_basics: GLMMadaptive_basics.html
   Goodness_of_Fit: Goodness_of_Fit.html
-  Methods_MixMod: Methods_MixMod.html
   Multiple_Comparisons: Multiple_Comparisons.html
   Optimization: Optimization.html
   Ordinal_Mixed_Models: Ordinal_Mixed_Models.html
   ZeroInflated_and_TwoPart_Models: ZeroInflated_and_TwoPart_Models.html
-last_built: 2021-01-23T11:46Z
+last_built: 2021-01-25T10:14Z
 
