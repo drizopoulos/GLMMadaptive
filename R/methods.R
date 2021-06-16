@@ -548,12 +548,12 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
         }
         Xbetas <- c(X %*% betas)
         if (!is.null(offset)) {
-            Xbetas <- Xbetas + offset
+            Xbetas <- Xbetas #+ offset
         }
         if (!is.null(gammas)) {
             eta_zi <- c(X_zi %*% gammas)
             if (!is.null(offset_zi)) {
-                eta_zi <- eta_zi + offset_zi
+                eta_zi <- eta_zi #+ offset_zi
             }
         }
         id <- match(object$id[[1]], unique(object$id[[1]]))

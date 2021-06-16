@@ -169,7 +169,7 @@ Dimitris Rizopoulos \email{d.rizopoulos@erasmusmc.nl}
 \examples{
 # simulate some data
 set.seed(123L)
-n <- 500
+n <- 200
 K <- 15
 t.max <- 25
 

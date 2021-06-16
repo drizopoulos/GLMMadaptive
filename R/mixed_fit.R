@@ -5,8 +5,9 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
     X_zi <- unattr(X_zi); Z_zi <- unattr(Z_zi); offset_zi <- unattr(offset_zi)
     id_unq <- unique(id)
     y_lis <- if (NCOL(y) == 2) lapply(id_unq, function (i) y[id == i, , drop = FALSE]) else split(y, id)
-    N <- if (NCOL(y) == 2) y[, 1] + y[, 2]
-    N_lis <- if (NCOL(y) == 2) split(N, id)
+    fams_N <- family$family %in% c("binomial", "beta binomial")
+    N <- if (NCOL(y) == 2 && fams_N) y[, 1] + y[, 2]
+    N_lis <- if (NCOL(y) == 2 && fams_N) split(N, id)
     X_lis <- lapply(id_unq, function (i) X[id == i, , drop = FALSE])
     Z_lis <- lapply(id_unq, function (i) Z[id == i, , drop = FALSE])
     offset_lis <- if (!is.null(offset)) split(offset, id)

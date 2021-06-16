@@ -41,10 +41,15 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
     if (inherits(data, "tbl_df") || inherits(data, "tbl"))
         data <- as.data.frame(data) # in case 'data' is a tibble
     orig_data <- data
-    groups <- unique(c(all.vars(getID_Formula(random)), 
-                       if (!is.null(zi_random)) all.vars(getID_Formula(zi_random))))
-    data[groups] <- lapply(data[groups], function (x) if (!is.factor(x)) factor(x) else x)
+    groups <- 
+        unique(c(all.vars(getID_Formula(random)), 
+                 if (!is.null(zi_random)) all.vars(getID_Formula(zi_random))))
+    data[groups] <- lapply(data[groups], 
+                           function (x) if (!is.factor(x)) factor(x) else x)
     data <- data[order(data[[groups[1L]]]), ]
+    # drop unused levels of factors
+    factors <- sapply(data, is.factor)
+    data[factors] <- lapply(data[factors], function (x) x[, drop = TRUE])
     # construct model frames
     # fixed effects
     mfX <- model.frame(terms(fixed, data = data), data = data, na.action = na.pass)

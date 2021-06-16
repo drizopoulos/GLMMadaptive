@@ -6,9 +6,10 @@
 ^docs$
 ^\.github$
 
-^vignettes/Dynamic_Predictions$
-^vignettes/Goodness_of_Fit$
-^vignettes/Multiple_Comparisons$
-^vignettes/Optimization$
-^vignettes/Ordinal_Mixed_Models$
-^vignettes/ZeroInflated_and_TwoPart_Models$
+^vignettes/Dynamic_Predictions.Rmd$
+^vignettes/Goodness_of_Fit.Rmd$
+^vignettes/Multiple_Comparisons.Rmd$
+^vignettes/Optimization.Rmd$
+^vignettes/Ordinal_Mixed_Models.Rmd$
+^vignettes/ZeroInflated_and_TwoPart_Models.Rmd$
+^vignettes/Custom_Models.Rmd$

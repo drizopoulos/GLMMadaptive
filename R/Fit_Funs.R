@@ -1337,7 +1337,8 @@ censored.normal <- function () {
             P <- pnorm(y[ind2, 1L], eta[ind2, ], sigma)
             tt <- (y[ind2, 1L] - eta[ind2, ]) / sigma
             A <-  eta[ind2, ] * P - sigma * exp(- 0.5 * tt^2) / sqrt(2 * pi) 
-            B <- 1 - P
+            B <- pnorm(y[ind2, 1L], eta[ind2, ], sigma, lower.tail = FALSE)
+            B <- pmax(B, sqrt(.Machine$double.eps))
             out[ind2, ] <- (-A / B + eta[ind2, ] * (1 - B) / B) / sigma^2
         }
         out
@@ -1355,13 +1356,15 @@ censored.normal <- function () {
             tt <- (y[ind1, 1L] - eta[ind1, ]) / sigma
             A <- (-tt * exp(- 0.5 * tt^2)) / sqrt(2 * pi) 
             B <- pnorm(y[ind1, 1L], eta[ind1, ], sigma)
+            B <- pmax(B, sqrt(.Machine$double.eps))
             out[ind1, ] <- A / B
         }
         if (any(ind2)) {
             P <- pnorm(y[ind2, 1L], eta[ind2, ], sigma)
             tt <- (y[ind2, 1L] - eta[ind2, ]) / sigma
             A <- sigma^2 * P + sigma^2 * (-tt * exp(- 0.5 * tt^2)) / sqrt(2 * pi) 
-            B <- 1 - P
+            B <- pnorm(y[ind2, 1L], eta[ind2, ], sigma, lower.tail = FALSE)
+            B <- pmax(B, sqrt(.Machine$double.eps))
             out[ind2, ] <- (1 - B) / B - A / (B * sigma^2)
         }
         out
