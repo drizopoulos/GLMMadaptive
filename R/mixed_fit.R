@@ -321,6 +321,11 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
                              var_fun, mu.eta_fun, score_eta_fun, score_eta_zi_fun, 
                              score_phis_fun, list_thetas, diag_D, penalized, pen_mu, 
                              pen_invSigma, pen_df, weights)
+    logLik_contributions <- - logLik_mixed(tht, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, GH, 
+                             canonical, user_defined, Xty, Xty_weights, log_dens, mu_fun, 
+                             var_fun, mu.eta_fun, score_eta_fun, score_eta_zi_fun, 
+                             score_phis_fun, list_thetas, diag_D, penalized, pen_mu, 
+                             pen_invSigma, pen_df, weights, TRUE)
     Hessian <- cd_vec(tht, score_mixed, id = id, y = y, N = N, X = X, Z = Z, 
                       offset = offset, X_zi = X_zi, Z_zi = Z_zi, offset_zi = offset_zi, 
                       GH = GH, canonical = canonical, user_defined = user_defined, 
@@ -338,8 +343,8 @@ mixed_fit <- function (y, X, Z, X_zi, Z_zi, id, offset, offset_zi, family,
     names(GH$post_vars) <- rownames(GH$post_modes)
     list(coefficients = betas, phis = if (has_phis) phis, D = D, gammas = gammas,
          post_modes = GH$post_modes, post_vars = GH$post_vars,
-         logLik = logLik, Hessian = Hessian, 
-         score_vect_contributions = score_vect_contributions,
+         logLik = logLik, logLik_contributions = logLik_contributions,
+         Hessian = Hessian,  score_vect_contributions = score_vect_contributions,
          converged = converged)
 }
 

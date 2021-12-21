@@ -2,7 +2,7 @@ logLik_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi,
                           canonical, user_defined, Xty, Xty_weights, log_dens, mu_fun, var_fun, 
                           mu.eta_fun, score_eta_fun, score_eta_zi_fun, score_phis_fun, 
                           list_thetas, diag_D, penalized, pen_mu, pen_invSigma, pen_df,
-                          weights) {
+                          weights, i_contributions = FALSE) {
     thetas <- relist(thetas, skeleton = list_thetas)
     betas <- thetas$betas
     phis <- thetas$phis
@@ -30,13 +30,12 @@ logLik_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi,
     log_p_yb <- unname(rowsum(log_Lik, id, reorder = FALSE))
     log_p_b <- matrix(dmvnorm(b, rep(0, nRE), D, TRUE),
                       nrow(log_p_yb), ncol(log_p_yb), byrow = TRUE)
-    #p_yb <- exp(log_p_yb + log_p_b)
-    #if (any(zero_ind <- p_yb == 0.0)) {
-    #    p_yb[zero_ind] <- 1e-300
-    #}
-    #p_y <- c(p_yb %*% wGH) * dets
     log_p_y <- rowLogSumExps(log_p_yb + log_p_b + log_wGH) + log_dets
-    out <- - sum(if (is.null(weights)) log_p_y else weights * log_p_y, na.rm = TRUE)
+    out <- if (i_contributions) {
+        - if (is.null(weights)) log_p_y else weights * log_p_y
+    } else {
+        - sum(if (is.null(weights)) log_p_y else weights * log_p_y, na.rm = TRUE)
+    }
     if (penalized)
         out <- out - dmvt(betas, mu = pen_mu, invSigma = pen_invSigma, df = pen_df)
     out
@@ -73,13 +72,6 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
     log_p_yb <- unname(rowsum(log_Lik, id, reorder = FALSE))
     log_p_b <- matrix(dmvnorm(b, rep(0, nRE), D, TRUE),
                       nrow(log_p_yb), ncol(log_p_yb), byrow = TRUE)
-    # log penalty include here dmvt(betas, pen_mean, invSigma = pen_invsds, df = pen_df)
-    #p_yb <- exp(log_p_yb + log_p_b)
-    #if (any(zero_ind <- p_yb == 0.0)) {
-    #    p_yb[zero_ind] <- 1e-300
-    #}
-    #p_y <- c(p_yb %*% wGH)
-    #p_by <- p_yb / p_y
     log_p_yb_b <- log_p_yb + log_p_b
     log_p_y <- rowLogSumExps(log_p_yb_b + log_wGH)
     p_by <- exp(log_p_yb_b - log_p_y)
