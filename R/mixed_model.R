@@ -19,7 +19,8 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
              "  use 'family = GLMMadaptive::negative.binomial()'.")
     }
     if (family$family %in% c("zero-inflated poisson", "zero-inflated negative binomial",
-                             "hurdle poisson", "hurdle negative binomial", "hurdle beta") && 
+                             "hurdle poisson", "hurdle negative binomial", "hurdle beta", 
+                             "zero-inflated binomial") && 
         is.null(zi_fixed)) {
         stop("you have defined a family with an extra zero-part;\nat least argument ",
              "'zi_fixed' needs to be defined, and potentially also argument 'zi_random'.")
@@ -169,6 +170,8 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
                 glm.fit(X, y, family = Gamma(), offset = offset)$coefficients
             else if (family$family == "censored normal")
                 glm.fit(X, y, family = gaussian(), offset = offset)$coefficients
+            else if (family$family == "zero-inflated binomial")
+                glm.fit(X, y, family = binomial(), offset = offset)$coefficients
             else
                 glm.fit(X, y, family = family, offset = offset)$coefficients
         } else {

@@ -3,6 +3,7 @@
 \alias{beta.fam}
 \alias{beta.binomial}
 \alias{zi.poisson}
+\alias{zi.binomial}
 \alias{zi.negative.binomial}
 \alias{hurdle.poisson}
 \alias{hurdle.negative.binomial}
@@ -11,6 +12,7 @@
 \alias{unit.lindley}
 \alias{Gamma.fam}
 \alias{censored.normal}
+
 
 
 \title{
@@ -28,6 +30,7 @@ mixed-effects model, using
 students.t(df = stop("'df' must be specified"), link = "identity")
 beta.fam()
 zi.poisson()
+zi.binomial()
 zi.negative.binomial()
 hurdle.poisson()
 hurdle.negative.binomial()

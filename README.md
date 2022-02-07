@@ -39,6 +39,8 @@ object.
 - Hurdle Poisson and negative binomial models using the `hurdle.poisson()` and 
 `hurdle.negative.binomial()` family objects.
 
+- Zero-inflated binomial models using the `zi.binomial()` family objects.
+
 - Two-part/hurdle mixed models for semi-continuous normal data using the 
 `hurdle.lognormal()` family object.
 

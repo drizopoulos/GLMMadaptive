@@ -763,6 +763,69 @@ hurdle.negative.binomial <- function () {
               class = "family")
 }
 
+zi.binomial <- function () {
+    stats <- make.link(link = "logit")
+    log_dens <- function (y, eta, mu_fun, phis, eta_zi) {
+        # the log density function
+        # Binomial part
+        mu <- mu_fun(eta)
+        y <- as.matrix(y)
+        N <- if (ncol(y) == 2L) y[, 1L] + y[, 2L] else rep(1L, nrow(y))
+        out <- as.matrix(dbinom(y[, 1L], N, mu, TRUE))
+        # ZI part
+        ind_y0 <- y[, 1L] == 0
+        ind_y1 <- y[, 1L] > 0
+        pis <- as.matrix(plogis(eta_zi))
+        # combined
+        out[ind_y0, ] <- log(pis[ind_y0, ] + (1 - pis[ind_y0, ]) * exp(out[ind_y0, ]))
+        out[ind_y1, ] <- log(1 - pis[ind_y1, ]) + out[ind_y1, ]
+        attr(out, "mu_y") <- mu
+        out
+    }
+    score_eta_fun <- function (y, mu, phis, eta_zi) {
+        # Binomial part
+        mu <- as.matrix(mu)
+        y <- as.matrix(y)
+        N <- if (ncol(y) == 2L) y[, 1L] + y[, 2L] else rep(1L, nrow(y))
+        out <- y[, 1L] * (1 - mu) - (N - y[, 1L]) * mu
+        # ZI part
+        ind_y0 <- y[, 1L] == 0
+        eta_zi <- as.matrix(eta_zi)
+        pis <- plogis(eta_zi[ind_y0, ])
+        mu0 <- mu[ind_y0, ]
+        N0 <- N[ind_y0]
+        pis1 <- 1 - pis
+        den <- pis + pis1 * (1 - mu0)^N0
+        out[ind_y0, ] <- - (N0 * mu0 * pis1 * (1 - mu0)^N0) / den
+        out
+    }
+    score_eta_zi_fun <- function (y, mu, phis, eta_zi) {
+        y <- as.matrix(y)
+        N <- if (ncol(y) == 2L) y[, 1L] + y[, 2L] else rep(1L, nrow(y))
+        ind_y0 <- y[, 1L] == 0
+        ind_y1 <- y[, 1L] > 0
+        pis <- as.matrix(plogis(eta_zi))
+        mu <- as.matrix(mu)
+        # Binomial part
+        out <- mu
+        out[ind_y1, ] <- - pis[ind_y1, ]
+        # ZI part
+        mu0 <- mu[ind_y0, ]
+        N0 <- N[ind_y0]
+        pis1 <- 1 - pis[ind_y0, ]
+        FF <- (1 - mu0)^N0
+        den <- pis[ind_y0, ] + pis1 * FF
+        out[ind_y0, ] <- pis[ind_y0, ] * pis1 * (1 - FF) / den
+        out
+    }
+    structure(list(family = "zero-inflated binomial", link = stats$name, 
+                   linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,
+                   score_eta_fun = score_eta_fun,
+                   score_eta_zi_fun = score_eta_zi_fun,
+                   score_phis_fun = NULL),
+              class = "family")
+}
+
 hurdle.lognormal <- function () {
     stats <- make.link("identity")
     log_dens <- function (y, eta, mu_fun, phis, eta_zi) {

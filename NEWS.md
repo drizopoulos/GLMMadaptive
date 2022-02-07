@@ -1,3 +1,8 @@
+# GLMMadaptive 0.8.5
+
+## General
+* Added the `zi.binomial()` family object for fitting zero-inflated Binomial mixed-effects models.
+
 # GLMMadaptive 0.8.0
 
 ## General

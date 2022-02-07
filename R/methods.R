@@ -1325,6 +1325,19 @@ simulate.MixMod <- function (object, nsim = 1, seed = NULL,
                 rbinom(n = n, size = .N, prob = mu)
             }
             environment(sim_fun) <- env
+        } else if (object$family$family == "zero-inflated binomial") {
+            N <- if ((NCOL(y <- model.response(object$model_frames$mfX))) == 2) 
+                y[, 1] + y[, 2] else 1
+            .N <- N
+            env <- new.env(parent = .GlobalEnv)
+            assign(".N", N, envir = env)
+            sim_fun <- function (n, mu, phis, eta_zi) {
+                out <- rbinom(n = n, size = .N, prob = mu)
+                extra_zeros <- as.logical(rbinom(n, 1, plogis(eta_zi)))
+                out[extra_zeros] <- 0
+                out
+            }
+            environment(sim_fun) <- env
         } else if (object$family$family == "poisson") {
             sim_fun <- function (n, mu, phis, eta_zi) {
                 rpois(n = n, lambda = mu)
