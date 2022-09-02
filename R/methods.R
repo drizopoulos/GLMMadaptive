@@ -622,8 +622,13 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
             }
             m_betas
         }
-        if (cores > 1) {
+        if (cores > 1L) {
             cl <- parallel::makeCluster(cores)
+            vlis <- c("object", "tht", "list_thetas", "V", "X", "Z", "X_zi", 
+                      "Z_zi", "M", "compute_marg_coefs", "chol_transf", 
+                      "link_fun", "seed")
+            parallel::clusterExport(cl = cl, vlis, envir = environment())
+            parallel::clusterSetRNGStream(cl = cl, iseed = seed)
             res <- parallel::parLapply(cl, blocks, cluster_compute_marg_coefs, tht = tht,
                                        list_thetas = list_thetas, V = V, XX = X, Z = Z, 
                                        X_zi = X_zi, Z_zi = Z_zi, M = M,

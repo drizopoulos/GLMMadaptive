@@ -18,7 +18,8 @@ importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
            "cooks.distance", "update", "dgamma", "rgamma", "Gamma", "gaussian")
 importFrom("utils", "as.relistable", "relist")
 importFrom("MASS", "mvrnorm")
-importFrom("parallel", "makeCluster", "stopCluster", "detectCores", "parLapply")
+importFrom("parallel", "makeCluster", "stopCluster", "detectCores", "parLapply",
+           "clusterExport", "clusterSetRNGStream")
 importFrom("nlme", "fixef", "ranef")
 importFrom("matrixStats", "rowLogSumExps")
 
