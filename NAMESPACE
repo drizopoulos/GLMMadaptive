@@ -19,7 +19,7 @@ importFrom("stats", "AIC", "BIC", "asOneSidedFormula", "cov2cor",
 importFrom("utils", "as.relistable", "relist")
 importFrom("MASS", "mvrnorm")
 importFrom("parallel", "makeCluster", "stopCluster", "detectCores", "parLapply",
-           "clusterExport", "clusterSetRNGStream")
+           "clusterSetRNGStream")
 importFrom("nlme", "fixef", "ranef")
 importFrom("matrixStats", "rowLogSumExps")
 

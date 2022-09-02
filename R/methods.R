@@ -508,8 +508,9 @@ residuals.MixMod <- function (object, type = c("mean_subject", "subject_specific
 marginal_coefs <- function (object, ...) UseMethod("marginal_coefs")
 
 marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL, 
-                                   M = 3000, K = 100,
-                                   seed = 1, cores = max(parallel::detectCores() - 1, 1), 
+                                   M = 3000L, K = 100L,
+                                   seed = 1L, 
+                                   cores = max(parallel::detectCores() - 1, 1), 
                                    sandwich = FALSE, ...) {
     offset <- object$offset
     X <- model.matrix(object$Terms$termsX, object$model_frames$mfX)
@@ -624,10 +625,6 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
         }
         if (cores > 1L) {
             cl <- parallel::makeCluster(cores)
-            vlis <- c("object", "tht", "list_thetas", "V", "X", "Z", "X_zi", 
-                      "Z_zi", "M", "compute_marg_coefs", "chol_transf", 
-                      "link_fun", "seed")
-            parallel::clusterExport(cl = cl, vlis, envir = environment())
             parallel::clusterSetRNGStream(cl = cl, iseed = seed)
             res <- parallel::parLapply(cl, blocks, cluster_compute_marg_coefs, tht = tht,
                                        list_thetas = list_thetas, V = V, XX = X, Z = Z, 
