@@ -1499,7 +1499,8 @@ recover_data.MixMod <- function (object, mode = c("fixed-effects", "zero_part", 
 }
 
 emm_basis.MixMod <- function (object, trms, xlev, grid, 
-                              mode = c("fixed-effects", "zero_part", "marginal"), ...) {
+                              mode = c("fixed-effects", "zero_part", "marginal"), 
+                              ...) {
     mode <- match.arg(mode)
     if (mode == "fixed-effects" || mode == "marginal") {
         m <- model.frame(trms, grid, na.action = na.pass, xlev = xlev)
@@ -1525,7 +1526,22 @@ emm_basis.MixMod <- function (object, trms, xlev, grid,
         dfargs <- list(df = Inf)
         dffun <- function (k, dfargs) dfargs$df
     }
-    list(X = X, bhat = bhat, nbasis = nbasis, V = V, dffun = dffun, dfargs = dfargs)
+    .std.link.labels <- function (fam, misc) {
+        if (is.null(fam) || !is.list(fam)) 
+            return(misc)
+        if (fam$link == "identity") 
+            return(misc)
+        misc$tran = fam$link
+        misc$inv.lbl = "response"
+        if (length(grep("binomial", fam$family)) == 1) 
+            misc$inv.lbl = "prob"
+        else if (length(grep("poisson", fam$family)) == 1) 
+            misc$inv.lbl = "rate"
+        misc
+    }
+    misc <- .std.link.labels(object$family, list())
+    list(X = X, bhat = bhat, nbasis = nbasis, V = V, dffun = dffun, 
+         dfargs = dfargs, misc = misc)
 }
 
 Effect.MixMod <- function (focal.predictors, mod, ...) {
