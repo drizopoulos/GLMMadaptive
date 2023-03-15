@@ -547,7 +547,7 @@ cr_setup <- function (y, direction = c("forward", "backward")) {
     ylevels <- levels(y)
     ncoefs <- length(ylevels) - 1
     if (ncoefs < 2) {
-        stop("it seems that variable ", yname, " has two levels; use a mixed effects ",
+        stop("it seems that variable ", yname, " has two levels; use a mixed effects ", 
              "logistic regression instead.\n")
     }
     y <- as.numeric(unclass(y) - 1)
@@ -558,20 +558,20 @@ cr_setup <- function (y, direction = c("forward", "backward")) {
         cuts[[1]] <- NA
         for (j in seq(0, ncoefs)) {
             cuts[[j + 2]] <- seq(0, if (j < ncoefs - 1) j else ncoefs - 1)
-        } 
+        }
         cuts <- unlist(cuts[ifelse(is.na(y), 1, y + 2)], use.names = FALSE)
         labels <- c("all", paste0(yname, ">=", ylevels[2:ncoefs]))
         y <- rep(y, reps)
         Y <- as.numeric(y == cuts)
     } else {
-        reps <- ifelse(is.na(y), 1, ifelse(y > ncoefs - 3, ncoefs - (y - 1), ncoefs))
+        reps <- ifelse(is.na(y), 1, ifelse(y > 1, 2 + (ncoefs - 1 - y) , ncoefs))
         subs <- rep(seq_along(y), reps)
         cuts <- vector("list", ncoefs + 2)
         cuts[[ncoefs + 2]] <- NA
         for (j in seq(ncoefs, 0)) {
-            cuts[[j + 1]] <- seq(0, ncoefs - if (j > ncoefs - 3) j else 1)
-        } 
-        cuts <- unlist(cuts[ifelse(is.na(y), 1, y + 1)], use.names = FALSE)
+            cuts[[j + 1]] <- seq(0, ncoefs - if (j > 1) j else 1)
+        }
+        cuts <- unlist(cuts[ifelse(is.na(y), ncoefs + 2, y + 1)], use.names = FALSE)
         labels <- c("all", paste0(yname, "<=", ylevels[ncoefs:2]))
         y <- rep(y, reps)
         Y <- as.numeric(y == (ncoefs - cuts))
