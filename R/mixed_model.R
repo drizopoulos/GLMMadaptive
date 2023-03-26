@@ -20,7 +20,7 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
     }
     if (family$family %in% c("zero-inflated poisson", "zero-inflated negative binomial",
                              "hurdle poisson", "hurdle negative binomial", "hurdle beta", 
-                             "zero-inflated binomial") && 
+                             "zero-inflated binomial", "hurdle log-normal") && 
         is.null(zi_fixed)) {
         stop("you have defined a family with an extra zero-part;\nat least argument ",
              "'zi_fixed' needs to be defined, and potentially also argument 'zi_random'.")
