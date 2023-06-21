@@ -1,3 +1,8 @@
+# GLMMadaptive 0.9.0
+
+## Minor
+* Several updates to internal functions.
+
 # GLMMadaptive 0.8.5
 
 ## General
