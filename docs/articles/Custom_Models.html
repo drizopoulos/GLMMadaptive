@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9-0</span>
       </span>
     </div>
 
@@ -53,7 +53,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -110,9 +110,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Custom Models</h1>
-                        <h4 data-toc-skip class="author">Dimitris Rizopoulos</h4>
+                        <h4 data-toc-skip class="author">Dimitris
+Rizopoulos</h4>
             
-            <h4 data-toc-skip class="date">2022-02-08</h4>
+            <h4 data-toc-skip class="date">2023-06-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/HEAD/vignettes/Custom_Models.Rmd" class="external-link"><code>vignettes/Custom_Models.Rmd</code></a></small>
       <div class="hidden name"><code>Custom_Models.Rmd</code></div>
@@ -124,343 +125,422 @@
 <div class="section level2">
 <h2 id="user-defined-family-objects">User-Defined Family Objects<a class="anchor" aria-label="anchor" href="#user-defined-family-objects"></a>
 </h2>
-<p>In addition to the standard family objects in R, function <code><a href="../reference/mixed_model.html">mixed_model()</a></code> also allows for user-specified family objects to be given in its <code>family</code> argument. The minimum requirements are that user-specified family object is of class <code>"family"</code> and is a list with the following components:</p>
+<p>In addition to the standard family objects in R, function
+<code><a href="../reference/mixed_model.html">mixed_model()</a></code> also allows for user-specified family objects
+to be given in its <code>family</code> argument. The minimum
+requirements are that user-specified family object is of class
+<code>"family"</code> and is a list with the following components:</p>
 <ul>
-<li><p><code>family</code>: a character string giving the name of the family.</p></li>
-<li><p><code>link</code>: a character string giving the name of the link function.</p></li>
-<li><p><code>linkfun</code>: a function that transforms the mean of the distribution of the outcome to the linear predictor scale.</p></li>
-<li><p><code>linkinv</code>: a function that is the inverse of the <code>linkfun</code> defined above.</p></li>
-<li><p><code>log_dens</code>: a function that returns the log of the probability density function or the log of the probability mass function of the distribution of the outcome given the random effects. This function should have exactly five arguments named, <code>y</code> the repeated measurements outcome, <code>eta</code> denoting the linear predictor (fixed + random effects), <code>mu_fun</code> the function to calculate the mean from the linear predictor (i.e., the <code>linkinv</code> function), <code>phis</code> a vector of possible extra dispersion/scale parameters, and <code>eta_zi</code> the linear predictor (fixed + random effects) for the logistic regression for the extra zeros; relevant in the cases of zero-inflated and two-part models. <strong>Even if <code>phis</code> and <code>eta_zi</code> may not be required, it should always appear as arguments of <code>log_dens</code></strong>. Moreover, when the extra parameters <code>phis</code> are required, they should be appropriately transformed in order for the optimization of the log-likelihood to be unconstrained with regard to these parameters. Finally, <code>log_dens</code> should be fully vectorized with respect to <code>eta</code> and <code>eta_zi</code>. That is, for a numeric vector <code>y</code> and a numeric matrix <code>eta</code>, it should return a matrix with the log density evaluated at each column of <code>eta</code>, and likewise for <code>eta_zi</code>.</p></li>
+<li><p><code>family</code>: a character string giving the name of the
+family.</p></li>
+<li><p><code>link</code>: a character string giving the name of the link
+function.</p></li>
+<li><p><code>linkfun</code>: a function that transforms the mean of the
+distribution of the outcome to the linear predictor scale.</p></li>
+<li><p><code>linkinv</code>: a function that is the inverse of the
+<code>linkfun</code> defined above.</p></li>
+<li><p><code>log_dens</code>: a function that returns the log of the
+probability density function or the log of the probability mass function
+of the distribution of the outcome given the random effects. This
+function should have exactly five arguments named, <code>y</code> the
+repeated measurements outcome, <code>eta</code> denoting the linear
+predictor (fixed + random effects), <code>mu_fun</code> the function to
+calculate the mean from the linear predictor (i.e., the
+<code>linkinv</code> function), <code>phis</code> a vector of possible
+extra dispersion/scale parameters, and <code>eta_zi</code> the linear
+predictor (fixed + random effects) for the logistic regression for the
+extra zeros; relevant in the cases of zero-inflated and two-part models.
+<strong>Even if <code>phis</code> and <code>eta_zi</code> may not be
+required, it should always appear as arguments of
+<code>log_dens</code></strong>. Moreover, when the extra parameters
+<code>phis</code> are required, they should be appropriately transformed
+in order for the optimization of the log-likelihood to be unconstrained
+with regard to these parameters. Finally, <code>log_dens</code> should
+be fully vectorized with respect to <code>eta</code> and
+<code>eta_zi</code>. That is, for a numeric vector <code>y</code> and a
+numeric matrix <code>eta</code>, it should return a matrix with the log
+density evaluated at each column of <code>eta</code>, and likewise for
+<code>eta_zi</code>.</p></li>
 </ul>
-<p>For the internal calculations the derivative of <code>log_dens</code> with respect to the linear predictor <code>eta</code> and extra parameters <code>phis</code> (when present) is also required. If it is not given, then it is approximated numerically using a central difference approximation. However, it greatly facilitates stability and speed if the user also specifies these functions. If the user specifies these functions, they should have the names <code>score_eta_fun</code> and <code>score_phis_fun</code>, respectively, and both of them have three arguments named <code>y</code> the numeric vector of the repeated measurements outcome, <code>mu</code> the numeric vector or matrix of the mean of the outcome and <code>phis</code> a numeric vector of the extra parameters.</p>
+<p>For the internal calculations the derivative of <code>log_dens</code>
+with respect to the linear predictor <code>eta</code> and extra
+parameters <code>phis</code> (when present) is also required. If it is
+not given, then it is approximated numerically using a central
+difference approximation. However, it greatly facilitates stability and
+speed if the user also specifies these functions. If the user specifies
+these functions, they should have the names <code>score_eta_fun</code>
+and <code>score_phis_fun</code>, respectively, and both of them have
+three arguments named <code>y</code> the numeric vector of the repeated
+measurements outcome, <code>mu</code> the numeric vector or matrix of
+the mean of the outcome and <code>phis</code> a numeric vector of the
+extra parameters.</p>
 <div class="section level3">
 <h3 id="negative-binomial-mixed-effects-model">Negative Binomial Mixed Effects Model<a class="anchor" aria-label="anchor" href="#negative-binomial-mixed-effects-model"></a>
 </h3>
-<p>We first illustrate the use of a custom-made family object in the case of a negative binomial repeated measurements outcome. We should note however that a family object <code><a href="../reference/negative_binomial.html">negative.binomial()</a></code> is already defined in the package and users could invoke this instead - for more info see the relative online help page for <code><a href="../reference/negative_binomial.html">negative.binomial()</a></code>. We start by simulating some data:</p>
+<p>We first illustrate the use of a custom-made family object in the
+case of a negative binomial repeated measurements outcome. We should
+note however that a family object <code><a href="../reference/negative_binomial.html">negative.binomial()</a></code> is
+already defined in the package and users could invoke this instead - for
+more info see the relative online help page for
+<code><a href="../reference/negative_binomial.html">negative.binomial()</a></code>. We start by simulating some data:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">101</span><span class="op">)</span>
-<span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>f1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, f2 <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, g <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, rep <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span>,
-                  KEEP.OUT.ATTRS <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">mu</span> <span class="op">&lt;-</span> <span class="fl">5</span><span class="op">*</span><span class="op">(</span><span class="op">-</span><span class="fl">4</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">dd</span>, <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">f1</span><span class="op">)</span> <span class="op">+</span> <span class="fl">4</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">f2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">dd</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/NegBinomial.html" class="external-link">rnbinom</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">dd</span><span class="op">)</span>, mu <span class="op">=</span> <span class="va">mu</span>, size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">101</span><span class="op">)</span></span>
+<span><span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>f1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, f2 <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, g <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, rep <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span>,</span>
+<span>                  KEEP.OUT.ATTRS <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fl">5</span><span class="op">*</span><span class="op">(</span><span class="op">-</span><span class="fl">4</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">dd</span>, <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">f1</span><span class="op">)</span> <span class="op">+</span> <span class="fl">4</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">f2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dd</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/NegBinomial.html" class="external-link">rnbinom</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">dd</span><span class="op">)</span>, mu <span class="op">=</span> <span class="va">mu</span>, size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p>Next we define a new family object for negative binomial data</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">my_negBinom</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">link</span> <span class="op">=</span> <span class="st">"log"</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/make.link.html" class="external-link">make.link</a></span><span class="op">(</span><span class="va">link</span><span class="op">)</span>
-    <span class="va">log_dens</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">eta</span>, <span class="va">mu_fun</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span>
-        <span class="co"># the log density function</span>
-        <span class="va">phis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span> <span class="co"># unconstrained optimization of 'phis'</span>
-        <span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu">mu_fun</span><span class="op">(</span><span class="va">eta</span><span class="op">)</span>
-        <span class="va">log_mu_phis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">mu</span> <span class="op">+</span> <span class="va">phis</span><span class="op">)</span>
-        <span class="va">comp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">y</span> <span class="op">+</span> <span class="va">phis</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">y</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>
-        <span class="va">comp2</span> <span class="op">&lt;-</span> <span class="va">phis</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span> <span class="op">-</span> <span class="va">phis</span> <span class="op">*</span> <span class="va">log_mu_phis</span>
-        <span class="va">comp3</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span> <span class="op">-</span> <span class="va">y</span> <span class="op">*</span> <span class="va">log_mu_phis</span>
-        <span class="va">out</span> <span class="op">&lt;-</span> <span class="va">comp1</span> <span class="op">+</span> <span class="va">comp2</span> <span class="op">+</span> <span class="va">comp3</span>
-        <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">out</span>, <span class="st">"mu_y"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">mu</span>
-        <span class="va">out</span>
-    <span class="op">}</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>family <span class="op">=</span> <span class="st">"user Neg Binom"</span>, link <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">name</span>, linkfun <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkfun</span>,
-                   linkinv <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkinv</span>, log_dens <span class="op">=</span> <span class="va">log_dens</span><span class="op">)</span>,
-              class <span class="op">=</span> <span class="st">"family"</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">my_negBinom</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">link</span> <span class="op">=</span> <span class="st">"log"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/make.link.html" class="external-link">make.link</a></span><span class="op">(</span><span class="va">link</span><span class="op">)</span></span>
+<span>    <span class="va">log_dens</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">eta</span>, <span class="va">mu_fun</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="co"># the log density function</span></span>
+<span>        <span class="va">phis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span> <span class="co"># unconstrained optimization of 'phis'</span></span>
+<span>        <span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu">mu_fun</span><span class="op">(</span><span class="va">eta</span><span class="op">)</span></span>
+<span>        <span class="va">log_mu_phis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">mu</span> <span class="op">+</span> <span class="va">phis</span><span class="op">)</span></span>
+<span>        <span class="va">comp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">y</span> <span class="op">+</span> <span class="va">phis</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">y</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>        <span class="va">comp2</span> <span class="op">&lt;-</span> <span class="va">phis</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span> <span class="op">-</span> <span class="va">phis</span> <span class="op">*</span> <span class="va">log_mu_phis</span></span>
+<span>        <span class="va">comp3</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span> <span class="op">-</span> <span class="va">y</span> <span class="op">*</span> <span class="va">log_mu_phis</span></span>
+<span>        <span class="va">out</span> <span class="op">&lt;-</span> <span class="va">comp1</span> <span class="op">+</span> <span class="va">comp2</span> <span class="op">+</span> <span class="va">comp3</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">out</span>, <span class="st">"mu_y"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">mu</span></span>
+<span>        <span class="va">out</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>family <span class="op">=</span> <span class="st">"user Neg Binom"</span>, link <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">name</span>, linkfun <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkfun</span>,</span>
+<span>                   linkinv <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkinv</span>, log_dens <span class="op">=</span> <span class="va">log_dens</span><span class="op">)</span>,</span>
+<span>              class <span class="op">=</span> <span class="st">"family"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>And we fit the model</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span>
-    <span class="va">fm1</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">f1</span> <span class="op">*</span> <span class="va">f2</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">g</span>, data <span class="op">=</span> <span class="va">dd</span>, 
-                        family <span class="op">=</span> <span class="fu">my_negBinom</span><span class="op">(</span><span class="op">)</span>, n_phis <span class="op">=</span> <span class="fl">1</span>, 
-                        initial_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"betas"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">poisson</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;    5.14    0.00    5.21</span>
-
-<span class="va">fm1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y ~ f1 * f2, random = ~1 | g, data = dd, </span>
-<span class="co">#&gt;     family = my_negBinom(), n_phis = 1, initial_values = list(betas = poisson()))</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: user Neg Binom</span>
-<span class="co">#&gt;  link: log </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;                 StdDev</span>
-<span class="co">#&gt; (Intercept) 0.07476986</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt; (Intercept)         f12         f13         f2B     f12:f2B     f13:f2B </span>
-<span class="co">#&gt;   1.6361833   0.6031425   1.0137677   1.5385349  -0.4378977  -0.5835306 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  -0.6477285 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -9994.062</span></code></pre></div>
-<p>In the call to <code><a href="../reference/mixed_model.html">mixed_model()</a></code> we specify the argument <code>n_phis</code> which lets the function know how many extra parameters does the distribution of the outcome have. In addition, we also specify that better quality initial values for the fixed effects <code>betas</code> can be obtained by fitting a Poisson regression model to the repeated measurements outcome (ignoring the correlations) with the same design matrix as the fixed-effects design matrix. For the unique elements of the random effects covariance matrix and for the extra parameters <code>phis</code> the default initial values are used.</p>
-<p>In the output, the reported phi parameters is on the log scale, because in the definition of <code>log_dens</code> we specified that <code>phis &lt;- exp(phis)</code>.</p>
-<p>As mentioned above, the internal computations are facilitated if the user also specifies the derivatives of the log density with respect to the linear predictor <code>eta</code> and the extra parameters <code>phis</code>. Hence, in the following we define a new negative binomial family object with these functions also defined:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span></span>
+<span>    <span class="va">fm1</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">f1</span> <span class="op">*</span> <span class="va">f2</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">g</span>, data <span class="op">=</span> <span class="va">dd</span>, </span>
+<span>                        family <span class="op">=</span> <span class="fu">my_negBinom</span><span class="op">(</span><span class="op">)</span>, n_phis <span class="op">=</span> <span class="fl">1</span>, </span>
+<span>                        initial_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"betas"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">poisson</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;    user  system elapsed </span></span>
+<span><span class="co">#&gt;    3.55    0.24    3.78</span></span>
+<span></span>
+<span><span class="va">fm1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; mixed_model(fixed = y ~ f1 * f2, random = ~1 | g, data = dd, </span></span>
+<span><span class="co">#&gt;     family = my_negBinom(), n_phis = 1, initial_values = list(betas = poisson()))</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Model:</span></span>
+<span><span class="co">#&gt;  family: user Neg Binom</span></span>
+<span><span class="co">#&gt;  link: log </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Random effects covariance matrix:</span></span>
+<span><span class="co">#&gt;                 StdDev</span></span>
+<span><span class="co">#&gt; (Intercept) 0.07476986</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Fixed effects:</span></span>
+<span><span class="co">#&gt; (Intercept)         f12         f13         f2B     f12:f2B     f13:f2B </span></span>
+<span><span class="co">#&gt;   1.6361833   0.6031425   1.0137677   1.5385349  -0.4378977  -0.5835306 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; phi parameters:</span></span>
+<span><span class="co">#&gt;  -0.6477285 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; log-Lik: -9994.062</span></span></code></pre></div>
+<p>In the call to <code><a href="../reference/mixed_model.html">mixed_model()</a></code> we specify the argument
+<code>n_phis</code> which lets the function know how many extra
+parameters does the distribution of the outcome have. In addition, we
+also specify that better quality initial values for the fixed effects
+<code>betas</code> can be obtained by fitting a Poisson regression model
+to the repeated measurements outcome (ignoring the correlations) with
+the same design matrix as the fixed-effects design matrix. For the
+unique elements of the random effects covariance matrix and for the
+extra parameters <code>phis</code> the default initial values are
+used.</p>
+<p>In the output, the reported phi parameters is on the log scale,
+because in the definition of <code>log_dens</code> we specified that
+<code>phis &lt;- exp(phis)</code>.</p>
+<p>As mentioned above, the internal computations are facilitated if the
+user also specifies the derivatives of the log density with respect to
+the linear predictor <code>eta</code> and the extra parameters
+<code>phis</code>. Hence, in the following we define a new negative
+binomial family object with these functions also defined:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">my_negBinom2</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/make.link.html" class="external-link">make.link</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"log"</span><span class="op">)</span>
-    <span class="va">log_dens</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">eta</span>, <span class="va">mu_fun</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span>
-        <span class="co"># the log density function</span>
-        <span class="va">phis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span>
-        <span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu">mu_fun</span><span class="op">(</span><span class="va">eta</span><span class="op">)</span>
-        <span class="va">log_mu_phis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">mu</span> <span class="op">+</span> <span class="va">phis</span><span class="op">)</span>
-        <span class="va">comp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">y</span> <span class="op">+</span> <span class="va">phis</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">y</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>
-        <span class="va">comp2</span> <span class="op">&lt;-</span> <span class="va">phis</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span> <span class="op">-</span> <span class="va">phis</span> <span class="op">*</span> <span class="va">log_mu_phis</span>
-        <span class="va">comp3</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span> <span class="op">-</span> <span class="va">y</span> <span class="op">*</span> <span class="va">log_mu_phis</span>
-        <span class="va">out</span> <span class="op">&lt;-</span> <span class="va">comp1</span> <span class="op">+</span> <span class="va">comp2</span> <span class="op">+</span> <span class="va">comp3</span>
-        <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">out</span>, <span class="st">"mu_y"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">mu</span>
-        <span class="va">out</span>
-    <span class="op">}</span>
-    <span class="va">score_eta_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">mu</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span>
-        <span class="co"># the derivative of the log density w.r.t. mu</span>
-        <span class="va">phis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span>
-        <span class="va">mu_phis</span> <span class="op">&lt;-</span> <span class="va">mu</span> <span class="op">+</span> <span class="va">phis</span>
-        <span class="va">comp2</span> <span class="op">&lt;-</span> <span class="op">-</span> <span class="va">phis</span> <span class="op">/</span> <span class="va">mu_phis</span>
-        <span class="va">comp3</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">/</span> <span class="va">mu</span> <span class="op">-</span> <span class="va">y</span> <span class="op">/</span> <span class="va">mu_phis</span>
-        <span class="co"># the derivative of mu w.r.t. eta (this depends on the chosen link function)</span>
-        <span class="va">mu.eta</span> <span class="op">&lt;-</span> <span class="va">mu</span>
-        <span class="op">(</span><span class="va">comp2</span> <span class="op">+</span> <span class="va">comp3</span><span class="op">)</span> <span class="op">*</span> <span class="va">mu.eta</span>
-    <span class="op">}</span>
-    <span class="va">score_phis_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">mu</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span>
-        <span class="co"># the derivative of the log density w.r.t. phis</span>
-        <span class="va">phis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span>
-        <span class="va">mu_phis</span> <span class="op">&lt;-</span> <span class="va">mu</span> <span class="op">+</span> <span class="va">phis</span>
-        <span class="va">comp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">y</span> <span class="op">+</span> <span class="va">phis</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span>
-        <span class="va">comp2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">mu_phis</span><span class="op">)</span> <span class="op">-</span> <span class="va">phis</span> <span class="op">/</span> <span class="va">mu_phis</span>
-        <span class="va">comp3</span> <span class="op">&lt;-</span> <span class="op">-</span> <span class="va">y</span> <span class="op">/</span> <span class="va">mu_phis</span>
-        <span class="op">(</span><span class="va">comp1</span> <span class="op">+</span> <span class="va">comp2</span> <span class="op">+</span> <span class="va">comp3</span><span class="op">)</span> <span class="op">*</span> <span class="va">phis</span>
-    <span class="op">}</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>family <span class="op">=</span> <span class="st">"user Neg Binom"</span>, link <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">name</span>, linkfun <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkfun</span>,
-                   linkinv <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkinv</span>, log_dens <span class="op">=</span> <span class="va">log_dens</span>,
-                   score_eta_fun <span class="op">=</span> <span class="va">score_eta_fun</span>, score_phis_fun <span class="op">=</span> <span class="va">score_phis_fun</span><span class="op">)</span>,
-              class <span class="op">=</span> <span class="st">"family"</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">my_negBinom2</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/make.link.html" class="external-link">make.link</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"log"</span><span class="op">)</span></span>
+<span>    <span class="va">log_dens</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">eta</span>, <span class="va">mu_fun</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="co"># the log density function</span></span>
+<span>        <span class="va">phis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span></span>
+<span>        <span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu">mu_fun</span><span class="op">(</span><span class="va">eta</span><span class="op">)</span></span>
+<span>        <span class="va">log_mu_phis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">mu</span> <span class="op">+</span> <span class="va">phis</span><span class="op">)</span></span>
+<span>        <span class="va">comp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">y</span> <span class="op">+</span> <span class="va">phis</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">y</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>        <span class="va">comp2</span> <span class="op">&lt;-</span> <span class="va">phis</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span> <span class="op">-</span> <span class="va">phis</span> <span class="op">*</span> <span class="va">log_mu_phis</span></span>
+<span>        <span class="va">comp3</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span> <span class="op">-</span> <span class="va">y</span> <span class="op">*</span> <span class="va">log_mu_phis</span></span>
+<span>        <span class="va">out</span> <span class="op">&lt;-</span> <span class="va">comp1</span> <span class="op">+</span> <span class="va">comp2</span> <span class="op">+</span> <span class="va">comp3</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">out</span>, <span class="st">"mu_y"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">mu</span></span>
+<span>        <span class="va">out</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="va">score_eta_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">mu</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="co"># the derivative of the log density w.r.t. mu</span></span>
+<span>        <span class="va">phis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span></span>
+<span>        <span class="va">mu_phis</span> <span class="op">&lt;-</span> <span class="va">mu</span> <span class="op">+</span> <span class="va">phis</span></span>
+<span>        <span class="va">comp2</span> <span class="op">&lt;-</span> <span class="op">-</span> <span class="va">phis</span> <span class="op">/</span> <span class="va">mu_phis</span></span>
+<span>        <span class="va">comp3</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">/</span> <span class="va">mu</span> <span class="op">-</span> <span class="va">y</span> <span class="op">/</span> <span class="va">mu_phis</span></span>
+<span>        <span class="co"># the derivative of mu w.r.t. eta (this depends on the chosen link function)</span></span>
+<span>        <span class="va">mu.eta</span> <span class="op">&lt;-</span> <span class="va">mu</span></span>
+<span>        <span class="op">(</span><span class="va">comp2</span> <span class="op">+</span> <span class="va">comp3</span><span class="op">)</span> <span class="op">*</span> <span class="va">mu.eta</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="va">score_phis_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">mu</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="co"># the derivative of the log density w.r.t. phis</span></span>
+<span>        <span class="va">phis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span></span>
+<span>        <span class="va">mu_phis</span> <span class="op">&lt;-</span> <span class="va">mu</span> <span class="op">+</span> <span class="va">phis</span></span>
+<span>        <span class="va">comp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">y</span> <span class="op">+</span> <span class="va">phis</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span></span>
+<span>        <span class="va">comp2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">mu_phis</span><span class="op">)</span> <span class="op">-</span> <span class="va">phis</span> <span class="op">/</span> <span class="va">mu_phis</span></span>
+<span>        <span class="va">comp3</span> <span class="op">&lt;-</span> <span class="op">-</span> <span class="va">y</span> <span class="op">/</span> <span class="va">mu_phis</span></span>
+<span>        <span class="op">(</span><span class="va">comp1</span> <span class="op">+</span> <span class="va">comp2</span> <span class="op">+</span> <span class="va">comp3</span><span class="op">)</span> <span class="op">*</span> <span class="va">phis</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>family <span class="op">=</span> <span class="st">"user Neg Binom"</span>, link <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">name</span>, linkfun <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkfun</span>,</span>
+<span>                   linkinv <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkinv</span>, log_dens <span class="op">=</span> <span class="va">log_dens</span>,</span>
+<span>                   score_eta_fun <span class="op">=</span> <span class="va">score_eta_fun</span>, score_phis_fun <span class="op">=</span> <span class="va">score_phis_fun</span><span class="op">)</span>,</span>
+<span>              class <span class="op">=</span> <span class="st">"family"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>And we fit the model</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span>
-    <span class="va">fm2</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">f1</span> <span class="op">*</span> <span class="va">f2</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">g</span>, data <span class="op">=</span> <span class="va">dd</span>, 
-                        family <span class="op">=</span> <span class="fu">my_negBinom2</span><span class="op">(</span><span class="op">)</span>, n_phis <span class="op">=</span> <span class="fl">1</span>, 
-                        initial_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"betas"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">poisson</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;    2.22    0.00    2.30</span>
-
-<span class="va">fm2</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y ~ f1 * f2, random = ~1 | g, data = dd, </span>
-<span class="co">#&gt;     family = my_negBinom2(), n_phis = 1, initial_values = list(betas = poisson()))</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: user Neg Binom</span>
-<span class="co">#&gt;  link: log </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;                 StdDev</span>
-<span class="co">#&gt; (Intercept) 0.07476987</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt; (Intercept)         f12         f13         f2B     f12:f2B     f13:f2B </span>
-<span class="co">#&gt;   1.6361832   0.6031425   1.0137677   1.5385349  -0.4378977  -0.5835306 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  -0.6477284 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: -9994.062</span></code></pre></div>
-<p>We obtain almost identical results, but in half of the computing time in this example. Depending on the size of the data set, the gain in computing time when the derivatives for <code>eta</code> and <code>phis</code> are provided can be much more substantial.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span></span>
+<span>    <span class="va">fm2</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">f1</span> <span class="op">*</span> <span class="va">f2</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">g</span>, data <span class="op">=</span> <span class="va">dd</span>, </span>
+<span>                        family <span class="op">=</span> <span class="fu">my_negBinom2</span><span class="op">(</span><span class="op">)</span>, n_phis <span class="op">=</span> <span class="fl">1</span>, </span>
+<span>                        initial_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"betas"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">poisson</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;    user  system elapsed </span></span>
+<span><span class="co">#&gt;    1.33    0.09    1.42</span></span>
+<span></span>
+<span><span class="va">fm2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; mixed_model(fixed = y ~ f1 * f2, random = ~1 | g, data = dd, </span></span>
+<span><span class="co">#&gt;     family = my_negBinom2(), n_phis = 1, initial_values = list(betas = poisson()))</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Model:</span></span>
+<span><span class="co">#&gt;  family: user Neg Binom</span></span>
+<span><span class="co">#&gt;  link: log </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Random effects covariance matrix:</span></span>
+<span><span class="co">#&gt;                 StdDev</span></span>
+<span><span class="co">#&gt; (Intercept) 0.07476987</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Fixed effects:</span></span>
+<span><span class="co">#&gt; (Intercept)         f12         f13         f2B     f12:f2B     f13:f2B </span></span>
+<span><span class="co">#&gt;   1.6361832   0.6031425   1.0137677   1.5385349  -0.4378977  -0.5835306 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; phi parameters:</span></span>
+<span><span class="co">#&gt;  -0.6477284 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; log-Lik: -9994.062</span></span></code></pre></div>
+<p>We obtain almost identical results, but in half of the computing time
+in this example. Depending on the size of the data set, the gain in
+computing time when the derivatives for <code>eta</code> and
+<code>phis</code> are provided can be much more substantial.</p>
 </div>
 <div class="section level3">
 <h3 id="students-t-mixed-effects-model">Student’s t Mixed Effects Model<a class="anchor" aria-label="anchor" href="#students-t-mixed-effects-model"></a>
 </h3>
-<p>We further illustrate the use of custom-made family objects by fitting a linear mixed model but with Student’s t distributed error terms. We start by simulating some data</p>
+<p>We further illustrate the use of custom-made family objects by
+fitting a linear mixed model but with Student’s t distributed error
+terms. We start by simulating some data</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># number of subjects</span>
-<span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
-<span class="va">t_max</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span>
-
-<span class="co"># we construct a data frame with the design: </span>
-<span class="co"># everyone has a baseline measurement, and then measurements at random follow-up times</span>
-<span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span>,
-                 time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">K</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0</span>, <span class="va">t_max</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
-                 sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/gl.html" class="external-link">gl</a></span><span class="op">(</span><span class="fl">2</span>, <span class="va">n</span><span class="op">/</span><span class="fl">2</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># design matrices for the fixed and random effects</span>
-<span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span>
-<span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span>
-
-<span class="va">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20.1</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span><span class="op">)</span> <span class="co"># fixed effects coefficients</span>
-<span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fl">1.2</span> <span class="co"># scale parameter for the Student's t errors</span>
-<span class="va">D11</span> <span class="op">&lt;-</span> <span class="fl">1.5</span> <span class="co"># variance of random intercepts</span>
-<span class="va">D22</span> <span class="op">&lt;-</span> <span class="fl">1.2</span> <span class="co"># variance of random slopes</span>
-
-<span class="co"># we simulate random effects</span>
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D11</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D22</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># linear predictor</span>
-<span class="va">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">Z</span> <span class="op">*</span> <span class="va">b</span><span class="op">[</span><span class="va">DF</span><span class="op">$</span><span class="va">id</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># we simulate Student's t longitudinal data</span>
-<span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">eta_y</span> <span class="op">+</span> <span class="va">sigma</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">rt</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">K</span>, df <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></code></pre></div>
-<p>Following we define the custom-made family object for the Student’s t distribution:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># number of subjects</span></span>
+<span><span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span></span>
+<span><span class="va">t_max</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span></span>
+<span></span>
+<span><span class="co"># we construct a data frame with the design: </span></span>
+<span><span class="co"># everyone has a baseline measurement, and then measurements at random follow-up times</span></span>
+<span><span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span>,</span>
+<span>                 time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">K</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0</span>, <span class="va">t_max</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                 sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/gl.html" class="external-link">gl</a></span><span class="op">(</span><span class="fl">2</span>, <span class="va">n</span><span class="op">/</span><span class="fl">2</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># design matrices for the fixed and random effects</span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20.1</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span><span class="op">)</span> <span class="co"># fixed effects coefficients</span></span>
+<span><span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fl">1.2</span> <span class="co"># scale parameter for the Student's t errors</span></span>
+<span><span class="va">D11</span> <span class="op">&lt;-</span> <span class="fl">1.5</span> <span class="co"># variance of random intercepts</span></span>
+<span><span class="va">D22</span> <span class="op">&lt;-</span> <span class="fl">1.2</span> <span class="co"># variance of random slopes</span></span>
+<span></span>
+<span><span class="co"># we simulate random effects</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D11</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D22</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># linear predictor</span></span>
+<span><span class="va">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">Z</span> <span class="op">*</span> <span class="va">b</span><span class="op">[</span><span class="va">DF</span><span class="op">$</span><span class="va">id</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># we simulate Student's t longitudinal data</span></span>
+<span><span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">eta_y</span> <span class="op">+</span> <span class="va">sigma</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">rt</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">K</span>, df <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+<p>Following we define the custom-made family object for the Student’s t
+distribution:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">students.t</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">df</span> <span class="op">=</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"'df' must be specified"</span><span class="op">)</span>, <span class="va">link</span> <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">.df</span> <span class="op">&lt;-</span> <span class="va">df</span>
-    <span class="va">env</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="va">.GlobalEnv</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/assign.html" class="external-link">assign</a></span><span class="op">(</span><span class="st">".df"</span>, <span class="va">df</span>, envir <span class="op">=</span> <span class="va">env</span><span class="op">)</span>
-    <span class="va">stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/make.link.html" class="external-link">make.link</a></span><span class="op">(</span><span class="va">link</span><span class="op">)</span>
-    <span class="va">log_dens</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">eta</span>, <span class="va">mu_fun</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span>
-        <span class="co"># the log density function</span>
-        <span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span>
-        <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="va">eta</span><span class="op">)</span> <span class="op">/</span> <span class="va">sigma</span>, df <span class="op">=</span> <span class="va">.df</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">sigma</span><span class="op">)</span>
-        <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">out</span>, <span class="st">"mu_y"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">eta</span>
-        <span class="va">out</span>
-    <span class="op">}</span>
-    <span class="va">score_eta_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">mu</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span>
-        <span class="co"># the derivative of the log density w.r.t. mu</span>
-        <span class="va">sigma2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>
-        <span class="va">y_mu</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">-</span> <span class="va">mu</span>
-        <span class="op">(</span><span class="va">y_mu</span> <span class="op">*</span> <span class="op">(</span><span class="va">.df</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">.df</span> <span class="op">*</span> <span class="va">sigma2</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">y_mu</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="op">(</span><span class="va">.df</span> <span class="op">*</span> <span class="va">sigma2</span><span class="op">)</span><span class="op">)</span>
-    <span class="op">}</span>
-    <span class="va">score_phis_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">mu</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span>
-        <span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span>
-        <span class="va">y_mu2_df</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="va">.df</span>
-        <span class="op">(</span><span class="va">.df</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="va">y_mu2_df</span> <span class="op">*</span> <span class="va">sigma</span><span class="op">^</span><span class="op">{</span><span class="op">-</span><span class="fl">2</span><span class="op">}</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">y_mu2_df</span> <span class="op">/</span> <span class="va">sigma</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>
-    <span class="op">}</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="va">log_dens</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="va">score_eta_fun</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="va">score_phis_fun</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">env</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>family <span class="op">=</span> <span class="st">"Student's-t"</span>, link <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">name</span>, linkfun <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkfun</span>,
-                   linkinv <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkinv</span>, log_dens <span class="op">=</span> <span class="va">log_dens</span>, 
-                   score_eta_fun <span class="op">=</span> <span class="va">score_eta_fun</span>, score_phis_fun <span class="op">=</span> <span class="va">score_phis_fun</span><span class="op">)</span>,
-              class <span class="op">=</span> <span class="st">"family"</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">students.t</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">df</span> <span class="op">=</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"'df' must be specified"</span><span class="op">)</span>, <span class="va">link</span> <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">.df</span> <span class="op">&lt;-</span> <span class="va">df</span></span>
+<span>    <span class="va">env</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span>parent <span class="op">=</span> <span class="va">.GlobalEnv</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/assign.html" class="external-link">assign</a></span><span class="op">(</span><span class="st">".df"</span>, <span class="va">df</span>, envir <span class="op">=</span> <span class="va">env</span><span class="op">)</span></span>
+<span>    <span class="va">stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/make.link.html" class="external-link">make.link</a></span><span class="op">(</span><span class="va">link</span><span class="op">)</span></span>
+<span>    <span class="va">log_dens</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">eta</span>, <span class="va">mu_fun</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="co"># the log density function</span></span>
+<span>        <span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span></span>
+<span>        <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">dt</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="va">eta</span><span class="op">)</span> <span class="op">/</span> <span class="va">sigma</span>, df <span class="op">=</span> <span class="va">.df</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">sigma</span><span class="op">)</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">out</span>, <span class="st">"mu_y"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">eta</span></span>
+<span>        <span class="va">out</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="va">score_eta_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">mu</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="co"># the derivative of the log density w.r.t. mu</span></span>
+<span>        <span class="va">sigma2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span>
+<span>        <span class="va">y_mu</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">-</span> <span class="va">mu</span></span>
+<span>        <span class="op">(</span><span class="va">y_mu</span> <span class="op">*</span> <span class="op">(</span><span class="va">.df</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">.df</span> <span class="op">*</span> <span class="va">sigma2</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">y_mu</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="op">(</span><span class="va">.df</span> <span class="op">*</span> <span class="va">sigma2</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="va">score_phis_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">mu</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span></span>
+<span>        <span class="va">y_mu2_df</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="va">.df</span></span>
+<span>        <span class="op">(</span><span class="va">.df</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="va">y_mu2_df</span> <span class="op">*</span> <span class="va">sigma</span><span class="op">^</span><span class="op">{</span><span class="op">-</span><span class="fl">2</span><span class="op">}</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">y_mu2_df</span> <span class="op">/</span> <span class="va">sigma</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="va">log_dens</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="va">score_eta_fun</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="va">score_phis_fun</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">env</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>family <span class="op">=</span> <span class="st">"Student's-t"</span>, link <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">name</span>, linkfun <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkfun</span>,</span>
+<span>                   linkinv <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkinv</span>, log_dens <span class="op">=</span> <span class="va">log_dens</span>, </span>
+<span>                   score_eta_fun <span class="op">=</span> <span class="va">score_eta_fun</span>, score_phis_fun <span class="op">=</span> <span class="va">score_phis_fun</span><span class="op">)</span>,</span>
+<span>              class <span class="op">=</span> <span class="st">"family"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>And we fit the model (results not shown)</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fm</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>, 
-                   family <span class="op">=</span> <span class="fu"><a href="../reference/extra_fams.html">students.t</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span>, n_phis <span class="op">=</span> <span class="fl">1</span>, 
-                   initial_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"betas"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">gaussian</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>As was the case also for the negative binomial model, the extra <code>phis</code> parameter has been appropriately transformed to have an unconstrained optimization of the likelihood. Hence, the estimated <code>sigma</code> parameter is given by <code>exp(fm$phis)</code>.</p>
+<code class="sourceCode R"><span><span class="va">fm</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>, </span>
+<span>                   family <span class="op">=</span> <span class="fu"><a href="../reference/extra_fams.html">students.t</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span>, n_phis <span class="op">=</span> <span class="fl">1</span>, </span>
+<span>                   initial_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"betas"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">gaussian</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>As was the case also for the negative binomial model, the extra
+<code>phis</code> parameter has been appropriately transformed to have
+an unconstrained optimization of the likelihood. Hence, the estimated
+<code>sigma</code> parameter is given by <code>exp(fm$phis)</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="beta-mixed-effects-model">Beta Mixed-Effects Model<a class="anchor" aria-label="anchor" href="#beta-mixed-effects-model"></a>
 </h3>
-<p>As a final illustration we show how a beta mixed effects model can be fitted, i.e., applicable in case of bounded repeated measurements outcomes. We start again by simulating some data:</p>
+<p>As a final illustration we show how a beta mixed effects model can be
+fitted, i.e., applicable in case of bounded repeated measurements
+outcomes. We start again by simulating some data:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># number of subjects</span>
-<span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span>
-<span class="va">t_max</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span>
-
-<span class="co"># we construct a data frame with the design: </span>
-<span class="co"># everyone has a baseline measurement, and then measurements at random follow-up times</span>
-<span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span>,
-                 time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">K</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0</span>, <span class="va">t_max</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
-                 sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/gl.html" class="external-link">gl</a></span><span class="op">(</span><span class="fl">2</span>, <span class="va">n</span><span class="op">/</span><span class="fl">2</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># design matrices for the fixed and random effects</span>
-<span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span>
-
-<span class="va">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2.2</span>, <span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span><span class="op">)</span> <span class="co"># fixed effects coefficients</span>
-<span class="va">phi</span> <span class="op">&lt;-</span> <span class="fl">5</span> <span class="co"># precision parameter of the Beta distribution</span>
-<span class="va">D11</span> <span class="op">&lt;-</span> <span class="fl">0.9</span> <span class="co"># variance of random intercepts</span>
-
-<span class="co"># we simulate random effects</span>
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D11</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># linear predictor</span>
-<span class="va">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">betas</span> <span class="op">+</span> <span class="va">b</span><span class="op">[</span><span class="va">DF</span><span class="op">$</span><span class="va">id</span><span class="op">]</span><span class="op">)</span>
-<span class="co"># mean</span>
-<span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="va">eta_y</span><span class="op">)</span>
-<span class="co"># we simulate beta longitudinal data</span>
-<span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">rbeta</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">K</span>, shape1 <span class="op">=</span> <span class="va">mu</span> <span class="op">*</span> <span class="va">phi</span>, shape2 <span class="op">=</span> <span class="va">phi</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># we transform to (0, 1)</span>
-<span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">DF</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">DF</span><span class="op">)</span></code></pre></div>
-<p>Next we define the custom-made family object as in the case of the Student’s t distribution:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># number of subjects</span></span>
+<span><span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span></span>
+<span><span class="va">t_max</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span></span>
+<span></span>
+<span><span class="co"># we construct a data frame with the design: </span></span>
+<span><span class="co"># everyone has a baseline measurement, and then measurements at random follow-up times</span></span>
+<span><span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span>,</span>
+<span>                 time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">K</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0</span>, <span class="va">t_max</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                 sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/gl.html" class="external-link">gl</a></span><span class="op">(</span><span class="fl">2</span>, <span class="va">n</span><span class="op">/</span><span class="fl">2</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># design matrices for the fixed and random effects</span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2.2</span>, <span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span><span class="op">)</span> <span class="co"># fixed effects coefficients</span></span>
+<span><span class="va">phi</span> <span class="op">&lt;-</span> <span class="fl">5</span> <span class="co"># precision parameter of the Beta distribution</span></span>
+<span><span class="va">D11</span> <span class="op">&lt;-</span> <span class="fl">0.9</span> <span class="co"># variance of random intercepts</span></span>
+<span></span>
+<span><span class="co"># we simulate random effects</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D11</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># linear predictor</span></span>
+<span><span class="va">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">betas</span> <span class="op">+</span> <span class="va">b</span><span class="op">[</span><span class="va">DF</span><span class="op">$</span><span class="va">id</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co"># mean</span></span>
+<span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="va">eta_y</span><span class="op">)</span></span>
+<span><span class="co"># we simulate beta longitudinal data</span></span>
+<span><span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">rbeta</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">K</span>, shape1 <span class="op">=</span> <span class="va">mu</span> <span class="op">*</span> <span class="va">phi</span>, shape2 <span class="op">=</span> <span class="va">phi</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># we transform to (0, 1)</span></span>
+<span><span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">DF</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">DF</span><span class="op">)</span></span></code></pre></div>
+<p>Next we define the custom-made family object as in the case of the
+Student’s t distribution:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">beta.fam</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/make.link.html" class="external-link">make.link</a></span><span class="op">(</span><span class="st">"logit"</span><span class="op">)</span>
-    <span class="va">log_dens</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">eta</span>, <span class="va">mu_fun</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span>
-        <span class="co"># the log density function</span>
-        <span class="va">phi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span>
-        <span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu">mu_fun</span><span class="op">(</span><span class="va">eta</span><span class="op">)</span>
-        <span class="va">mu_phi</span> <span class="op">&lt;-</span> <span class="va">mu</span> <span class="op">*</span> <span class="va">phi</span>
-        <span class="va">comp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">phi</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">mu_phi</span><span class="op">)</span>
-        <span class="va">comp2</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">mu_phi</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">phi</span> <span class="op">-</span> <span class="va">mu_phi</span><span class="op">)</span>
-        <span class="va">comp3</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">phi</span> <span class="op">-</span> <span class="va">mu_phi</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span>
-        <span class="va">out</span> <span class="op">&lt;-</span> <span class="va">comp1</span> <span class="op">+</span> <span class="va">comp2</span> <span class="op">+</span> <span class="va">comp3</span>
-        <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">out</span>, <span class="st">"mu_y"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">mu</span>
-        <span class="va">out</span>
-    <span class="op">}</span>
-    <span class="va">score_eta_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">mu</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span>
-        <span class="co"># the derivative of the log density w.r.t. mu</span>
-        <span class="va">phi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span>
-        <span class="va">mu_phi</span> <span class="op">&lt;-</span> <span class="va">mu</span> <span class="op">*</span> <span class="va">phi</span>
-        <span class="va">comp1</span> <span class="op">&lt;-</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">mu_phi</span><span class="op">)</span> <span class="op">*</span> <span class="va">phi</span>
-        <span class="va">comp2</span> <span class="op">&lt;-</span> <span class="va">phi</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">phi</span> <span class="op">-</span> <span class="va">mu_phi</span><span class="op">)</span><span class="op">)</span>
-        <span class="va">comp3</span> <span class="op">&lt;-</span> <span class="op">-</span> <span class="va">phi</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span>
-        <span class="co"># the derivative of mu w.r.t. eta (this depends on the chosen link function)</span>
-        <span class="va">mu.eta</span> <span class="op">&lt;-</span> <span class="va">mu</span> <span class="op">-</span> <span class="va">mu</span> <span class="op">*</span> <span class="va">mu</span>
-        <span class="op">(</span><span class="va">comp1</span> <span class="op">+</span> <span class="va">comp2</span> <span class="op">+</span> <span class="va">comp3</span><span class="op">)</span> <span class="op">*</span> <span class="va">mu.eta</span>
-    <span class="op">}</span>
-    <span class="va">score_phis_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">mu</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span>
-        <span class="va">phi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span>
-        <span class="va">mu_phi</span> <span class="op">&lt;-</span> <span class="va">mu</span> <span class="op">*</span> <span class="va">phi</span>
-        <span class="va">mu1</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">mu</span>
-        <span class="va">comp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">phi</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">mu_phi</span><span class="op">)</span> <span class="op">*</span> <span class="va">mu</span>
-        <span class="va">comp2</span> <span class="op">&lt;-</span> <span class="va">mu</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">phi</span> <span class="op">-</span> <span class="va">mu_phi</span><span class="op">)</span> <span class="op">*</span> <span class="va">mu1</span>
-        <span class="va">comp3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span> <span class="op">*</span> <span class="va">mu1</span>
-        <span class="op">(</span><span class="va">comp1</span> <span class="op">+</span> <span class="va">comp2</span> <span class="op">+</span> <span class="va">comp3</span><span class="op">)</span> <span class="op">*</span> <span class="va">phi</span>
-    <span class="op">}</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>family <span class="op">=</span> <span class="st">"beta"</span>, link <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">name</span>, linkfun <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkfun</span>,
-                   linkinv <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkinv</span>, log_dens <span class="op">=</span> <span class="va">log_dens</span>, 
-                   score_eta_fun <span class="op">=</span> <span class="va">score_eta_fun</span>, score_phis_fun <span class="op">=</span> <span class="va">score_phis_fun</span><span class="op">)</span>,
-              class <span class="op">=</span> <span class="st">"family"</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">beta.fam</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/make.link.html" class="external-link">make.link</a></span><span class="op">(</span><span class="st">"logit"</span><span class="op">)</span></span>
+<span>    <span class="va">log_dens</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">eta</span>, <span class="va">mu_fun</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="co"># the log density function</span></span>
+<span>        <span class="va">phi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span></span>
+<span>        <span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu">mu_fun</span><span class="op">(</span><span class="va">eta</span><span class="op">)</span></span>
+<span>        <span class="va">mu_phi</span> <span class="op">&lt;-</span> <span class="va">mu</span> <span class="op">*</span> <span class="va">phi</span></span>
+<span>        <span class="va">comp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">phi</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">mu_phi</span><span class="op">)</span></span>
+<span>        <span class="va">comp2</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">mu_phi</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">phi</span> <span class="op">-</span> <span class="va">mu_phi</span><span class="op">)</span></span>
+<span>        <span class="va">comp3</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">phi</span> <span class="op">-</span> <span class="va">mu_phi</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span></span>
+<span>        <span class="va">out</span> <span class="op">&lt;-</span> <span class="va">comp1</span> <span class="op">+</span> <span class="va">comp2</span> <span class="op">+</span> <span class="va">comp3</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">out</span>, <span class="st">"mu_y"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">mu</span></span>
+<span>        <span class="va">out</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="va">score_eta_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">mu</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="co"># the derivative of the log density w.r.t. mu</span></span>
+<span>        <span class="va">phi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span></span>
+<span>        <span class="va">mu_phi</span> <span class="op">&lt;-</span> <span class="va">mu</span> <span class="op">*</span> <span class="va">phi</span></span>
+<span>        <span class="va">comp1</span> <span class="op">&lt;-</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">mu_phi</span><span class="op">)</span> <span class="op">*</span> <span class="va">phi</span></span>
+<span>        <span class="va">comp2</span> <span class="op">&lt;-</span> <span class="va">phi</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">phi</span> <span class="op">-</span> <span class="va">mu_phi</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="va">comp3</span> <span class="op">&lt;-</span> <span class="op">-</span> <span class="va">phi</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span></span>
+<span>        <span class="co"># the derivative of mu w.r.t. eta (this depends on the chosen link function)</span></span>
+<span>        <span class="va">mu.eta</span> <span class="op">&lt;-</span> <span class="va">mu</span> <span class="op">-</span> <span class="va">mu</span> <span class="op">*</span> <span class="va">mu</span></span>
+<span>        <span class="op">(</span><span class="va">comp1</span> <span class="op">+</span> <span class="va">comp2</span> <span class="op">+</span> <span class="va">comp3</span><span class="op">)</span> <span class="op">*</span> <span class="va">mu.eta</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="va">score_phis_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span>, <span class="va">mu</span>, <span class="va">phis</span>, <span class="va">eta_zi</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="va">phi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">phis</span><span class="op">)</span></span>
+<span>        <span class="va">mu_phi</span> <span class="op">&lt;-</span> <span class="va">mu</span> <span class="op">*</span> <span class="va">phi</span></span>
+<span>        <span class="va">mu1</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">mu</span></span>
+<span>        <span class="va">comp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">phi</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">mu_phi</span><span class="op">)</span> <span class="op">*</span> <span class="va">mu</span></span>
+<span>        <span class="va">comp2</span> <span class="op">&lt;-</span> <span class="va">mu</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">phi</span> <span class="op">-</span> <span class="va">mu_phi</span><span class="op">)</span> <span class="op">*</span> <span class="va">mu1</span></span>
+<span>        <span class="va">comp3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span> <span class="op">*</span> <span class="va">mu1</span></span>
+<span>        <span class="op">(</span><span class="va">comp1</span> <span class="op">+</span> <span class="va">comp2</span> <span class="op">+</span> <span class="va">comp3</span><span class="op">)</span> <span class="op">*</span> <span class="va">phi</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>family <span class="op">=</span> <span class="st">"beta"</span>, link <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">name</span>, linkfun <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkfun</span>,</span>
+<span>                   linkinv <span class="op">=</span> <span class="va">stats</span><span class="op">$</span><span class="va">linkinv</span>, log_dens <span class="op">=</span> <span class="va">log_dens</span>, </span>
+<span>                   score_eta_fun <span class="op">=</span> <span class="va">score_eta_fun</span>, score_phis_fun <span class="op">=</span> <span class="va">score_phis_fun</span><span class="op">)</span>,</span>
+<span>              class <span class="op">=</span> <span class="st">"family"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>And we fit the model</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">gm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>,
-                  family <span class="op">=</span> <span class="fu"><a href="../reference/extra_fams.html">beta.fam</a></span><span class="op">(</span><span class="op">)</span>, n_phis <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-
-<span class="va">gm</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 | id, data = DF, </span>
-<span class="co">#&gt;     family = beta.fam(), n_phis = 1)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: beta</span>
-<span class="co">#&gt;  link: logit </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;                StdDev</span>
-<span class="co">#&gt; (Intercept) 0.9143138</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span>
-<span class="co">#&gt;    -2.04379396    -0.29655232     0.21844820    -0.05949062 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; phi parameters:</span>
-<span class="co">#&gt;  1.69036 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; log-Lik: 581.2972</span></code></pre></div>
-<p>To depict the results of the model we create an effects plot, showing the longitudinal evolution of the average/median male and female. We start by constructing the data frame that contains the values we want to depict, and using it in the <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function; just for illustration, sandwich/robust standard errors are used in the calculation of the 95% pointwise confidence intervals:</p>
+<code class="sourceCode R"><span><span class="va">gm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>,</span>
+<span>                  family <span class="op">=</span> <span class="fu"><a href="../reference/extra_fams.html">beta.fam</a></span><span class="op">(</span><span class="op">)</span>, n_phis <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">gm</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; mixed_model(fixed = y ~ sex * time, random = ~1 | id, data = DF, </span></span>
+<span><span class="co">#&gt;     family = beta.fam(), n_phis = 1)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Model:</span></span>
+<span><span class="co">#&gt;  family: beta</span></span>
+<span><span class="co">#&gt;  link: logit </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Random effects covariance matrix:</span></span>
+<span><span class="co">#&gt;                StdDev</span></span>
+<span><span class="co">#&gt; (Intercept) 0.9143138</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Fixed effects:</span></span>
+<span><span class="co">#&gt;    (Intercept)      sexfemale           time sexfemale:time </span></span>
+<span><span class="co">#&gt;    -2.04379396    -0.29655232     0.21844820    -0.05949062 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; phi parameters:</span></span>
+<span><span class="co">#&gt;  1.69036 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; log-Lik: 581.2972</span></span></code></pre></div>
+<p>To depict the results of the model we create an effects plot, showing
+the longitudinal evolution of the average/median male and female. We
+start by constructing the data frame that contains the values we want to
+depict, and using it in the <code><a href="../reference/effectPlotData.html">effectPlotData()</a></code> function; just
+for illustration, sandwich/robust standard errors are used in the
+calculation of the 95% pointwise confidence intervals:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">nDF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">DF</span>, <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, length <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>,
-                            sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">plot_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/effectPlotData.html">effectPlotData</a></span><span class="op">(</span><span class="va">gm</span>, <span class="va">nDF</span>, sandwich <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p>The figure is created with a call to <code><a href="https://rdrr.io/pkg/lattice/man/xyplot.html" class="external-link">xyplot()</a></code> from the <a href="https://cran.r-project.org/package=lattice" class="external-link"><strong>lattice</strong></a> package:</p>
+<code class="sourceCode R"><span><span class="va">nDF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">DF</span>, <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, length <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>,</span>
+<span>                            sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">plot_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/effectPlotData.html">effectPlotData</a></span><span class="op">(</span><span class="va">gm</span>, <span class="va">nDF</span>, sandwich <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>The figure is created with a call to <code><a href="https://rdrr.io/pkg/lattice/man/xyplot.html" class="external-link">xyplot()</a></code> from the
+<a href="https://cran.r-project.org/package=lattice" class="external-link"><strong>lattice</strong></a>
+package:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="http://lattice.r-forge.r-project.org/" class="external-link">"lattice"</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/lattice/man/xyplot.html" class="external-link">xyplot</a></span><span class="op">(</span><span class="va">pred</span> <span class="op">+</span> <span class="va">low</span> <span class="op">+</span> <span class="va">upp</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">plot_data</span>,
-       type <span class="op">=</span> <span class="st">"l"</span>, lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">2</span>,
-       xlab <span class="op">=</span> <span class="st">"Follow-up Time"</span>, ylab <span class="op">=</span> <span class="st">"Logit Scale"</span><span class="op">)</span>
-
-<span class="va">expit</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/lattice/man/xyplot.html" class="external-link">xyplot</a></span><span class="op">(</span><span class="fu">expit</span><span class="op">(</span><span class="va">pred</span><span class="op">)</span> <span class="op">+</span> <span class="fu">expit</span><span class="op">(</span><span class="va">low</span><span class="op">)</span> <span class="op">+</span> <span class="fu">expit</span><span class="op">(</span><span class="va">upp</span><span class="op">)</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">plot_data</span>,
-       type <span class="op">=</span> <span class="st">"l"</span>, lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">2</span>,
-       xlab <span class="op">=</span> <span class="st">"Follow-up Time"</span>, ylab <span class="op">=</span> <span class="st">"Original Scale"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://lattice.r-forge.r-project.org/" class="external-link">"lattice"</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/lattice/man/xyplot.html" class="external-link">xyplot</a></span><span class="op">(</span><span class="va">pred</span> <span class="op">+</span> <span class="va">low</span> <span class="op">+</span> <span class="va">upp</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">plot_data</span>,</span>
+<span>       type <span class="op">=</span> <span class="st">"l"</span>, lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>       xlab <span class="op">=</span> <span class="st">"Follow-up Time"</span>, ylab <span class="op">=</span> <span class="st">"Logit Scale"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">expit</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/lattice/man/xyplot.html" class="external-link">xyplot</a></span><span class="op">(</span><span class="fu">expit</span><span class="op">(</span><span class="va">pred</span><span class="op">)</span> <span class="op">+</span> <span class="fu">expit</span><span class="op">(</span><span class="va">low</span><span class="op">)</span> <span class="op">+</span> <span class="fu">expit</span><span class="op">(</span><span class="va">upp</span><span class="op">)</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">plot_data</span>,</span>
+<span>       type <span class="op">=</span> <span class="st">"l"</span>, lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>       xlab <span class="op">=</span> <span class="st">"Follow-up Time"</span>, ylab <span class="op">=</span> <span class="st">"Original Scale"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Custom_Models_files/figure-html/unnamed-chunk-13-1.png" width="816" style="display: block; margin: auto;"><img src="Custom_Models_files/figure-html/unnamed-chunk-13-2.png" width="816" style="display: block; margin: auto;"></p>
 </div>
 </div>
@@ -483,7 +563,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

@@ -18,7 +18,7 @@ mixed models."><meta property="og:image" content="/logo.png"><!-- mathjax --><sc
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9-0</span>
       </span>
     </div>
 
@@ -30,7 +30,7 @@ mixed models."><meta property="og:image" content="/logo.png"><!-- mathjax --><sc
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -89,40 +89,49 @@ mixed models.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">marginal_coefs</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">marginal_coefs</span><span class="op">(</span><span class="va">object</span>, std_errors <span class="op">=</span> <span class="cn">FALSE</span>, 
-   link_fun <span class="op">=</span> <span class="cn">NULL</span>, M <span class="op">=</span> <span class="fl">3000</span>, K <span class="op">=</span> <span class="fl">100</span>, seed <span class="op">=</span> <span class="fl">1</span>, 
-   cores <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, 
-   sandwich <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">marginal_coefs</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">marginal_coefs</span><span class="op">(</span><span class="va">object</span>, std_errors <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>   link_fun <span class="op">=</span> <span class="cn">NULL</span>, M <span class="op">=</span> <span class="fl">3000</span>, K <span class="op">=</span> <span class="fl">100</span>, seed <span class="op">=</span> <span class="fl">1</span>, </span>
+<span>   cores <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, </span>
+<span>   sandwich <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>an object inheriting from class <code>"MixMod"</code>.</p></dd>
+
 <dt>std_errors</dt>
 <dd><p>logical indicating whether standard errors are to be computed.</p></dd>
+
 <dt>link_fun</dt>
 <dd><p>a function transforming the mean of the repeated measurements outcome to the
     linear predictor scale. Typically, this derived from the <code>family</code> argument of
     <code><a href="mixed_model.html">mixed_model</a></code>.</p></dd>
+
 <dt>M</dt>
 <dd><p>numeric scalar denoting the number of Monte Carlo samples.</p></dd>
+
 <dt>K</dt>
 <dd><p>numeric scalar denoting the number of samples from the sampling distribution of
     the maximum likelihood estimates.</p></dd>
+
 <dt>seed</dt>
 <dd><p>integer denoting the seed for the random number generation.</p></dd>
+
 <dt>cores</dt>
 <dd><p>integer giving the number of cores to use; applicable only when 
     <code>std_errors = TRUE</code>.</p></dd>
+
 <dt>sandwich</dt>
 <dd><p>logical; if <code>TRUE</code> robust/sandwich standard errors are used in the 
     calculations.</p></dd>
+
 <dt>...</dt>
 <dd><p>extra arguments; currently none is used.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -140,7 +149,9 @@ package <b>parallel</b> is used.</p>
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list of class <code>"m_coefs"</code> with components <code>betas</code> the marginal coefficients, 
+    
+
+<p>A list of class <code>"m_coefs"</code> with components <code>betas</code> the marginal coefficients, 
 and when <code>std_errors = TRUE</code>, the extra components <code>var_betas</code> the estimated 
 covariance matrix of the marginal coefficients, and <code>coef_table</code> a numeric matrix
 with the estimated marginal coefficients, their standard errors and corresponding 
@@ -163,48 +174,48 @@ marginalization of regression parameters from mixed models of binary outcomes.
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="co"># simulate some data</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123L</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">500</span></span>
-<span class="r-in"><span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">15</span></span>
-<span class="r-in"><span class="va">t.max</span> <span class="op">&lt;-</span> <span class="fl">25</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2.13</span>, <span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">D</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">D</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.48</span>, <span class="op">-</span><span class="fl">0.08</span>, <span class="op">-</span><span class="fl">0.08</span>, <span class="fl">0.18</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">K</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="va">t.max</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, each <span class="op">=</span> <span class="va">n</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>year <span class="op">=</span> <span class="va">times</span>, group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">group</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">group</span> <span class="op">*</span> <span class="va">year</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">year</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">eta.y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">Z</span> <span class="op">*</span> <span class="va">b</span><span class="op">[</span><span class="va">id</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">K</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="va">eta.y</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">DF</span><span class="op">$</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">################################################</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">fm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">group</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>,</span>
-<span class="r-in">                   family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="methods.html">fixef</a></span><span class="op">(</span><span class="va">fm1</span><span class="op">)</span>                   </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># simulate some data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">500</span></span></span>
+<span class="r-in"><span><span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">15</span></span></span>
+<span class="r-in"><span><span class="va">t.max</span> <span class="op">&lt;-</span> <span class="fl">25</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2.13</span>, <span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">D</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">D</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.48</span>, <span class="op">-</span><span class="fl">0.08</span>, <span class="op">-</span><span class="fl">0.08</span>, <span class="fl">0.18</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">K</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="va">t.max</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, each <span class="op">=</span> <span class="va">n</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>year <span class="op">=</span> <span class="va">times</span>, group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">group</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">group</span> <span class="op">*</span> <span class="va">year</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">year</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">eta.y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">Z</span> <span class="op">*</span> <span class="va">b</span><span class="op">[</span><span class="va">id</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">K</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="va">eta.y</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">DF</span><span class="op">$</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">################################################</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">fm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">group</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>,</span></span>
+<span class="r-in"><span>                   family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="methods.html">fixef</a></span><span class="op">(</span><span class="va">fm1</span><span class="op">)</span>                   </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  (Intercept)         year       group1  year:group1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -2.875293208  0.204144801 -0.648693468 -0.006044763 </span>
-<span class="r-in"><span class="fu">marginal_coefs</span><span class="op">(</span><span class="va">fm1</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">marginal_coefs</span><span class="op">(</span><span class="va">fm1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)        year      group1 year:group1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     -1.3589      0.0966     -0.3298     -0.0017 </span>
-<span class="r-in"><span class="fu">marginal_coefs</span><span class="op">(</span><span class="va">fm1</span>, std_errors <span class="op">=</span> <span class="cn">TRUE</span>, cores <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">marginal_coefs</span><span class="op">(</span><span class="va">fm1</span>, std_errors <span class="op">=</span> <span class="cn">TRUE</span>, cores <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             Estimate Std.Err  z-value p-value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  -1.3589  0.1132 -12.0052 &lt; 1e-04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> year          0.0966  0.0049  19.5229 &lt; 1e-04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> group1       -0.3298  0.1593  -2.0701 0.03844</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> year:group1  -0.0017  0.0060  -0.2795 0.77983</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -219,7 +230,7 @@ marginalization of regression parameters from mixed models of binary outcomes.
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

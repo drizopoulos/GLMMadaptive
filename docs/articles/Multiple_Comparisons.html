@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9-0</span>
       </span>
     </div>
 
@@ -53,7 +53,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -110,9 +110,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Multiple Comparisons for MixMod Objects</h1>
-                        <h4 data-toc-skip class="author">Dimitris Rizopoulos</h4>
+                        <h4 data-toc-skip class="author">Dimitris
+Rizopoulos</h4>
             
-            <h4 data-toc-skip class="date">2022-02-08</h4>
+            <h4 data-toc-skip class="date">2023-06-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/HEAD/vignettes/Multiple_Comparisons.Rmd" class="external-link"><code>vignettes/Multiple_Comparisons.Rmd</code></a></small>
       <div class="hidden name"><code>Multiple_Comparisons.Rmd</code></div>
@@ -124,174 +125,198 @@
 <div class="section level2">
 <h2 id="multiple-comparisons-with-mixmod-objects">Multiple Comparisons with MixMod Objects<a class="anchor" aria-label="anchor" href="#multiple-comparisons-with-mixmod-objects"></a>
 </h2>
-<p>In this vignette we illustrate how to correct p-values for multiple comparisons using the <a href="https://cran.r-project.org/package=multcomp" class="external-link"><strong>multcomp</strong></a> and <a href="https://cran.r-project.org/package=emmeans" class="external-link"><strong>emmeans</strong></a> packages.</p>
+<p>In this vignette we illustrate how to correct p-values for multiple
+comparisons using the <a href="https://cran.r-project.org/package=multcomp" class="external-link"><strong>multcomp</strong></a>
+and <a href="https://cran.r-project.org/package=emmeans" class="external-link"><strong>emmeans</strong></a>
+packages.</p>
 <div class="section level3">
 <h3 id="additive-model">Additive Model<a class="anchor" aria-label="anchor" href="#additive-model"></a>
 </h3>
-<p>We start by simulating some data for a binary longitudinal outcome:</p>
+<p>We start by simulating some data for a binary longitudinal
+outcome:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">300</span> <span class="co"># number of subjects</span>
-<span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">4</span> <span class="co"># number of measurements per subject</span>
-<span class="va">t_max</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span>
-
-<span class="co"># we construct a data frame with the design: </span>
-<span class="co"># everyone has a baseline measurement, and then measurements at K time points</span>
-<span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span>,
-                 time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/gl.html" class="external-link">gl</a></span><span class="op">(</span><span class="va">K</span>, <span class="fl">1</span>, <span class="va">n</span><span class="op">*</span><span class="va">K</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Time"</span>, <span class="fl">1</span><span class="op">:</span><span class="va">K</span><span class="op">)</span><span class="op">)</span>,
-                 sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/gl.html" class="external-link">gl</a></span><span class="op">(</span><span class="fl">2</span>, <span class="va">n</span><span class="op">/</span><span class="fl">2</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># design matrices for the fixed and random effects</span>
-<span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span>
-<span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span>
-
-<span class="va">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2.13</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.2</span>, <span class="op">-</span><span class="fl">1.2</span><span class="op">)</span>, <span class="va">K</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="co"># fixed effects coefficients</span>
-<span class="va">D11</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="co"># variance of random intercepts</span>
-
-<span class="co"># we simulate random effects</span>
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D11</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># linear predictor</span>
-<span class="va">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">Z</span> <span class="op">*</span> <span class="va">b</span><span class="op">[</span><span class="va">DF</span><span class="op">$</span><span class="va">id</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># we simulate binary longitudinal data</span>
-<span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">K</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="va">eta_y</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>We fit a mixed effects logistic regression for <code>y</code> assuming random intercepts for the random-effects part, and the main effects of <code>sex</code> and <code>time</code> for the fixed-effects part.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">300</span> <span class="co"># number of subjects</span></span>
+<span><span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">4</span> <span class="co"># number of measurements per subject</span></span>
+<span><span class="va">t_max</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span></span>
+<span></span>
+<span><span class="co"># we construct a data frame with the design: </span></span>
+<span><span class="co"># everyone has a baseline measurement, and then measurements at K time points</span></span>
+<span><span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span>,</span>
+<span>                 time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/gl.html" class="external-link">gl</a></span><span class="op">(</span><span class="va">K</span>, <span class="fl">1</span>, <span class="va">n</span><span class="op">*</span><span class="va">K</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Time"</span>, <span class="fl">1</span><span class="op">:</span><span class="va">K</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                 sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/gl.html" class="external-link">gl</a></span><span class="op">(</span><span class="fl">2</span>, <span class="va">n</span><span class="op">/</span><span class="fl">2</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># design matrices for the fixed and random effects</span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span>
+<span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2.13</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.2</span>, <span class="op">-</span><span class="fl">1.2</span><span class="op">)</span>, <span class="va">K</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="co"># fixed effects coefficients</span></span>
+<span><span class="va">D11</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="co"># variance of random intercepts</span></span>
+<span></span>
+<span><span class="co"># we simulate random effects</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D11</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># linear predictor</span></span>
+<span><span class="va">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">Z</span> <span class="op">*</span> <span class="va">b</span><span class="op">[</span><span class="va">DF</span><span class="op">$</span><span class="va">id</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># we simulate binary longitudinal data</span></span>
+<span><span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">K</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="va">eta_y</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>We fit a mixed effects logistic regression for <code>y</code>
+assuming random intercepts for the random-effects part, and the main
+effects of <code>sex</code> and <code>time</code> for the fixed-effects
+part.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>,
-                  family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>The uncorrected p-values for the 4 time points are give by the <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> method:</p>
+<code class="sourceCode R"><span><span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>,</span>
+<span>                  family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>The uncorrected p-values for the 4 time points are give by the
+<code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> method:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; mixed_model(fixed = y ~ sex + time, random = ~1 | id, data = DF, </span>
-<span class="co">#&gt;     family = binomial())</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Data Descriptives:</span>
-<span class="co">#&gt; Number of Observations: 1200</span>
-<span class="co">#&gt; Number of Groups: 300 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model:</span>
-<span class="co">#&gt;  family: binomial</span>
-<span class="co">#&gt;  link: logit </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fit statistics:</span>
-<span class="co">#&gt;    log.Lik      AIC      BIC</span>
-<span class="co">#&gt;  -583.4797 1178.959 1201.182</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Random effects covariance matrix:</span>
-<span class="co">#&gt;               StdDev</span>
-<span class="co">#&gt; (Intercept) 1.447826</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fixed effects:</span>
-<span class="co">#&gt;             Estimate Std.Err z-value    p-value</span>
-<span class="co">#&gt; (Intercept)  -2.2865  0.2496 -9.1601    &lt; 1e-04</span>
-<span class="co">#&gt; sexfemale     0.8860  0.2447  3.6200 0.00029455</span>
-<span class="co">#&gt; timeTime2     0.3066  0.2266  1.3534 0.17592327</span>
-<span class="co">#&gt; timeTime3    -0.5053  0.2463 -2.0516 0.04020481</span>
-<span class="co">#&gt; timeTime4     0.5632  0.2237  2.5181 0.01179888</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Integration:</span>
-<span class="co">#&gt; method: adaptive Gauss-Hermite quadrature rule</span>
-<span class="co">#&gt; quadrature points: 11</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Optimization:</span>
-<span class="co">#&gt; method: hybrid EM and quasi-Newton</span>
-<span class="co">#&gt; converged: TRUE</span></code></pre></div>
-<p>To perform the pairwise comparisons and obtain corrected p-values, we load the <strong>multcomp</strong> package and use the <code><a href="https://rdrr.io/pkg/multcomp/man/glht.html" class="external-link">glht()</a></code> function. Because no specific methods exist for <code>MixMod</code> object returned by <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, we need to specify the <code>vcov.</code> and <code>coef.</code> arguments of <code><a href="https://rdrr.io/pkg/multcomp/man/glht.html" class="external-link">glht()</a></code>, i.e.,</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; mixed_model(fixed = y ~ sex + time, random = ~1 | id, data = DF, </span></span>
+<span><span class="co">#&gt;     family = binomial())</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Data Descriptives:</span></span>
+<span><span class="co">#&gt; Number of Observations: 1200</span></span>
+<span><span class="co">#&gt; Number of Groups: 300 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Model:</span></span>
+<span><span class="co">#&gt;  family: binomial</span></span>
+<span><span class="co">#&gt;  link: logit </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Fit statistics:</span></span>
+<span><span class="co">#&gt;    log.Lik      AIC      BIC</span></span>
+<span><span class="co">#&gt;  -583.4797 1178.959 1201.182</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Random effects covariance matrix:</span></span>
+<span><span class="co">#&gt;               StdDev</span></span>
+<span><span class="co">#&gt; (Intercept) 1.447826</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Fixed effects:</span></span>
+<span><span class="co">#&gt;             Estimate Std.Err z-value    p-value</span></span>
+<span><span class="co">#&gt; (Intercept)  -2.2865  0.2496 -9.1601    &lt; 1e-04</span></span>
+<span><span class="co">#&gt; sexfemale     0.8860  0.2447  3.6200 0.00029455</span></span>
+<span><span class="co">#&gt; timeTime2     0.3066  0.2266  1.3534 0.17592327</span></span>
+<span><span class="co">#&gt; timeTime3    -0.5053  0.2463 -2.0516 0.04020481</span></span>
+<span><span class="co">#&gt; timeTime4     0.5632  0.2237  2.5181 0.01179888</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Integration:</span></span>
+<span><span class="co">#&gt; method: adaptive Gauss-Hermite quadrature rule</span></span>
+<span><span class="co">#&gt; quadrature points: 11</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Optimization:</span></span>
+<span><span class="co">#&gt; method: hybrid EM and quasi-Newton</span></span>
+<span><span class="co">#&gt; converged: TRUE</span></span></code></pre></div>
+<p>To perform the pairwise comparisons and obtain corrected p-values, we
+load the <strong>multcomp</strong> package and use the
+<code><a href="https://rdrr.io/pkg/multcomp/man/glht.html" class="external-link">glht()</a></code> function. Because no specific methods exist for
+<code>MixMod</code> object returned by <code><a href="../reference/mixed_model.html">mixed_model()</a></code>, we
+need to specify the <code>vcov.</code> and <code>coef.</code> arguments
+of <code><a href="https://rdrr.io/pkg/multcomp/man/glht.html" class="external-link">glht()</a></code>, i.e.,</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="http://multcomp.R-forge.R-project.org" class="external-link">"multcomp"</a></span><span class="op">)</span>
-<span class="co">#&gt; Loading required package: mvtnorm</span>
-<span class="co">#&gt; Loading required package: survival</span>
-<span class="co">#&gt; Loading required package: TH.data</span>
-<span class="co">#&gt; Loading required package: MASS</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'MASS'</span>
-<span class="co">#&gt; The following object is masked from 'package:GLMMadaptive':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     negative.binomial</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'TH.data'</span>
-<span class="co">#&gt; The following object is masked from 'package:MASS':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     geyser</span>
-<span class="va">fm_mc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/multcomp/man/glht.html" class="external-link">glht</a></span><span class="op">(</span><span class="va">fm</span>, linfct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/multcomp/man/glht.html" class="external-link">mcp</a></span><span class="op">(</span>time <span class="op">=</span> <span class="st">"Tukey"</span><span class="op">)</span>,
-           vcov. <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fm</span>, <span class="st">"fixed"</span><span class="op">)</span>, coef. <span class="op">=</span> <span class="va">fixef</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fm_mc</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Simultaneous Tests for General Linear Hypotheses</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Multiple Comparisons of Means: Tukey Contrasts</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Fit: mixed_model(fixed = y ~ sex + time, random = ~1 | id, data = DF, </span>
-<span class="co">#&gt;     family = binomial())</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Linear Hypotheses:</span>
-<span class="co">#&gt;                    Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; Time2 - Time1 == 0   0.3066     0.2266   1.353  0.52807    </span>
-<span class="co">#&gt; Time3 - Time1 == 0  -0.5053     0.2463  -2.052  0.16892    </span>
-<span class="co">#&gt; Time4 - Time1 == 0   0.5632     0.2237   2.518  0.05695 .  </span>
-<span class="co">#&gt; Time3 - Time2 == 0  -0.8119     0.2423  -3.351  0.00463 ** </span>
-<span class="co">#&gt; Time4 - Time2 == 0   0.2566     0.2165   1.185  0.63542    </span>
-<span class="co">#&gt; Time4 - Time3 == 0   1.0685     0.2406   4.441  &lt; 0.001 ***</span>
-<span class="co">#&gt; ---</span>
-<span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
-<span class="co">#&gt; (Adjusted p values reported -- single-step method)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="http://multcomp.R-forge.R-project.org" class="external-link">"multcomp"</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Loading required package: mvtnorm</span></span>
+<span><span class="co">#&gt; Loading required package: survival</span></span>
+<span><span class="co">#&gt; Loading required package: TH.data</span></span>
+<span><span class="co">#&gt; Loading required package: MASS</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'MASS'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:GLMMadaptive':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     negative.binomial</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'TH.data'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:MASS':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     geyser</span></span>
+<span><span class="va">fm_mc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/multcomp/man/glht.html" class="external-link">glht</a></span><span class="op">(</span><span class="va">fm</span>, linfct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/multcomp/man/glht.html" class="external-link">mcp</a></span><span class="op">(</span>time <span class="op">=</span> <span class="st">"Tukey"</span><span class="op">)</span>,</span>
+<span>           vcov. <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fm</span>, <span class="st">"fixed"</span><span class="op">)</span>, coef. <span class="op">=</span> <span class="va">fixef</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fm_mc</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Simultaneous Tests for General Linear Hypotheses</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Multiple Comparisons of Means: Tukey Contrasts</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Fit: mixed_model(fixed = y ~ sex + time, random = ~1 | id, data = DF, </span></span>
+<span><span class="co">#&gt;     family = binomial())</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Linear Hypotheses:</span></span>
+<span><span class="co">#&gt;                    Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span><span class="co">#&gt; Time2 - Time1 == 0   0.3066     0.2266   1.353  0.52807    </span></span>
+<span><span class="co">#&gt; Time3 - Time1 == 0  -0.5053     0.2463  -2.052  0.16892    </span></span>
+<span><span class="co">#&gt; Time4 - Time1 == 0   0.5632     0.2237   2.518  0.05695 .  </span></span>
+<span><span class="co">#&gt; Time3 - Time2 == 0  -0.8119     0.2423  -3.351  0.00463 ** </span></span>
+<span><span class="co">#&gt; Time4 - Time2 == 0   0.2566     0.2165   1.185  0.63542    </span></span>
+<span><span class="co">#&gt; Time4 - Time3 == 0   1.0685     0.2406   4.441  &lt; 0.001 ***</span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">#&gt; (Adjusted p values reported -- single-step method)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="interaction-model">Interaction Model<a class="anchor" aria-label="anchor" href="#interaction-model"></a>
 </h3>
-<p>We continue our illustration by including the interaction term between <code>sex</code> and <code>time</code>, and we focus on the difference between males and females for the various time points. We start by fitting the model:</p>
+<p>We continue our illustration by including the interaction term
+between <code>sex</code> and <code>time</code>, and we focus on the
+difference between males and females for the various time points. We
+start by fitting the model:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">gm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>,
-                  family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>To compute the estimated log odds for males and females at the different time points we use the <code><a href="https://rdrr.io/pkg/emmeans/man/emmeans.html" class="external-link">emmeans()</a></code> functions from the <strong>emmeans</strong> package:</p>
+<code class="sourceCode R"><span><span class="va">gm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>,</span>
+<span>                  family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>To compute the estimated log odds for males and females at the
+different time points we use the <code><a href="https://rdrr.io/pkg/emmeans/man/emmeans.html" class="external-link">emmeans()</a></code> functions from
+the <strong>emmeans</strong> package:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/rvlenth/emmeans" class="external-link">"emmeans"</a></span><span class="op">)</span>
-<span class="va">gm_mc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/emmeans/man/emmeans.html" class="external-link">emmeans</a></span><span class="op">(</span><span class="va">gm</span>, <span class="op">~</span> <span class="va">sex</span> <span class="op">|</span> <span class="va">time</span><span class="op">)</span>
-
-<span class="va">gm_mc</span>
-<span class="co">#&gt; time = Time1:</span>
-<span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male    -2.74 0.342 Inf     -3.41    -2.067</span>
-<span class="co">#&gt;  female  -1.21 0.255 Inf     -1.71    -0.707</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; time = Time2:</span>
-<span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male    -1.68 0.275 Inf     -2.21    -1.135</span>
-<span class="co">#&gt;  female  -1.44 0.263 Inf     -1.95    -0.920</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; time = Time3:</span>
-<span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male    -4.40 0.546 Inf     -5.47    -3.331</span>
-<span class="co">#&gt;  female  -1.39 0.261 Inf     -1.90    -0.876</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; time = Time4:</span>
-<span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span>
-<span class="co">#&gt;  male    -1.34 0.261 Inf     -1.85    -0.825</span>
-<span class="co">#&gt;  female  -1.25 0.256 Inf     -1.75    -0.749</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Confidence level used: 0.95</span></code></pre></div>
-<p>The corresponding pairwise comparisons are performed by the <code><a href="https://rdrr.io/r/graphics/pairs.html" class="external-link">pairs()</a></code> function:</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/rvlenth/emmeans" class="external-link">"emmeans"</a></span><span class="op">)</span></span>
+<span><span class="va">gm_mc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/emmeans/man/emmeans.html" class="external-link">emmeans</a></span><span class="op">(</span><span class="va">gm</span>, <span class="op">~</span> <span class="va">sex</span> <span class="op">|</span> <span class="va">time</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">gm_mc</span></span>
+<span><span class="co">#&gt; time = Time1:</span></span>
+<span><span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span></span>
+<span><span class="co">#&gt;  male    -2.74 0.342 Inf     -3.41    -2.067</span></span>
+<span><span class="co">#&gt;  female  -1.21 0.255 Inf     -1.71    -0.707</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time = Time2:</span></span>
+<span><span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span></span>
+<span><span class="co">#&gt;  male    -1.68 0.275 Inf     -2.21    -1.135</span></span>
+<span><span class="co">#&gt;  female  -1.44 0.263 Inf     -1.95    -0.920</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time = Time3:</span></span>
+<span><span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span></span>
+<span><span class="co">#&gt;  male    -4.40 0.546 Inf     -5.47    -3.331</span></span>
+<span><span class="co">#&gt;  female  -1.39 0.261 Inf     -1.90    -0.876</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time = Time4:</span></span>
+<span><span class="co">#&gt;  sex    emmean    SE  df asymp.LCL asymp.UCL</span></span>
+<span><span class="co">#&gt;  male    -1.34 0.261 Inf     -1.85    -0.825</span></span>
+<span><span class="co">#&gt;  female  -1.25 0.256 Inf     -1.75    -0.749</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Results are given on the logit (not the response) scale. </span></span>
+<span><span class="co">#&gt; Confidence level used: 0.95</span></span></code></pre></div>
+<p>The corresponding pairwise comparisons are performed by the
+<code><a href="https://rdrr.io/r/graphics/pairs.html" class="external-link">pairs()</a></code> function:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html" class="external-link">pairs</a></span><span class="op">(</span><span class="va">gm_mc</span><span class="op">)</span>
-<span class="co">#&gt; time = Time1:</span>
-<span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female  -1.5305 0.410 Inf  -3.735  0.0002</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; time = Time2:</span>
-<span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female  -0.2400 0.366 Inf  -0.655  0.5125</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; time = Time3:</span>
-<span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female  -3.0126 0.586 Inf  -5.145  &lt;.0001</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; time = Time4:</span>
-<span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span>
-<span class="co">#&gt;  male - female  -0.0851 0.355 Inf  -0.240  0.8106</span></code></pre></div>
-<p>For additional examples in testing interactions with the <strong>emmeans</strong> package check the vignette: <code><a href="https://cran.rstudio.com/web/packages/emmeans/vignettes/interactions.html" class="external-link">vignette("interactions", package = "emmeans")</a></code>.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/pairs.html" class="external-link">pairs</a></span><span class="op">(</span><span class="va">gm_mc</span><span class="op">)</span></span>
+<span><span class="co">#&gt; time = Time1:</span></span>
+<span><span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span></span>
+<span><span class="co">#&gt;  male - female  -1.5305 0.410 Inf  -3.735  0.0002</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time = Time2:</span></span>
+<span><span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span></span>
+<span><span class="co">#&gt;  male - female  -0.2400 0.366 Inf  -0.655  0.5125</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time = Time3:</span></span>
+<span><span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span></span>
+<span><span class="co">#&gt;  male - female  -3.0126 0.586 Inf  -5.145  &lt;.0001</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time = Time4:</span></span>
+<span><span class="co">#&gt;  contrast      estimate    SE  df z.ratio p.value</span></span>
+<span><span class="co">#&gt;  male - female  -0.0851 0.355 Inf  -0.240  0.8106</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Results are given on the log odds ratio (not the response) scale.</span></span></code></pre></div>
+<p>For additional examples in testing interactions with the
+<strong>emmeans</strong> package check the vignette:
+<code><a href="https://cran.rstudio.com/web/packages/emmeans/vignettes/interactions.html" class="external-link">vignette("interactions", package = "emmeans")</a></code>.</p>
 </div>
 </div>
   </div>
@@ -313,7 +338,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

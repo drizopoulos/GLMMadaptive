@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9-0</span>
       </span>
     </div>
 
@@ -29,7 +29,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -87,21 +87,24 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">cr_setup</span><span class="op">(</span><span class="va">y</span>, direction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"forward"</span>, <span class="st">"backward"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">cr_marg_probs</span><span class="op">(</span><span class="va">eta</span>, direction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"forward"</span>, <span class="st">"backward"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cr_setup</span><span class="op">(</span><span class="va">y</span>, direction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"forward"</span>, <span class="st">"backward"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">cr_marg_probs</span><span class="op">(</span><span class="va">eta</span>, direction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"forward"</span>, <span class="st">"backward"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>y</dt>
 <dd><p>a numeric vector denoting the ordinal response variable.</p></dd>
-<dt>direction</dt>
+
+  <dt>direction</dt>
 <dd><p>character string specifying the direction of the continuation ratio 
     model; <code>"forward"</code> corresponds to a discrete hazard function.</p></dd>
-<dt>eta</dt>
+
+  <dt>eta</dt>
 <dd><p>a numeric matrix of the linear predictor, with columns corresponding to the 
     different levels of the ordinal response.</p></dd>
+
 </dl></div>
     <div id="author">
     <h2>Author</h2>
@@ -116,62 +119,62 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">300</span> <span class="co"># number of subjects</span></span>
-<span class="r-in"><span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span></span>
-<span class="r-in"><span class="va">t_max</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># we constuct a data frame with the design: </span></span>
-<span class="r-in"><span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span></span>
-<span class="r-in"><span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span>,</span>
-<span class="r-in">                 time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">K</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0</span>, <span class="va">t_max</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                 sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/gl.html" class="external-link">gl</a></span><span class="op">(</span><span class="fl">2</span>, <span class="va">n</span><span class="op">/</span><span class="fl">2</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># design matrices for the fixed and random effects</span></span>
-<span class="r-in"><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">thrs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0</span>, <span class="fl">0.9</span><span class="op">)</span> <span class="co"># thresholds for the different ordinal categories</span></span>
-<span class="r-in"><span class="va">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span><span class="op">)</span> <span class="co"># fixed effects coefficients</span></span>
-<span class="r-in"><span class="va">D11</span> <span class="op">&lt;-</span> <span class="fl">0.48</span> <span class="co"># variance of random intercepts</span></span>
-<span class="r-in"><span class="va">D22</span> <span class="op">&lt;-</span> <span class="fl">0.1</span> <span class="co"># variance of random slopes</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># we simulate random effects</span></span>
-<span class="r-in"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D11</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D22</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span>
-<span class="r-in"><span class="co"># linear predictor</span></span>
-<span class="r-in"><span class="va">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/drop.html" class="external-link">drop</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">Z</span> <span class="op">*</span> <span class="va">b</span><span class="op">[</span><span class="va">DF</span><span class="op">$</span><span class="va">id</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># linear predictor for each category</span></span>
-<span class="r-in"><span class="va">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/outer.html" class="external-link">outer</a></span><span class="op">(</span><span class="va">eta_y</span>, <span class="va">thrs</span>, <span class="st">"+"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># marginal probabilities per category</span></span>
-<span class="r-in"><span class="va">mprobs</span> <span class="op">&lt;-</span> <span class="fu">cr_marg_probs</span><span class="op">(</span><span class="va">eta_y</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># we simulate ordinal longitudinal data</span></span>
-<span class="r-in"><span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">mprobs</span>, <span class="fl">1</span>, <span class="va">sample</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">mprobs</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># If you want to simulate from the backward formulation of the CR model, you need to</span></span>
-<span class="r-in"><span class="co"># change `eta_y &lt;- outer(eta_y, thrs, "+")` to `eta_y &lt;- outer(eta_y, rev(thrs), "+")`,</span></span>
-<span class="r-in"><span class="co"># and `mprobs &lt;- cr_marg_probs(eta_y)` to `mprobs &lt;- cr_marg_probs(eta_y, "backward")`</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">#################################################</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># prepare the data</span></span>
-<span class="r-in"><span class="co"># If you want to fit the CR model under the backward formulation, you need to change</span></span>
-<span class="r-in"><span class="co"># `cr_vals &lt;- cr_setup(DF$y)` to `cr_vals &lt;- cr_setup(DF$y, "backward")`</span></span>
-<span class="r-in"><span class="va">cr_vals</span> <span class="op">&lt;-</span> <span class="fu">cr_setup</span><span class="op">(</span><span class="va">DF</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">cr_data</span> <span class="op">&lt;-</span> <span class="va">DF</span><span class="op">[</span><span class="va">cr_vals</span><span class="op">$</span><span class="va">subs</span>, <span class="op">]</span></span>
-<span class="r-in"><span class="va">cr_data</span><span class="op">$</span><span class="va">y_new</span> <span class="op">&lt;-</span> <span class="va">cr_vals</span><span class="op">$</span><span class="va">y</span></span>
-<span class="r-in"><span class="va">cr_data</span><span class="op">$</span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="va">cr_vals</span><span class="op">$</span><span class="va">cohort</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># fit the model</span></span>
-<span class="r-in"><span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixed_model.html">mixed_model</a></span><span class="op">(</span><span class="va">y_new</span> <span class="op">~</span> <span class="va">cohort</span> <span class="op">+</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, </span>
-<span class="r-in">                  data <span class="op">=</span> <span class="va">cr_data</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">300</span> <span class="co"># number of subjects</span></span></span>
+<span class="r-in"><span><span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">8</span> <span class="co"># number of measurements per subject</span></span></span>
+<span class="r-in"><span><span class="va">t_max</span> <span class="op">&lt;-</span> <span class="fl">15</span> <span class="co"># maximum follow-up time</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># we constuct a data frame with the design: </span></span></span>
+<span class="r-in"><span><span class="co"># everyone has a baseline measurment, and then measurements at random follow-up times</span></span></span>
+<span class="r-in"><span><span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                 time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">K</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0</span>, <span class="va">t_max</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                 sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/gl.html" class="external-link">gl</a></span><span class="op">(</span><span class="fl">2</span>, <span class="va">n</span><span class="op">/</span><span class="fl">2</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># design matrices for the fixed and random effects</span></span></span>
+<span class="r-in"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="methods.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">thrs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.5</span>, <span class="fl">0</span>, <span class="fl">0.9</span><span class="op">)</span> <span class="co"># thresholds for the different ordinal categories</span></span></span>
+<span class="r-in"><span><span class="va">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span><span class="op">)</span> <span class="co"># fixed effects coefficients</span></span></span>
+<span class="r-in"><span><span class="va">D11</span> <span class="op">&lt;-</span> <span class="fl">0.48</span> <span class="co"># variance of random intercepts</span></span></span>
+<span class="r-in"><span><span class="va">D22</span> <span class="op">&lt;-</span> <span class="fl">0.1</span> <span class="co"># variance of random slopes</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># we simulate random effects</span></span></span>
+<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D11</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D22</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="co"># linear predictor</span></span></span>
+<span class="r-in"><span><span class="va">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/drop.html" class="external-link">drop</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">Z</span> <span class="op">*</span> <span class="va">b</span><span class="op">[</span><span class="va">DF</span><span class="op">$</span><span class="va">id</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># linear predictor for each category</span></span></span>
+<span class="r-in"><span><span class="va">eta_y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/outer.html" class="external-link">outer</a></span><span class="op">(</span><span class="va">eta_y</span>, <span class="va">thrs</span>, <span class="st">"+"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># marginal probabilities per category</span></span></span>
+<span class="r-in"><span><span class="va">mprobs</span> <span class="op">&lt;-</span> <span class="fu">cr_marg_probs</span><span class="op">(</span><span class="va">eta_y</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># we simulate ordinal longitudinal data</span></span></span>
+<span class="r-in"><span><span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">mprobs</span>, <span class="fl">1</span>, <span class="va">sample</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">mprobs</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># If you want to simulate from the backward formulation of the CR model, you need to</span></span></span>
+<span class="r-in"><span><span class="co"># change `eta_y &lt;- outer(eta_y, thrs, "+")` to `eta_y &lt;- outer(eta_y, rev(thrs), "+")`,</span></span></span>
+<span class="r-in"><span><span class="co"># and `mprobs &lt;- cr_marg_probs(eta_y)` to `mprobs &lt;- cr_marg_probs(eta_y, "backward")`</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#################################################</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># prepare the data</span></span></span>
+<span class="r-in"><span><span class="co"># If you want to fit the CR model under the backward formulation, you need to change</span></span></span>
+<span class="r-in"><span><span class="co"># `cr_vals &lt;- cr_setup(DF$y)` to `cr_vals &lt;- cr_setup(DF$y, "backward")`</span></span></span>
+<span class="r-in"><span><span class="va">cr_vals</span> <span class="op">&lt;-</span> <span class="fu">cr_setup</span><span class="op">(</span><span class="va">DF</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cr_data</span> <span class="op">&lt;-</span> <span class="va">DF</span><span class="op">[</span><span class="va">cr_vals</span><span class="op">$</span><span class="va">subs</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">cr_data</span><span class="op">$</span><span class="va">y_new</span> <span class="op">&lt;-</span> <span class="va">cr_vals</span><span class="op">$</span><span class="va">y</span></span></span>
+<span class="r-in"><span><span class="va">cr_data</span><span class="op">$</span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="va">cr_vals</span><span class="op">$</span><span class="va">cohort</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># fit the model</span></span></span>
+<span class="r-in"><span><span class="va">fm</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixed_model.html">mixed_model</a></span><span class="op">(</span><span class="va">y_new</span> <span class="op">~</span> <span class="va">cohort</span> <span class="op">+</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">time</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, </span></span>
+<span class="r-in"><span>                  data <span class="op">=</span> <span class="va">cr_data</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mixed_model(fixed = y_new ~ cohort + sex * time, random = ~1 | </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     id, data = cr_data, family = binomial())</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Data Descriptives:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of Observations: 4080</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of Observations: 4181</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of Groups: 300 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model:</span>
@@ -179,21 +182,21 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  link: logit </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fit statistics:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    log.Lik      AIC     BIC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  -2350.612 4715.224 4741.15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    log.Lik      AIC      BIC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  -2459.351 4932.702 4958.628</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random effects covariance matrix:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               StdDev</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 0.663753</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                StdDev</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 0.7472351</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fixed effects:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Estimate Std.Err  z-value    p-value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)     -1.4490  0.1119 -12.9477    &lt; 1e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> cohorty&gt;=2       1.5786  0.0920  17.1655    &lt; 1e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> cohorty&gt;=3       2.3050  0.1419  16.2462    &lt; 1e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sexfemale       -0.2265  0.1389  -1.6310 0.10289569</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> time             0.2555  0.0142  18.0021    &lt; 1e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sexfemale:time  -0.0621  0.0174  -3.5749 0.00035043</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)     -1.4802  0.1148 -12.8975    &lt; 1e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cohorty&gt;=2       1.4301  0.0890  16.0646    &lt; 1e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cohorty&gt;=3       2.3013  0.1351  17.0302    &lt; 1e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sexfemale       -0.1380  0.1430  -0.9656 0.33422905</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> time             0.2376  0.0135  17.5995    &lt; 1e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sexfemale:time  -0.0554  0.0168  -3.3086 0.00093758</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Integration:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> method: adaptive Gauss-Hermite quadrature rule</span>
@@ -216,7 +219,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

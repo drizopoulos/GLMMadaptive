@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GLMMadaptive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9-0</span>
       </span>
     </div>
 
@@ -29,7 +29,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -87,101 +87,101 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">coef</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">coef</span><span class="op">(</span><span class="va">object</span>, sub_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"main"</span>, <span class="st">"zero_part"</span><span class="op">)</span>, 
-    <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">fixef</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">fixef</span><span class="op">(</span><span class="va">object</span>, sub_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"main"</span>, <span class="st">"zero_part"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">ranef</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">ranef</span><span class="op">(</span><span class="va">object</span>, post_vars <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">confint</span><span class="op">(</span><span class="va">object</span>, <span class="va">parm</span>, level <span class="op">=</span> <span class="fl">0.95</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">confint</span><span class="op">(</span><span class="va">object</span>, 
-  parm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed-effects"</span>, <span class="st">"var-cov"</span>,<span class="st">"extra"</span>, <span class="st">"zero_part"</span><span class="op">)</span>, 
-  level <span class="op">=</span> <span class="fl">0.95</span>, sandwich <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">anova</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">anova</span><span class="op">(</span><span class="va">object</span>, <span class="va">object2</span>, test <span class="op">=</span> <span class="cn">TRUE</span>, 
-  L <span class="op">=</span> <span class="cn">NULL</span>, sandwich <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">fitted</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">fitted</span><span class="op">(</span><span class="va">object</span>, 
-  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean_subject"</span>, <span class="st">"subject_specific"</span>, <span class="st">"marginal"</span><span class="op">)</span>,
-  link_fun <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">residuals</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">residuals</span><span class="op">(</span><span class="va">object</span>, 
-  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean_subject"</span>, <span class="st">"subject_specific"</span>, <span class="st">"marginal"</span><span class="op">)</span>, 
-  link_fun <span class="op">=</span> <span class="cn">NULL</span>, tasnf_y <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-  
-<span class="fu">predict</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">predict</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, newdata2 <span class="op">=</span> <span class="cn">NULL</span>, 
-    type_pred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"response"</span>, <span class="st">"link"</span><span class="op">)</span>,
-    type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean_subject"</span>, <span class="st">"subject_specific"</span>, <span class="st">"marginal"</span>, <span class="st">"zero_part"</span><span class="op">)</span>,
-    se.fit <span class="op">=</span> <span class="cn">FALSE</span>, M <span class="op">=</span> <span class="fl">300</span>, df <span class="op">=</span> <span class="fl">10</span>, scale <span class="op">=</span> <span class="fl">0.3</span>, level <span class="op">=</span> <span class="fl">0.95</span>, 
-    seed <span class="op">=</span> <span class="fl">1</span>, return_newdata <span class="op">=</span> <span class="cn">FALSE</span>, sandwich <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
-    
-<span class="fu">simulate</span><span class="op">(</span><span class="va">object</span>, nsim <span class="op">=</span> <span class="fl">1</span>, seed <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">simulate</span><span class="op">(</span><span class="va">object</span>, nsim <span class="op">=</span> <span class="fl">1</span>, seed <span class="op">=</span> <span class="cn">NULL</span>, 
-    type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"subject_specific"</span>, <span class="st">"mean_subject"</span><span class="op">)</span>, new_RE <span class="op">=</span> <span class="cn">FALSE</span>,
-    acount_MLEs_var <span class="op">=</span> <span class="cn">FALSE</span>, sim_fun <span class="op">=</span> <span class="cn">NULL</span>, 
-    sandwich <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
-    
-<span class="fu">terms</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">terms</span><span class="op">(</span><span class="va">x</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed"</span>, <span class="st">"random"</span>, <span class="st">"zi_fixed"</span>, <span class="st">"zi_random"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">formula</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">formula</span><span class="op">(</span><span class="va">x</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed"</span>, <span class="st">"random"</span>, <span class="st">"zi_fixed"</span>, <span class="st">"zi_random"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
-
-
-<span class="fu">model.frame</span><span class="op">(</span><span class="va">formula</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">model.frame</span><span class="op">(</span><span class="va">formula</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed"</span>, <span class="st">"random"</span>, <span class="st">"zi_fixed"</span>, <span class="st">"zi_random"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">model.matrix</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">model.matrix</span><span class="op">(</span><span class="va">object</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed"</span>, <span class="st">"random"</span>, <span class="st">"zi_fixed"</span>, <span class="st">"zi_random"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">nobs</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">nobs</span><span class="op">(</span><span class="va">object</span>, level <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">VIF</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">VIF</span><span class="op">(</span><span class="va">object</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed"</span>, <span class="st">"zi_fixed"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">cooks.distance</span><span class="op">(</span><span class="va">model</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for MixMod</span>
-<span class="fu">cooks.distance</span><span class="op">(</span><span class="va">model</span>, cores <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">coef</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">coef</span><span class="op">(</span><span class="va">object</span>, sub_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"main"</span>, <span class="st">"zero_part"</span><span class="op">)</span>, </span>
+<span>    <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fixef</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">fixef</span><span class="op">(</span><span class="va">object</span>, sub_model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"main"</span>, <span class="st">"zero_part"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ranef</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">ranef</span><span class="op">(</span><span class="va">object</span>, post_vars <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">confint</span><span class="op">(</span><span class="va">object</span>, <span class="va">parm</span>, level <span class="op">=</span> <span class="fl">0.95</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">confint</span><span class="op">(</span><span class="va">object</span>, </span>
+<span>  parm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed-effects"</span>, <span class="st">"var-cov"</span>,<span class="st">"extra"</span>, <span class="st">"zero_part"</span><span class="op">)</span>, </span>
+<span>  level <span class="op">=</span> <span class="fl">0.95</span>, sandwich <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">anova</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">anova</span><span class="op">(</span><span class="va">object</span>, <span class="va">object2</span>, test <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>  L <span class="op">=</span> <span class="cn">NULL</span>, sandwich <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fitted</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">fitted</span><span class="op">(</span><span class="va">object</span>, </span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean_subject"</span>, <span class="st">"subject_specific"</span>, <span class="st">"marginal"</span><span class="op">)</span>,</span>
+<span>  link_fun <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">residuals</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">residuals</span><span class="op">(</span><span class="va">object</span>, </span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean_subject"</span>, <span class="st">"subject_specific"</span>, <span class="st">"marginal"</span><span class="op">)</span>, </span>
+<span>  link_fun <span class="op">=</span> <span class="cn">NULL</span>, tasnf_y <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="fu">predict</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">predict</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, newdata2 <span class="op">=</span> <span class="cn">NULL</span>, </span>
+<span>    type_pred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"response"</span>, <span class="st">"link"</span><span class="op">)</span>,</span>
+<span>    type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean_subject"</span>, <span class="st">"subject_specific"</span>, <span class="st">"marginal"</span>, <span class="st">"zero_part"</span><span class="op">)</span>,</span>
+<span>    se.fit <span class="op">=</span> <span class="cn">FALSE</span>, M <span class="op">=</span> <span class="fl">300</span>, df <span class="op">=</span> <span class="fl">10</span>, scale <span class="op">=</span> <span class="fl">0.3</span>, level <span class="op">=</span> <span class="fl">0.95</span>, </span>
+<span>    seed <span class="op">=</span> <span class="fl">1</span>, return_newdata <span class="op">=</span> <span class="cn">FALSE</span>, sandwich <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>    </span>
+<span><span class="fu">simulate</span><span class="op">(</span><span class="va">object</span>, nsim <span class="op">=</span> <span class="fl">1</span>, seed <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">simulate</span><span class="op">(</span><span class="va">object</span>, nsim <span class="op">=</span> <span class="fl">1</span>, seed <span class="op">=</span> <span class="cn">NULL</span>, </span>
+<span>    type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"subject_specific"</span>, <span class="st">"mean_subject"</span><span class="op">)</span>, new_RE <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    acount_MLEs_var <span class="op">=</span> <span class="cn">FALSE</span>, sim_fun <span class="op">=</span> <span class="cn">NULL</span>, </span>
+<span>    sandwich <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>    </span>
+<span><span class="fu">terms</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">terms</span><span class="op">(</span><span class="va">x</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed"</span>, <span class="st">"random"</span>, <span class="st">"zi_fixed"</span>, <span class="st">"zi_random"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">formula</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">formula</span><span class="op">(</span><span class="va">x</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed"</span>, <span class="st">"random"</span>, <span class="st">"zi_fixed"</span>, <span class="st">"zi_random"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="fu">model.frame</span><span class="op">(</span><span class="va">formula</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">model.frame</span><span class="op">(</span><span class="va">formula</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed"</span>, <span class="st">"random"</span>, <span class="st">"zi_fixed"</span>, <span class="st">"zi_random"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">model.matrix</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">model.matrix</span><span class="op">(</span><span class="va">object</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed"</span>, <span class="st">"random"</span>, <span class="st">"zi_fixed"</span>, <span class="st">"zi_random"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">nobs</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">nobs</span><span class="op">(</span><span class="va">object</span>, level <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">VIF</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">VIF</span><span class="op">(</span><span class="va">object</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed"</span>, <span class="st">"zi_fixed"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">cooks.distance</span><span class="op">(</span><span class="va">model</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for MixMod</span></span>
+<span><span class="fu">cooks.distance</span><span class="op">(</span><span class="va">model</span>, cores <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -190,12 +190,15 @@
 <dd><p>objects inheriting from class <code>"MixMod"</code>. When <code>object2</code>
   is also provided, then the model behind <code>object</code> must be nested within the model 
   behind <code>object2</code>.</p></dd>
+
 <dt>sub_model</dt>
 <dd><p>character string indicating for which sub-model to extract the estimated
   coefficients; it is only relevant for zero-inflated models.</p></dd>
+
 <dt>post_vars</dt>
 <dd><p>logical; if <code>TRUE</code> the posterior variances of the random effects
   are returned as an extra attribute of the numeric matrix produced by <code>ranef()</code>.</p></dd>
+
 <dt>parm</dt>
 <dd><p>character string; for which type of parameters to calculate confidence 
   intervals. Option <code>"var-cov"</code> corresponds to the variance-covariance matrix of the 
@@ -203,21 +206,26 @@
   parameters in the distribution of the outcome (e.g., the \(\theta\) parameter in
   the negative binomial family). Option <code>zero_inflated</code> corresponds to the 
   coefficients of the zero-inflated sub-model.</p></dd>
+
 <dt>level</dt>
 <dd><p>numeric scalar between 0 and 1 denoting the level of the confidence interval.
     In the <code>nobs()</code> method it denotes the level at which the number of observations is
     counted. The value 0 corresponds to the number of independent sample units 
     determined by the number of levels of the grouping variable. If set to a value greater
     than zero, it returns the total number of observations.</p></dd>
+
 <dt>test</dt>
 <dd><p>logical; should a p-value be calculated.</p></dd>
+
 <dt>L</dt>
 <dd><p>a numeric matrix representing a contrasts matrix. This is only used when in 
   <code>anova()</code> only <code>object</code> is provided, and it can only be specified for the fixed 
   effects. When <code>L</code> is used, a Wald test is performed.</p></dd>
+
 <dt>sandwich</dt>
 <dd><p>logical; if <code>TRUE</code> the sandwich estimator is used in the calculation
   of standard errors.</p></dd>
+
 <dt>type</dt>
 <dd><p>character string indicating the type of fitted values / residuals / predictions 
     / variance inflation factors to calculate. Option <code>"mean_subject"</code> corresponds to only using the fixed-effects
@@ -225,50 +233,64 @@
     random-effects parts; option <code>"marginal"</code> is based in multiplying the fixed 
     effects design matrix with the marginal coefficients obtained by 
     <code><a href="marginal_coefs.html">marginal_coefs</a></code>.</p></dd>
+
 <dt>link_fun</dt>
 <dd><p>the <code>link_fun</code> of <code><a href="marginal_coefs.html">marginal_coefs</a></code>.</p></dd>
+
 <dt>tasnf_y</dt>
 <dd><p>a function to transform the grouped / repeated measurements outcome before
     calculating the residuals; for example, relevant in two-part models for semi-continuous
     data, in which it is assumed that the log outcome follows a normal distribution.</p></dd>
+
 <dt>newdata, newdata2</dt>
 <dd><p>a data frame based on which predictions are to be calculated.
     <code>newdata2</code> is only relevant when <code>level = "subject_specific"</code>; see 
     <b>Details</b> for more information.</p></dd>
+
 <dt>type_pred</dt>
 <dd><p>character string indicating at which scale to calculate predictions. 
     Options are <code>"link"</code> indicating to calculate predictions at the link function / 
     linear predictor scale, and <code>"response"</code> indicating to calculate predictions at
     the scale of the response variable.</p></dd>
+
 <dt>se.fit</dt>
 <dd><p>logical, if <code>TRUE</code> standard errors of predictions are returned.</p></dd>
+
 <dt>M</dt>
 <dd><p>numeric scalar denoting the number of Monte Carlo samples; see 
     <b>Details</b> for more information.</p></dd>
+
 <dt>df</dt>
 <dd><p>numeric scalar denoting the degrees of freedom for the Student's t proposal
     distribution; see <b>Details</b> for more information.</p></dd>
+
 <dt>scale</dt>
 <dd><p>numeric scalar or vector denoting the scaling applied to the subject-specific
     covariance matrices of the random effects; see <b>Details</b> for more information.</p></dd>
+
 <dt>seed</dt>
 <dd><p>numerical scalar giving the seed to be used in the Monte Carlo scheme.</p></dd>
+
 <dt>return_newdata</dt>
 <dd><p>logical; if <code>TRUE</code> the <code>predict()</code> method returns a copy
     of the <code>newdata</code> and of <code>newdata2</code> if the corresponding argument was not 
     <code>NULL</code>, with extra columns the predictions, and the lower and upper limits of
     the cofidence intervals when <code>type = "subject_specific"</code>.</p></dd>
+
 <dt>nsim</dt>
 <dd><p>numeric scalar giving the number of times to simulate the response variable.</p></dd>
+
 <dt>new_RE</dt>
 <dd><p>logical; if <code>TRUE</code>, new random effects will be simulated, and new outcome
     data will be simulated by <code>simulate()</code> using these new random effect. Otherwise,
     the empirical Bayes estimates of the random effects from the fitted model will be used.</p></dd>
+
 <dt>acount_MLEs_var</dt>
 <dd><p>logical; if <code>TRUE</code> it accounts for the variability of the 
     maximum likelihood estimates (MLEs) by simulating a new value for the parameters from 
     a multivariate normal distribution with mean the MLEs and covariance matrix the 
     covariance matrix of the MLEs.</p></dd>
+
 <dt>sim_fun</dt>
 <dd><p>a function based on which to simulate the response variable. This is 
     relevant for non-standard models. The <code>simulate()</code> function also tries to extract 
@@ -277,10 +299,13 @@
     observations to simulate, <code>mu</code> a numeric vector of means, <code>phis</code> a numeric
     vector of extra dispersion/scale parameters, and <code>eta_zi</code> a numeric vector for 
     the zero-part of the model, if this is relevant.</p></dd>
+
 <dt>cores</dt>
 <dd><p>the number of cores to use in the computation.</p></dd>
+
 <dt>...</dt>
 <dd><p>further arguments; currently none is used.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -352,7 +377,9 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>The estimated fixed and random effects, coefficients (this is similar as in package 
+    
+
+<p>The estimated fixed and random effects, coefficients (this is similar as in package 
 <b>nlme</b>), confidence intervals fitted values (on the scale on the response) and 
 residuals.</p>
     </div>
@@ -368,35 +395,35 @@ residuals.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="co"># simulate some data</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123L</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">500</span></span>
-<span class="r-in"><span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">15</span></span>
-<span class="r-in"><span class="va">t.max</span> <span class="op">&lt;-</span> <span class="fl">25</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2.13</span>, <span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">D</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">D</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.48</span>, <span class="op">-</span><span class="fl">0.08</span>, <span class="op">-</span><span class="fl">0.08</span>, <span class="fl">0.18</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">K</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="va">t.max</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, each <span class="op">=</span> <span class="va">n</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>year <span class="op">=</span> <span class="va">times</span>, group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">group</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu">model.matrix</span><span class="op">(</span><span class="op">~</span> <span class="va">group</span> <span class="op">*</span> <span class="va">year</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">model.matrix</span><span class="op">(</span><span class="op">~</span> <span class="va">year</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">eta.y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">Z</span> <span class="op">*</span> <span class="va">b</span><span class="op">[</span><span class="va">id</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">K</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="va">eta.y</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">DF</span><span class="op">$</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">################################################</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">fm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">year</span> <span class="op">+</span> <span class="va">group</span>, random <span class="op">=</span> <span class="op">~</span> <span class="va">year</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>,</span>
-<span class="r-in">                   family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">coef</span><span class="op">(</span><span class="va">fm1</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># simulate some data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">500</span></span></span>
+<span class="r-in"><span><span class="va">K</span> <span class="op">&lt;-</span> <span class="fl">15</span></span></span>
+<span class="r-in"><span><span class="va">t.max</span> <span class="op">&lt;-</span> <span class="fl">25</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">betas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2.13</span>, <span class="op">-</span><span class="fl">0.25</span>, <span class="fl">0.24</span>, <span class="op">-</span><span class="fl">0.05</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">D</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">D</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.48</span>, <span class="op">-</span><span class="fl">0.08</span>, <span class="op">-</span><span class="fl">0.08</span>, <span class="fl">0.18</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">K</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="va">t.max</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, each <span class="op">=</span> <span class="va">n</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">DF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>year <span class="op">=</span> <span class="va">times</span>, group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">group</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu">model.matrix</span><span class="op">(</span><span class="op">~</span> <span class="va">group</span> <span class="op">*</span> <span class="va">year</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu">model.matrix</span><span class="op">(</span><span class="op">~</span> <span class="va">year</span>, data <span class="op">=</span> <span class="va">DF</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">D</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, each <span class="op">=</span> <span class="va">K</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">eta.y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">betas</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">Z</span> <span class="op">*</span> <span class="va">b</span><span class="op">[</span><span class="va">id</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">DF</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span> <span class="op">*</span> <span class="va">K</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="va">eta.y</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">DF</span><span class="op">$</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">################################################</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">fm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">year</span> <span class="op">+</span> <span class="va">group</span>, random <span class="op">=</span> <span class="op">~</span> <span class="va">year</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>,</span></span>
+<span class="r-in"><span>                   family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">coef</span><span class="op">(</span><span class="va">fm1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   (Intercept)        year    group1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1   -2.305583  0.54222964 -0.265744</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2   -1.905620 -0.12525835 -0.265744</span>
@@ -404,10 +431,10 @@ residuals.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4   -2.379605  0.42518796 -0.265744</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5   -2.348230  0.01936688 -0.265744</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6   -2.056225  0.69488984 -0.265744</span>
-<span class="r-in"><span class="fu">fixef</span><span class="op">(</span><span class="va">fm1</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">fixef</span><span class="op">(</span><span class="va">fm1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)        year      group1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  -2.2391690   0.1968593  -0.2657440 </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">ranef</span><span class="op">(</span><span class="va">fm1</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">ranef</span><span class="op">(</span><span class="va">fm1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   (Intercept)       year</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 -0.06641381  0.3453703</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.33354914 -0.3221176</span>
@@ -415,39 +442,39 @@ residuals.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 -0.14043607  0.2283287</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5 -0.10906060 -0.1774924</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.18294398  0.4980305</span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">confint</span><span class="op">(</span><span class="va">fm1</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">confint</span><span class="op">(</span><span class="va">fm1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                  2.5 %   Estimate      97.5 %</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -2.4728845 -2.2391690 -2.00545354</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> year         0.1529535  0.1968593  0.24076514</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> group1      -0.5673166 -0.2657440  0.03582867</span>
-<span class="r-in"><span class="fu">confint</span><span class="op">(</span><span class="va">fm1</span>, <span class="st">"var-cov"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">confint</span><span class="op">(</span><span class="va">fm1</span>, <span class="st">"var-cov"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                       2.5 %    Estimate     97.5 %</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> var.(Intercept)  0.22607344  0.50791169 1.14110835</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> cov.(Int)_year  -0.08018454 -0.03554827 0.07358216</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> var.year         0.15508238  0.16033127 0.20147617</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">fitted</span><span class="op">(</span><span class="va">fm1</span>, <span class="st">"subject_specific"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">fitted</span><span class="op">(</span><span class="va">fm1</span>, <span class="st">"subject_specific"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          1          2          3          4          5          6 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.09066165 0.15603499 0.83100175 0.96225413 0.97895242 0.97984947 </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">residuals</span><span class="op">(</span><span class="va">fm1</span>, <span class="st">"marginal"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">residuals</span><span class="op">(</span><span class="va">fm1</span>, <span class="st">"marginal"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          1          2          3          4          5          6 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -0.1805435 -0.1980669  0.6881459  0.6194025  0.5928527  0.5908654 </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">fm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">group</span>, random <span class="op">=</span> <span class="op">~</span> <span class="va">year</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>,</span>
-<span class="r-in">                   family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># likelihood ratio test between fm1 and fm2</span></span>
-<span class="r-in"><span class="fu">anova</span><span class="op">(</span><span class="va">fm1</span>, <span class="va">fm2</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">fm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixed_model.html">mixed_model</a></span><span class="op">(</span>fixed <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">group</span>, random <span class="op">=</span> <span class="op">~</span> <span class="va">year</span> <span class="op">|</span> <span class="va">id</span>, data <span class="op">=</span> <span class="va">DF</span>,</span></span>
+<span class="r-in"><span>                   family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># likelihood ratio test between fm1 and fm2</span></span></span>
+<span class="r-in"><span><span class="fu">anova</span><span class="op">(</span><span class="va">fm1</span>, <span class="va">fm2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         AIC     BIC  log.Lik  LRT df p.value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm1 5203.04 5228.33 -2595.52                </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fm2 5201.62 5231.12 -2593.81 3.43  1  0.0642</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># the same but with a Wald test</span></span>
-<span class="r-in"><span class="fu">anova</span><span class="op">(</span><span class="va">fm2</span>, L <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># the same but with a Wald test</span></span></span>
+<span class="r-in"><span><span class="fu">anova</span><span class="op">(</span><span class="va">fm2</span>, L <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Marginal Wald Tests Table</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -458,7 +485,7 @@ residuals.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Chisq df Pr(&gt;|Chi|)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   3.7927  1     0.0515</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -473,7 +500,7 @@ residuals.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
