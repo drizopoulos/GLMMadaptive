@@ -945,6 +945,9 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
             }
             pred <- if (type_pred == "link") eta_y else object$family$linkinv(eta_y)
             if (!is.null(object$gammas)) {
+                if (object$family$family == "hurdle log-normal") {
+                    pred <- exp(pred + 0.5 * exp(object$phis)^2)
+                }
                 pred <- plogis(eta_zi, lower.tail = FALSE) * pred
             }
             names(pred) <- row.names(newdata)
@@ -972,6 +975,7 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
         id <- Lists[["id"]]
         betas <- Lists[["betas"]]
         gammas <- Lists[["gammas"]]
+        phis <- Lists[["phis"]]
         Z <- Lists[["Z"]]
         ncz <- ncol(Z)
         Z_zi <- Lists[["Z_zi"]]
@@ -997,6 +1001,9 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
         }
         pred <- if (type_pred == "link") eta else object$family$linkinv(eta)
         if (!is.null(object$gammas)) {
+            if (object$family$family == "hurdle log-normal") {
+                pred <- exp(pred + 0.5 * exp(phis)^2)
+            }
             pred <- plogis(eta_zi, lower.tail = FALSE) * pred
             attr(pred, "zi_probs") <- plogis(eta_zi)
         }
@@ -1204,6 +1211,9 @@ predict.MixMod <- function (object, newdata, newdata2 = NULL,
                 }
                 if (!is.null(offset2_zi))
                     eta2_zi <- eta2_zi + offset2_zi
+                if (object$family$family == "hurdle log-normal") {
+                    pred2 <- exp(pred2 + 0.5 * exp(phis)^2)
+                }
                 pred2 <- plogis(eta2_zi, lower.tail = FALSE) * pred2
                 attr(pred2, "zi_probs") <- plogis(eta2_zi)
             }
