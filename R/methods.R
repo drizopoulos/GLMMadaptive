@@ -849,7 +849,7 @@ create_lists <- function (object, newdata) {
     } else {
         X_zi <- offset_zi <- Z_zi <- NULL
     }
-    y_lis <- if (is.matrix(y)) lapply(id_unq, function (i) y[id == i, ]) else split(y, id)
+    y_lis <- if (is.matrix(y)) lapply(id_unq, function (i) y[id == i, , drop = FALSE]) else split(y, id)
     N <- if (NCOL(y) == 2) y[, 1] + y[, 2]
     N_lis <- if (NCOL(y) == 2) split(N, id)
     X_lis <- lapply(id_unq, function (i) X[id == i, , drop = FALSE])

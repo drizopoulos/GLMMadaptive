@@ -17,8 +17,8 @@ Gaussian quadrature rule.
 \tabular{ll}{
 Package: \tab GLMMadaptive\cr
 Type: \tab Package\cr
-Version: \tab 0.9-1\cr
-Date: \tab 2023-10-17\cr
+Version: \tab 0.9-2\cr
+Date: \tab 2024-01-16\cr
 License: \tab GPL (>=3)\cr
 }
 
