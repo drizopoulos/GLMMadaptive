@@ -537,7 +537,7 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
     compute_marg_coefs <- function (object, X, betas, Z, X_zi, gammas, Z_zi, D, M, 
                                     link_fun, seed) {
         if (!exists(".Random.seed", envir = .GlobalEnv)) 
-            runif(1)
+            runif(1L)
         RNGstate <- get(".Random.seed", envir = .GlobalEnv)
         on.exit(assign(".Random.seed", RNGstate, envir = .GlobalEnv))
         mu_fun <- object$Funs$mu_fun
@@ -549,12 +549,12 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
         }
         Xbetas <- c(X %*% betas)
         if (!is.null(offset)) {
-            Xbetas <- Xbetas #+ offset
+            Xbetas <- Xbetas + offset
         }
         if (!is.null(gammas)) {
             eta_zi <- c(X_zi %*% gammas)
             if (!is.null(offset_zi)) {
-                eta_zi <- eta_zi #+ offset_zi
+                eta_zi <- eta_zi + offset_zi
             }
         }
         id <- match(object$id[[1]], unique(object$id[[1]]))
@@ -605,7 +605,7 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
                                                 Z_zi, M, compute_marg_coefs, chol_transf,
                                                 object, link_fun, seed) {
             if (!exists(".Random.seed", envir = .GlobalEnv)) 
-                runif(1)
+                runif(1L)
             RNGstate <- get(".Random.seed", envir = .GlobalEnv)
             on.exit(assign(".Random.seed", RNGstate, envir = .GlobalEnv))
             n_block <- length(block)
@@ -687,7 +687,7 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
     X <- model.matrix(termsX, mfX)
     if (is.null(object$gammas)) {
         if (marginal) {
-            mcoefs <- marginal_coefs(object, std_errors = TRUE, ...)
+            mcoefs <- marginal_coefs(object, std_errors = TRUE, seed = seed, ...)
             betas <- mcoefs$betas
             var_betas <- mcoefs$var_betas
         } else {
@@ -702,7 +702,7 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
             newdata$upp <- pred + qnorm((1 + level) / 2) * ses
         } else {
             if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
-                runif(1)
+                runif(1L)
             R.seed <- get(".Random.seed", envir = .GlobalEnv)
             set.seed(seed)
             RNGstate <- structure(seed, kind = as.list(RNGkind()))
@@ -752,7 +752,8 @@ effectPlotData.MixMod <- function (object, newdata, level = 0.95, marginal = FAL
         V <- V[ind, ind, drop = FALSE]
         new_tht <- MASS::mvrnorm(K, tht, V)
         if (marginal) {
-            mcoefs <- marginal_coefs(object, std_errors = TRUE, ...)
+            mcoefs <- marginal_coefs(object, std_errors = TRUE, seed = seed, 
+                                     ...)
             betas <- mcoefs$betas
             var_betas <- mcoefs$var_betas
             pred <- c(X %*% betas)
