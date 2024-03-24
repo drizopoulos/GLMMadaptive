@@ -592,7 +592,7 @@ cr_marg_probs <- function (eta, direction = c("forward", "backward")) {
     } else {
         cumsum_1_minus_p <- apply(plogis(eta[, seq(ncoefs, 2), drop = FALSE], log.p = TRUE, 
                                            lower.tail = FALSE), 1L, cumsum)
-        if (is.matrix(cumsum_1_minus_p)) cumsum_1_minus_p <- t(cumsum_1_minus_p)
+        cumsum_1_minus_p <- if (is.matrix(cumsum_1_minus_p)) t(cumsum_1_minus_p) else as.matrix(cumsum_1_minus_p)
         probs <- exp(plogis(eta, log.p = TRUE) + 
                          cbind(cumsum_1_minus_p[, seq(ncoefs - 1, 1)], 0))
         cbind(1 - rowSums(probs), probs)
