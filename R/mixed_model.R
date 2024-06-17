@@ -46,7 +46,7 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
         unique(c(all.vars(getID_Formula(random)), 
                  if (!is.null(zi_random)) all.vars(getID_Formula(zi_random))))
     data[groups] <- lapply(data[groups], 
-                           function (x) if (!is.factor(x)) factor(x) else x)
+                           function (x) if (!is.factor(x)) factor(x, levels = unique(x)) else x)
     data <- data[order(data[[groups[1L]]]), ]
     # drop unused levels of factors
     factors <- sapply(data, is.factor)
@@ -306,7 +306,7 @@ mixed_model <- function (fixed, random, data, family, weights = NULL,
     out$id_name <- id_nam 
     out$offset <- offset
     dimnames(out$post_modes) <- list(unique(id_orig[[1L]]), RE_nams)
-    names(out$post_vars) <- unique(id_orig)
+    names(out$post_vars) <- unique(id_orig[[1L]])
     out$post_vars[] <- lapply(out$post_vars, function (v) {
         dimnames(v) <- list(RE_nams, RE_nams)
         v

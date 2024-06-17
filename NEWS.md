@@ -1,7 +1,7 @@
 # GLMMadaptive 0.9.1
 
 ## Minor
-* For hurdle log-normal models predictions are now calculated on the orginal outcome scale - not the log.
+* For hurdle log-normal models predictions are now calculated on the original outcome scale - not the log.
 
 # GLMMadaptive 0.9.0
 
