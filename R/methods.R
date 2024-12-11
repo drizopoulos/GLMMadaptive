@@ -639,6 +639,7 @@ marginal_coefs.MixMod <- function (object, std_errors = FALSE, link_fun = NULL,
                           object = object, compute_marg_coefs = compute_marg_coefs,
                           chol_transf = chol_transf, link_fun = link_fun, seed = seed)
         }
+        out$MC_Ksamples <- do.call("rbind", res)
         out$var_betas <- var(do.call("rbind", res))
         dimnames(out$var_betas) <- list(names(out$betas), names(out$betas))
         ses <- sqrt(diag(out$var_betas))
