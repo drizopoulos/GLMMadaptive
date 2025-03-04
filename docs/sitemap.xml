@@ -1,81 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Custom_Models.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Dynamic_Predictions.html</loc>
-  </url>
-  <url>
-    <loc>/articles/GLMMadaptive.html</loc>
-  </url>
-  <url>
-    <loc>/articles/GLMMadaptive_basics.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Goodness_of_Fit.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Methods.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Methods_MixMod.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Multiple_Comparisons.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Optimization.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Ordinal_Mixed_Models.html</loc>
-  </url>
-  <url>
-    <loc>/articles/ZeroInflated_and_TwoPart_Models.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/continuation_ratio.html</loc>
-  </url>
-  <url>
-    <loc>/reference/effectPlotData.html</loc>
-  </url>
-  <url>
-    <loc>/reference/extra_fams.html</loc>
-  </url>
-  <url>
-    <loc>/reference/GLMMadaptive.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/marginal_coefs.html</loc>
-  </url>
-  <url>
-    <loc>/reference/methods.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mixed_model.html</loc>
-  </url>
-  <url>
-    <loc>/reference/negative_binomial.html</loc>
-  </url>
-  <url>
-    <loc>/reference/scoring_rules.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/articles/Custom_Models.html</loc></url>
+<url><loc>/articles/Dynamic_Predictions.html</loc></url>
+<url><loc>/articles/GLMMadaptive.html</loc></url>
+<url><loc>/articles/GLMMadaptive_basics.html</loc></url>
+<url><loc>/articles/Goodness_of_Fit.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/Methods.html</loc></url>
+<url><loc>/articles/Methods_MixMod.html</loc></url>
+<url><loc>/articles/Multiple_Comparisons.html</loc></url>
+<url><loc>/articles/Optimization.html</loc></url>
+<url><loc>/articles/Ordinal_Mixed_Models.html</loc></url>
+<url><loc>/articles/ZeroInflated_and_TwoPart_Models.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/continuation_ratio.html</loc></url>
+<url><loc>/reference/effectPlotData.html</loc></url>
+<url><loc>/reference/extra_fams.html</loc></url>
+<url><loc>/reference/GLMMadaptive.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/marginal_coefs.html</loc></url>
+<url><loc>/reference/methods.html</loc></url>
+<url><loc>/reference/mixed_model.html</loc></url>
+<url><loc>/reference/negative_binomial.html</loc></url>
+<url><loc>/reference/scoring_rules.html</loc></url>
 </urlset>
+
