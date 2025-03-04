@@ -91,15 +91,12 @@ summary(gm)
 Installation
 ------------
 
-The development version of the package can be installed from GitHub using the **devtools**
+The development version of the package can be installed from GitHub using the **remotes**
 package:
 ```r
-devtools::install_github("drizopoulos/GLMMadaptive")
+# install.packages("remotes")
+remotes::install_github("drizopoulos/GLMMadaptive")
 ```
 
-and with vignettes
-```r
-devtools::install_github("drizopoulos/GLMMadaptive", build_opts = NULL)
-```
 
 Hex-sticker courtesy of Greg Papageorgiou [@gr_papageorgiou](https://twitter.com/gr_papageorgiou).
