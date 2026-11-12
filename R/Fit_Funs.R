@@ -362,7 +362,7 @@ score_betas <- function (betas, y, N, X, id, offset, weights, phis, Ztb, eta_zi,
         delta <- betas - pen_mu
         pen_invSigma_delta <- delta * diag(pen_invSigma) / pen_df
         fact <- (pen_df + ncx) / c(1 + crossprod(delta, pen_invSigma_delta))
-        score.betas <- score.betas + pen_invSigma_delta * fact
+        sc <- sc + pen_invSigma_delta * fact
     }
     out
 }
