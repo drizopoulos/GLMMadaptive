@@ -1310,15 +1310,10 @@ beta.binomial <- function (link = "logit") {
         out <- (comp1 - comp2) * phi
         out
     }
-    simulate <- function (n, mu, phis, eta_zi) {
-        phi <- exp(phis)
-        probs <- rbeta(n, shape1 = mu * phi, shape2 = phi * (1 - mu))
-        rbinom(n, size = .N, prob = probs)
-    }
     structure(list(family = "beta binomial", link = stats$name, 
                    linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,
                    score_eta_fun = score_eta_fun,
-                   score_phis_fun = score_phis_fun, simulate = simulate),
+                   score_phis_fun = score_phis_fun),
               class = "family")
 }
 
