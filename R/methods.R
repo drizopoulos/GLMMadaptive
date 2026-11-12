@@ -1330,6 +1330,18 @@ simulate.MixMod <- function (object, nsim = 1, seed = NULL,
                 rbinom(n = n, size = .N, prob = mu)
             }
             environment(sim_fun) <- env
+        } else if (object$family$family == "beta binomial") {
+            N <- if ((NCOL(y <- model.response(object$model_frames$mfX))) == 2) 
+                y[, 1] + y[, 2] else 1
+            .N <- N
+            env <- new.env(parent = .GlobalEnv)
+            assign(".N", N, envir = env)
+            sim_fun <- function (n, mu, phis, eta_zi) {
+                phi <- exp(phis)
+                probs <- rbeta(n, shape1 = mu * phi, shape2 = phi * (1 - mu))
+                rbinom(n, size = .N, prob = probs)
+            }
+            environment(sim_fun) <- env
         } else if (object$family$family == "zero-inflated binomial") {
             N <- if ((NCOL(y <- model.response(object$model_frames$mfX))) == 2) 
                 y[, 1] + y[, 2] else 1

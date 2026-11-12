@@ -166,10 +166,11 @@ score_mixed <- function (thetas, id, y, N, X, Z, offset, X_zi, Z_zi, offset_zi, 
             - sc
         }
     }
-    if (penalized) {
-        pen_invSigma_betas <- betas * diag(pen_invSigma) / pen_df
-        fact <- (pen_df + ncx) / c(1 + crossprod(betas, pen_invSigma_betas))
-        score.betas <- score.betas + pen_invSigma_betas * fact
+    if (penalized && !i_contributions) {
+        delta <- betas - pen_mu
+        pen_invSigma_delta <- delta * diag(pen_invSigma) / pen_df
+        fact <- (pen_df + ncx) / c(1 + crossprod(delta, pen_invSigma_delta))
+        score.betas <- score.betas + pen_invSigma_delta * fact
     }
     ###
     score.phis <- if (!is.null(phis)) {
@@ -358,9 +359,10 @@ score_betas <- function (betas, y, N, X, id, offset, weights, phis, Ztb, eta_zi,
         }
     }
     if (penalized) {
-        pen_invSigma_betas <- betas * diag(pen_invSigma) / pen_df
-        fact <- (pen_df + ncx) / c(1 + crossprod(betas, pen_invSigma_betas))
-        out <- out + pen_invSigma_betas * fact
+        delta <- betas - pen_mu
+        pen_invSigma_delta <- delta * diag(pen_invSigma) / pen_df
+        fact <- (pen_df + ncx) / c(1 + crossprod(delta, pen_invSigma_delta))
+        score.betas <- score.betas + pen_invSigma_delta * fact
     }
     out
 }
@@ -1311,7 +1313,7 @@ beta.binomial <- function (link = "logit") {
     simulate <- function (n, mu, phis, eta_zi) {
         phi <- exp(phis)
         probs <- rbeta(n, shape1 = mu * phi, shape2 = phi * (1 - mu))
-        rbinom(n, size = 1, prob = probs)
+        rbinom(n, size = .N, prob = probs)
     }
     structure(list(family = "beta binomial", link = stats$name, 
                    linkfun = stats$linkfun, linkinv = stats$linkinv, log_dens = log_dens,

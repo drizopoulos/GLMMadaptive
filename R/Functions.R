@@ -448,7 +448,7 @@ dmvt <- function (x, mu, Sigma = NULL, invSigma = NULL, df, log = TRUE, prop = T
             logdetSigma <- c(-determinant(invSigma)$modulus)
     }
     ss <- x - rep(mu, each = nrow(x))
-    quad <- rowSums((ss %*% invSigma) * ss)/df
+    quad <- rowSums((ss %*% invSigma) * ss) / df
     if (!prop)
         fact <- lgamma((df + p)/2) - lgamma(df/2) - 
         0.5 * (p * (log(pi) + log(df)) + logdetSigma)
