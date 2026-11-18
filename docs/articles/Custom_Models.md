@@ -104,7 +104,7 @@ system.time(
                         initial_values = list("betas" = poisson()))
 )
 #>    user  system elapsed 
-#>    3.42    0.02    3.43
+#>    3.51    0.01    3.58
 
 fm1
 #> 
@@ -203,7 +203,7 @@ system.time(
                         initial_values = list("betas" = poisson()))
 )
 #>    user  system elapsed 
-#>    1.38    0.00    1.37
+#>    1.34    0.02    1.35
 
 fm2
 #> 

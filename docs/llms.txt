@@ -7,9 +7,6 @@ status](http://www.r-pkg.org/badges/version/GLMMadaptive)](https://cran.r-projec
 [![](https://cranlogs.r-pkg.org/badges/grand-total/GLMMadaptive)](https://CRAN.R-project.org/package=GLMMadaptive)
 [![Download
 counter](http://cranlogs.r-pkg.org/badges/GLMMadaptive)](https://cran.r-project.org/package=GLMMadaptive)
-[![Rdoc](https://www.rdocumentation.org/badges/version/GLMMadaptive)](https://www.rdocumentation.org/packages/GLMMadaptive)
-
-![](reference/figures/logo.png)
 
 ## Description
 
