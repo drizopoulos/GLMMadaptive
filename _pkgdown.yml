@@ -1,7 +1,19 @@
+url: https://drizopoulos.github.io/GLMMadaptive/
+
+home:
+  title: GLMMadaptive
+  description: Generalized Linear Mixed Models using Adaptive Gaussian Quadrature.
+
 template:
+  math-rendering: katex
+  bootstrap: 5
+  opengraph:
+    image:
+      src: man/figures/logo.png
+      alt: "GLMMadaptive: Generalized Linear Mixed Models using Adaptive Gaussian Quadrature"
   params:
     bootswatch: yeti
 
 authors:
   Dimitris Rizopoulos:
-    href: http://www.drizopoulos.com/
+    href: "https://www.drizopoulos.com/"
