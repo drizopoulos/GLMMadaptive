@@ -39,10 +39,10 @@ estimates, and with variance-covariance matrix the inverse of the
 observed information matrix.
 
 The first term in the integrand can be further expanded into:
-\begin{eqnarray\*} p\\y_j(u) \mid \mathcal Y_j(t), \theta\\ & = & \int
+\begin{array}{l} p\\y_j(u) \mid \mathcal Y_j(t), \theta\\ & = & \int
 p\\y_j(u) \mid b_j, \mathcal Y_j(t), \theta\\ \\ p \\b_j \mid \mathcal
 Y_j(t), \theta\\ \\ db_j\\ &&\\ & = & \int p\\y_j(u) \mid b_j, \theta\\
-\\ p \\b_j \mid \mathcal Y_j(t), \theta\\ \\ db_j. \end{eqnarray\*} By
+\\ p \\b_j \mid \mathcal Y_j(t), \theta\\ \\ db_j. \end{array} By
 combining these integral equations, we can derive a Monte Carlo scheme
 to estimate \omega_j(u \mid t) and its confidence interval.
 

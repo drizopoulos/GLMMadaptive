@@ -73,7 +73,7 @@
                         <h4 data-toc-skip class="author">Dimitris
 Rizopoulos</h4>
             
-            <h4 data-toc-skip class="date">2026-11-18</h4>
+            <h4 data-toc-skip class="date">2026-11-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/HEAD/vignettes/Dynamic_Predictions.Rmd" class="external-link"><code>vignettes/Dynamic_Predictions.Rmd</code></a></small>
       <div class="d-none name"><code>Dynamic_Predictions.Rmd</code></div>
@@ -122,15 +122,15 @@ this posterior distribution by a multivariate normal distribution
 centered at the maximum likelihood estimates, and with
 variance-covariance matrix the inverse of the observed information
 matrix.</p>
-<p>The first term in the integrand can be further expanded into: <span class="math display">\begin{eqnarray*}
+<p>The first term in the integrand can be further expanded into: <span class="math display">\begin{array}{l}
 p\{y_j(u) \mid \mathcal Y_j(t), \theta\} &amp; = &amp;
 \int p\{y_j(u) \mid b_j, \mathcal Y_j(t), \theta\} \,
 p \{b_j \mid \mathcal Y_j(t), \theta\} \; db_j\\ &amp;&amp;\\
 &amp; = &amp; \int p\{y_j(u) \mid b_j, \theta\} \, p \{b_j \mid \mathcal
 Y_j(t), \theta\} \; db_j.
-\end{eqnarray*}</span> By combining these integral equations, we can
-derive a Monte Carlo scheme to estimate <span class="math inline">\omega_j(u \mid t)</span> and its confidence
-interval.</p>
+\end{array}</span> By combining these integral equations, we can derive
+a Monte Carlo scheme to estimate <span class="math inline">\omega_j(u
+\mid t)</span> and its confidence interval.</p>
 </div>
 <div class="section level2">
 <h2 id="illustration">Illustration<a class="anchor" aria-label="anchor" href="#illustration"></a>

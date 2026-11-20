@@ -73,7 +73,7 @@
                         <h4 data-toc-skip class="author">Dimitris
 Rizopoulos</h4>
             
-            <h4 data-toc-skip class="date">2026-11-18</h4>
+            <h4 data-toc-skip class="date">2026-11-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/drizopoulos/GLMMadaptive/blob/HEAD/vignettes/GLMMadaptive.Rmd" class="external-link"><code>vignettes/GLMMadaptive.Rmd</code></a></small>
       <div class="d-none name"><code>GLMMadaptive.Rmd</code></div>
@@ -112,12 +112,12 @@ dispersion/shape parameters <span class="math inline">\phi</span>.</p>
 function <span class="math inline">g(\cdot)</span> is not the identity.
 In these settings, the estimation of the model is complicated by the
 fact that the marginal log-likelihood function of the observed <span class="math inline">y_i</span> cannot be derived analytically. In
-particular, the log-likelihood function has the form: <span class="math display">\begin{eqnarray*}
+particular, the log-likelihood function has the form: <span class="math display">\begin{array}{l}
 \ell(\theta) &amp; = &amp; \sum_{i = 1}^n \log p(y_i; \theta)\\
 &amp; = &amp; \sum_{i = 1}^n \log \int p(y_i \mid b_i; \theta) \, p(b_i;
 \theta) \, db_i,
-\end{eqnarray*}</span> where <span class="math inline">\theta</span>
-denotes the full parameter vector including the fixed effects, the extra
+\end{array}</span> where <span class="math inline">\theta</span> denotes
+the full parameter vector including the fixed effects, the extra
 potential dispersion/shape parameters <span class="math inline">\phi</span> and the unique element of the covariance
 matrix <span class="math inline">D</span>, and <span class="math inline">p(\cdot)</span> denotes a probability density or
 probability mass function. The integral in the definition of <span class="math inline">\ell(\theta)</span> does not have a closed-form
