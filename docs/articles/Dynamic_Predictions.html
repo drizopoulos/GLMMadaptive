@@ -122,12 +122,12 @@ this posterior distribution by a multivariate normal distribution
 centered at the maximum likelihood estimates, and with
 variance-covariance matrix the inverse of the observed information
 matrix.</p>
-<p>The first term in the integrand can be further expanded into: <span class="math display">\begin{array}{l}
+<p>The first term in the integrand can be further expanded into: <span class="math display">\begin{array}{rcl}
 p\{y_j(u) \mid \mathcal Y_j(t), \theta\} &amp; = &amp;
-\int p\{y_j(u) \mid b_j, \mathcal Y_j(t), \theta\} \,
+\displaystyle \int p\{y_j(u) \mid b_j, \mathcal Y_j(t), \theta\} \,
 p \{b_j \mid \mathcal Y_j(t), \theta\} \; db_j\\ &amp;&amp;\\
-&amp; = &amp; \int p\{y_j(u) \mid b_j, \theta\} \, p \{b_j \mid \mathcal
-Y_j(t), \theta\} \; db_j.
+&amp; = &amp; \displaystyle \int p\{y_j(u) \mid b_j, \theta\} \, p \{b_j
+\mid \mathcal Y_j(t), \theta\} \; db_j.
 \end{array}</span> By combining these integral equations, we can derive
 a Monte Carlo scheme to estimate <span class="math inline">\omega_j(u
 \mid t)</span> and its confidence interval.</p>

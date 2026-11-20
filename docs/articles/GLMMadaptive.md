@@ -26,15 +26,16 @@ b_i\] is not normal and/or the link function g(\cdot) is not the
 identity. In these settings, the estimation of the model is complicated
 by the fact that the marginal log-likelihood function of the observed
 y_i cannot be derived analytically. In particular, the log-likelihood
-function has the form: \begin{array}{l} \ell(\theta) & = & \sum\_{i =
-1}^n \log p(y_i; \theta)\\ & = & \sum\_{i = 1}^n \log \int p(y_i \mid
-b_i; \theta) \\ p(b_i; \theta) \\ db_i, \end{array} where \theta denotes
-the full parameter vector including the fixed effects, the extra
-potential dispersion/shape parameters \phi and the unique element of the
-covariance matrix D, and p(\cdot) denotes a probability density or
-probability mass function. The integral in the definition of
-\ell(\theta) does not have a closed-form solution, and numerical
-approximations are required to obtain the maximum likelihood estimates.
+function has the form: \begin{array}{rcl} \ell(\theta) & = & \sum\_{i =
+1}^n \log p(y_i; \theta)\\&&\\ & = & \sum\_{i = 1}^n \log \displaystyle
+\int p(y_i \mid b_i; \theta) \\ p(b_i; \theta) \\ db_i, \end{array}
+where \theta denotes the full parameter vector including the fixed
+effects, the extra potential dispersion/shape parameters \phi and the
+unique element of the covariance matrix D, and p(\cdot) denotes a
+probability density or probability mass function. The integral in the
+definition of \ell(\theta) does not have a closed-form solution, and
+numerical approximations are required to obtain the maximum likelihood
+estimates.
 
 In the literature several approaches have been proposed to approximate
 such integrals, and a nice overview is given in [Pinheiro and Chao
